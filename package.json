@@ -1,0 +1,61 @@
+{
+  "name": "ciphercat",
+  "version": "1.0.0",
+  "private": false,
+  "type": "module",
+  "description": "CipherCat - A visual cryptography programming platform based on Blockly and Vue 3, supporting JavaScript, Python, and Kasm51 code generation",
+  "author": "",
+  "license": "MIT",
+  "keywords": [
+    "blockly",
+    "cryptography",
+    "visual-programming",
+    "vue3",
+    "sm4",
+    "ecc",
+    "code-generator",
+    "education",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/P02-1010751281/CipherCat"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --noEmit",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx --fix",
+    "lint:check": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "dependencies": {
+    "blockly": "^12.5.1",
+    "element-plus": "^2.14.1",
+    "highlight.js": "^11.11.1",
+    "vue": "^3.5.0",
+    "vue-router": "^5.1.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.0",
+    "@tauri-apps/cli": "^2",
+    "@types/node": "^24.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.58.0",
+    "@typescript-eslint/parser": "^8.58.0",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "eslint": "^10.0.0",
+    "eslint-plugin-vue": "^10.0.0",
+    "terser": "^5.46.1",
+    "typescript": "^6.0.0",
+    "typescript-eslint": "^8.58.0",
+    "vite": "^8.0.14",
+    "vue-eslint-parser": "^10.4.0",
+    "vue-tsc": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

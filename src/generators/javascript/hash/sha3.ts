@@ -1,86 +1,58 @@
-/**
- * SHA-3 (Keccak) JavaScript 代码生成器
- *
- * 生成符合 FIPS 202 标准的 JavaScript 代码，实现完整的 SHA-3 海绵构造：
- *   - pad10*1 填充 (多域分离后缀: SHA-3 用 0x06, SHAKE 用 0x1F)
- *   - Keccak-f[1600] 置换 (24 轮 θ→ρ→π→χ→ι，使用 BigInt 处理 64-bit lanes)
- *   - 海绵结构吸收/挤压阶段
- *
- * 使用 Blockly provideFunction_ API 注册辅助函数，自动处理去重和名称冲突。
- *
- * 参考: FIPS 202 — https://csrc.nist.gov/pubs/fips/202/final
- *       Keccak 规范 — https://keccak.team/keccak_specs_summary.html
- */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly';
 import { registerHexToBytes } from '../data/helpers';
 import { registerKeccakF1600, registerSha3Pad } from './helpers';
 
-/** SHA-3 padding (pad10*1) — pad text input. */
+/** SHA-3 padding — text input → returns padded bytes. */
 javascriptGenerator.forBlock['hash_sha3_pad_text'] = function (
   block: Block,
-): string {
-  const left =
-    javascriptGenerator.valueToCode(block, 'LEFT', Order.ATOMIC) || 'padded';
-  const right =
-    javascriptGenerator.valueToCode(block, 'RIGHT', Order.ATOMIC) || "''";
-  const rate = block.getFieldValue('RATE') || '136';
-  const suffix = block.getFieldValue('SUFFIX') || '0x06';
-
+): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
   const padFn = registerSha3Pad();
-  return `${left} = ${padFn}(${right}, ${rate}, ${suffix});\n`;
+  return [padFn + '(' + input + ', 136, 0x06)', Order.ATOMIC];
 };
 
-/** SHA-3 padding — pad hex input (converted to bytes first). */
+/** SHA-3 padding — hex input → returns padded bytes. */
 javascriptGenerator.forBlock['hash_sha3_pad_hex'] = function (
   block: Block,
-): string {
-  const left =
-    javascriptGenerator.valueToCode(block, 'LEFT', Order.ATOMIC) || 'padded';
-  const right =
-    javascriptGenerator.valueToCode(block, 'RIGHT', Order.ATOMIC) || "''";
-  const rate = block.getFieldValue('RATE') || '136';
-  const suffix = block.getFieldValue('SUFFIX') || '0x06';
-
+): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
   const hexFn = registerHexToBytes();
   const padFn = registerSha3Pad();
-  return `${left} = ${padFn}(${hexFn}(${right}), ${rate}, ${suffix});\n`;
+  return [padFn + '(' + hexFn + '(' + input + '), 136, 0x06)', Order.ATOMIC];
 };
 
-/** SHA-3 padding — pad raw byte array input. */
+/** SHA-3 padding — bytes input → returns padded bytes. */
 javascriptGenerator.forBlock['hash_sha3_pad'] = function (
   block: Block,
-): string {
-  const left =
-    javascriptGenerator.valueToCode(block, 'LEFT', Order.ATOMIC) || 'padded';
-  const right =
-    javascriptGenerator.valueToCode(block, 'RIGHT', Order.ATOMIC) || '[]';
+): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '[]';
   const rate = block.getFieldValue('RATE') || '136';
   const suffix = block.getFieldValue('SUFFIX') || '0x06';
-
   const padFn = registerSha3Pad();
-  return `${left} = ${padFn}(${right}, ${rate}, ${suffix});\n`;
+  return [
+    padFn + '(' + input + ', ' + rate + ', ' + suffix + ')',
+    Order.ATOMIC,
+  ];
 };
 
-/** Keccak-f[1600] permutation — 24-round core of SHA-3/SHAKE. */
+/** Keccak-f[b] — state → returns permuted state. */
 javascriptGenerator.forBlock['hash_sha3_keccak_f'] = function (
   block: Block,
-): string {
-  const out =
-    javascriptGenerator.valueToCode(block, 'OUT', Order.ATOMIC) || 'keccak_out';
+): [string, number] {
   const state =
     javascriptGenerator.valueToCode(block, 'STATE', Order.ATOMIC) || '[]';
-
   const funcName = registerKeccakF1600();
-  return `${out} = ${funcName}(${state});\n`;
+  return [funcName + '(' + state + ')', Order.ATOMIC];
 };
 
-/**
- * Sponge absorb phase — XOR padded blocks into state, permuting after each block.
- */
+/** Absorb — (state, block) → returns new state. */
 javascriptGenerator.forBlock['hash_sha3_absorb'] = function (
   block: Block,
-): string {
+): [string, number] {
   const state =
     javascriptGenerator.valueToCode(block, 'STATE', Order.ATOMIC) || 'state';
   const blockVal =
@@ -89,47 +61,33 @@ javascriptGenerator.forBlock['hash_sha3_absorb'] = function (
   const rateBytes = Math.floor(rateBits / 8);
 
   const keccakName = registerKeccakF1600();
-
-  const code = [];
-  code.push(`var pad_${state} = ${blockVal};`);
-  code.push(
-    `for (var i_${state} = 0; i_${state} < pad_${state}.length; i_${state} += ${rateBytes}) {`,
-  );
-  code.push(
-    `  for (var j_${state} = 0; j_${state} < ${rateBytes}; j_${state} += 8) {`,
-  );
-  code.push(`    var w_${state} = 0n;`);
-  code.push(
-    `    for (var b_${state} = 0; b_${state} < 8 && (i_${state}+j_${state}+b_${state}) < pad_${state}.length; b_${state}++) {`,
-  );
-  code.push(
-    `      w_${state} |= BigInt(pad_${state}[i_${state}+j_${state}+b_${state}]) << BigInt(8*b_${state});`,
-  );
-  code.push('    }');
-  code.push(`    ${state}[j_${state}/8] ^= w_${state};`);
-  code.push('  }');
-  code.push(`  ${state} = ${keccakName}(${state});`);
-  code.push('}');
-  code.push('');
-
-  return code.join('\n');
+  const absorbName = javascriptGenerator.provideFunction_('sha3Absorb', [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(state, block, rateBytes) {',
+    '  let s = state.slice();',
+    '  let lanes = rateBytes >> 3;',
+    '  for (let i = 0; i < lanes; i++) {',
+    '    let lane = 0n;',
+    '    for (let j = 0; j < 8; j++) {',
+    '      let idx = i * 8 + j;',
+    '      if (idx < block.length) lane |= BigInt(block[idx]) << BigInt(j * 8);',
+    '    }',
+    '    s[i] ^= lane;',
+    '  }',
+    '  return ' + keccakName + '(s);',
+    '}',
+  ]);
+  return [
+    absorbName + '(' + state + ', ' + blockVal + ', ' + rateBytes + ')',
+    Order.ATOMIC,
+  ];
 };
 
-/** State initialization — 25 zero BigInts (Keccak-f 1600-bit state). */
-javascriptGenerator.forBlock['hash_sha3_state_init'] = function (
-  _block: Block,
-): [string, number] {
-  return ['new Array(25).fill(0n)', Order.ATOMIC];
-};
-
-/**
- * Sponge squeeze phase — extract output bytes from state, permuting as needed.
- */
+/** Squeeze — (state, outLen) → returns bytes. */
 javascriptGenerator.forBlock['hash_sha3_squeeze'] = function (
   block: Block,
-): string {
-  const out =
-    javascriptGenerator.valueToCode(block, 'OUT', Order.ATOMIC) || 'squeezed';
+): [string, number] {
   const state =
     javascriptGenerator.valueToCode(block, 'STATE', Order.ATOMIC) || 'state';
   const outLen =
@@ -138,28 +96,35 @@ javascriptGenerator.forBlock['hash_sha3_squeeze'] = function (
   const rateBytes = Math.floor(rateBits / 8);
 
   const keccakName = registerKeccakF1600();
+  const squeezeName = javascriptGenerator.provideFunction_('sha3Squeeze', [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(state, outLen, rateBytes) {',
+    '  let s = state.slice();',
+    '  let lanes = rateBytes >> 3;',
+    '  let out = new Uint8Array(outLen);',
+    '  let cursor = 0;',
+    '  while (cursor < outLen) {',
+    '    for (let i = 0; i < lanes && cursor < outLen; i++) {',
+    '      for (let j = 0; j < 8 && cursor < outLen; j++) {',
+    '        out[cursor++] = Number((s[i] >> BigInt(j * 8)) & 0xFFn);',
+    '      }',
+    '    }',
+    '    if (cursor < outLen) s = ' + keccakName + '(s);',
+    '  }',
+    '  return out;',
+    '}',
+  ]);
+  return [
+    squeezeName + '(' + state + ', ' + outLen + ', ' + rateBytes + ')',
+    Order.ATOMIC,
+  ];
+};
 
-  const code = [];
-  code.push(`var ${out} = new Uint8Array(${outLen});`);
-  code.push(`var cur_${out} = 0;`);
-  code.push(`while (cur_${out} < ${outLen}) {`);
-  code.push(
-    `  for (var j_${out} = 0; j_${out} < ${rateBytes} && cur_${out} < ${outLen}; j_${out} += 8) {`,
-  );
-  code.push(`    var w_${out} = ${state}[j_${out}/8];`);
-  code.push(
-    `    for (var b_${out} = 0; b_${out} < 8 && cur_${out} < ${outLen}; b_${out}++) {`,
-  );
-  code.push(
-    `      ${out}[cur_${out}++] = Number((w_${out} >> BigInt(8*b_${out})) & 0xFFn);`,
-  );
-  code.push('    }');
-  code.push('  }');
-  code.push(`  if (cur_${out} < ${outLen}) {`);
-  code.push(`    ${state} = ${keccakName}(${state});`);
-  code.push('  }');
-  code.push('}');
-  code.push('');
-
-  return code.join('\n');
+/** State initialization — returns new Array(25).fill(0n). */
+javascriptGenerator.forBlock['hash_sha3_state_init'] = function (
+  _block: Block,
+): [string, number] {
+  void _block;
+  return ['new Array(25).fill(0n)', Order.ATOMIC];
 };

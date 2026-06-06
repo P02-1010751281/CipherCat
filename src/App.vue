@@ -1,13 +1,19 @@
 <template>
   <div ref="editorViewRef" class="editor-view" @click="closeMenus">
-    <div
-      class="view-left"
-      :style="editorStyle"
-    >
+    <div class="view-left" :style="editorStyle">
       <div class="toolbar">
         <div class="toolbar-section">
-          <button class="toolbar-btn icon-only" @click="goBack" :title="ui('back')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button
+            class="toolbar-btn icon-only"
+            @click="goBack"
+            :title="ui('back')"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
@@ -24,20 +30,35 @@
             @click="onManualSave"
             :title="ui('save')"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+              />
               <polyline points="17 21 17 13 7 13 7 21" />
               <polyline points="7 3 7 8 15 8" />
             </svg>
-            <span>{{ ui('save') }}</span>
+            <span>{{ ui("save") }}</span>
           </button>
           <label class="auto-toggle">
             <input type="checkbox" v-model="autoSaveEnabled" />
-            <span>{{ ui('autoSave') }}</span>
+            <span>{{ ui("autoSave") }}</span>
           </label>
-          <span v-if="saveStatus === 'saved' && lastSaveTime" class="save-status ok">{{ ui('saved') }} {{ lastSaveTime }}</span>
-          <span v-if="saveStatus === 'unsaved'" class="save-status warn">{{ ui('unsaved') }}</span>
-          <span v-if="saveStatus === 'error'" class="save-status error">{{ ui('saveError') || '' }}</span>
+          <span
+            v-if="saveStatus === 'saved' && lastSaveTime"
+            class="save-status ok"
+            >{{ ui("saved") }} {{ lastSaveTime }}</span
+          >
+          <span v-if="saveStatus === 'unsaved'" class="save-status warn">{{
+            ui("unsaved")
+          }}</span>
+          <span v-if="saveStatus === 'error'" class="save-status error">{{
+            ui("saveError") || ""
+          }}</span>
         </div>
 
         <div class="toolbar-section">
@@ -65,43 +86,59 @@
               :class="{ active: openMenu === 'workspace' }"
               @click.stop="toggleMenu('workspace')"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <circle cx="12" cy="12" r="1" />
                 <circle cx="12" cy="5" r="1" />
                 <circle cx="12" cy="19" r="1" />
               </svg>
-              <span>{{ ui('more') }}</span>
+              <span>{{ ui("more") }}</span>
             </button>
             <Transition name="dropdown">
-              <div
-                v-if="openMenu === 'workspace'"
-                class="dropdown-menu"
-              >
-                <button
-                  class="dropdown-item"
-                  @click="handleExport"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <div v-if="openMenu === 'workspace'" class="dropdown-menu">
+                <button class="dropdown-item" @click="handleExport">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
                   </svg>
-                  <span>{{ ui('exportWorkspace') }}</span>
-                  <select v-model="exportFormat" class="inline-select" @click.stop>
+                  <span>{{ ui("exportWorkspace") }}</span>
+                  <select
+                    v-model="exportFormat"
+                    class="inline-select"
+                    @click.stop
+                  >
                     <option value="json">JSON</option>
                     <option value="xml">XML</option>
                   </select>
                 </button>
-                <button
-                  class="dropdown-item"
-                  @click.stop="triggerImport"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button class="dropdown-item" @click.stop="triggerImport">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
                   </svg>
-                  <span>{{ ui('importWorkspace') }}</span>
-                  <select v-model="importFormat" class="inline-select" @click.stop>
-                    <option value="auto">{{ ui('autoDetect') }}</option>
+                  <span>{{ ui("importWorkspace") }}</span>
+                  <select
+                    v-model="importFormat"
+                    class="inline-select"
+                    @click.stop
+                  >
+                    <option value="auto">{{ ui("autoDetect") }}</option>
                     <option value="json">JSON</option>
                     <option value="xml">XML</option>
                   </select>
@@ -109,31 +146,43 @@
                 <input
                   ref="importInputRef"
                   type="file"
-                  :accept="importFormat === 'json' ? '.json' : importFormat === 'xml' ? '.xml' : '.xml,.json'"
+                  :accept="
+                    importFormat === 'json'
+                      ? '.json'
+                      : importFormat === 'xml'
+                        ? '.xml'
+                        : '.xml,.json'
+                  "
                   @change="onImportFile($event)"
                   class="sr-only-input"
-                >
+                />
                 <div class="dropdown-divider" />
-                <button
-                  class="dropdown-item"
-                  @click="handleNewWorkspace"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button class="dropdown-item" @click="handleNewWorkspace">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
                     <line x1="12" y1="5" x2="12" y2="19" />
                     <line x1="5" y1="12" x2="19" y2="12" />
                   </svg>
-                  <span>{{ ui('newWorkspace') }}</span>
+                  <span>{{ ui("newWorkspace") }}</span>
                 </button>
                 <div class="dropdown-divider" />
-                <button
-                  class="dropdown-item danger"
-                  @click="handleClear"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button class="dropdown-item danger" @click="handleClear">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
                     <polyline points="3 6 5 6 21 6" />
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    <path
+                      d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                    />
                   </svg>
-                  <span>{{ ui('clearWorkspace') }}</span>
+                  <span>{{ ui("clearWorkspace") }}</span>
                 </button>
               </div>
             </Transition>
@@ -143,17 +192,11 @@
       <BlocklyEditor ref="blocklyEditor" @change="onWorkspaceChanged" />
     </div>
 
-    <div
-      class="split-handle"
-      @mousedown="onSplitDragStart"
-    >
+    <div class="split-handle" @mousedown="onSplitDragStart">
       <div class="split-line" />
     </div>
 
-    <div
-      class="view-right"
-      :style="codeStyle"
-    >
+    <div class="view-right" :style="codeStyle">
       <div class="code-toolbar">
         <div class="code-toolbar-left">
           <select v-model="selectedLanguage" class="toolbar-select lang-select">
@@ -168,17 +211,28 @@
           <span class="toolbar-sep">&middot;</span>
         </div>
         <button class="toolbar-btn primary" @click="generateCode">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="16 18 22 12 16 6" />
+            <polyline points="8 6 2 12 8 18" />
           </svg>
-          <span>{{ ui('generateCode') }}</span>
+          <span>{{ ui("generateCode") }}</span>
         </button>
         <button class="toolbar-btn copy-btn" @click="copyCode">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>
-          <span>{{ ui('copyCode') }}</span>
+          <span>{{ ui("copyCode") }}</span>
         </button>
       </div>
       <CodePreviewer
@@ -199,23 +253,36 @@ import { ref, computed, nextTick, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import BlocklyEditor from '@/components/BlocklyEditor.vue';
 import CodePreviewer from '@/components/CodePreviewer.vue';
-import { CODE_LANGUAGES, LANGUAGE_LABELS, type CodeLanguage } from '@/constants/code-languages';
-import { useBlocklyLocale, BLOCKLY_LOCALES, type BlocklyLocale, ui } from '@/composables/locale';
+import {
+  CODE_LANGUAGES,
+  LANGUAGE_LABELS,
+  type CodeLanguage,
+} from '@/constants/code-languages';
+import {
+  useBlocklyLocale,
+  BLOCKLY_LOCALES,
+  type BlocklyLocale,
+  ui,
+} from '@/composables/locale';
 import { useEditorProject } from '@/composables/useEditorProject';
 
 const blocklyLocale = useBlocklyLocale();
-const selectedBlocklyLocale = ref<BlocklyLocale>(blocklyLocale.getCurrentLocale());
+const selectedBlocklyLocale = ref<BlocklyLocale>(
+  blocklyLocale.getCurrentLocale(),
+);
 
 const changeBlocklyLocale = (): void => {
   blocklyLocale.setLocale(selectedBlocklyLocale.value);
   blocklyEditor.value?.updateToolbox();
-    blocklyEditor.value?.refreshBlocks();
+  blocklyEditor.value?.refreshBlocks();
   // 显示切换提示（延迟到中文覆盖生效后）
   setTimeout(() => {
     toastMessage.value = ui('localeChanged');
     toastVisible.value = true;
     if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = window.setTimeout(() => { toastVisible.value = false; }, 2000);
+    toastTimer = window.setTimeout(() => {
+      toastVisible.value = false;
+    }, 2000);
   }, 50);
 };
 
@@ -236,7 +303,6 @@ const {
   saveStatus,
   lastSaveTime,
   doSave,
-  handleWorkspaceChange,
   handleNewWorkspace,
 } = useEditorProject({
   getWorkspaceXml: () => {
@@ -249,7 +315,9 @@ const {
   onWorkspaceChange: (handler: () => void) => {
     // Return cleanup fn - the BlocklyEditor emits 'change' so we listen via template
     cleanupWorkspaceHandler = handler;
-    return () => { cleanupWorkspaceHandler = null; };
+    return () => {
+      cleanupWorkspaceHandler = null;
+    };
   },
   clearWorkspace: () => {
     blocklyEditor.value?.clearWorkspace();
@@ -272,7 +340,9 @@ function onManualSave() {
   toastMessage.value = ui('saved');
   toastVisible.value = true;
   if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = window.setTimeout(() => { toastVisible.value = false; }, 1500);
+  toastTimer = window.setTimeout(() => {
+    toastVisible.value = false;
+  }, 1500);
 }
 
 function goBack() {
@@ -287,6 +357,9 @@ let toastTimer: number | undefined;
 const currentWorkspace = computed(() => {
   return blocklyEditor.value?.workspaceRef || null;
 });
+
+// ---- 监听导出完成事件 ----
+window.addEventListener('ciphercat:workspace-saved', onWorkspaceSaved);
 
 // ---- 下拉菜单 ----
 const openMenu = ref<string>('');
@@ -323,7 +396,8 @@ const onImportFile = (event: Event): void => {
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
   if (file && blocklyEditor.value) {
-    blocklyEditor.value.handleFileUpload(file)
+    blocklyEditor.value
+      .handleFileUpload(file)
       .then((success: boolean) => {
         if (success) console.log('文件导入成功:', file.name);
         else console.error('文件导入失败:', file.name);
@@ -338,8 +412,40 @@ const onImportFile = (event: Event): void => {
 function handleExport() {
   openMenu.value = '';
   if (blocklyEditor.value) {
-    const filename = exportFormat.value === 'xml' ? 'blockly_workspace.xml' : 'blockly_workspace.json';
+    const filename =
+      exportFormat.value === 'xml'
+        ? 'blockly_workspace.xml'
+        : 'blockly_workspace.json';
     blocklyEditor.value.downloadWorkspace(filename);
+    // 先显示短 toast，Tauri 保存成功后通过自定义事件更新路径
+    toastMessage.value = ui('exported') || 'Exported';
+    toastVisible.value = true;
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => {
+      toastVisible.value = false;
+    }, 4000);
+  }
+}
+
+// 监听 Tauri 保存事件
+function onWorkspaceSaved(e: Event) {
+  const detail = (e as { detail?: { path?: string; error?: string } }).detail;
+  if (!detail) return;
+  if (detail.error) {
+    toastMessage.value =
+      (ui('exportError') || 'Export failed') + ': ' + detail.error;
+    toastVisible.value = true;
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => {
+      toastVisible.value = false;
+    }, 6000);
+  } else if (detail.path) {
+    toastMessage.value = (ui('exported') || 'Exported') + ': ' + detail.path;
+    toastVisible.value = true;
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => {
+      toastVisible.value = false;
+    }, 8000);
   }
 }
 
@@ -374,7 +480,11 @@ const codeStyle = computed(() => {
   const _rw = rightWidth.value;
   if (isNarrowLayout()) {
     if (_th !== undefined) {
-      return { height: `calc(100% - ${_th}px - 6px)`, flex: 'none', width: '100%' };
+      return {
+        height: `calc(100% - ${_th}px - 6px)`,
+        flex: 'none',
+        width: '100%',
+      };
     }
     return {};
   }
@@ -446,10 +556,16 @@ function onSplitDragEnd() {
 }
 
 onUnmounted(() => {
+  window.removeEventListener('ciphercat:workspace-saved', onWorkspaceSaved);
   if (toastTimer) clearTimeout(toastTimer);
   if (splitDragging) {
     window.removeEventListener('mousemove', onSplitDragMove, { capture: true });
     window.removeEventListener('mouseup', onSplitDragEnd, { capture: true });
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  }
+  if (rafId) {
+    cancelAnimationFrame(rafId);
   }
 });
 
@@ -628,7 +744,9 @@ onUnmounted(() => {
   border-radius: 6px;
   padding: 0 22px 0 8px;
   font-size: 12px;
-  background: var(--color-bg-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%23909399' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 6px center;
+  background: var(--color-bg-card)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%23909399' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")
+    no-repeat right 6px center;
   color: var(--color-text);
   cursor: pointer;
   appearance: none;
@@ -721,7 +839,9 @@ onUnmounted(() => {
   border-radius: 6px;
   padding: 0 20px 0 6px;
   font-size: 11px;
-  background: var(--color-bg-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%23909399' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 5px center;
+  background: var(--color-bg-card)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%23909399' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")
+    no-repeat right 5px center;
   color: var(--color-text);
   cursor: pointer;
   appearance: none;
@@ -900,6 +1020,7 @@ onUnmounted(() => {
   .view-right {
     width: 100% !important;
     flex: 1;
+    min-width: 0;
     min-height: 0;
     border-left: none;
     border-top: 1px solid var(--color-border);

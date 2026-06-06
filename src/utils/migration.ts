@@ -400,9 +400,6 @@ function migrateSboxDefJson(obj: unknown): void {
 
   if ('blocks' in record && Array.isArray(record.blocks)) {
     const blocks = record.blocks as Record<string, unknown>[];
-    const variables =
-      (record.variables as Record<string, unknown>[]) ||
-      ([] as Record<string, unknown>[]);
     let varsMutated = false;
 
     const walkBlocks = (items: Record<string, unknown>[]) => {

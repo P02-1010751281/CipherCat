@@ -9,7 +9,7 @@
     "beforeBuildCommand": "npm run build"
   },
   "app": {
-    "withGlobalTauri": false,
+    "withGlobalTauri": true,
     "windows": [
       {
         "title": "CipherCat",
@@ -18,7 +18,8 @@
         "minWidth": 900,
         "minHeight": 600,
         "resizable": true,
-        "fullscreen": false
+        "fullscreen": false,
+        "devtools": true
       }
     ],
     "security": {
@@ -28,10 +29,6 @@
   "bundle": {
     "active": true,
     "targets": ["deb", "rpm", "appimage", "msi", "nsis", "dmg"],
-    "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png"
-    ]
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png"]
   }
 }

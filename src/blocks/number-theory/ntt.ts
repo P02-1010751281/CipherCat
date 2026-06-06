@@ -4,7 +4,7 @@
  * 基于后量子密码学标准实现，支持 Kyber (FIPS 203) 和 NewHope 参数集：
  *   - NTT:  Cooley-Tukey (CT) 蝶形运算，系数形式 → NTT 评估形式
  *   - INTT: Gentleman-Sande (GS) 蝶形运算，NTT 评估形式 → 系数形式
- *   - NTT 域乘法: 在 NTT 评估形式下进行 O(n) 逐点乘法
+ *   - NTT 域乘法: Kyber half-NTT 域乘法（q=3329）
  *   - 蝶形运算: CT/GS 单步蝶形运算原语
  *
  * 参数说明:
@@ -22,37 +22,44 @@ export const NTT_BLOCK_TYPES = [
   'pq_ntt',
   'pq_intt',
   'pq_ntt_mul',
-  'pq_ntt_butterfly'
+  'pq_ntt_butterfly',
 ] as const;
 
-export type NttBlockType = typeof NTT_BLOCK_TYPES[number];
+export type NttBlockType = (typeof NTT_BLOCK_TYPES)[number];
 
 // 数论变换 (NTT): Cooley-Tukey 蝶形运算
 // 将多项式从系数形式转换为 NTT 评估形式
 // CT 蝶形: (a, b) → (a + ζ·b, a - ζ·b)
 // 迭代方向: stride 从 n/2 递减到 1
 Blockly.Blocks['pq_ntt'] = {
-  init: function() {
-    this.appendValueInput('INPUT').setCheck(null)
-      .appendField('NTT(');
+  init: function () {
+    this.appendValueInput('INPUT').setCheck(null).appendField('NTT(');
     this.appendDummyInput()
       .appendField(', q=')
-      .appendField(new Blockly.FieldDropdown([
-        ['3329 (Kyber)', '3329'],
-        ['12289 (NewHope)', '12289'],
-      ]), 'MODULUS');
+      .appendField(
+        new Blockly.FieldDropdown([
+          ['3329 (Kyber)', '3329'],
+          ['12289 (NewHope)', '12289'],
+        ]),
+        'MODULUS',
+      );
     this.appendDummyInput()
       .appendField(', n=')
-      .appendField(new Blockly.FieldDropdown([
-        ['256', '256'],
-        ['128', '128'],
-      ]), 'DEGREE');
-    this.appendDummyInput()
-      .appendField(')');
+      .appendField(
+        new Blockly.FieldDropdown([
+          ['256', '256'],
+          ['128', '128'],
+        ]),
+        'DEGREE',
+      );
+    this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
     this.setOutput(true, null);
     this.setColour(230);
-    this.setTooltip(Blockly.Msg.CRYPTO_NTT_TOOLTIP || 'Number Theoretic Transform (NTT): Cooley-Tukey butterfly, convert polynomial from coefficient form to NTT evaluation form (FIPS 203)');
+    this.setTooltip(
+      Blockly.Msg.CRYPTO_NTT_TOOLTIP ||
+        'Number Theoretic Transform (NTT): Cooley-Tukey butterfly, convert polynomial from coefficient form to NTT evaluation form (FIPS 203)',
+    );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf');
   },
 };
@@ -63,54 +70,63 @@ Blockly.Blocks['pq_ntt'] = {
 // 迭代方向: stride 从 1 递增到 n/2
 // 最后需乘以 n⁻¹ mod q
 Blockly.Blocks['pq_intt'] = {
-  init: function() {
-    this.appendValueInput('INPUT').setCheck(null)
-      .appendField('INTT(');
+  init: function () {
+    this.appendValueInput('INPUT').setCheck(null).appendField('INTT(');
     this.appendDummyInput()
       .appendField(', q=')
-      .appendField(new Blockly.FieldDropdown([
-        ['3329 (Kyber)', '3329'],
-        ['12289 (NewHope)', '12289'],
-      ]), 'MODULUS');
+      .appendField(
+        new Blockly.FieldDropdown([
+          ['3329 (Kyber)', '3329'],
+          ['12289 (NewHope)', '12289'],
+        ]),
+        'MODULUS',
+      );
     this.appendDummyInput()
       .appendField(', n=')
-      .appendField(new Blockly.FieldDropdown([
-        ['256', '256'],
-        ['128', '128'],
-      ]), 'DEGREE');
-    this.appendDummyInput()
-      .appendField(')');
+      .appendField(
+        new Blockly.FieldDropdown([
+          ['256', '256'],
+          ['128', '128'],
+        ]),
+        'DEGREE',
+      );
+    this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
     this.setOutput(true, null);
     this.setColour(230);
-    this.setTooltip(Blockly.Msg.CRYPTO_INTT_TOOLTIP || 'Inverse NTT (INTT): Gentleman-Sande butterfly, convert NTT evaluation form back to coefficient form (FIPS 203)');
+    this.setTooltip(
+      Blockly.Msg.CRYPTO_INTT_TOOLTIP ||
+        'Inverse NTT (INTT): Gentleman-Sande butterfly, convert NTT evaluation form back to coefficient form (FIPS 203)',
+    );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf');
   },
 };
 
-// NTT 域逐点乘法 (Kyber half-NTT 技巧)
+// NTT 域乘法 (Kyber half-NTT 技巧，仅 q=3329)
 // 在 NTT 评估形式下，对相邻的 (even, odd) 对进行乘法:
 //   res[i]   = (a_even·b_even + ζ^(2·brv(i/2)+1)·a_odd·b_odd) mod q
 //   res[i+1] = (a_odd·b_even + a_even·b_odd) mod q
 // 其中 ζ^(2·brv(i/2)+1) 是 NWC (负缠绕卷积) 的缩放因子
 Blockly.Blocks['pq_ntt_mul'] = {
-  init: function() {
-    this.appendValueInput('A').setCheck(null)
+  init: function () {
+    this.appendValueInput('A')
+      .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_NTT_MUL || 'NTT Mul(');
-    this.appendValueInput('B').setCheck(null)
-      .appendField(',');
+    this.appendValueInput('B').setCheck(null).appendField(',');
     this.appendDummyInput()
       .appendField(', q=')
-      .appendField(new Blockly.FieldDropdown([
-        ['3329 (Kyber)', '3329'],
-        ['12289 (NewHope)', '12289'],
-      ]), 'MODULUS');
-    this.appendDummyInput()
-      .appendField(')');
+      .appendField(
+        new Blockly.FieldDropdown([['3329 (Kyber)', '3329']]),
+        'MODULUS',
+      );
+    this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
     this.setOutput(true, null);
     this.setColour(230);
-    this.setTooltip(Blockly.Msg.CRYPTO_NTT_MUL_TOOLTIP || 'NTT domain pointwise multiplication: coordinate-wise multiply in NTT form, O(n) complexity (FIPS 203)');
+    this.setTooltip(
+      Blockly.Msg.CRYPTO_NTT_MUL_TOOLTIP ||
+        'Kyber half-NTT domain multiplication for q=3329, O(n) complexity (FIPS 203)',
+    );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf');
   },
 };
@@ -122,31 +138,40 @@ Blockly.Blocks['pq_ntt_mul'] = {
 //   (a, b) → ((a + b)·2⁻¹ mod q, ζ·(b - a)·2⁻¹ mod q)
 // 其中 2⁻¹ mod q = (q+1)/2 (当 q 为奇素数时)
 Blockly.Blocks['pq_ntt_butterfly'] = {
-  init: function() {
-    this.appendValueInput('A').setCheck(null)
+  init: function () {
+    this.appendValueInput('A')
+      .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_NTT_BUTTERFLY || 'Butterfly(');
-    this.appendValueInput('B').setCheck(null)
-      .appendField(',');
-    this.appendValueInput('ZETA').setCheck(null)
+    this.appendValueInput('B').setCheck(null).appendField(',');
+    this.appendValueInput('ZETA')
+      .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_NTT_ZETA || ', ζ=');
     this.appendDummyInput()
       .appendField(', q=')
-      .appendField(new Blockly.FieldDropdown([
-        ['3329', '3329'],
-        ['12289', '12289'],
-      ]), 'MODULUS');
+      .appendField(
+        new Blockly.FieldDropdown([
+          ['3329', '3329'],
+          ['12289', '12289'],
+        ]),
+        'MODULUS',
+      );
     this.appendDummyInput()
       .appendField(Blockly.Msg.CRYPTO_NTT_TYPE || ', Type=')
-      .appendField(new Blockly.FieldDropdown([
-        ['CT (NTT)', 'ct'],
-        ['GS (INTT)', 'gs'],
-      ]), 'TYPE');
-    this.appendDummyInput()
-      .appendField(')');
+      .appendField(
+        new Blockly.FieldDropdown([
+          ['CT (NTT)', 'ct'],
+          ['GS (INTT)', 'gs'],
+        ]),
+        'TYPE',
+      );
+    this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
     this.setOutput(true, null);
     this.setColour(230);
-    this.setTooltip(Blockly.Msg.CRYPTO_NTT_BUTTERFLY_TOOLTIP || 'Butterfly operation: CT=(a+ζ·b, a-ζ·b) for NTT, GS=((a+b)/2, ζ·(b-a)/2) for INTT');
+    this.setTooltip(
+      Blockly.Msg.CRYPTO_NTT_BUTTERFLY_TOOLTIP ||
+        'Butterfly operation: CT=(a+ζ·b, a-ζ·b) for NTT, GS=((a+b)/2, ζ·(b-a)/2) for INTT',
+    );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf');
   },
 };

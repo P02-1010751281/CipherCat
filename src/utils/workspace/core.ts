@@ -3,7 +3,6 @@ import * as Blockly from 'blockly/core';
 import { createToolboxConfig } from '@/utils/toolbox-config';
 import { WORKSPACE_OPTIONS } from '@/constants/workspace-config';
 
-import { applyAllPatches } from '@/utils/blockly-patches';
 import { createBlocklyTheme, type ThemeOptions } from './theme';
 import { registerSboxCategoryCallbacks } from '@/blocks/sbox/category';
 
@@ -21,7 +20,6 @@ export function createWorkspace(
   }
 
   try {
-    applyAllPatches();
     const isDark = document.documentElement.classList.contains('dark');
     const theme = createBlocklyTheme(isDark);
 

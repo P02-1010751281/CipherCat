@@ -1,11 +1,13 @@
 <template>
-  <pre class="code-content"><code>{{ code || '// 点击生成按钮查看代码' }}</code></pre>
+  <pre
+    class="code-content"
+  ><code>{{ code || '// 点击生成按钮查看代码' }}</code></pre>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import * as Blockly from 'blockly/core';
-import { CODE_LANGUAGES, type CodeLanguage } from '@/constants/code-languages';
+import { type CodeLanguage } from '@/constants/code-languages';
 import * as Generator from '@/utils/generator';
 
 const props = defineProps<{
@@ -31,15 +33,18 @@ const setWorkspaceText = (text: string): void => {
   code.value = text;
 };
 
-watch([() => props.workspace, () => props.codeLanguage, () => props.algoType], () => {
-  generateCode();
-});
+watch(
+  [() => props.workspace, () => props.codeLanguage, () => props.algoType],
+  () => {
+    generateCode();
+  },
+);
 
 defineExpose({
   code,
   generateCode,
   clearCode,
-  setWorkspaceText
+  setWorkspaceText,
 });
 </script>
 
@@ -50,7 +55,9 @@ defineExpose({
   padding: 12px;
   margin: 0;
   overflow: auto;
-  font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+  font-family:
+    "SF Mono", "Monaco", "Menlo", "Consolas", "Liberation Mono", "Courier New",
+    monospace;
   font-size: 13px;
   line-height: 1.6;
   color: var(--el-text-color-primary, #303133);

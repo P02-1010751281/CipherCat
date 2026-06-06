@@ -5,7 +5,7 @@ export function registerSeedWithNonce(): string {
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed, nonce):',
     '    if isinstance(seed, str):',
     '        seed = seed.encode("utf-8")',
-    '    return bytes(seed) + bytes([nonce])',
+    '    return bytes(seed) + bytes([nonce & 0xFF])',
   ]);
 }
 
@@ -36,9 +36,10 @@ export function registerNtt(): string {
     '            zz += 1',
     '            zp = pow(gen, _brv(zz, nbits - 1), q)',
     '            for i in range(start, start + stride):',
+    '                u = res[i]',
     '                t = (zp * res[i + stride]) % q',
-    '                res[i] = (res[i] + t) % q',
-    '                res[i + stride] = (res[i] - t + q) % q',
+    '                res[i] = (u + t) % q',
+    '                res[i + stride] = (u - t + q) % q',
     '        stride >>= 1',
     '    return res',
   ]);
@@ -75,27 +76,47 @@ export function registerIntt(): string {
   ]);
 }
 
-export function registerSampleCbdEta(eta: number): string {
-  const prfName = pythonGenerator.provideFunction_('PRF', [
-    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(eta, s, b):',
-    '    from Crypto.Hash import SHAKE256',
-    '    return SHAKE256.new(s + bytes([b])).read(64 * eta)',
+export function registerNttMul(): string {
+  return pythonGenerator.provideFunction_('ntt_mul', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, b, q=3329):',
+    '    gen = 17 if q == 3329 else 3',
+    '    n = min(len(a), len(b))',
+    '    res = [0] * n',
+    '    def _brv(x, bits):',
+    '        r = 0',
+    '        for _ in range(bits):',
+    '            r = (r << 1) | (x & 1)',
+    '            x >>= 1',
+    '        return r',
+    '    bits = max(1, n.bit_length() - 2)',
+    '    i = 0',
+    '    while i + 1 < n:',
+    '        z = pow(gen, 2 * _brv(i // 2, bits) + 1, q)',
+    '        res[i] = (a[i] * b[i] + z * a[i + 1] * b[i + 1]) % q',
+    '        res[i + 1] = (a[i + 1] * b[i] + a[i] * b[i + 1]) % q',
+    '        i += 2',
+    '    if i < n:',
+    '        res[i] = (a[i] * b[i]) % q',
+    '    return res',
   ]);
+}
 
+export function registerSampleCbdEta(eta: number): string {
   return pythonGenerator.provideFunction_('sample_poly_cbd_eta' + eta, [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed, q=3329):',
+    '    import hashlib',
     '    eta = ' + eta,
+    '    if isinstance(seed, str):',
+    '        seed = seed.encode("utf-8")',
+    '    buf = hashlib.shake_256(bytes(seed)).digest(64 * eta)',
+    '    def _bit(pos):',
+    '        return (buf[pos // 8] >> (pos % 8)) & 1',
     '    coeffs = [0] * 256',
-    '    for nonce in range(256):',
-    '        prf_out = ' + prfName + '(eta, seed, nonce)',
-    '        c = 0',
-    '        for k in range(eta):',
-    '            a = prf_out[2 * k]',
-    '            b = prf_out[2 * k + 1]',
-    '            a_bits = bin(a).count("1")',
-    '            b_bits = bin(b).count("1")',
-    '            c += a_bits - b_bits',
-    '        coeffs[nonce] = c % q',
+    '    for i in range(256):',
+    '        base = 2 * i * eta',
+    '        a = sum(_bit(base + j) for j in range(eta))',
+    '        b = sum(_bit(base + eta + j) for j in range(eta))',
+    '        coeffs[i] = (a - b) % q',
     '    return coeffs',
   ]);
 }

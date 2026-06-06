@@ -8,21 +8,21 @@ import { createToolboxConfig } from '@/utils/toolbox-config';
 export interface WorkspaceReturn {
   getWorkspace: () => Blockly.WorkspaceSvg | null;
   getIsReady: () => boolean;
-  initWorkspace: (container: HTMLElement) => Blockly.WorkspaceSvg | null;
-  loadWorkspace: (workspaceText: string, type: 'xml' | 'json') => boolean;
-  exportWorkspace: (type: 'xml' | 'json') => string;
-  downloadWorkspace: (filename?: string) => void;
-  handleFileUpload: (file: File) => Promise<boolean>;
+  initWorkspace: (_container: HTMLElement) => Blockly.WorkspaceSvg | null;
+  loadWorkspace: (_workspaceText: string, _type: 'xml' | 'json') => boolean;
+  exportWorkspace: (_type: 'xml' | 'json') => string;
+  downloadWorkspace: (_filename?: string) => void;
+  handleFileUpload: (_file: File) => Promise<boolean>;
   clearWorkspace: () => void;
   zoomInWorkspace: () => void;
   zoomOutWorkspace: () => void;
   resetZoomWorkspace: () => void;
   resizeWorkspace: () => void;
   updateToolbox: () => void;
-    refreshBlocks: () => void;
+  refreshBlocks: () => void;
   disposeWorkspace: () => void;
   setupResizeListener: () => () => void;
-  setTheme: (isDark: boolean) => void;
+  setTheme: (_isDark: boolean) => void;
 }
 
 export function Workspace(): WorkspaceReturn {

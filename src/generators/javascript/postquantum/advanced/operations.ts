@@ -5,28 +5,25 @@
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
-import { registerBytesConcat, registerBytesSlice } from '../../data/helpers';
 import { registerKeccakF1600 } from '../../hash/helpers';
-import { registerSeedWithNonce, registerPolyAddModQ, registerNtt, registerIntt, registerSampleCbdEta } from '../helpers';
+import {
+  registerSeedWithNonce,
+  registerPolyAddModQ,
+  registerNtt,
+  registerIntt,
+  registerNttMul,
+  registerSampleCbdEta,
+} from '../helpers';
 
-/**
- * Generate k×k NTT matrix A from a seed using XOF-based rejection sampling.
- */
-javascriptGenerator.forBlock['pq_sample_ntt_mat'] = function(block: Block): [string, number] {
-  const seed = javascriptGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
-  const k = block.getFieldValue('K') || '3';
-  const modulus = block.getFieldValue('MODULUS') || '3329';
-  const outVar = javascriptGenerator.nameDB_?.getName(block.type, 'VARIABLE') || 'ntt_mat';
-
-  const seedWithNonceFn = registerSeedWithNonce();
-
+function registerShake128Once(): string {
   const keccakFName = registerKeccakF1600();
-
-  const shakeName = javascriptGenerator.provideFunction_('shake128once', [
-    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(inp, outBytes) {',
+  return javascriptGenerator.provideFunction_('shake128once', [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(inp, outBytes) {',
+    '  if (typeof inp === "string") inp = new TextEncoder().encode(inp);',
+    '  else if (Array.isArray(inp)) inp = Uint8Array.from(inp);',
     '  let rate = 168;',
-    '  let capacity = 32;',
-    '  let width = rate + capacity;',
     '  let state = new Array(25).fill(0n);',
     '  let padLen = rate - (inp.length % rate);',
     '  if (padLen === 1) padLen += rate;',
@@ -60,52 +57,88 @@ javascriptGenerator.forBlock['pq_sample_ntt_mat'] = function(block: Block): [str
     '  return out;',
     '}',
   ]);
+}
 
-  const sampleNttFn = javascriptGenerator.provideFunction_('sampleNtt', [
-    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed, q) {',
+function registerSampleNtt(): string {
+  const shakeName = registerShake128Once();
+  const nttFn = registerNtt();
+  return javascriptGenerator.provideFunction_('sampleNtt', [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(seed, q) {',
     '  q = q || 3329;',
-    '  let coeffs = [];',
-    '  let buf = ' + shakeName + '(seed, 1200);',
-    '  let pos = 0;',
-    '  while (coeffs.length < 256 && pos + 3 <= buf.length) {',
-    '    let d1 = buf[pos] | 0;',
-    '    let d2 = buf[pos + 1] | 0;',
-    '    let c = (d1 | ((d2 & 0x0F) << 8)) & 0xFFF;',
-    '    pos += 3;',
-    '    if (c < q) coeffs.push(c);',
+    '  let outBytes = 672;',
+    '  while (true) {',
+    '    let coeffs = [];',
+    '    let buf = ' + shakeName + '(seed, outBytes);',
+    '    for (let pos = 0; coeffs.length < 256 && pos + 3 <= buf.length; pos += 3) {',
+    '      let d1 = (buf[pos] | ((buf[pos + 1] & 0x0F) << 8)) & 0xFFF;',
+    '      let d2 = ((buf[pos + 1] >> 4) | (buf[pos + 2] << 4)) & 0xFFF;',
+    '      if (d1 < q) coeffs.push(d1);',
+    '      if (d2 < q && coeffs.length < 256) coeffs.push(d2);',
+    '    }',
+    '    if (coeffs.length >= 256) return ' + nttFn + '(coeffs, q);',
+    '    outBytes *= 2;',
     '  }',
-    '  return coeffs;',
+    '}',
+  ]);
+}
+
+/** Generate k×k NTT matrix A from a seed using XOF-based rejection sampling. */
+javascriptGenerator.forBlock['pq_sample_ntt_mat'] = function (
+  block: Block,
+): [string, number] {
+  const seed =
+    javascriptGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
+  const k = block.getFieldValue('K') || '3';
+  const modulus = block.getFieldValue('MODULUS') || '3329';
+
+  const seedWithNonceFn = registerSeedWithNonce();
+  const sampleNttFn = registerSampleNtt();
+  const funcName = javascriptGenerator.provideFunction_('sampleNttMat', [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(seed, k, q) {',
+    '  let A = [];',
+    '  for (let i = 0; i < k; i++) {',
+    '    A[i] = [];',
+    '    for (let j = 0; j < k; j++) {',
+    '      A[i][j] = ' +
+      sampleNttFn +
+      '(' +
+      seedWithNonceFn +
+      '(' +
+      seedWithNonceFn +
+      '(seed, j), i), q);',
+    '    }',
+    '  }',
+    '  return A;',
     '}',
   ]);
 
-  const code = [];
-  code.push(`let ${outVar} = [];`);
-  code.push(`for (let _i = 0; _i < ${k}; _i++) {`);
-  code.push(`  ${outVar}[_i] = [];`);
-  code.push(`  for (let _j = 0; _j < ${k}; _j++) {`);
-  code.push(`    ${outVar}[_i][_j] = ${sampleNttFn}(${seedWithNonceFn}(${seedWithNonceFn}(${seed}, _i), _j), ${modulus});`);
-  code.push('  }');
-  code.push('}');
-  code.push('');
-
-  return [code.join('\n'), Order.NONE];
+  return [`${funcName}(${seed}, ${k}, ${modulus})`, Order.ATOMIC];
 };
 
-javascriptGenerator.forBlock['pq_build_vec3'] = function(block: Block): [string, number] {
+javascriptGenerator.forBlock['pq_build_vec3'] = function (
+  block: Block,
+): [string, number] {
   const a = javascriptGenerator.valueToCode(block, 'A', Order.ATOMIC) || 'null';
   const b = javascriptGenerator.valueToCode(block, 'B', Order.ATOMIC) || 'null';
   const c = javascriptGenerator.valueToCode(block, 'C', Order.ATOMIC) || 'null';
   return ['[' + a + ', ' + b + ', ' + c + ']', Order.ATOMIC];
 };
 
-javascriptGenerator.forBlock['pq_vec_compress_encode'] = function(block: Block): [string, number] {
+javascriptGenerator.forBlock['pq_vec_compress_encode'] = function (
+  block: Block,
+): [string, number] {
   const u = javascriptGenerator.valueToCode(block, 'U', Order.ATOMIC) || '[]';
   const d = block.getFieldValue('BITS') || '10';
   const modulus = block.getFieldValue('MODULUS') || '3329';
-  const outVar = javascriptGenerator.nameDB_?.getName(block.type, 'VARIABLE') || 'c1_bytes';
 
   const compressFn = javascriptGenerator.provideFunction_('pqCompress', [
-    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(x, d, q) {',
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(x, d, q) {',
     '  let pow2d = 1 << d;',
     '  let half = q >> 1;',
     '  let mask = pow2d - 1;',
@@ -117,7 +150,9 @@ javascriptGenerator.forBlock['pq_vec_compress_encode'] = function(block: Block):
   ]);
 
   const encodeFn = javascriptGenerator.provideFunction_('pqByteEncode', [
-    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(poly, d) {',
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(poly, d) {',
     '  let bits = [];',
     '  for (let i = 0; i < poly.length; i++) {',
     '    for (let bit = 0; bit < d; bit++) {',
@@ -138,110 +173,151 @@ javascriptGenerator.forBlock['pq_vec_compress_encode'] = function(block: Block):
     '}',
   ]);
 
-  const code = [];
-  code.push(`let ${outVar} = new Uint8Array(0);`);
-  code.push(`for (let _i = 0; _i < ${u}.length; _i++) {`);
-  code.push(`  let comp = ${compressFn}(${u}[_i], ${d}, ${modulus});`);
-  code.push(`  let enc = ${encodeFn}(comp, ${d});`);
-  code.push(`  let tmp = new Uint8Array(${outVar}.length + enc.length);`);
-  code.push(`  tmp.set(${outVar}, 0);`);
-  code.push(`  tmp.set(enc, ${outVar}.length);`);
-  code.push(`  ${outVar} = tmp;`);
-  code.push('}');
-  code.push('');
+  const funcName = javascriptGenerator.provideFunction_('vecCompressEncode', [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(u, d, q) {',
+    '  let out = new Uint8Array(0);',
+    '  for (let i = 0; i < u.length; i++) {',
+    '    let comp = ' + compressFn + '(u[i], d, q);',
+    '    let enc = ' + encodeFn + '(comp, d);',
+    '    let tmp = new Uint8Array(out.length + enc.length);',
+    '    tmp.set(out, 0);',
+    '    tmp.set(enc, out.length);',
+    '    out = tmp;',
+    '  }',
+    '  return out;',
+    '}',
+  ]);
 
-  return [code.join('\n'), Order.NONE];
+  return [`${funcName}(${u}, ${d}, ${modulus})`, Order.ATOMIC];
 };
 
-/**
- * CBD-eta sampling followed by forward NTT, producing a length-k vector.
- */
-javascriptGenerator.forBlock['pq_cbd_ntt_vec'] = function(block: Block): [string, number] {
-  const seed = javascriptGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
+/** CBD-eta sampling followed by forward NTT, producing a length-k vector. */
+javascriptGenerator.forBlock['pq_cbd_ntt_vec'] = function (
+  block: Block,
+): [string, number] {
+  const seed =
+    javascriptGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
   const k = block.getFieldValue('K') || '3';
   const eta = parseInt(block.getFieldValue('ETA') || '2');
   const modulus = block.getFieldValue('MODULUS') || '3329';
-  const outVar = javascriptGenerator.nameDB_?.getName(block.type, 'VARIABLE') || 'cbd_ntt_vec';
 
   const seedWithNonceFn = registerSeedWithNonce();
   const cbdFn = registerSampleCbdEta(eta);
   const nttFn = registerNtt();
+  const funcName = javascriptGenerator.provideFunction_('cbdNttVecEta' + eta, [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(seed, k, q) {',
+    '  let vec = [];',
+    '  for (let i = 0; i < k; i++) {',
+    '    vec[i] = ' +
+      nttFn +
+      '(' +
+      cbdFn +
+      '(' +
+      seedWithNonceFn +
+      '(seed, i), q), q);',
+    '  }',
+    '  return vec;',
+    '}',
+  ]);
 
-  const code = [];
-  code.push(`let ${outVar} = [];`);
-  code.push(`for (let _i = 0; _i < ${k}; _i++) {`);
-  code.push(`  ${outVar}[_i] = ${nttFn}(${cbdFn}(${seedWithNonceFn}(${seed}, _i), ${modulus}), ${modulus});`);
-  code.push('}');
-  code.push('');
-
-  return [code.join('\n'), Order.NONE];
+  return [`${funcName}(${seed}, ${k}, ${modulus})`, Order.ATOMIC];
 };
 
-/**
- * Compute A^T * r̂, then perform INTT, add e1.
- * Part of ML-KEM encapsulation.
- */
-javascriptGenerator.forBlock['pq_atr_intt_add_e1'] = function(block: Block): [string, number] {
+/** Compute A^T * r̂, then perform INTT, add e1. */
+javascriptGenerator.forBlock['pq_atr_intt_add_e1'] = function (
+  block: Block,
+): [string, number] {
   const a = javascriptGenerator.valueToCode(block, 'A', Order.ATOMIC) || '[]';
-  const rhat = javascriptGenerator.valueToCode(block, 'RHAT', Order.ATOMIC) || '[]';
-  const rseed = javascriptGenerator.valueToCode(block, 'RSEED', Order.ATOMIC) || '[]';
+  const rhat =
+    javascriptGenerator.valueToCode(block, 'RHAT', Order.ATOMIC) || '[]';
+  const rseed =
+    javascriptGenerator.valueToCode(block, 'RSEED', Order.ATOMIC) || '[]';
   const k = block.getFieldValue('K') || '3';
   const eta = parseInt(block.getFieldValue('ETA') || '2');
   const modulus = block.getFieldValue('MODULUS') || '3329';
-  const outVar = javascriptGenerator.nameDB_?.getName(block.type, 'VARIABLE') || 'atr_result';
 
   const seedWithNonceFn = registerSeedWithNonce();
   const cbdFn = registerSampleCbdEta(eta);
   const inttFn = registerIntt();
+  const nttMulFn = registerNttMul();
   const polyAddFn = registerPolyAddModQ();
+  const funcName = javascriptGenerator.provideFunction_(
+    'atrInttAddE1Eta' + eta,
+    [
+      'function ' +
+        javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+        '(A, rhat, rSeed, k, q) {',
+      '  let u = [];',
+      '  for (let i = 0; i < k; i++) {',
+      '    let acc = new Array(256).fill(0);',
+      '    for (let j = 0; j < k; j++) {',
+      '      let prod = ' + nttMulFn + '(A[j][i], rhat[j], q);',
+      '      for (let idx = 0; idx < prod.length; idx++) {',
+      '        acc[idx] = (acc[idx] + prod[idx]) % q;',
+      '      }',
+      '    }',
+      '    let e1 = ' + cbdFn + '(' + seedWithNonceFn + '(rSeed, k + i), q);',
+      '    u[i] = ' + polyAddFn + '(' + inttFn + '(acc, q), e1, q);',
+      '  }',
+      '  return u;',
+      '}',
+    ],
+  );
 
-  const code = [];
-  code.push(`let ${outVar} = [];`);
-  code.push(`for (let _i = 0; _i < ${k}; _i++) {`);
-  code.push('  let row = [];');
-  code.push(`  for (let _j = 0; _j < ${k}; _j++) {`);
-  code.push(`    row[_j] = ${a}[_i][_j];`);
-  code.push('  }');
-  code.push(`  let e1 = ${cbdFn}(${seedWithNonceFn}(${seedWithNonceFn}(${rseed}, _i), 0), ${modulus});`);
-  code.push(`  let rH = ${rhat}[_i];`);
-  code.push(`  let rHintt = ${inttFn}(rH, ${modulus});`);
-  code.push(`  ${outVar}[_i] = ${polyAddFn}(row, ${polyAddFn}(e1, rHintt, ${modulus}), ${modulus});`);
-  code.push('}');
-  code.push('');
-
-  return [code.join('\n'), Order.NONE];
+  return [
+    `${funcName}(${a}, ${rhat}, ${rseed}, ${k}, ${modulus})`,
+    Order.ATOMIC,
+  ];
 };
 
-/**
- * Compute T̂^T * r̂, then perform INTT, add e2 and μ.
- * Final step of ML-KEM encapsulation.
- */
-javascriptGenerator.forBlock['pq_tr_intt_add_e2_mu'] = function(block: Block): [string, number] {
-  const that = javascriptGenerator.valueToCode(block, 'THAT', Order.ATOMIC) || '[]';
-  const rH = javascriptGenerator.valueToCode(block, 'RHAT', Order.ATOMIC) || '[]';
-  const rseed = javascriptGenerator.valueToCode(block, 'RSEED', Order.ATOMIC) || '[]';
+/** Compute T̂^T * r̂, then perform INTT, add e2 and μ. */
+javascriptGenerator.forBlock['pq_tr_intt_add_e2_mu'] = function (
+  block: Block,
+): [string, number] {
+  const that =
+    javascriptGenerator.valueToCode(block, 'THAT', Order.ATOMIC) || '[]';
+  const rhat =
+    javascriptGenerator.valueToCode(block, 'RHAT', Order.ATOMIC) || '[]';
+  const rseed =
+    javascriptGenerator.valueToCode(block, 'RSEED', Order.ATOMIC) || '[]';
+  const mu = javascriptGenerator.valueToCode(block, 'MU', Order.ATOMIC) || '[]';
   const k = block.getFieldValue('K') || '3';
   const eta = parseInt(block.getFieldValue('ETA') || '2');
   const modulus = block.getFieldValue('MODULUS') || '3329';
-  const outVar = javascriptGenerator.nameDB_?.getName(block.type, 'VARIABLE') || 'tr_result';
 
   const seedWithNonceFn = registerSeedWithNonce();
   const cbdFn = registerSampleCbdEta(eta);
   const inttFn = registerIntt();
+  const nttMulFn = registerNttMul();
   const polyAddFn = registerPolyAddModQ();
+  const funcName = javascriptGenerator.provideFunction_(
+    'trInttAddE2MuEta' + eta,
+    [
+      'function ' +
+        javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+        '(that, rhat, rSeed, mu, k, q) {',
+      '  let acc = new Array(256).fill(0);',
+      '  for (let j = 0; j < k; j++) {',
+      '    let prod = ' + nttMulFn + '(that[j], rhat[j], q);',
+      '    for (let idx = 0; idx < prod.length; idx++) {',
+      '      acc[idx] = (acc[idx] + prod[idx]) % q;',
+      '    }',
+      '  }',
+      '  let e2 = ' + cbdFn + '(' + seedWithNonceFn + '(rSeed, 2 * k), q);',
+      '  let v = ' + inttFn + '(acc, q);',
+      '  v = ' + polyAddFn + '(v, e2, q);',
+      '  v = ' + polyAddFn + '(v, mu, q);',
+      '  return v;',
+      '}',
+    ],
+  );
 
-  const code = [];
-  code.push(`let ${outVar} = [];`);
-  code.push(`for (let _i = 0; _i < ${k}; _i++) {`);
-  code.push('  let row = [];');
-  code.push(`  for (let _j = 0; _j < ${k}; _j++) {`);
-  code.push(`    row[_j] = ${that}[_j][_i];`);
-  code.push('  }');
-  code.push(`  let e2 = ${cbdFn}(${seedWithNonceFn}(${seedWithNonceFn}(${rseed}, _i), 1), ${modulus});`);
-  code.push(`  let rHintt = ${inttFn}(${rH}[_i], ${modulus});`);
-  code.push(`  ${outVar}[_i] = ${polyAddFn}(row, ${polyAddFn}(e2, rHintt, ${modulus}), ${modulus});`);
-  code.push('}');
-  code.push('');
-
-  return [code.join('\n'), Order.NONE];
+  return [
+    `${funcName}(${that}, ${rhat}, ${rseed}, ${mu}, ${k}, ${modulus})`,
+    Order.ATOMIC,
+  ];
 };

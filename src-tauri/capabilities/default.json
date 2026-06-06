@@ -3,7 +3,5 @@
   "identifier": "default",
   "description": "Default capabilities for the Blockly Crypto Editor",
   "windows": ["main"],
-  "permissions": [
-    "core:default"
-  ]
+  "permissions": ["core:default", "dialog:default"]
 }

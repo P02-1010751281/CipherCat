@@ -6,13 +6,11 @@ import {
   type ProjectRecord,
 } from '@/composables/useProjectDB';
 import { ui } from '@/composables/locale';
-import type { CodeLanguage } from '@/constants/code-languages';
-
 interface EditorProjectDeps {
   getWorkspaceXml: () => string;
   getLanguage: () => string;
-  loadWorkspaceXml: (xml: string) => boolean;
-  onWorkspaceChange: (handler: () => void) => () => void;
+  loadWorkspaceXml: (_xml: string) => boolean;
+  onWorkspaceChange: (_handler: () => void) => () => void;
   clearWorkspace: () => void;
 }
 
@@ -110,7 +108,8 @@ export function useEditorProject(deps: EditorProjectDeps) {
     try {
       const record = await getProject(id);
       if (record) {
-        projectName.value = record.name || ui('unnamed');
+        projectName.value =
+          record.name && record.name !== '未命名' ? record.name : ui('unnamed');
         if (record.workspace) {
           deps.loadWorkspaceXml(record.workspace);
         }

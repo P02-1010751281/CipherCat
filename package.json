@@ -29,7 +29,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx --fix",
     "lint:check": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx",
     "tauri": "tauri",
-    "tauri:dev": "tauri dev",
+    "tauri:dev": "WEBKIT_DISABLE_COMPOSITING_MODE=1 tauri dev",
     "tauri:build": "tauri build"
   },
   "dependencies": {

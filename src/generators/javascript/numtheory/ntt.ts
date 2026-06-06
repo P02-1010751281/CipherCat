@@ -3,79 +3,88 @@
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
-import { registerNtt, registerIntt, registerPowMod } from '../postquantum/helpers';
+import {
+  registerNtt,
+  registerIntt,
+  registerNttMul,
+} from '../postquantum/helpers';
 
 /** Forward NTT (Number Theoretic Transform). */
-javascriptGenerator.forBlock['pq_ntt'] = function(block: Block): [string, number] {
-  const input = javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '[]';
+javascriptGenerator.forBlock['pq_ntt'] = function (
+  block: Block,
+): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '[]';
   const modulus = block.getFieldValue('MODULUS') || '3329';
-  const n = parseInt(block.getFieldValue('N') || '256');
+  const n = parseInt(block.getFieldValue('DEGREE') || '256');
 
   const funcName = registerNtt();
   return [`${funcName}(${input}, ${modulus}, ${n})`, Order.ATOMIC];
 };
 
 /** Inverse NTT. */
-javascriptGenerator.forBlock['pq_intt'] = function(block: Block): [string, number] {
-  const input = javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '[]';
+javascriptGenerator.forBlock['pq_intt'] = function (
+  block: Block,
+): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '[]';
   const modulus = block.getFieldValue('MODULUS') || '3329';
-  const n = parseInt(block.getFieldValue('N') || '256');
+  const n = parseInt(block.getFieldValue('DEGREE') || '256');
 
   const funcName = registerIntt();
   return [`${funcName}(${input}, ${modulus}, ${n})`, Order.ATOMIC];
 };
 
-/** Pointwise (Hadamard) multiplication of two NTT-domain vectors modulo q. */
-javascriptGenerator.forBlock['pq_ntt_mul'] = function(block: Block): [string, number] {
+/** Kyber half-NTT multiplication of two NTT-domain vectors modulo q. */
+javascriptGenerator.forBlock['pq_ntt_mul'] = function (
+  block: Block,
+): [string, number] {
   const a = javascriptGenerator.valueToCode(block, 'A', Order.ATOMIC) || '[]';
   const b = javascriptGenerator.valueToCode(block, 'B', Order.ATOMIC) || '[]';
   const modulus = block.getFieldValue('MODULUS') || '3329';
 
-  const nttMulFn = javascriptGenerator.provideFunction_('nttMul', [
-    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, b, q) {',
-    '  q = q || 3329;',
-    '  let len = Math.min(a.length, b.length);',
-    '  let res = new Array(len);',
-    '  for (let i = 0; i < len; i++) {',
-    '    res[i] = (a[i] * b[i]) % q;',
-    '  }',
-    '  return res;',
-    '}'
-  ]);
+  const nttMulFn = registerNttMul();
 
   return [`${nttMulFn}(${a}, ${b}, ${modulus})`, Order.ATOMIC];
 };
 
 /**
  * Cooley-Tukey or Gentleman-Sande butterfly.
- * Forward direction uses CT: (a + w*b, a - w*b)
- * Inverse direction uses GS: (a + b, w*(b - a))
+ * Forward direction uses CT: (a + zeta*b, a - zeta*b)
+ * Inverse direction uses GS: ((a+b)/2, zeta*(b-a)/2)
  */
-javascriptGenerator.forBlock['pq_ntt_butterfly'] = function(block: Block): [string, number] {
+javascriptGenerator.forBlock['pq_ntt_butterfly'] = function (
+  block: Block,
+): [string, number] {
   const a = javascriptGenerator.valueToCode(block, 'A', Order.ATOMIC) || '0';
   const b = javascriptGenerator.valueToCode(block, 'B', Order.ATOMIC) || '0';
-  const w = javascriptGenerator.valueToCode(block, 'W', Order.ATOMIC) || '1';
+  const zeta =
+    javascriptGenerator.valueToCode(block, 'ZETA', Order.ATOMIC) || '1';
   const modulus = block.getFieldValue('MODULUS') || '3329';
-  const direction = block.getFieldValue('DIRECTION') || 'forward';
+  const type = block.getFieldValue('TYPE') || 'ct';
 
   const ctButterflyFn = javascriptGenerator.provideFunction_('ctButterfly', [
-    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, b, w, q) {',
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(a, b, zeta, q) {',
     '  q = q || 3329;',
-    '  let t = (w * b) % q;',
+    '  let t = (zeta * b) % q;',
     '  return [(a + t) % q, (a - t + q) % q];',
-    '}'
+    '}',
   ]);
 
   const gsButterflyFn = javascriptGenerator.provideFunction_('gsButterfly', [
-    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, b, w, q) {',
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(a, b, zeta, q) {',
     '  q = q || 3329;',
-    '  return [(a + b) % q, (w * ((b - a + q) % q)) % q];',
-    '}'
+    '  let inv2 = (q + 1) >> 1;',
+    '  let s = (a + b) % q;',
+    '  let d = (b - a + q) % q;',
+    '  return [(s * inv2) % q, (zeta * d % q * inv2) % q];',
+    '}',
   ]);
 
-  if (direction === 'forward') {
-    return [`${ctButterflyFn}(${a}, ${b}, ${w}, ${modulus})`, Order.ATOMIC];
-  } else {
-    return [`${gsButterflyFn}(${a}, ${b}, ${w}, ${modulus})`, Order.ATOMIC];
-  }
+  const funcName = type === 'ct' ? ctButterflyFn : gsButterflyFn;
+  return [`${funcName}(${a}, ${b}, ${zeta}, ${modulus})`, Order.ATOMIC];
 };

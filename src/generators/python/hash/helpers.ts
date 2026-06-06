@@ -2,7 +2,9 @@ import { pythonGenerator } from 'blockly/python';
 
 export function registerSha3Pad(): string {
   return pythonGenerator.provideFunction_('sha3_pad', [
-    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg, rate_bytes=136, suffix=0x06):',
+    'def ' +
+      pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(msg, rate_bytes=136, suffix=0x06):',
     '    if isinstance(msg, str):',
     '        msg = msg.encode("utf-8")',
     '    elif isinstance(msg, (list, tuple)):',
@@ -22,11 +24,14 @@ export function registerSha3Pad(): string {
 export function registerKeccakF1600(): string {
   return pythonGenerator.provideFunction_('keccak_f1600', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(state):',
-    '    RC = [0x0000000000000001,0x0000000000008082,0x800000000000808A,0x8000000080008000,',
-    '          0x000000000000808B,0x0000000000000001,0x8000000000008081,0x8000000000008009,',
-    '          0x000000000000008A,0x0000000000000088,0x0000000080008009,0x000000008000000A,',
-    '          0x000000008000808B,0x800000000000008B,0x8000000000008089,0x8000000000008003,',
-    '          0x8000000000008002,0x8000000000000080]',
+    '    RC = [',
+    '        0x0000000000000001, 0x0000000000008082, 0x800000000000808A, 0x8000000080008000,',
+    '        0x000000000000808B, 0x0000000080000001, 0x8000000080008081, 0x8000000000008009,',
+    '        0x000000000000008A, 0x0000000000000088, 0x0000000080008009, 0x000000008000000A,',
+    '        0x000000008000808B, 0x800000000000008B, 0x8000000000008089, 0x8000000000008003,',
+    '        0x8000000000008002, 0x8000000000000080, 0x000000000000800A, 0x800000008000000A,',
+    '        0x8000000080008081, 0x8000000000008080, 0x0000000080000001, 0x8000000080008008,',
+    '    ]',
     '    R = [[0,1,62,28,27],[36,44,6,55,20],[3,10,43,25,39],[41,45,15,21,8],[18,2,61,56,14]]',
     '    M = 0xFFFFFFFFFFFFFFFF',
     '    s = list(state)',

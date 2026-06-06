@@ -6,16 +6,24 @@ import type { Block } from 'blockly/core';
 import { registerKeccakF1600 } from './helpers';
 
 // XOF: Extendable Output Function (SHAKE128/SHAKE256)
-javascriptGenerator.forBlock['pq_xof'] = function(block: Block): [string, number] {
-  const seed = javascriptGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
-  const outLen = javascriptGenerator.valueToCode(block, 'OUTLEN', Order.ATOMIC) || '168';
+javascriptGenerator.forBlock['pq_xof'] = function (
+  block: Block,
+): [string, number] {
+  const seed =
+    javascriptGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
+  const outLen =
+    javascriptGenerator.valueToCode(block, 'OUTLEN', Order.ATOMIC) || '168';
   const algo = block.getFieldValue('ALGO') || 'SHAKE128';
   const rate = algo === 'SHAKE128' ? 168 : 136;
 
   const keccakFName = registerKeccakF1600();
 
   const shakeName = javascriptGenerator.provideFunction_('shakeXOF', [
-    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(inp, outBytes, rate) {',
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(inp, outBytes, rate) {',
+    '  if (typeof inp === "string") inp = new TextEncoder().encode(inp);',
+    '  else if (Array.isArray(inp)) inp = Uint8Array.from(inp);',
     '  let state = new Array(25).fill(0n);',
     '  let padLen = rate - (inp.length % rate);',
     '  if (padLen === 1) padLen += rate;',
@@ -54,17 +62,26 @@ javascriptGenerator.forBlock['pq_xof'] = function(block: Block): [string, number
 };
 
 // PRF: Pseudo-Random Function (SHAKE128/SHAKE256)
-javascriptGenerator.forBlock['pq_prf'] = function(block: Block): [string, number] {
-  const seed = javascriptGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
-  const nonce = javascriptGenerator.valueToCode(block, 'NONCE', Order.ATOMIC) || '0';
-  const outLen = javascriptGenerator.valueToCode(block, 'OUTLEN', Order.ATOMIC) || '128';
+javascriptGenerator.forBlock['pq_prf'] = function (
+  block: Block,
+): [string, number] {
+  const seed =
+    javascriptGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
+  const nonce =
+    javascriptGenerator.valueToCode(block, 'NONCE', Order.ATOMIC) || '0';
+  const outLen =
+    javascriptGenerator.valueToCode(block, 'OUTLEN', Order.ATOMIC) || '128';
   const algo = block.getFieldValue('ALGO') || 'SHAKE256';
   const rate = algo === 'SHAKE128' ? 168 : 136;
 
   const keccakFName = registerKeccakF1600();
 
   const funcName = javascriptGenerator.provideFunction_('prf_shake', [
-    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed, nonce, outLen, rate) {',
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(seed, nonce, outLen, rate) {',
+    '  if (typeof seed === "string") seed = new TextEncoder().encode(seed);',
+    '  else if (Array.isArray(seed)) seed = Uint8Array.from(seed);',
     '  let data = new Uint8Array(seed.length + 1);',
     '  data.set(seed);',
     '  data[seed.length] = nonce & 0xFF;',
@@ -104,4 +121,3 @@ javascriptGenerator.forBlock['pq_prf'] = function(block: Block): [string, number
 
   return [`${funcName}(${seed}, ${nonce}, ${outLen}, ${rate})`, Order.ATOMIC];
 };
-

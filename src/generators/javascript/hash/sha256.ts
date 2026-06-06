@@ -26,49 +26,34 @@ function getSha256PadFn(): string {
   return _sha256PadFn;
 }
 
-/** SHA-256 padding — pad raw bytes/array message. */
 javascriptGenerator.forBlock['hash_sha256_pad'] = function (
   block: Block,
-): string {
-  const left =
-    javascriptGenerator.valueToCode(block, 'LEFT', Order.ATOMIC) ||
-    'msg_padded';
-  const right =
-    javascriptGenerator.valueToCode(block, 'RIGHT', Order.ATOMIC) || '[]';
-  return `${left} = ${getSha256PadFn()}(${right});\n`;
+): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '[]';
+  return [getSha256PadFn() + '(' + input + ')', Order.ATOMIC];
 };
 
-/** SHA-256 padding — pad text message. */
 javascriptGenerator.forBlock['hash_sha256_pad_text'] = function (
   block: Block,
-): string {
-  const left =
-    javascriptGenerator.valueToCode(block, 'LEFT', Order.ATOMIC) ||
-    'msg_padded';
-  const right =
-    javascriptGenerator.valueToCode(block, 'RIGHT', Order.ATOMIC) || "''";
-  return `${left} = ${getSha256PadFn()}(${right});\n`;
+): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
+  return [getSha256PadFn() + '(' + input + ')', Order.ATOMIC];
 };
 
-/** SHA-256 padding — pad hex message (converted to bytes first). */
 javascriptGenerator.forBlock['hash_sha256_pad_hex'] = function (
   block: Block,
-): string {
-  const left =
-    javascriptGenerator.valueToCode(block, 'LEFT', Order.ATOMIC) ||
-    'msg_padded';
-  const right =
-    javascriptGenerator.valueToCode(block, 'RIGHT', Order.ATOMIC) || "''";
+): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
   const hexFn = registerHexToBytes();
-  return `${left} = ${getSha256PadFn()}(${hexFn}(${right}));\n`;
+  return [getSha256PadFn() + '(' + hexFn + '(' + input + '))', Order.ATOMIC];
 };
 
-/** SHA-256 compression function — Merkle-Damgård round on 512-bit block. */
 javascriptGenerator.forBlock['hash_sha256_compress'] = function (
   block: Block,
-): string {
-  const out =
-    javascriptGenerator.valueToCode(block, 'OUT', Order.ATOMIC) || 'y';
+): [string, number] {
   const v = javascriptGenerator.valueToCode(block, 'V', Order.ATOMIC) || '[]';
   const w = javascriptGenerator.valueToCode(block, 'W', Order.ATOMIC) || '[]';
 
@@ -105,5 +90,5 @@ javascriptGenerator.forBlock['hash_sha256_compress'] = function (
     '}',
   ]);
 
-  return `${out} = ${compressFn}(${v}, ${w});\n`;
+  return [compressFn + '(' + v + ', ' + w + ')', Order.ATOMIC];
 };

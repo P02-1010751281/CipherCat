@@ -19,179 +19,188 @@
 import * as Blockly from 'blockly/core';
 
 export const SHA3_BLOCK_TYPES = [
+  'hash_sha3_state_init',
+  'hash_sha3_keccak_f',
+  'hash_sha3_pad',
   'hash_sha3_pad_text',
   'hash_sha3_pad_hex',
-  'hash_sha3_pad',
-  'hash_sha3_keccak_f',
   'hash_sha3_absorb',
   'hash_sha3_squeeze',
-  'hash_sha3_state_init'
 ] as const;
 
-export type Sha3BlockType = typeof SHA3_BLOCK_TYPES[number];
+export type Sha3BlockType = (typeof SHA3_BLOCK_TYPES)[number];
 
-// SHA-3 文本字符串填充：将 UTF-8 文本输入按 pad10*1 规则填充
-// 默认参数: r=1088 (SHA3-256), suffix=0x06 (SHA-3 域分离)
+// SHA-3 pad10*1 — text input, returns padded bytes
 Blockly.Blocks['hash_sha3_pad_text'] = {
-  init: function() {
-    this.appendValueInput('LEFT').setCheck(null);
-    this.appendDummyInput().appendField(Blockly.Msg.CRYPTO_SHA3_PAD_TEXT || '= SHA-3 Text Pad(');
-    this.appendValueInput('RIGHT').setCheck(null);
-    this.appendDummyInput().appendField(')');
+  init: function () {
+    this.appendValueInput('INPUT')
+      .setCheck(null)
+      .appendField(Blockly.Msg.CRYPTO_SHA3_PAD_TEXT || 'SHA-3 Text Pad');
     this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(200);
-    this.setTooltip(Blockly.Msg.CRYPTO_SHA3_PAD_TEXT_TOOLTIP || 'SHA-3 pad10*1 padding (UTF-8 text input), aligned to rate r');
-    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
-  }
-};
-
-// SHA-3 十六进制字符串填充：将十六进制输入转换为字节后按 pad10*1 规则填充
-Blockly.Blocks['hash_sha3_pad_hex'] = {
-  init: function() {
-    this.appendValueInput('LEFT').setCheck(null);
-    this.appendDummyInput().appendField(Blockly.Msg.CRYPTO_SHA3_PAD_HEX || '= SHA-3 Hex Pad(');
-    this.appendValueInput('RIGHT').setCheck(null);
-    this.appendDummyInput().appendField(')');
-    this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(200);
-    this.setTooltip(Blockly.Msg.CRYPTO_SHA3_PAD_HEX_TOOLTIP || 'SHA-3 pad10*1 padding (hex input), aligned to rate r');
-    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
-  }
-};
-
-// SHA-3 通用填充：支持自定义比特率 r 和域分离后缀 d
-// pad10*1 规则: M || d || 0x00…0x00 ⊕ 0x00…0x80
-// 当 q=1 时需额外补一个块 (FIPS 202 §5.1)
-Blockly.Blocks['hash_sha3_pad'] = {
-  init: function() {
-    this.appendValueInput('LEFT').setCheck(null);
-    this.appendDummyInput().appendField(Blockly.Msg.CRYPTO_SHA3_PAD || '= SHA-3 Pad(');
-    this.appendValueInput('RIGHT').setCheck(null);
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.CRYPTO_SHA3_RATE || ', Rate r=')
-      .appendField(new Blockly.FieldDropdown([
-        ['1088 (SHA3-256)', '1088'],
-        ['576 (SHA3-512)', '576'],
-        ['1152 (SHA3-224)', '1152'],
-        ['832 (SHA3-384)', '832'],
-        ['1344 (SHAKE128)', '1344'],
-      ]), 'RATE');
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.CRYPTO_SHA3_SUFFIX || 'Suffix d=')
-      .appendField(new Blockly.FieldDropdown([
-        ['0x06 (SHA-3)', '0x06'],
-        ['0x1F (SHAKE)', '0x1F'],
-      ]), 'SUFFIX');
-    this.appendDummyInput().appendField(')');
-    this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(200);
-    this.setTooltip(Blockly.Msg.CRYPTO_SHA3_PAD_TOOLTIP || 'SHA-3 pad10*1 padding: M || d || 0x00…0x00 xor 0x00…0x80, aligned to rate r (FIPS 202)');
-    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
-  }
-};
-
-// Keccak-f[b] 置换函数
-// b=1600 时执行 24 轮，每轮包含 5 个步骤:
-//   θ (theta) — 列校验和扩散: C[x]=⊕A[x,y], D[x]=C[x-1]⊕rot(C[x+1],1)
-//   ρ (rho)   — lane 内循环移位: 使用 FIPS 202 Table 2 的旋转偏移量
-//   π (pi)    — lane 位置置换: B[y,2x+3y]=rot(A[x,y],r[x,y])
-//   χ (chi)   — 非线性运算: A[x,y]=B[x,y]⊕((¬B[x+1,y])∧B[x+2,y])
-//   ι (iota)  — 轮常数异或: A[0,0]⊕=RC[round]
-// 状态表示: 5×5 lanes 数组，每 lane 为 64-bit (b=1600)
-Blockly.Blocks['hash_sha3_keccak_f'] = {
-  init: function() {
-    this.appendValueInput('OUT').setCheck(null);
-    this.appendDummyInput().appendField('= Keccak-f[');
-    this.appendDummyInput()
-      .appendField(new Blockly.FieldDropdown([
-        ['1600', '1600'],
-        ['800', '800'],
-        ['400', '400'],
-        ['200', '200'],
-      ]), 'WIDTH');
-    this.appendDummyInput().appendField('](');
-    this.appendValueInput('STATE').setCheck(null);
-    this.appendDummyInput().appendField(')');
-    this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(200);
-    this.setTooltip(Blockly.Msg.CRYPTO_SHA3_KECCAK_F_TOOLTIP || 'Keccak-f[b] permutation: 24 rounds (θ→ρ→π→χ→ι), state is 5×5 lanes array (FIPS 202)');
-    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
-  }
-};
-
-// 海绵结构吸收阶段 (FIPS 202 §4)
-// 将消息块 Pi 异或到状态的前 r/w 个 lanes，然后执行 Keccak-f 置换
-// State[x,y] ^= Pi[x+5*y], for x+5*y < r/w
-// State = Keccak-f[r+c](State)
-Blockly.Blocks['hash_sha3_absorb'] = {
-  init: function() {
-    this.appendValueInput('STATE').setCheck(null);
-    this.appendDummyInput().appendField(Blockly.Msg.CRYPTO_SHA3_ABSORB || '= Absorb(');
-    this.appendValueInput('BLOCK').setCheck(null);
-    this.appendDummyInput().appendField(Blockly.Msg.CRYPTO_SHA3_RATE || ', Rate r=');
-    this.appendDummyInput()
-      .appendField(new Blockly.FieldDropdown([
-        ['1088', '1088'],
-        ['576', '576'],
-        ['1152', '1152'],
-        ['832', '832'],
-        ['1344', '1344'],
-      ]), 'RATE');
-    this.appendDummyInput().appendField(')');
-    this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(200);
-    this.setTooltip(Blockly.Msg.CRYPTO_SHA3_ABSORB_TOOLTIP || 'Sponge absorb phase: State ^= Pi, then State = Keccak-f(State)');
-    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
-  }
-};
-
-// 海绵结构挤压阶段 (FIPS 202 §4)
-// 从状态中读取前 r/w 个 lanes 作为输出
-// 若输出长度不足，再执行 Keccak-f 置换后继续读取
-// Z = Z || S[x,y], for x+5*y < r/w
-Blockly.Blocks['hash_sha3_squeeze'] = {
-  init: function() {
-    this.appendValueInput('OUT').setCheck(null);
-    this.appendDummyInput().appendField(Blockly.Msg.CRYPTO_SHA3_SQUEEZE || '= Squeeze(');
-    this.appendValueInput('STATE').setCheck(null);
-    this.appendDummyInput().appendField(Blockly.Msg.CRYPTO_SHA3_OUTLEN || ', Output Bytes=');
-    this.appendValueInput('OUTLEN').setCheck(null);
-    this.appendDummyInput().appendField(Blockly.Msg.CRYPTO_SHA3_RATE || ', Rate r=');
-    this.appendDummyInput()
-      .appendField(new Blockly.FieldDropdown([
-        ['1088', '1088'],
-        ['576', '576'],
-        ['1152', '1152'],
-        ['832', '832'],
-        ['1344', '1344'],
-      ]), 'RATE');
-    this.appendDummyInput().appendField(')');
-    this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(200);
-    this.setTooltip(Blockly.Msg.CRYPTO_SHA3_SQUEEZE_TOOLTIP || 'Sponge squeeze phase: read r bits from state, re-run Keccak-f if more output needed');
-    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
-  }
-};
-
-Blockly.Blocks['hash_sha3_state_init'] = {
-  init: function() {
-    this.appendDummyInput()
-      .appendField('Keccak State Init [0]*25');
     this.setOutput(true, null);
     this.setColour(200);
-    this.setTooltip('Initialize Keccak-f[1600] state as 25 zero lanes. Required before sha3_absorb.');
+    this.setTooltip(
+      Blockly.Msg.CRYPTO_SHA3_PAD_TEXT_TOOLTIP ||
+        'SHA-3 pad10*1 padding (UTF-8 text input)',
+    );
     this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
-  }
+  },
+};
+
+// SHA-3 pad10*1 — hex input, returns padded bytes
+Blockly.Blocks['hash_sha3_pad_hex'] = {
+  init: function () {
+    this.appendValueInput('INPUT')
+      .setCheck(null)
+      .appendField(Blockly.Msg.CRYPTO_SHA3_PAD_HEX || 'SHA-3 Hex Pad');
+    this.setInputsInline(true);
+    this.setOutput(true, null);
+    this.setColour(200);
+    this.setTooltip(
+      Blockly.Msg.CRYPTO_SHA3_PAD_HEX_TOOLTIP ||
+        'SHA-3 pad10*1 padding (hex input)',
+    );
+    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
+  },
+};
+
+// SHA-3 pad10*1 — configurable rate and suffix, returns padded bytes
+Blockly.Blocks['hash_sha3_pad'] = {
+  init: function () {
+    this.appendValueInput('INPUT')
+      .setCheck(null)
+      .appendField(Blockly.Msg.CRYPTO_SHA3_PAD || 'SHA-3 Pad');
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.CRYPTO_SHA3_RATE || 'rate=')
+      .appendField(
+        new Blockly.FieldDropdown([
+          ['1088 (SHA3-256)', '1088'],
+          ['576 (SHA3-512)', '576'],
+          ['1152 (SHA3-224)', '1152'],
+          ['832 (SHA3-384)', '832'],
+          ['1344 (SHAKE128)', '1344'],
+        ]),
+        'RATE',
+      );
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.CRYPTO_SHA3_SUFFIX || 'suffix=')
+      .appendField(
+        new Blockly.FieldDropdown([
+          ['0x06 (SHA-3)', '0x06'],
+          ['0x1F (SHAKE)', '0x1F'],
+        ]),
+        'SUFFIX',
+      );
+    this.setInputsInline(true);
+    this.setOutput(true, null);
+    this.setColour(200);
+    this.setTooltip(
+      Blockly.Msg.CRYPTO_SHA3_PAD_TOOLTIP ||
+        'SHA-3 pad10*1: M || d || 0* || 0x80 (FIPS 202)',
+    );
+    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
+  },
+};
+
+// Keccak-f[b] permutation — 24 rounds, 5×5 lane state, returns permuted state
+// Steps: θ (theta), ρ (rho), π (pi), χ (chi), ι (iota)
+Blockly.Blocks['hash_sha3_keccak_f'] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField('Keccak-f[')
+      .appendField(
+        new Blockly.FieldDropdown([
+          ['1600', '1600'],
+          ['800', '800'],
+          ['400', '400'],
+          ['200', '200'],
+        ]),
+        'WIDTH',
+      )
+      .appendField(']');
+    this.appendValueInput('STATE').setCheck(null);
+    this.setInputsInline(true);
+    this.setOutput(true, null);
+    this.setColour(200);
+    this.setTooltip(
+      Blockly.Msg.CRYPTO_SHA3_KECCAK_F_TOOLTIP ||
+        'Keccak-f[b] permutation: 24 rounds (θ→ρ→π→χ→ι), state is 5×5 lanes (FIPS 202)',
+    );
+    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
+  },
+};
+
+// Sponge absorb (FIPS 202 §4): XOR block into state lanes, then Keccak-f
+Blockly.Blocks['hash_sha3_absorb'] = {
+  init: function () {
+    this.appendDummyInput().appendField(
+      Blockly.Msg.CRYPTO_SHA3_ABSORB || 'Absorb',
+    );
+    this.appendValueInput('STATE').setCheck(null).appendField('state=');
+    this.appendValueInput('BLOCK').setCheck(null).appendField('block=');
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.CRYPTO_SHA3_RATE || 'rate=')
+      .appendField(
+        new Blockly.FieldDropdown([
+          ['1088', '1088'],
+          ['576', '576'],
+          ['1152', '1152'],
+          ['832', '832'],
+          ['1344', '1344'],
+        ]),
+        'RATE',
+      );
+    this.setInputsInline(true);
+    this.setOutput(true, null);
+    this.setColour(200);
+    this.setTooltip(
+      Blockly.Msg.CRYPTO_SHA3_ABSORB_TOOLTIP ||
+        'Sponge absorb: State ^= Pi, then Keccak-f(State)',
+    );
+    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
+  },
+};
+
+// Sponge squeeze (FIPS 202 §4): read r bits from state, re-permute if needed
+Blockly.Blocks['hash_sha3_squeeze'] = {
+  init: function () {
+    this.appendDummyInput().appendField(
+      Blockly.Msg.CRYPTO_SHA3_SQUEEZE || 'Squeeze',
+    );
+    this.appendValueInput('STATE').setCheck(null).appendField('state=');
+    this.appendValueInput('OUTLEN')
+      .setCheck(null)
+      .appendField(Blockly.Msg.CRYPTO_SHA3_OUTLEN || 'outLen=');
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.CRYPTO_SHA3_RATE || 'rate=')
+      .appendField(
+        new Blockly.FieldDropdown([
+          ['1088', '1088'],
+          ['576', '576'],
+          ['1152', '1152'],
+          ['832', '832'],
+          ['1344', '1344'],
+        ]),
+        'RATE',
+      );
+    this.setInputsInline(true);
+    this.setOutput(true, null);
+    this.setColour(200);
+    this.setTooltip(
+      Blockly.Msg.CRYPTO_SHA3_SQUEEZE_TOOLTIP ||
+        'Sponge squeeze: read r bits from state, re-run Keccak-f if needed',
+    );
+    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
+  },
+};
+
+// Keccak sponge initial state: 5×5 lanes of zeros
+Blockly.Blocks['hash_sha3_state_init'] = {
+  init: function () {
+    this.appendDummyInput().appendField('Keccak Init');
+    this.setOutput(true, null);
+    this.setColour(200);
+    this.setTooltip('Initialize Keccak-f[1600] state as 25 zero lanes.');
+    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
+  },
 };

@@ -1,14 +1,17 @@
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onUnmounted } from 'vue';
 
 const MIN_RIGHT = 280;
 const MAX_RIGHT_RATIO = 0.55;
 const MIN_TOP = 160;
 
-export function useSplitLayout(editorViewRef: ReturnType<typeof ref<HTMLElement | null>>) {
+export function useSplitLayout(
+  editorViewRef: ReturnType<typeof ref<HTMLElement | null>>,
+) {
   const rightWidth = ref<number | undefined>(undefined);
   const topHeight = ref<number | undefined>(undefined);
 
   let splitDragging = false;
+  let rafId = 0;
   const narrowMedia = window.matchMedia('(max-width: 1200px)');
   let resizeCleanup: (() => void) | null = null;
 
@@ -57,16 +60,28 @@ export function useSplitLayout(editorViewRef: ReturnType<typeof ref<HTMLElement 
       } else {
         topHeight.value = undefined;
       }
-      callback?.();
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          rafId = 0;
+          callback?.();
+        });
+      }
     };
     narrowMedia.addEventListener('change', onBreakpoint);
-    resizeCleanup = () => narrowMedia.removeEventListener('change', onBreakpoint);
+    resizeCleanup = () =>
+      narrowMedia.removeEventListener('change', onBreakpoint);
   }
 
   onUnmounted(() => {
     if (splitDragging) {
       document.removeEventListener('mousemove', onSplitDragMove);
       document.removeEventListener('mouseup', onSplitDragEnd);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = 0;
     }
     resizeCleanup?.();
   });

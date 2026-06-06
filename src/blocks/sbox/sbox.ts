@@ -7,10 +7,10 @@ export type SBoxBlockType = (typeof SBOX_BLOCK_TYPES)[number];
 interface SBoxBlock extends Blockly.Block {
   gridData: string[];
   settingsPopup: HTMLDivElement | null;
-  settingsPopupClickHandler: ((e: MouseEvent) => void) | null;
+  settingsPopupClickHandler: ((_e: MouseEvent) => void) | null;
   exportToCsv: () => void;
   openCsvImportDialog: () => void;
-  loadCsvData: (file: File) => void;
+  loadCsvData: (_file: File) => void;
   updateShape: () => void;
   toggleSboxTable: () => void;
 }
@@ -25,7 +25,9 @@ function hexValidator(newValue: string): string | null {
   return null;
 }
 
+ 
 function getSboxRowCol(this: SBoxBlock) {
+  void this;
   const row = Number(this.getFieldValue('ROW')) || 4;
   const col = Number(this.getFieldValue('COL')) || 4;
   const maxRow = Math.min(row, 32);
@@ -41,6 +43,7 @@ const iconTable =
   'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDE2IDE2Ij48cmVjdCB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIGZpbGw9IiM2YTYiIHJ4PSIyIi8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTIgMmgxMnYxMkgyVjJ6bTEgMXY0aDRWM0gzem01IDB2NGg0VjNIOHpNMyA4djRoNFY4SDN6bTUgMHY0aDRWOEg4eiIvPjwvc3ZnPg==';
 
 Blockly.Blocks['sbox'] = {
+   
   init: function (this: SBoxBlock) {
     const dropdown = new Blockly.FieldDropdown(() => [
       [Blockly.Msg.CRYPTO_SBOX_ARRAY_1D || '1D Array', '1d'],
@@ -73,13 +76,14 @@ Blockly.Blocks['sbox'] = {
     this.setOutput(true, 'SBox');
     this.setColour(230);
     this.setTooltip(
-      Blockly.Msg.CRYPTO_SBOX_TOOLTIP || 'S-box lookup table, import CSV'
+      Blockly.Msg.CRYPTO_SBOX_TOOLTIP || 'S-box lookup table, import CSV',
     );
 
     this.setOnChange(function (
       this: SBoxBlock,
       event: Blockly.Events.Abstract,
     ) {
+      void this;
       if (event.type === Blockly.Events.BLOCK_CHANGE) {
         const e = event as Blockly.Events.BlockChange;
         if (e.blockId === this.id && (e.name === 'ROW' || e.name === 'COL')) {
@@ -95,7 +99,10 @@ Blockly.Blocks['sbox'] = {
   },
 
   /** JSON serialize: return the mutation data for Blockly 12 */
+
+   
   saveExtraState: function (this: SBoxBlock): object {
+    void this;
     const state: Record<string, unknown> = {};
     state.row = this.getFieldValue('ROW') || 4;
     state.col = this.getFieldValue('COL') || 4;
@@ -108,6 +115,7 @@ Blockly.Blocks['sbox'] = {
 
   /** JSON deserialize: receive mutation data from Blockly 12 */
   loadExtraState: function (this: SBoxBlock, state: Record<string, unknown>) {
+    void this;
     const rowA = String(state.row || 4);
     const colA = String(state.col || 4);
     const fmt = String(state.output_format || '2d');
@@ -124,7 +132,9 @@ Blockly.Blocks['sbox'] = {
     this.updateShape();
   },
 
+   
   mutationToDom: function (this: SBoxBlock) {
+    void this;
     const c = Blockly.utils.xml.createElement('mutation');
     c.setAttribute('row', String(this.getFieldValue('ROW') || 4));
     c.setAttribute('col', String(this.getFieldValue('COL') || 4));
@@ -139,6 +149,7 @@ Blockly.Blocks['sbox'] = {
   },
 
   domToMutation: function (this: SBoxBlock, xmlElement: Element) {
+    void this;
     const rowA = xmlElement.getAttribute('row');
     const colA = xmlElement.getAttribute('col');
     const fmt = xmlElement.getAttribute('output_format');
@@ -168,6 +179,7 @@ Blockly.Blocks['sbox'] = {
     this.updateShape();
   },
 
+   
   updateShape: function (this: SBoxBlock) {
     const { maxRow, maxCol } = getSboxRowCol.call(this);
     const size = maxRow * maxCol;
@@ -184,6 +196,7 @@ Blockly.Blocks['sbox'] = {
     }
   },
 
+   
   toggleSboxTable: function (this: SBoxBlock) {
     if (this.settingsPopup) {
       this.settingsPopup.remove();
@@ -247,6 +260,7 @@ Blockly.Blocks['sbox'] = {
     document.body.appendChild(popup);
 
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const el = (this as any).getSvgRoot();
       const bbox = el.getBoundingClientRect();
       let x = bbox.right + 8,
@@ -271,6 +285,7 @@ Blockly.Blocks['sbox'] = {
   },
 
   loadCsvData: function (this: SBoxBlock, file: File) {
+    void this;
     const { maxRow, maxCol } = getSboxRowCol.call(this);
     const size = maxRow * maxCol;
     const reader = new FileReader();
@@ -304,7 +319,9 @@ Blockly.Blocks['sbox'] = {
     reader.readAsText(file);
   },
 
+   
   openCsvImportDialog: function (this: SBoxBlock) {
+    void this;
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.csv,.txt';
@@ -318,6 +335,7 @@ Blockly.Blocks['sbox'] = {
     input.click();
   },
 
+   
   exportToCsv: function (this: SBoxBlock) {
     const { maxRow, maxCol } = getSboxRowCol.call(this);
     const csv = this.gridData.slice(0, maxRow * maxCol).join(',');
@@ -350,7 +368,8 @@ Blockly.Blocks['sbox_sub'] = {
     this.setNextStatement(true, null);
     this.setColour(230);
     this.setTooltip(
-      Blockly.Msg.CRYPTO_SBOX_SUB_TOOLTIP || 'Execute S-box substitution on 32-bit input variable',
+      Blockly.Msg.CRYPTO_SBOX_SUB_TOOLTIP ||
+        'Execute S-box substitution on 32-bit input variable',
     );
     this.setHelpUrl('');
   },

@@ -13,7 +13,7 @@
 - 🌐 **多语言** — 中英文界面，Blockly 积木块同步切换
 - 💻 **代码生成** — 一键生成 JavaScript / Python 可执行代码
 - 📁 **项目管理** — 基于 IndexedDB 的多项目本地管理，自动保存
-- 🖥️ **桌面应用** — Tauri 封装，Windows / Linux 原生运行
+- 🖥️ **桌面应用** — Tauri 封装，Windows / Linux / macOS 原生运行
 - 📱 **响应式** — 宽窄屏自适应，拖拽调整面板
 
 ## 快速开始
@@ -102,17 +102,29 @@ src/
 
 ```python
 def ntt(a, q=3329, n=256):
-    """Cooley-Tukey NTT (FIPS 203 §4.3)"""
-    res = a[:]
-    stride = n // 2
+    """FIPS 203 Cooley-Tukey NTT with bit-reversed zetas (Algorithm 9)"""
+    gen = 17 if q == 3329 else 3
+    res = list(a)
+    ln = len(res)
+    def _brv(x, bits):
+        r = 0
+        for _ in range(bits):
+            r = (r << 1) | (x & 1)
+            x >>= 1
+        return r
+    nbits = n.bit_length() - 1
+    stride = ln // 2
+    zz = 0
     while stride >= 1:
-        for start in range(0, n, stride * 2):
-            zeta = pow(17, (start // stride), q)
+        for start in range(0, ln, stride * 2):
+            zz += 1
+            zp = pow(gen, _brv(zz, nbits - 1), q)
             for i in range(start, start + stride):
-                t = (zeta * res[i + stride]) % q
-                res[i + stride] = (res[i] - t + q) % q
-                res[i] = (res[i] + t) % q
-        stride //= 2
+                u = res[i]
+                t = (zp * res[i + stride]) % q
+                res[i] = (u + t) % q
+                res[i + stride] = (u - t + q) % q
+        stride >>= 1
     return res
 
 # NTT 域逐点乘法
@@ -123,16 +135,29 @@ result = ntt_mul(ntt_a, ntt_b, q=3329)
 
 ```javascript
 function ntt(a, q = 3329, n = 256) {
+    const gen = (q === 3329) ? 17 : 3;
     const res = a.slice();
-    for (let stride = n / 2; stride >= 1; stride >>= 1) {
-        for (let start = 0; start < n; start += stride * 2) {
-            const zeta = modPow(17, start / stride, q);
+    const len = res.length;
+    const brv = (x, bits) => {
+        let r = 0;
+        for (let i = 0; i < bits; i++) { r = (r << 1) | (x & 1); x >>= 1; }
+        return r;
+    };
+    const nbits = Math.log2(n) | 0;
+    let stride = len / 2;
+    let zz = 0;
+    while (stride >= 1) {
+        for (let start = 0; start < len; start += stride * 2) {
+            zz++;
+            const zp = modPow(gen, brv(zz, nbits - 1), q);
             for (let i = start; i < start + stride; i++) {
-                const t = (zeta * res[i + stride]) % q;
-                res[i + stride] = (res[i] - t + q) % q;
-                res[i] = (res[i] + t) % q;
+                const u = res[i];
+                const t = (zp * Number(res[i + stride])) % q;
+                res[i] = (u + t) % q;
+                res[i + stride] = (u - t + q) % q;
             }
         }
+        stride >>= 1;
     }
     return res;
 }

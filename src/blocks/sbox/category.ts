@@ -5,6 +5,11 @@ import { SBOX_VAR_BLOCK_TYPES } from './sbox_variables';
 const BUTTON_KEY = 'SBOX_CREATE_VARIABLE';
 const CATEGORY_KEY = 'SBOX';
 
+/** Workspace extended with S-box category registration flag. */
+interface SboxWorkspace extends Blockly.WorkspaceSvg {
+  __sboxCategoryRegistered?: boolean;
+}
+
 export function getSboxCategoryKey(): string {
   return CATEGORY_KEY;
 }
@@ -37,7 +42,8 @@ export function createSboxFlyoutCallback(
 export function registerSboxCategoryCallbacks(
   workspace: Blockly.WorkspaceSvg,
 ): void {
-  if ((workspace as any).__sboxCategoryRegistered) return;
+  const ws = workspace as SboxWorkspace;
+  if (ws.__sboxCategoryRegistered) return;
 
   workspace.registerToolboxCategoryCallback(
     CATEGORY_KEY,
@@ -55,5 +61,5 @@ export function registerSboxCategoryCallbacks(
     },
   );
 
-  (workspace as any).__sboxCategoryRegistered = true;
+  ws.__sboxCategoryRegistered = true;
 }

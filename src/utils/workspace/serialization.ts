@@ -9,8 +9,8 @@ export async function handleFileUpload(
   file: File,
   workspace: Blockly.WorkspaceSvg | null,
   callback: (
-    workspace: Blockly.WorkspaceSvg | null,
-    content: string,
+    _workspace: Blockly.WorkspaceSvg | null,
+    _content: string,
   ) => boolean,
 ): Promise<boolean> {
   if (!file) {
@@ -51,6 +51,9 @@ export async function handleFileUpload(
   }
 }
 
+/** 自定义事件名，Tauri 保存成功后携带路径广播 */
+export const WORKSPACE_SAVED_EVENT = 'ciphercat:workspace-saved';
+
 export function downloadContent(content: string, filename: string): void {
   if (!content) {
     console.warn('没有可下载的内容');
@@ -62,6 +65,54 @@ export function downloadContent(content: string, filename: string): void {
     return;
   }
 
+  // Tauri v2 原生保存
+  // withGlobalTauri: true 暴露 window.__TAURI__，
+  // invoke 可能在 .core.invoke 或顶层 .invoke（依 Tauri v2 版本）
+  const tauriGlobal = (window as unknown as Record<string, unknown>)[
+    '__TAURI__'
+  ] as Record<string, unknown> | undefined;
+  if (tauriGlobal) {
+    // 兼容两种结构：v2.0.x 用 core.invoke，其他用顶层 invoke
+    const invoke:
+      | ((cmd: string, args: Record<string, unknown>) => Promise<unknown>)
+      | undefined =
+      ((tauriGlobal['core'] as Record<string, unknown> | undefined)?.[
+        'invoke'
+      ] as
+        | ((cmd: string, args: Record<string, unknown>) => Promise<unknown>)
+        | undefined) ??
+      (tauriGlobal['invoke'] as
+        | ((cmd: string, args: Record<string, unknown>) => Promise<unknown>)
+        | undefined);
+    if (invoke) {
+      invoke('save_workspace', { content, filename })
+        .then((path: unknown) => {
+          const savedPath = String(path || '');
+          console.log('Workspace exported to:', savedPath);
+          // 广播事件，让 App.vue 更新 toast 显示路径
+          window.dispatchEvent(
+            new CustomEvent(WORKSPACE_SAVED_EVENT, {
+              detail: { path: savedPath },
+            }),
+          );
+        })
+        .catch((err: unknown) => {
+          const msg = String(err || '');
+          console.error('Workspace export failed:', msg);
+          // 用户取消不弹 toast，真正失败才广播
+          if (msg !== 'User cancelled') {
+            window.dispatchEvent(
+              new CustomEvent(WORKSPACE_SAVED_EVENT, {
+                detail: { path: '', error: msg },
+              }),
+            );
+          }
+        });
+      return;
+    }
+  }
+
+  // 浏览器回退：Blob URL 下载
   try {
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -76,8 +127,23 @@ export function downloadContent(content: string, filename: string): void {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }, 0);
+    console.log('Workspace downloaded via Blob URL:', filename);
+    return;
   } catch (error) {
-    console.error('下载内容失败:', error);
+    console.warn('Blob URL download failed, trying data URI:', error);
+  }
+
+  // 最终回退：data URI 下载（兼容 WebView / Tauri 无原生支持的场景）
+  try {
+    const a = document.createElement('a');
+    a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    console.log('Workspace downloaded via data URI:', filename);
+  } catch (error) {
+    console.error('All download methods failed:', error);
   }
 }
 
@@ -160,6 +226,7 @@ function _applySboxFields(
   block: Blockly.Block,
   fields: Map<string, string>,
 ): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (typeof (block as any).updateShape !== 'function') return;
 
   const firstKey = fields.keys().next().value;
@@ -168,6 +235,7 @@ function _applySboxFields(
 
   Blockly.Events.disable();
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (block as any).updateShape();
     if (hasField) {
       // Old-format block: SBox_ fields exist
@@ -188,6 +256,7 @@ function _applySboxFields(
           if (idx < size) gd[idx] = value.padStart(2, '0');
         }
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (block as any).gridData = gd;
     }
   } finally {
@@ -242,6 +311,7 @@ function fixSboxFieldsAfterLoad(
       'type:',
       block.type,
       'has updateShape:',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       typeof (block as any).updateShape === 'function',
     );
 

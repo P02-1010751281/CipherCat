@@ -1,27 +1,48 @@
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
-import { registerBytesConcat, registerBytesSlice } from '../../data/helpers';
-import { registerSeedWithNonce, registerPolyAddMod, registerNtt, registerIntt, registerSampleCbdEta } from '../helpers';
+
+import {
+  registerSeedWithNonce,
+  registerPolyAddMod,
+  registerNtt,
+  registerIntt,
+  registerNttMul,
+  registerSampleCbdEta,
+} from '../helpers';
 
 /** Generate k×k NTT matrix A from a seed using XOF-based rejection sampling. */
-pythonGenerator.forBlock['pq_sample_ntt_mat'] = function(block: Block): [string, number] {
-  const seed = pythonGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || 'b""';
+pythonGenerator.forBlock['pq_sample_ntt_mat'] = function (
+  block: Block,
+): [string, number] {
+  const seed =
+    pythonGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || 'b""';
   const k = block.getFieldValue('K') || '3';
   const modulus = block.getFieldValue('MODULUS') || '3329';
 
+  const nttFn = registerNtt();
+
   const sampleNttFn = pythonGenerator.provideFunction_('sample_ntt', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed, q=3329):',
-    '    from Crypto.Hash import SHAKE128',
-    '    coeffs = []',
-    '    xof = SHAKE128.new(seed)',
-    '    while len(coeffs) < 256:',
-    '        buf = xof.read(3)',
-    '        d1 = buf[0]',
-    '        d2 = buf[1]',
-    '        c = (d1 | ((d2 & 0x0F) << 8)) & 0xFFF',
-    '        if c < q:',
-    '            coeffs.append(c)',
-    '    return coeffs',
+    '    import hashlib',
+    '    if isinstance(seed, str):',
+    '        seed = seed.encode("utf-8")',
+    '    seed = bytes(seed)',
+    '    out_len = 672',
+    '    while True:',
+    '        buf = hashlib.shake_128(seed).digest(out_len)',
+    '        coeffs = []',
+    '        for pos in range(0, len(buf) - 2, 3):',
+    '            d1 = (buf[pos] | ((buf[pos + 1] & 0x0F) << 8)) & 0xFFF',
+    '            d2 = ((buf[pos + 1] >> 4) | (buf[pos + 2] << 4)) & 0xFFF',
+    '            if d1 < q:',
+    '                coeffs.append(d1)',
+    '                if len(coeffs) == 256:',
+    '                    return ' + nttFn + '(coeffs, q)',
+    '            if d2 < q:',
+    '                coeffs.append(d2)',
+    '                if len(coeffs) == 256:',
+    '                    return ' + nttFn + '(coeffs, q)',
+    '        out_len *= 2',
   ]);
 
   const funcName = pythonGenerator.provideFunction_('sample_ntt_mat', [
@@ -29,16 +50,24 @@ pythonGenerator.forBlock['pq_sample_ntt_mat'] = function(block: Block): [string,
     '    A = [[None] * k for _ in range(k)]',
     '    for i in range(k):',
     '        for j in range(k):',
-    '            A[i][j] = ' + sampleNttFn + '(seed + bytes([i]) + bytes([j]), q)',
+    '            A[i][j] = ' +
+      sampleNttFn +
+      '(seed + bytes([j]) + bytes([i]), q)',
     '    return A',
   ]);
 
-  return [funcName + '(' + seed + ', ' + k + ', q=' + modulus + ')', Order.ATOMIC];
+  return [
+    funcName + '(' + seed + ', ' + k + ', q=' + modulus + ')',
+    Order.ATOMIC,
+  ];
 };
 
 /** CBD-eta sampling followed by forward NTT, producing a length-k vector. */
-pythonGenerator.forBlock['pq_cbd_ntt_vec'] = function(block: Block): [string, number] {
-  const seed = pythonGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || 'b""';
+pythonGenerator.forBlock['pq_cbd_ntt_vec'] = function (
+  block: Block,
+): [string, number] {
+  const seed =
+    pythonGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || 'b""';
   const k = block.getFieldValue('K') || '3';
   const eta = parseInt(block.getFieldValue('ETA') || '2');
   const modulus = block.getFieldValue('MODULUS') || '3329';
@@ -47,8 +76,10 @@ pythonGenerator.forBlock['pq_cbd_ntt_vec'] = function(block: Block): [string, nu
   const cbdFn = registerSampleCbdEta(eta);
   const nttFn = registerNtt();
 
-  const funcName = pythonGenerator.provideFunction_('cbd_ntt_vec', [
-    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed, k, eta, q=3329):',
+  const funcName = pythonGenerator.provideFunction_('cbd_ntt_vec_eta' + eta, [
+    'def ' +
+      pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(seed, k, eta, q=3329):',
     '    vec = [None] * k',
     '    for i in range(k):',
     '        f = ' + cbdFn + '(' + seedWithNonceFn + '(seed, i), q)',
@@ -56,14 +87,20 @@ pythonGenerator.forBlock['pq_cbd_ntt_vec'] = function(block: Block): [string, nu
     '    return vec',
   ]);
 
-  return [funcName + '(' + seed + ', ' + k + ', ' + eta + ', q=' + modulus + ')', Order.ATOMIC];
+  return [
+    funcName + '(' + seed + ', ' + k + ', ' + eta + ', q=' + modulus + ')',
+    Order.ATOMIC,
+  ];
 };
 
 /** Compute A^T * r̂, then perform INTT, add e1 (ML-KEM encapsulation). */
-pythonGenerator.forBlock['pq_atr_intt_add_e1'] = function(block: Block): [string, number] {
+pythonGenerator.forBlock['pq_atr_intt_add_e1'] = function (
+  block: Block,
+): [string, number] {
   const a = pythonGenerator.valueToCode(block, 'A', Order.ATOMIC) || '[]';
   const rhat = pythonGenerator.valueToCode(block, 'RHAT', Order.ATOMIC) || '[]';
-  const rseed = pythonGenerator.valueToCode(block, 'RSEED', Order.ATOMIC) || 'b""';
+  const rseed =
+    pythonGenerator.valueToCode(block, 'RSEED', Order.ATOMIC) || 'b""';
   const k = block.getFieldValue('K') || '3';
   const eta = parseInt(block.getFieldValue('ETA') || '2');
   const modulus = block.getFieldValue('MODULUS') || '3329';
@@ -71,29 +108,55 @@ pythonGenerator.forBlock['pq_atr_intt_add_e1'] = function(block: Block): [string
   const seedWithNonceFn = registerSeedWithNonce();
   const cbdFn = registerSampleCbdEta(eta);
   const inttFn = registerIntt();
+  const nttMulFn = registerNttMul();
   const polyAddFn = registerPolyAddMod();
 
-  const funcName = pythonGenerator.provideFunction_('atr_intt_add_e1', [
-    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(A, rhat, r_seed, k, eta, q=3329):',
-    '    u = [None] * k',
-    '    for i in range(k):',
-    '        acc = [0] * 256',
-    '        for j in range(k):',
-    '            for idx in range(256):',
-    '                acc[idx] = (acc[idx] + A[j][i][idx] * rhat[j][idx]) % q',
-    '        e1 = ' + cbdFn + '(' + seedWithNonceFn + '(r_seed, k + i), q)',
-    '        u[i] = ' + polyAddFn + '(' + inttFn + '(acc, q), e1, q)',
-    '    return u',
-  ]);
+  const funcName = pythonGenerator.provideFunction_(
+    'atr_intt_add_e1_eta' + eta,
+    [
+      'def ' +
+        pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+        '(A, rhat, r_seed, k, eta, q=3329):',
+      '    u = [None] * k',
+      '    for i in range(k):',
+      '        acc = [0] * 256',
+      '        for j in range(k):',
+      '            prod = ' + nttMulFn + '(A[j][i], rhat[j], q)',
+      '            for idx, value in enumerate(prod):',
+      '                acc[idx] = (acc[idx] + value) % q',
+      '        e1 = ' + cbdFn + '(' + seedWithNonceFn + '(r_seed, k + i), q)',
+      '        u[i] = ' + polyAddFn + '(' + inttFn + '(acc, q), e1, q)',
+      '    return u',
+    ],
+  );
 
-  return [funcName + '(' + a + ', ' + rhat + ', ' + rseed + ', ' + k + ', ' + eta + ', q=' + modulus + ')', Order.ATOMIC];
+  return [
+    funcName +
+      '(' +
+      a +
+      ', ' +
+      rhat +
+      ', ' +
+      rseed +
+      ', ' +
+      k +
+      ', ' +
+      eta +
+      ', q=' +
+      modulus +
+      ')',
+    Order.ATOMIC,
+  ];
 };
 
 /** Compute T̂^T * r̂, then perform INTT, add e2 and mu (final ML-KEM encapsulation step). */
-pythonGenerator.forBlock['pq_tr_intt_add_e2_mu'] = function(block: Block): [string, number] {
+pythonGenerator.forBlock['pq_tr_intt_add_e2_mu'] = function (
+  block: Block,
+): [string, number] {
   const that = pythonGenerator.valueToCode(block, 'THAT', Order.ATOMIC) || '[]';
   const rhat = pythonGenerator.valueToCode(block, 'RHAT', Order.ATOMIC) || '[]';
-  const rseed = pythonGenerator.valueToCode(block, 'RSEED', Order.ATOMIC) || 'b""';
+  const rseed =
+    pythonGenerator.valueToCode(block, 'RSEED', Order.ATOMIC) || 'b""';
   const mu = pythonGenerator.valueToCode(block, 'MU', Order.ATOMIC) || '[]';
   const k = block.getFieldValue('K') || '3';
   const eta = parseInt(block.getFieldValue('ETA') || '2');
@@ -102,32 +165,61 @@ pythonGenerator.forBlock['pq_tr_intt_add_e2_mu'] = function(block: Block): [stri
   const seedWithNonceFn = registerSeedWithNonce();
   const cbdFn = registerSampleCbdEta(eta);
   const inttFn = registerIntt();
+  const nttMulFn = registerNttMul();
   const polyAddFn = registerPolyAddMod();
 
-  const funcName = pythonGenerator.provideFunction_('tr_intt_add_e2_mu', [
-    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(that, rhat, r_seed, mu, k, eta, q=3329):',
-    '    acc = [0] * 256',
-    '    for j in range(k):',
-    '        for idx in range(256):',
-    '            acc[idx] = (acc[idx] + that[j][idx] * rhat[j][idx]) % q',
-    '    e2 = ' + cbdFn + '(' + seedWithNonceFn + '(r_seed, 2 * k), q)',
-    '    v = ' + inttFn + '(acc, q)',
-    '    v = ' + polyAddFn + '(v, e2, q)',
-    '    v = ' + polyAddFn + '(v, mu, q)',
-    '    return v',
-  ]);
+  const funcName = pythonGenerator.provideFunction_(
+    'tr_intt_add_e2_mu_eta' + eta,
+    [
+      'def ' +
+        pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+        '(that, rhat, r_seed, mu, k, eta, q=3329):',
+      '    acc = [0] * 256',
+      '    for j in range(k):',
+      '        prod = ' + nttMulFn + '(that[j], rhat[j], q)',
+      '        for idx, value in enumerate(prod):',
+      '            acc[idx] = (acc[idx] + value) % q',
+      '    e2 = ' + cbdFn + '(' + seedWithNonceFn + '(r_seed, 2 * k), q)',
+      '    v = ' + inttFn + '(acc, q)',
+      '    v = ' + polyAddFn + '(v, e2, q)',
+      '    v = ' + polyAddFn + '(v, mu, q)',
+      '    return v',
+    ],
+  );
 
-  return [funcName + '(' + that + ', ' + rhat + ', ' + rseed + ', ' + mu + ', ' + k + ', ' + eta + ', q=' + modulus + ')', Order.ATOMIC];
+  return [
+    funcName +
+      '(' +
+      that +
+      ', ' +
+      rhat +
+      ', ' +
+      rseed +
+      ', ' +
+      mu +
+      ', ' +
+      k +
+      ', ' +
+      eta +
+      ', q=' +
+      modulus +
+      ')',
+    Order.ATOMIC,
+  ];
 };
 
-pythonGenerator.forBlock['pq_build_vec3'] = function(block: Block): [string, number] {
+pythonGenerator.forBlock['pq_build_vec3'] = function (
+  block: Block,
+): [string, number] {
   const a = pythonGenerator.valueToCode(block, 'A', Order.ATOMIC) || 'None';
   const b = pythonGenerator.valueToCode(block, 'B', Order.ATOMIC) || 'None';
   const c = pythonGenerator.valueToCode(block, 'C', Order.ATOMIC) || 'None';
   return ['[' + a + ', ' + b + ', ' + c + ']', Order.ATOMIC];
 };
 
-pythonGenerator.forBlock['pq_vec_compress_encode'] = function(block: Block): [string, number] {
+pythonGenerator.forBlock['pq_vec_compress_encode'] = function (
+  block: Block,
+): [string, number] {
   const u = pythonGenerator.valueToCode(block, 'U', Order.ATOMIC) || '[]';
   const d = parseInt(block.getFieldValue('BITS') || '10');
   const modulus = block.getFieldValue('MODULUS') || '3329';

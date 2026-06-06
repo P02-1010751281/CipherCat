@@ -10,9 +10,13 @@ import { SHAKE_BLOCK_TYPES, type ShakeBlockType } from './shake';
 
 export const ALL_BLOCK_TYPES = [
   ...SHA256_BLOCK_TYPES,
-  ...SHA3_BLOCK_TYPES,
   ...SM3_BLOCK_TYPES,
+  ...SHA3_BLOCK_TYPES,
   ...SHAKE_BLOCK_TYPES,
 ] as const;
 
-export type HashBlockType = Sha256BlockType | Sha3BlockType | Sm3BlockType | ShakeBlockType;
+export type HashBlockType =
+  | Sha256BlockType
+  | Sha3BlockType
+  | Sm3BlockType
+  | ShakeBlockType;

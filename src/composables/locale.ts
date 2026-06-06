@@ -186,43 +186,43 @@ export const MESSAGES_ZH_HANS: Record<string, string> = {
   CRYPTO_SBOX_SUB_VAR: 'S-box',
   CRYPTO_SBOX_SUB_TOOLTIP: '对32位输入变量执行S-box替换（按字节）',
 
-  CRYPTO_SM3_PAD_TEXT: '= SM3文本填充(',
+  CRYPTO_SM3_PAD_TEXT: 'SM3 Text Pad',
   CRYPTO_SM3_PAD_TEXT_TOOLTIP: 'SM3 文本字符串填充(UTF-8)',
-  CRYPTO_SM3_PAD_HEX: '= SM3十六进制填充(',
+  CRYPTO_SM3_PAD_HEX: 'SM3 Hex Pad',
   CRYPTO_SM3_PAD_HEX_TOOLTIP: 'SM3 十六进制字符串填充(每2位HEX为1字节)',
-  CRYPTO_SM3_PAD: '= SM3填充(',
+  CRYPTO_SM3_PAD: 'SM3 Pad',
   CRYPTO_SM3_PAD_TOOLTIP: 'SM3消息填充：将消息填充为512位的倍数',
-  CRYPTO_SM3_COMPRESS: '= SM3压缩(',
-  CRYPTO_SM3_COMPRESS_TOOLTIP: 'SM3压缩函数：OUT = CF(V, B) 使用扩展消息 W, W\'',
+  CRYPTO_SM3_COMPRESS: 'SM3 Compress',
+  CRYPTO_SM3_COMPRESS_TOOLTIP: "SM3压缩函数：OUT = CF(V, B) 使用扩展消息 W, W'",
 
-  CRYPTO_SHA256_PAD: '= SHA-256填充(',
+  CRYPTO_SHA256_PAD: 'SHA-256 Pad',
   CRYPTO_SHA256_PAD_TOOLTIP: 'SHA-256 文本填充',
-  CRYPTO_SHA256_PAD_HEX: '= SHA-256十六进制填充(',
+  CRYPTO_SHA256_PAD_HEX: 'SHA-256 Hex Pad',
   CRYPTO_SHA256_PAD_HEX_TOOLTIP: 'SHA-256 十六进制字符串填充',
-  CRYPTO_SHA256_PAD_TEXT: '= SHA-256文本填充(',
+  CRYPTO_SHA256_PAD_TEXT: 'SHA-256 Text Pad',
   CRYPTO_SHA256_PAD_TEXT_TOOLTIP: 'SHA-256 文本字符串填充(UTF-8)',
-  CRYPTO_SHA256_COMPRESS: '= SHA-256压缩(',
+  CRYPTO_SHA256_COMPRESS: 'SHA-256 Compress',
   CRYPTO_SHA256_COMPRESS_TOOLTIP: 'SHA-256压缩函数：OUT = CF(V, B)',
 
-  CRYPTO_SHA3_PAD_TEXT: '= SHA-3文本填充(',
+  CRYPTO_SHA3_PAD_TEXT: 'SHA-3 Text Pad',
   CRYPTO_SHA3_PAD_TEXT_TOOLTIP:
     'SHA-3 pad10*1填充(UTF-8文本输入)，按比特率r对齐',
-  CRYPTO_SHA3_PAD_HEX: '= SHA-3十六进制填充(',
+  CRYPTO_SHA3_PAD_HEX: 'SHA-3 Hex Pad',
   CRYPTO_SHA3_PAD_HEX_TOOLTIP: 'SHA-3 pad10*1填充(十六进制输入)，按比特率r对齐',
-  CRYPTO_SHA3_PAD: '= SHA-3填充(',
+  CRYPTO_SHA3_PAD: 'SHA-3 Pad',
   CRYPTO_SHA3_PAD_TOOLTIP:
     'SHA-3 pad10*1填充：M || d || 0x00…0x00 xor 0x00…0x80，按比特率r对齐(FIPS 202)',
-  CRYPTO_SHA3_RATE: ', 比特率r=',
-  CRYPTO_SHA3_SUFFIX: '后缀d=',
+  CRYPTO_SHA3_RATE: ', rate=',
+  CRYPTO_SHA3_SUFFIX: 'suffix=',
   CRYPTO_SHA3_KECCAK_F_TOOLTIP:
     'Keccak-f[b]置换函数：24轮(θ→ρ→π→χ→ι)，状态为5×5 lanes数组(FIPS 202)',
-  CRYPTO_SHA3_ABSORB: '= 吸收(',
+  CRYPTO_SHA3_ABSORB: 'Absorb',
   CRYPTO_SHA3_ABSORB_TOOLTIP:
     '海绵结构吸收阶段：State ^= Pi，然后State = Keccak-f(State)',
-  CRYPTO_SHA3_SQUEEZE: '= 挤压(',
+  CRYPTO_SHA3_SQUEEZE: 'Squeeze',
   CRYPTO_SHA3_SQUEEZE_TOOLTIP:
     '海绵结构挤压阶段：从状态中读取r位输出，不足则再执行Keccak-f',
-  CRYPTO_SHA3_OUTLEN: ', 输出字节=',
+  CRYPTO_SHA3_OUTLEN: ', outLen=',
 
   CRYPTO_ITERATE_VAR: '变量',
   CRYPTO_ITERATE_LOOP: '循环',
@@ -373,47 +373,47 @@ export const MESSAGES_EN: Record<string, string> = {
   CRYPTO_SBOX_SUB_TOOLTIP:
     'Execute S-box substitution on 32-bit input variable (by byte)',
 
-  CRYPTO_SM3_PAD_TEXT: '= SM3 Text Pad(',
+  CRYPTO_SM3_PAD_TEXT: 'SM3 Text Pad',
   CRYPTO_SM3_PAD_TEXT_TOOLTIP: 'SM3 text string padding (UTF-8)',
-  CRYPTO_SM3_PAD_HEX: '= SM3 Hex Pad(',
+  CRYPTO_SM3_PAD_HEX: 'SM3 Hex Pad',
   CRYPTO_SM3_PAD_HEX_TOOLTIP: 'SM3 hex string padding (2 hex chars = 1 byte)',
-  CRYPTO_SM3_PAD: '= SM3 Pad(',
+  CRYPTO_SM3_PAD: 'SM3 Pad',
   CRYPTO_SM3_PAD_TOOLTIP:
     'SM3 message padding: pad message to multiple of 512 bits',
-  CRYPTO_SM3_COMPRESS: '= SM3 Compress(',
+  CRYPTO_SM3_COMPRESS: 'SM3 Compress',
   CRYPTO_SM3_COMPRESS_TOOLTIP:
-    'SM3 compression function: OUT = CF(V, B) with expanded message W, W\'',
+    "SM3 compression function: OUT = CF(V, B) with expanded message W, W'",
 
-  CRYPTO_SHA256_PAD: '= SHA-256 Pad(',
+  CRYPTO_SHA256_PAD: 'SHA-256 Pad',
   CRYPTO_SHA256_PAD_TOOLTIP: 'SHA-256 text padding',
-  CRYPTO_SHA256_PAD_HEX: '= SHA-256 Hex Pad(',
+  CRYPTO_SHA256_PAD_HEX: 'SHA-256 Hex Pad',
   CRYPTO_SHA256_PAD_HEX_TOOLTIP: 'SHA-256 hex string padding',
-  CRYPTO_SHA256_PAD_TEXT: '= SHA-256 Text Pad(',
+  CRYPTO_SHA256_PAD_TEXT: 'SHA-256 Text Pad',
   CRYPTO_SHA256_PAD_TEXT_TOOLTIP: 'SHA-256 text string padding (UTF-8)',
-  CRYPTO_SHA256_COMPRESS: '= SHA-256 Compress(',
+  CRYPTO_SHA256_COMPRESS: 'SHA-256 Compress',
   CRYPTO_SHA256_COMPRESS_TOOLTIP:
     'SHA-256 compression function: OUT = CF(V, B)',
 
-  CRYPTO_SHA3_PAD_TEXT: '= SHA-3 Text Pad(',
+  CRYPTO_SHA3_PAD_TEXT: 'SHA-3 Text Pad',
   CRYPTO_SHA3_PAD_TEXT_TOOLTIP:
     'SHA-3 pad10*1 padding (UTF-8 text input), aligned to rate r',
-  CRYPTO_SHA3_PAD_HEX: '= SHA-3 Hex Pad(',
+  CRYPTO_SHA3_PAD_HEX: 'SHA-3 Hex Pad',
   CRYPTO_SHA3_PAD_HEX_TOOLTIP:
     'SHA-3 pad10*1 padding (hex input), aligned to rate r',
-  CRYPTO_SHA3_PAD: '= SHA-3 Pad(',
+  CRYPTO_SHA3_PAD: 'SHA-3 Pad',
   CRYPTO_SHA3_PAD_TOOLTIP:
     'SHA-3 pad10*1 padding: M || d || 0x00…0x00 xor 0x00…0x80, aligned to rate r (FIPS 202)',
-  CRYPTO_SHA3_RATE: ', Rate r=',
-  CRYPTO_SHA3_SUFFIX: 'Suffix d=',
+  CRYPTO_SHA3_RATE: ', rate=',
+  CRYPTO_SHA3_SUFFIX: 'suffix=',
   CRYPTO_SHA3_KECCAK_F_TOOLTIP:
     'Keccak-f[b] permutation: 24 rounds (θ→ρ→π→χ→ι), state is 5×5 lanes array (FIPS 202)',
-  CRYPTO_SHA3_ABSORB: '= Absorb(',
+  CRYPTO_SHA3_ABSORB: 'Absorb',
   CRYPTO_SHA3_ABSORB_TOOLTIP:
     'Sponge absorb phase: State ^= Pi, then State = Keccak-f(State)',
-  CRYPTO_SHA3_SQUEEZE: '= Squeeze(',
+  CRYPTO_SHA3_SQUEEZE: 'Squeeze',
   CRYPTO_SHA3_SQUEEZE_TOOLTIP:
     'Sponge squeeze phase: read r bits from state, re-run Keccak-f if more output needed',
-  CRYPTO_SHA3_OUTLEN: ', Output Bytes=',
+  CRYPTO_SHA3_OUTLEN: ', outLen=',
 
   CRYPTO_ITERATE_VAR: 'Var',
   CRYPTO_ITERATE_LOOP: 'Loop',
@@ -476,6 +476,8 @@ export const MESSAGES_EN: Record<string, string> = {
   CRYPTO_CATEGORY_NUMTHEORY: 'Number Theory',
   CRYPTO_CATEGORY_ECC: 'Elliptic Curve',
   CRYPTO_CATEGORY_POSTQUANTUM: 'Post-Quantum',
+  CRYPTO_CATEGORY_POSTQUANTUM_BASIC: 'PQC · Basic',
+  CRYPTO_CATEGORY_POSTQUANTUM_ADVANCED: 'PQC · Advanced',
   CRYPTO_CATEGORY_PROCEDURE: 'Functions',
 
   CRYPTO_SBOX_SIZE_LIMIT: 'S-box size limited to 32x32',
@@ -536,7 +538,7 @@ const UI_MESSAGES: Record<BlocklyLocale, Record<string, string>> = {
     unnamed: '未命名',
     saveError: '保存失败',
   },
-  'en': {
+  en: {
     codeGenerator: 'Code Generator:',
     autoDetect: 'Auto Detect',
     import: 'Import',
@@ -573,6 +575,8 @@ const UI_MESSAGES: Record<BlocklyLocale, Record<string, string>> = {
     newWorkspaceConfirmTitle: 'Confirm New',
     unnamed: 'Untitled',
     saveError: 'Save failed',
+    exported: 'Workspace exported',
+    exportError: 'Export failed',
   },
 };
 

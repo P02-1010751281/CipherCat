@@ -4,20 +4,25 @@
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
 import { registerKeccakF1600 } from '../../hash/helpers';
-import { registerSampleCbdEta } from '../helpers';
+import { registerSampleCbdEta, registerNtt } from '../helpers';
 
 /** Sample a polynomial from a seed using SHAKE128/NTT-domain rejection sampling. */
-javascriptGenerator.forBlock['pq_sample_ntt'] = function(block: Block): [string, number] {
-  const seed = javascriptGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
+javascriptGenerator.forBlock['pq_sample_ntt'] = function (
+  block: Block,
+): [string, number] {
+  const seed =
+    javascriptGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
   const modulus = block.getFieldValue('MODULUS') || '3329';
 
   const keccakFName = registerKeccakF1600();
 
   const shakeName = javascriptGenerator.provideFunction_('shake128once', [
-    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(inp, outBytes) {',
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(inp, outBytes) {',
+    '  if (typeof inp === "string") inp = new TextEncoder().encode(inp);',
+    '  else if (Array.isArray(inp)) inp = Uint8Array.from(inp);',
     '  let rate = 168;',
-    '  let capacity = 32;',
-    '  let width = rate + capacity;',
     '  let state = new Array(25).fill(0n);',
     '  let padLen = rate - (inp.length % rate);',
     '  if (padLen === 1) padLen += rate;',
@@ -52,20 +57,26 @@ javascriptGenerator.forBlock['pq_sample_ntt'] = function(block: Block): [string,
     '}',
   ]);
 
+  const nttFn = registerNtt();
+
   const sampleNttFn = javascriptGenerator.provideFunction_('sampleNtt', [
-    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed, q) {',
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(seed, q) {',
     '  q = q || 3329;',
-    '  let coeffs = [];',
-    '  let buf = ' + shakeName + '(seed, 1200);',
-    '  let pos = 0;',
-    '  while (coeffs.length < 256 && pos + 3 <= buf.length) {',
-    '    let d1 = buf[pos] | 0;',
-    '    let d2 = buf[pos + 1] | 0;',
-    '    let c = (d1 | ((d2 & 0x0F) << 8)) & 0xFFF;',
-    '    pos += 3;',
-    '    if (c < q) coeffs.push(c);',
+    '  let outBytes = 672;',
+    '  while (true) {',
+    '    let coeffs = [];',
+    '    let buf = ' + shakeName + '(seed, outBytes);',
+    '    for (let pos = 0; coeffs.length < 256 && pos + 3 <= buf.length; pos += 3) {',
+    '      let d1 = (buf[pos] | ((buf[pos + 1] & 0x0F) << 8)) & 0xFFF;',
+    '      let d2 = ((buf[pos + 1] >> 4) | (buf[pos + 2] << 4)) & 0xFFF;',
+    '      if (d1 < q) coeffs.push(d1);',
+    '      if (d2 < q && coeffs.length < 256) coeffs.push(d2);',
+    '    }',
+    '    if (coeffs.length >= 256) return ' + nttFn + '(coeffs, q);',
+    '    outBytes *= 2;',
     '  }',
-    '  return coeffs;',
     '}',
   ]);
 
@@ -73,8 +84,11 @@ javascriptGenerator.forBlock['pq_sample_ntt'] = function(block: Block): [string,
 };
 
 /** Sample from CBD distribution using PRF/SHAKE256. */
-javascriptGenerator.forBlock['pq_sample_poly_cbd'] = function(block: Block): [string, number] {
-  const seed = javascriptGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
+javascriptGenerator.forBlock['pq_sample_poly_cbd'] = function (
+  block: Block,
+): [string, number] {
+  const seed =
+    javascriptGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
   const eta = parseInt(block.getFieldValue('ETA') || '2');
   const modulus = block.getFieldValue('MODULUS') || '3329';
 

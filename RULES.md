@@ -39,7 +39,7 @@ src/
 ├── components/      # Vue 通用组件
 ├── composables/     # Composition API 逻辑复用
 ├── constants/       # 常量定义
-├── generators/      # 代码生成器（javascript/python/kasm51）
+├── generators/      # 代码生成器（javascript/python）
 ├── styles/          # 全局样式
 ├── utils/           # 纯工具函数（无副作用）
 ```

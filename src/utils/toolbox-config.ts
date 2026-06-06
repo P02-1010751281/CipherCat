@@ -1,16 +1,38 @@
 import 'blockly/blocks';
 import * as Blockly from 'blockly/core';
 
-import { CORE_BLOCK_TYPES } from '@/blocks/core';
+import { type CoreBlockType } from '@/blocks/core';
 import { BIT_BLOCK_TYPES } from '@/blocks/bitwise';
-import { ALL_SBOX_BLOCK_TYPES } from '@/blocks/sbox';
 import { ALL_BLOCK_TYPES as HASH_BLOCK_TYPES } from '@/blocks/hash';
 import { ECC_BLOCK_TYPES, NT_BLOCK_TYPES } from '@/blocks/number-theory';
-import { PQ_BLOCK_TYPES, PQ_BASIC_BLOCK_TYPES, PQ_ADVANCED_BLOCK_TYPES } from '@/blocks/post-quantum';
+import {
+  PQ_BASIC_BLOCK_TYPES,
+  PQ_ADVANCED_BLOCK_TYPES,
+} from '@/blocks/post-quantum';
 import { getSboxCategoryKey } from '@/blocks/sbox/category';
 
 export function createToolboxConfig() {
   const msg = Blockly.Msg as Record<string, string>;
+
+  // CORE_BLOCK_TYPES 按职责拆入各分类，避免重复
+  const CTRL_CORE_BLOCKS: CoreBlockType[] = ['ctrl_assign', 'ctrl_iterate'];
+  const ARRAY_CORE_BLOCKS: CoreBlockType[] = ['arr_partition_to_array'];
+  const DATA_CORE_BLOCKS: CoreBlockType[] = [
+    'data_bit_length',
+    'data_byte_length',
+    'data_convert_to_int',
+    'data_convert_bits_to_bytes',
+    'data_convert_bytes_to_bits',
+    'data_value',
+    'seed_bytes',
+    'seed_hex',
+    'cipher_key_from_seed',
+  ];
+  const LOGIC_CORE_BLOCKS: CoreBlockType[] = [
+    'lgc_operation',
+    'lgc_compound',
+    'lgc_not',
+  ];
 
   const ctrl = {
     kind: 'category',
@@ -23,7 +45,7 @@ export function createToolboxConfig() {
       { kind: 'block', type: 'logic_boolean' },
       { kind: 'block', type: 'logic_ternary' },
       { kind: 'block', type: 'logic_null' },
-      ...CORE_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...CTRL_CORE_BLOCKS.map((type) => ({ kind: 'block' as const, type })),
       { kind: 'block', type: 'controls_repeat_ext' },
       { kind: 'block', type: 'controls_whileUntil' },
       { kind: 'block', type: 'controls_for' },
@@ -73,7 +95,7 @@ export function createToolboxConfig() {
       { kind: 'block', type: 'lists_getSublist' },
       { kind: 'block', type: 'lists_split' },
       { kind: 'block', type: 'lists_sort' },
-      ...CORE_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...ARRAY_CORE_BLOCKS.map((type) => ({ kind: 'block' as const, type })),
     ],
   };
 
@@ -93,7 +115,7 @@ export function createToolboxConfig() {
       { kind: 'block', type: 'text_changeCase' },
       { kind: 'block', type: 'text_trim' },
       { kind: 'block', type: 'text_print' },
-      ...CORE_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...DATA_CORE_BLOCKS.map((type) => ({ kind: 'block' as const, type })),
     ],
   };
 
@@ -108,7 +130,10 @@ export function createToolboxConfig() {
     kind: 'category',
     name: msg.CRYPTO_CATEGORY_LOGIC || 'Logic',
     colour: '#5CA6A6',
-    contents: CORE_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+    contents: LOGIC_CORE_BLOCKS.map((type) => ({
+      kind: 'block' as const,
+      type,
+    })),
   };
 
   const sbox = {
@@ -146,14 +171,20 @@ export function createToolboxConfig() {
     kind: 'category',
     name: msg.CRYPTO_CATEGORY_POSTQUANTUM_BASIC || 'Post-Quantum Basic',
     colour: '#5C5CA6',
-    contents: PQ_BASIC_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+    contents: PQ_BASIC_BLOCK_TYPES.map((type) => ({
+      kind: 'block' as const,
+      type,
+    })),
   };
 
   const postquantumAdvanced = {
     kind: 'category',
     name: msg.CRYPTO_CATEGORY_POSTQUANTUM_ADVANCED || 'Post-Quantum Advanced',
     colour: '#7C5CA6',
-    contents: PQ_ADVANCED_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+    contents: PQ_ADVANCED_BLOCK_TYPES.map((type) => ({
+      kind: 'block' as const,
+      type,
+    })),
   };
 
   const procedure = {

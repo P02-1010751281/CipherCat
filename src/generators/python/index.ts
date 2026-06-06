@@ -29,18 +29,21 @@ pythonGenerator.forBlock['data_value'] = function (
 pythonGenerator.forBlock['seed_bytes'] = function (
   _block: Block,
 ): [string, Order] {
+  void _block;
   return ['data', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['seed_hex'] = function (
   _block: Block,
 ): [string, Order] {
+  void _block;
   return ['data.hex()', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['cipher_key_from_seed'] = function (
   _block: Block,
 ): [string, Order] {
+  void _block;
   return [
     '[int.from_bytes(data[0:4].ljust(4,b"\\x00"),"big"), int.from_bytes(data[4:8].ljust(4,b"\\x00"),"big"), int.from_bytes(data[8:12].ljust(4,b"\\x00"),"big"), int.from_bytes(data[12:16].ljust(4,b"\\x00"),"big")]',
     Order.ATOMIC,
@@ -279,7 +282,7 @@ export function injectPrimitives(pyCode: string, algorithmType: string) {
           '                    _ret = bytes(_v)',
           '                    break',
           '                if isinstance(_v, int):',
-          '                    _ret = _v.to_bytes(4, \'big\')',
+          "                    _ret = _v.to_bytes(4, 'big')",
           '                    break',
           '                if isinstance(_v, list) and 0 < len(_v) < 256:',
           '                    try:',
@@ -301,7 +304,7 @@ export function injectPrimitives(pyCode: string, algorithmType: string) {
     bodyIndented,
     '    _ret = None',
     '    try:',
-    '        if \'CVs\' in globals() and \'n\' in globals():',
+    "        if 'CVs' in globals() and 'n' in globals():",
     '            _v = CVs[n] if isinstance(n, int) and n < len(CVs) else CVs[-1]',
     '            if isinstance(_v, str):',
     '                _ret = bytes.fromhex(_v)',

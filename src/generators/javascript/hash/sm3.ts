@@ -26,37 +26,26 @@ function getSm3PadFn(): string {
   return _sm3PadFn;
 }
 
-/** SM3 padding — pad text message. */
 javascriptGenerator.forBlock['hash_sm3_pad_text'] = function (
   block: Block,
-): string {
-  const left =
-    javascriptGenerator.valueToCode(block, 'LEFT', Order.ATOMIC) ||
-    'msg_padded';
-  const right =
-    javascriptGenerator.valueToCode(block, 'RIGHT', Order.ATOMIC) || "''";
-  return `${left} = ${getSm3PadFn()}(${right});\n`;
+): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
+  return [getSm3PadFn() + '(' + input + ')', Order.ATOMIC];
 };
 
-/** SM3 padding — pad hex message (converted to bytes first). */
 javascriptGenerator.forBlock['hash_sm3_pad_hex'] = function (
   block: Block,
-): string {
-  const left =
-    javascriptGenerator.valueToCode(block, 'LEFT', Order.ATOMIC) ||
-    'msg_padded';
-  const right =
-    javascriptGenerator.valueToCode(block, 'RIGHT', Order.ATOMIC) || "''";
+): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
   const hexFn = registerHexToBytes();
-  return `${left} = ${getSm3PadFn()}(${hexFn}(${right}));\n`;
+  return [getSm3PadFn() + '(' + hexFn + '(' + input + '))', Order.ATOMIC];
 };
 
-/** SM3 compression function (CF) per GB/T 32905-2016. */
 javascriptGenerator.forBlock['hash_sm3_compress'] = function (
   block: Block,
-): string {
-  const out =
-    javascriptGenerator.valueToCode(block, 'OUT', Order.ATOMIC) || 'y';
+): [string, number] {
   const v = javascriptGenerator.valueToCode(block, 'V', Order.ATOMIC) || '[]';
   const w = javascriptGenerator.valueToCode(block, 'W', Order.ATOMIC) || '[]';
 
@@ -91,5 +80,5 @@ javascriptGenerator.forBlock['hash_sm3_compress'] = function (
     '}',
   ]);
 
-  return `${out} = ${compressFn}(${v}, ${w});\n`;
+  return [compressFn + '(' + v + ', ' + w + ')', Order.ATOMIC];
 };

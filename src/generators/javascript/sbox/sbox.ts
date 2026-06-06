@@ -7,6 +7,7 @@ javascriptGenerator.forBlock['sbox'] = function (
   const rowCount = Number(block.getFieldValue('ROW')) || 4;
   const colCount = Number(block.getFieldValue('COL')) || 4;
   const outputFormat = block.getFieldValue('OUTPUT_FORMAT') || '2d';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gd = (block as any).gridData as string[] | undefined;
   const values: string[] = [];
 

@@ -7,8 +7,11 @@ import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
 
 // Compress_q(x, d): 将模 q 整数 x 压缩为 d 位整数
-javascriptGenerator.forBlock['pq_compress'] = function(block: Block): [string, number] {
-  const input = javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || 'input';
+javascriptGenerator.forBlock['pq_compress'] = function (
+  block: Block,
+): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || 'input';
   const bits = parseInt(block.getFieldValue('BITS') || '10');
   const modulus = block.getFieldValue('MODULUS') || '3329';
 
@@ -30,15 +33,18 @@ javascriptGenerator.forBlock['pq_compress'] = function(block: Block): [string, n
     '  }',
     '  let tmp = (x * pow2d + (q >> 1));',
     '  return Math.floor(tmp / q) & mask;',
-    '}'
+    '}',
   ]);
 
   return [`${funcName}(${input}, ${modulus})`, Order.ATOMIC];
 };
 
 // Decompress_q(y, d): 将 d 位整数 y 解压缩回模 q 整数
-javascriptGenerator.forBlock['pq_decompress'] = function(block: Block): [string, number] {
-  const input = javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || 'input';
+javascriptGenerator.forBlock['pq_decompress'] = function (
+  block: Block,
+): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || 'input';
   const bits = parseInt(block.getFieldValue('BITS') || '10');
   const modulus = block.getFieldValue('MODULUS') || '3329';
 
@@ -59,7 +65,7 @@ javascriptGenerator.forBlock['pq_decompress'] = function(block: Block): [string,
     '  }',
     '  let tmp = (y * q + half);',
     '  return Math.floor(tmp / pow2d);',
-    '}'
+    '}',
   ]);
 
   return [`${funcName}(${input}, ${modulus})`, Order.ATOMIC];

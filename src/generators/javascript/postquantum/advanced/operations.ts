@@ -59,6 +59,28 @@ function registerShake128Once(): string {
   ]);
 }
 
+function registerSampleA(): string {
+  const shakeName = registerShake128Once();
+  return javascriptGenerator.provideFunction_('sampleA', [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(seed, q) {',
+    '  q = q || 3329;',
+    '  if (typeof seed === "string") seed = new TextEncoder().encode(seed);',
+    '  else if (Array.isArray(seed)) seed = Uint8Array.from(seed);',
+    '  let buf = ' + shakeName + '(seed, 768);',
+    '  let coeffs = [];',
+    '  for (let pos = 0; pos + 3 <= buf.length && coeffs.length < 256; pos += 3) {',
+    '    let d1 = (buf[pos] | ((buf[pos + 1] & 0x0F) << 8)) & 0xFFF;',
+    '    let d2 = ((buf[pos + 1] >> 4) | (buf[pos + 2] << 4)) & 0xFFF;',
+    '    if (d1 < q) coeffs.push(d1);',
+    '    if (d2 < q && coeffs.length < 256) coeffs.push(d2);',
+    '  }',
+    '  return coeffs;',
+    '}',
+  ]);
+}
+
 function registerSampleNtt(): string {
   const shakeName = registerShake128Once();
   const nttFn = registerNtt();
@@ -93,8 +115,7 @@ javascriptGenerator.forBlock['pq_sample_ntt_mat'] = function (
   const k = block.getFieldValue('K') || '3';
   const modulus = block.getFieldValue('MODULUS') || '3329';
 
-  const seedWithNonceFn = registerSeedWithNonce();
-  const sampleNttFn = registerSampleNtt();
+  const sampleAFn = registerSampleA();
   const funcName = javascriptGenerator.provideFunction_('sampleNttMat', [
     'function ' +
       javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
@@ -103,13 +124,7 @@ javascriptGenerator.forBlock['pq_sample_ntt_mat'] = function (
     '  for (let i = 0; i < k; i++) {',
     '    A[i] = [];',
     '    for (let j = 0; j < k; j++) {',
-    '      A[i][j] = ' +
-      sampleNttFn +
-      '(' +
-      seedWithNonceFn +
-      '(' +
-      seedWithNonceFn +
-      '(seed, j), i), q);',
+    '      A[i][j] = ' + sampleAFn + '(new Uint8Array([...seed, j, i]), q);',
     '    }',
     '  }',
     '  return A;',

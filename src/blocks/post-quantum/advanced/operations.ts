@@ -4,8 +4,8 @@
  * 基于 FIPS 203 (ML-KEM) 标准实现，由基础块组合封装而成：
  *   - SampleNTTMat: 生成 k×k 的 NTT 域矩阵 A
  *   - CBDNTTVec: 生成 k 个 CBD 采样并 NTT 变换的多项式向量
- *   - ATrINTTAddE1: 计算 u = NTT⁻¹(Âᵀ∘r̂) + e₁ (ML-KEM 加密步骤 7-8)
- *   - TrINTTAddE2Mu: 计算 v = NTT⁻¹(t̂ᵀ∘r̂) + e₂ + μ (步骤 9-10)
+ *   - ML-KEM-Encaps{U}: 计算 u = NTT⁻¹(Âᵀ∘r̂) + e₁ (ML-KEM 加密步骤 7-8)
+ *   - ML-KEM-Encaps{V}: 计算 v = NTT⁻¹(t̂ᵀ∘r̂) + e₂ + μ (步骤 9-10)
  *   - BuildVec3: 将三个值组合为长度为 3 的向量
  *   - VecCompressEncode: 向量压缩编码 (步骤 11-12)
  *
@@ -97,7 +97,7 @@ Blockly.Blocks['pq_cbd_ntt_vec'] = {
 Blockly.Blocks['pq_atr_intt_add_e1'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('ATrINTTAddE1(')
+      .appendField('ML-KEM-EncapsU(')
       .appendField('k=')
       .appendField(
         new Blockly.FieldDropdown([
@@ -138,7 +138,7 @@ Blockly.Blocks['pq_atr_intt_add_e1'] = {
 Blockly.Blocks['pq_tr_intt_add_e2_mu'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('TrINTTAddE2Mu(')
+      .appendField('ML-KEM-EncapsV(')
       .appendField('k=')
       .appendField(
         new Blockly.FieldDropdown([

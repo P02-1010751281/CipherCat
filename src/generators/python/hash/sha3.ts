@@ -87,12 +87,15 @@ pythonGenerator.forBlock['hash_sha3_absorb'] = function (
       '(state, block, rate_bytes=136):',
     '    rate_lanes = rate_bytes // 8',
     '    s = list(state)',
-    '    for i in range(rate_lanes):',
-    '        lane = 0',
-    '        for j in range(8):',
-    '            lane |= (block[i*8+j] if i*8+j < len(block) else 0) << (j*8)',
-    '        s[i] ^= lane',
-    '    return ' + keccakName + '(s)',
+    '    for offset in range(0, len(block), rate_bytes):',
+    '        chunk = block[offset:offset + rate_bytes]',
+    '        for i in range(rate_lanes):',
+    '            lane = 0',
+    '            for j in range(8):',
+    '                lane |= (chunk[i*8+j] if i*8+j < len(chunk) else 0) << (j*8)',
+    '            s[i] ^= lane',
+    '        s = ' + keccakName + '(s)',
+    '    return s',
   ]);
   return [
     absorbName +

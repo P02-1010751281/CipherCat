@@ -40,6 +40,20 @@ watch(
   },
 );
 
+// workspace 内容变化自动重新生成，切换 workspace 时重新绑定监听
+watch(
+  () => props.workspace,
+  (ws, _old, onCleanup) => {
+    generateCode();
+    if (ws) {
+      const handler = () => generateCode();
+      ws.addChangeListener(handler);
+      onCleanup(() => ws.removeChangeListener(handler));
+    }
+  },
+  { immediate: true },
+);
+
 defineExpose({
   code,
   generateCode,

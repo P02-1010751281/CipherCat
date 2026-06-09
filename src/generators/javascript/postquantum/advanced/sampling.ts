@@ -4,7 +4,7 @@
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
 import { registerKeccakF1600 } from '../../hash/helpers';
-import { registerSampleCbdEta, registerNtt } from '../helpers';
+import { registerSampleCbdEta } from '../helpers';
 
 /** Sample a polynomial from a seed using SHAKE128/NTT-domain rejection sampling. */
 javascriptGenerator.forBlock['pq_sample_ntt'] = function (
@@ -57,26 +57,22 @@ javascriptGenerator.forBlock['pq_sample_ntt'] = function (
     '}',
   ]);
 
-  const nttFn = registerNtt();
-
   const sampleNttFn = javascriptGenerator.provideFunction_('sampleNtt', [
     'function ' +
       javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
       '(seed, q) {',
     '  q = q || 3329;',
-    '  let outBytes = 672;',
-    '  while (true) {',
-    '    let coeffs = [];',
-    '    let buf = ' + shakeName + '(seed, outBytes);',
-    '    for (let pos = 0; coeffs.length < 256 && pos + 3 <= buf.length; pos += 3) {',
-    '      let d1 = (buf[pos] | ((buf[pos + 1] & 0x0F) << 8)) & 0xFFF;',
-    '      let d2 = ((buf[pos + 1] >> 4) | (buf[pos + 2] << 4)) & 0xFFF;',
-    '      if (d1 < q) coeffs.push(d1);',
-    '      if (d2 < q && coeffs.length < 256) coeffs.push(d2);',
-    '    }',
-    '    if (coeffs.length >= 256) return ' + nttFn + '(coeffs, q);',
-    '    outBytes *= 2;',
+    '  if (typeof seed === "string") seed = new TextEncoder().encode(seed);',
+    '  else if (Array.isArray(seed)) seed = Uint8Array.from(seed);',
+    '  let buf = ' + shakeName + '(seed, 768);',
+    '  let coeffs = [];',
+    '  for (let pos = 0; pos + 3 <= buf.length && coeffs.length < 256; pos += 3) {',
+    '    let d1 = (buf[pos] | ((buf[pos + 1] & 0x0F) << 8)) & 0xFFF;',
+    '    let d2 = ((buf[pos + 1] >> 4) | (buf[pos + 2] << 4)) & 0xFFF;',
+    '    if (d1 < q) coeffs.push(d1);',
+    '    if (d2 < q && coeffs.length < 256) coeffs.push(d2);',
     '  }',
+    '  return coeffs;', // 无 NTT！SHAKE128 输出即 NTT 域
     '}',
   ]);
 

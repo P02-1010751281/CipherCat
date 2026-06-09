@@ -7,8 +7,11 @@ import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
 
 // Compress_q(x, d): 将模 q 整数 x 压缩为 d 位整数
-pythonGenerator.forBlock['pq_compress'] = function(block: Block): [string, number] {
-  const input = pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || 'input';
+pythonGenerator.forBlock['pq_compress'] = function (
+  block: Block,
+): [string, number] {
+  const input =
+    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || 'input';
   const bits = parseInt(block.getFieldValue('BITS') || '10');
   const modulus = block.getFieldValue('MODULUS') || '3329';
 
@@ -25,8 +28,11 @@ pythonGenerator.forBlock['pq_compress'] = function(block: Block): [string, numbe
 };
 
 // Decompress_q(y, d): 将 d 位整数 y 解压缩回模 q 整数
-pythonGenerator.forBlock['pq_decompress'] = function(block: Block): [string, number] {
-  const input = pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || 'input';
+pythonGenerator.forBlock['pq_decompress'] = function (
+  block: Block,
+): [string, number] {
+  const input =
+    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || 'input';
   const bits = parseInt(block.getFieldValue('BITS') || '10');
   const modulus = block.getFieldValue('MODULUS') || '3329';
 

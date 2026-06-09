@@ -19,30 +19,24 @@ pythonGenerator.forBlock['pq_sample_ntt_mat'] = function (
   const k = block.getFieldValue('K') || '3';
   const modulus = block.getFieldValue('MODULUS') || '3329';
 
-  const nttFn = registerNtt();
-
-  const sampleNttFn = pythonGenerator.provideFunction_('sample_ntt', [
+  const sampleAFn = pythonGenerator.provideFunction_('sample_a', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed, q=3329):',
     '    import hashlib',
     '    if isinstance(seed, str):',
     '        seed = seed.encode("utf-8")',
     '    seed = bytes(seed)',
-    '    out_len = 672',
-    '    while True:',
-    '        buf = hashlib.shake_128(seed).digest(out_len)',
-    '        coeffs = []',
-    '        for pos in range(0, len(buf) - 2, 3):',
-    '            d1 = (buf[pos] | ((buf[pos + 1] & 0x0F) << 8)) & 0xFFF',
-    '            d2 = ((buf[pos + 1] >> 4) | (buf[pos + 2] << 4)) & 0xFFF',
-    '            if d1 < q:',
-    '                coeffs.append(d1)',
-    '                if len(coeffs) == 256:',
-    '                    return ' + nttFn + '(coeffs, q)',
-    '            if d2 < q:',
-    '                coeffs.append(d2)',
-    '                if len(coeffs) == 256:',
-    '                    return ' + nttFn + '(coeffs, q)',
-    '        out_len *= 2',
+    '    out = hashlib.shake_128(seed).digest(768)',
+    '    coeffs = []',
+    '    for pos in range(0, len(out), 3):',
+    '        if len(coeffs) >= 256:',
+    '            break',
+    '        d1 = (out[pos] | ((out[pos + 1] & 0x0F) << 8)) & 0xFFF',
+    '        d2 = ((out[pos + 1] >> 4) | (out[pos + 2] << 4)) & 0xFFF',
+    '        if d1 < q:',
+    '            coeffs.append(d1)',
+    '        if d2 < q and len(coeffs) < 256:',
+    '            coeffs.append(d2)',
+    '    return coeffs',
   ]);
 
   const funcName = pythonGenerator.provideFunction_('sample_ntt_mat', [
@@ -51,7 +45,7 @@ pythonGenerator.forBlock['pq_sample_ntt_mat'] = function (
     '    for i in range(k):',
     '        for j in range(k):',
     '            A[i][j] = ' +
-      sampleNttFn +
+      sampleAFn +
       '(seed + bytes([j]) + bytes([i]), q)',
     '    return A',
   ]);

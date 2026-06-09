@@ -54,7 +54,13 @@ export async function handleFileUpload(
 /** 自定义事件名，Tauri 保存成功后携带路径广播 */
 export const WORKSPACE_SAVED_EVENT = 'ciphercat:workspace-saved';
 
-export function downloadContent(content: string, filename: string): void {
+/** 上次导出的路径，用于快速覆盖 */
+let lastExportPath: string | null = null;
+
+export async function downloadContent(
+  content: string,
+  filename: string,
+): Promise<void> {
   if (!content) {
     console.warn('没有可下载的内容');
     return;
@@ -65,50 +71,75 @@ export function downloadContent(content: string, filename: string): void {
     return;
   }
 
-  // Tauri v2 原生保存
-  // withGlobalTauri: true 暴露 window.__TAURI__，
-  // invoke 可能在 .core.invoke 或顶层 .invoke（依 Tauri v2 版本）
-  const tauriGlobal = (window as unknown as Record<string, unknown>)[
-    '__TAURI__'
-  ] as Record<string, unknown> | undefined;
-  if (tauriGlobal) {
-    // 兼容两种结构：v2.0.x 用 core.invoke，其他用顶层 invoke
-    const invoke:
-      | ((cmd: string, args: Record<string, unknown>) => Promise<unknown>)
-      | undefined =
-      ((tauriGlobal['core'] as Record<string, unknown> | undefined)?.[
-        'invoke'
-      ] as
-        | ((cmd: string, args: Record<string, unknown>) => Promise<unknown>)
-        | undefined) ??
-      (tauriGlobal['invoke'] as
-        | ((cmd: string, args: Record<string, unknown>) => Promise<unknown>)
-        | undefined);
-    if (invoke) {
-      invoke('save_workspace', { content, filename })
-        .then((path: unknown) => {
-          const savedPath = String(path || '');
-          console.log('Workspace exported to:', savedPath);
-          // 广播事件，让 App.vue 更新 toast 显示路径
-          window.dispatchEvent(
-            new CustomEvent(WORKSPACE_SAVED_EVENT, {
-              detail: { path: savedPath },
-            }),
-          );
-        })
-        .catch((err: unknown) => {
-          const msg = String(err || '');
-          console.error('Workspace export failed:', msg);
-          // 用户取消不弹 toast，真正失败才广播
-          if (msg !== 'User cancelled') {
-            window.dispatchEvent(
-              new CustomEvent(WORKSPACE_SAVED_EVENT, {
-                detail: { path: '', error: msg },
-              }),
-            );
-          }
-        });
+  // Tauri: 如果有上次导出的路径，直接覆盖（跳过对话框）
+  if (lastExportPath) {
+    try {
+      const { writeTextFile } = await import('@tauri-apps/plugin-fs');
+      await writeTextFile(lastExportPath, content);
+      console.log('Workspace overwritten at:', lastExportPath);
+      window.dispatchEvent(
+        new CustomEvent(WORKSPACE_SAVED_EVENT, {
+          detail: { path: lastExportPath },
+        }),
+      );
       return;
+    } catch {
+      // writeTextFile 不可用，降级到弹对话框
+      lastExportPath = null;
+    }
+  }
+
+  // Tauri: 弹保存对话框（首次导出），直接写文件，不走 IPC 避免大内容撑爆缓冲区
+  // 如果对话框可用，无论保存还是取消，都不再走浏览器回退
+  let tauriDialogShown = false;
+  try {
+    const { save } = await import('@tauri-apps/plugin-dialog');
+    const { writeTextFile } = await import('@tauri-apps/plugin-fs');
+    const filePath = await save({
+      defaultPath: filename,
+      filters: [{ name: 'Workspace', extensions: ['json', 'xml'] }],
+    });
+    tauriDialogShown = true;
+    if (filePath) {
+      await writeTextFile(filePath, content);
+      lastExportPath = filePath;
+      console.log('Workspace saved to:', filePath);
+      window.dispatchEvent(
+        new CustomEvent(WORKSPACE_SAVED_EVENT, {
+          detail: { path: filePath },
+        }),
+      );
+      return;
+    }
+  } catch {
+    // Tauri plugin-dialog/fs not available
+  }
+  if (tauriDialogShown) {
+    // 对话框已显示（用户取消或保存失败），不再走浏览器回退
+    return;
+  }
+
+  // 浏览器回退：showSaveFilePicker (File System Access API)
+  // 让用户可以选择保存位置并替换已有文件
+  // 注意：仅 Chromium 浏览器支持 (Chrome/Edge)，Firefox/Safari 不适用
+  if ('showSaveFilePicker' in window) {
+    try {
+      const blob = new Blob([content], { type: 'text/plain' });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const fileHandle = await (window as any).showSaveFilePicker({
+        suggestedName: filename,
+      });
+      const writable = await fileHandle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+      console.log(
+        'Workspace saved via File System Access API:',
+        fileHandle.name,
+      );
+      return;
+    } catch (error) {
+      // 用户取消或 API 不可用，继续降级
+      console.warn('showSaveFilePicker failed or cancelled:', error);
     }
   }
 
@@ -429,13 +460,13 @@ function collectSboxFieldValuesFromXml(
 ): Map<string, Map<string, string>> {
   const result = new Map<string, Map<string, string>>();
   const blockRegex =
-    /<block type="sbox" id="([^"]*)"[^>]*>([\s\S]*?)<\/block>/g;
+    /<block type='sbox' id='([^']*)'[^>]*>([\s\S]*?)<\/block>/g;
   let match: RegExpExecArray | null;
 
   while ((match = blockRegex.exec(xmlText)) !== null) {
     const fieldMap = new Map<string, string>();
     const fieldRegex =
-      /<field name="(SBox_\d+_\d+)">((?:[^<]|<(?!\/field>))*)<\/field>/g;
+      /<field name='(SBox_\d+_\d+)'>((?:[^<]|<(?!\/field>))*)<\/field>/g;
     let fMatch: RegExpExecArray | null;
     while ((fMatch = fieldRegex.exec(match[2])) !== null) {
       fieldMap.set(fMatch[1], fMatch[2]);
@@ -505,8 +536,32 @@ export function exportJson(workspace: Blockly.WorkspaceSvg | null): string {
   }
 
   try {
-    const state = Blockly.serialization.workspaces.save(workspace);
-    return JSON.stringify(state, null, 2);
+    // 迭代遍历顶层块链，避免递归 next 链导致 WebKit 栈溢出
+    const topBlocks = workspace.getTopBlocks(false);
+    const blockStates: object[] = [];
+    for (const block of topBlocks) {
+      let current: Blockly.Block | null = block;
+      while (current) {
+        const saved = Blockly.serialization.blocks.save(current, {
+          addCoordinates: true,
+        });
+        if (saved) {
+          // 清除 next：平坦数组不需要块内嵌 next 链
+          const { next: _, ...clean } = saved;
+          void _;
+          blockStates.push(clean);
+        }
+        current = current.getNextBlock();
+      }
+    }
+
+    const state: Record<string, unknown> = {
+      blocks: {
+        languageVersion: 0,
+        blocks: blockStates,
+      },
+    };
+    return JSON.stringify(state);
   } catch (error) {
     console.error('导出 JSON 失败:', error);
     return '';

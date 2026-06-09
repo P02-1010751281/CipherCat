@@ -74,19 +74,17 @@ export function Workspace(): WorkspaceReturn {
     if (!filename) {
       filename = 'blockly_workspace.json';
     }
-    try {
-      return filename.endsWith('.xml')
-        ? serialization.downloadContent(
-            serialization.exportXml(workspace),
-            filename,
-          )
-        : serialization.downloadContent(
-            serialization.exportJson(workspace),
-            filename,
-          );
-    } catch (error) {
-      errorHandler.handleFileError('下载工作空间', error);
-    }
+    // 延迟到下一个宏任务，给 WebKit 一个干净的调用栈，避免递归序列化栈溢出
+    setTimeout(() => {
+      try {
+        const content = filename.endsWith('.xml')
+          ? serialization.exportXml(workspace)
+          : serialization.exportJson(workspace);
+        serialization.downloadContent(content, filename);
+      } catch (error) {
+        errorHandler.handleFileError('下载工作空间', error);
+      }
+    }, 0);
   };
 
   const handleFileUpload = async (file: File): Promise<boolean> => {

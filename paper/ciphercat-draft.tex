@@ -1,0 +1,445 @@
+%%
+%% CipherCat — SoftwareX OSP 论文中文初稿
+%% 严格按照 softwarex-osp-template.tex 模版结构
+%% 最终提交需翻译为英文，SoftwareX 不接受中文稿件
+%%
+
+\documentclass[preprint,12pt,a4paper]{elsarticle}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Sans CJK SC}
+\setlength{\parindent}{0pt}
+
+\journal{SoftwareX}
+
+\begin{document}
+\renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}}
+
+\begin{frontmatter}
+
+	\title{CipherCat: 面向后量子密码学的可视化编程平台}
+
+	\author{Tianyu Ding\corref{cor1}}
+	\ead{20253821@mail.besti.edu.cn}
+	\cortext[cor1]{Corresponding author.}
+
+	\address{Department of Electronic and Communication Engineering, Beijing Electronic Science and Technology Institute, Beijing, 100070, China}
+
+	\begin{abstract}
+		CipherCat 是一个面向后量子密码学（PQC）的开源可视化编程平台，基于 Blockly 和 Vue 3 构建。平台将 FIPS 203 (ML-KEM) 标准中的 CBD 采样、NTT/INTT 变换、编码压缩、ML-KEM 复合运算等 17 个 PQC 专用原语封装为可拖拽的积木块，用户通过组合积木块构建密码算法工作流，系统自动生成可独立运行的 Python 或 JavaScript 代码。CipherCat 旨在降低 PQC 算法的学习与原型开发门槛，服务于密码学教育、算法验证和工程原型设计等场景。
+	\end{abstract}
+
+	\begin{keyword}
+		可视化编程 \sep 后量子密码学 \sep Blockly \sep NTT \sep 代码生成
+	\end{keyword}
+
+\end{frontmatter}
+
+% ============================================================
+% Required Metadata
+% ============================================================
+
+\section*{Current code version}
+\label{sec:codeversion}
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|l|p{5.8cm}|p{5.8cm}|}
+		\hline
+		\textbf{Nr.} & \textbf{Code metadata description}                                  & \textbf{Please fill in this column}                               \\
+		\hline
+		C1           & Current code version                                                & v1.0.0                                                            \\
+		\hline
+		C2           & Permanent GitHub link to code/repository used for this code version & \url{https://github.com/P02-1010751281/CipherCat}                 \\
+		\hline
+		C3           & Legal Code License                                                  & MIT License                                                       \\
+		\hline
+		C4           & Code versioning system used                                         & git                                                               \\
+		\hline
+		C5           & Software code languages, tools, and services used                   & TypeScript, Vue 3, Blockly, Tauri (Rust), Python, Vite, IndexedDB \\
+		\hline
+		C6           & Compilation requirements, operating environments \& dependencies    & Node.js $\ge$ 24; npm; Rust（cargo, rustup）；Windows/Linux/macOS    \\
+		\hline
+		C7           & If available Link to developer documentation/manual                 & \url{https://github.com/P02-1010751281/CipherCat}                 \\
+		\hline
+		C8           & Support email for questions                                         & \url{20253821@mail.besti.edu.cn}                                  \\
+		\hline
+	\end{tabular}
+	\caption{Code metadata (mandatory)}
+	\label{tab:metadata}
+\end{table}
+
+\clearpage
+
+% ============================================================
+% 1. Motivation and significance
+% ============================================================
+
+\section*{1. Motivation and significance}
+
+Shor 和 Grover 等量子算法 \cite{shor1994} 对 RSA、ECC 及对称密码体系的根本性威胁，推动了 NIST 于 2016 年启动后量子密码（PQC）标准化进程 \cite{nistir8413}。2024 年，基于格的 CRYSTALS-Kyber \cite{kyber} 和 CRYSTALS-Dilithium \cite{dilithium} 分别作为 FIPS 203 (ML-KEM) 和 FIPS 204 (ML-DSA) 标准 \cite{fips203,fips204} 正式发布，标志着 PQC 从学术研究进入工程落地阶段。
+
+然而，PQC 算法的学习与开发存在显著门槛。以 ML-KEM 为例，其核心涉及 $\mathbb{Z}_q[X]/(X^{256}+1)$ 上的多项式环运算、Cooley-Tukey / Gentleman-Sande 蝶形 NTT/INTT 变换、中心二项分布（CBD）采样、系数压缩与字节编码等十余种数学原语。传统方式依赖阅读 FIPS 规范文档并手工编码实现——学习者不仅需要扎实的抽象代数和数论基础，底层实现细节（如 NTT 蝶形运算的位逆序索引、$\mathbb{Z}_q$ 上的模乘边界处理）也极易引入难以调试的错误。已有研究证实，密码学 API 的误用和实现缺陷是安全漏洞的重要来源 \cite{nadi2016,mouha2018,hazhirpasand2021}。
+
+这种"复杂数学 → 手动编码"的门槛问题并不限于密码学领域。在深度学习领域，VELCRO \cite{lim2024velcro} 通过可视化积木块降低了 DNN 架构构建的认知负担——这表明将抽象数学结构转化为图形化原语是一种经过验证的降低门槛策略。密码学领域同样需要这样一种工具。
+
+现有密码学工具中，CrypTool 2 \cite{kopal2022} 侧重传统密码教学但无 PQC 支持，Cryptol \cite{lewis2003} 面向形式化验证而非可视化编程，HACL* \cite{hacl2017} 提供经过验证的 C 密码库但无图形化交互界面，liboqs \cite{stebila2017} 作为 Open Quantum Safe 项目的开源 C 库提供了丰富的 PQC 算法实现但对初学者缺乏图形化交互入口——均未提供面向 PQC 算法的可视化交互式构建支持。
+
+在可视化积木编程与密码学教育的交叉领域，CryptoScratch \cite{percival2022cryptoscratch} 将 AES、RSA、SHA-256 等经典密码算法封装为 Scratch 积木块，Lodi 等 \cite{lodi2022cryptography} 利用 Snap! 平台在高中开展密码学教学。然而，这些工作均面向 K-12 阶段经典密码教育，未涉及后量子密码学。CipherCat 将可视化积木编程的应用范围从经典密码教育拓展至后量子密码（PQC）领域。
+
+CipherCat 是基于 MetaCrypt 模型驱动的密码算法可视化开发平台~\\cite{metacrypt2024} 的后量子密码学扩展分支。MetaCrypt 已提供传统密码学积木块和代码生成等基础设施，但缺乏 PQC 专用原语。CipherCat 在其架构基础上，将 FIPS 203 (ML-KEM) Algorithm~3--14 中的 17 个 PQC 原语封装为可拖拽的积木块，并提供从图形化工作流到可独立运行的 Python/JavaScript 代码的自动生成流水线。CipherCat 定位为面向密码学教学、算法理解和原型验证的可视化工具，不旨在替代生产级密码库（后者需要考虑恒定时间实现、侧信道防护等工程需求）。
+
+% --------------------------------------------------------------
+\section*{2. Software description}
+
+\subsection*{2.1 Software architecture}
+
+CipherCat 采用四层架构（图~\ref{fig:architecture}），自底向上为：
+
+\begin{itemize}
+	\item \textbf{数据层。} 基于浏览器 IndexedDB 实现项目本地持久化，支持自动保存、多项目切换和 JSON/XML 格式的导入导出。
+	\item \textbf{积木层。} 基于 Blockly 12.x \cite{blockly,fraser2015}，71 个积木块按密码学类别组织为 \texttt{core/}、\texttt{bitwise/}、\texttt{hash/}、\texttt{sbox/}、\texttt{number-theory/} 和 \texttt{post-quantum/} 六个模块。在工具箱 UI 中 \texttt{post-quantum/} 进一步拆分为「后量子基础」与「后量子高级」两个分类。
+	\item \textbf{生成层。} 每个积木块在 \texttt{generators/javascript/} 和 \texttt{generators/python/} 目录下各有独立的生成器文件，通过 Blockly 的 \texttt{provideFunction\_} 按需依赖注入机制自动生成可独立运行的代码。图~\ref{fig:codegen} 以 NTT 积木块为例展示了完整转换流水线。
+	\item \textbf{表现层。} 基于 Vue 3 + TypeScript，主界面左右分栏（工作区 / 代码预览），视口低于 1200px 时自动切换为上下布局。
+\end{itemize}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{Architecture.png}
+	\caption{CipherCat four-layer system architecture}
+	\label{fig:architecture}
+\end{figure}
+
+代码生成的核心机制是 Blockly 的 \texttt{provideFunction\_} 按需依赖注入：每个密码学原语（NTT、INTT、SamplePolyCBD 等）的完整实现通过 \texttt{registerXxx()} 辅助函数注册，Blockly 仅在工作区实际使用了对应积木块时才将该函数注入输出代码。PQC 算法中的 XOF/PRF 功能通过 Python 标准库 \texttt{hashlib} 的 SHAKE128/SHAKE256 模块提供，无需额外第三方依赖。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{CipherCat-Code-Generation-Pipeline.png}
+	\caption{Code Generation Pipeline (NTT Block Example)}
+	\label{fig:codegen}
+\end{figure}
+
+此外，项目通过 Tauri 2.x \cite{tauri} 封装为桌面应用，Vue 前端通过 \texttt{invoke()} API 调用 Rust 后端命令实现文件系统访问和窗口管理。
+
+\subsection*{2.2 PQC 原语体系}
+
+CipherCat 的核心创新在于对 FIPS 203 (ML-KEM) 算法族的系统化拆解与积木块封装。通过对 Algorithm~3 至 Algorithm~14 的分析，我们识别出两类 PQC 原语：
+
+\begin{itemize}
+	\item \textbf{基础原语}（9 块）：直接对应 FIPS 203 定义的底层算子——BitsToBytes/BytesToBits（Algorithm 3--4）、ByteEncode/Decode（Algorithm 5--6）、Compress/Decompress（\S4.2.1）、ByteConcat、BytesSlice 和 SeedWithNonce。这些原语是构建 PQC 算法的基本构件。
+	\item \textbf{高级原语}（8 块）：将多步基础操作封装为语义完整的复合块——SampleNTT（基于 XOF 流式挤压的 NTT 域均匀采样，SHAKE128 输出直接作为 NTT 域系数，无需显式调用 NTT()）、SamplePolyCBD（CBD 噪声采样）、SampleNTTMat（生成 $k \times k$ 的 NTT 域矩阵，种子顺序 $\rho \| j \| i$）、CBDNTTVec（CBD 采样后 NTT 变换）、ATrINTTAddE1 和 TrINTTAddE2Mu（ML-KEM 加密的核心乘加运算）、BuildVec3（向量构造）和 VecCompressEncode（向量压缩编码）。这些复合块将 5--10 个基础块的串联操作封装为单个积木块，兼顾了学习时的透明度与原型开发时的效率。
+\end{itemize}
+
+表~\ref{tab:blocks} 列出了 CipherCat 的积木块分类统计。17 个 PQC 专用块是本文的核心贡献，其余 54 个基础密码学积木块继承自 MetaCrypt 平台。
+
+\begin{table}[htbp]
+	\centering
+	\caption{Supported cryptographic block categories and FIPS references}
+	\label{tab:blocks}
+	\begin{tabular}{|l|l|l|p{5cm}|}
+		\hline
+		\textbf{Category}       & \textbf{Count} & \textbf{Standard}     & \textbf{Representative blocks}                              \\
+		\hline
+		PQC Basic               & 9              & FIPS 203              & BytesToBits, ByteEncode/Decode, Compress/Decompress         \\
+		\hline
+		PQC Advanced            & 8              & FIPS 203              & SampleNTT, SamplePolyCBD, ATrINTTAddE1, VecCompressEncode   \\
+		\hline
+		Traditional (inherited) & 54             & FIPS 180-4, 202, etc. & Bitwise, S-Box, Hash (SM3/SHA-2/SHA-3), Number Theory, Core \\
+		\hline
+	\end{tabular}
+\end{table}
+
+
+\begin{table}[htbp]
+	\centering
+	\caption{FIPS 203 Algorithm-to-block mapping for PQC primitives}
+	\label{tab:fips203_mapping}
+	\footnotesize
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		\textbf{Algorithm}          & \textbf{FIPS 203 Ref.}    & \textbf{CipherCat Block}    & \textbf{Category}    \\
+		\hline
+		BitsToBytes   & Algorithm~3  & \texttt{pq\_bits\_to\_bytes}   & Basic \\
+		BytesToBits   & Algorithm~4  & \texttt{pq\_bytes\_to\_bits}   & Basic \\
+		ByteEncode$_d$ & Algorithm~5  & \texttt{pq\_byte\_encode}     & Basic \\
+		ByteDecode$_d$ & Algorithm~6  & \texttt{pq\_byte\_decode}     & Basic \\
+		SampleNTT     & Algorithm~7  & \texttt{pq\_sample\_ntt}     & Advanced \\
+		SamplePolyCBD & Algorithm~8  & \texttt{pq\_sample\_poly\_cbd} & Advanced \\
+		NTT            & \S4.3        & \texttt{ntt}               & Num.\ Theory$^\ast$ \\
+		INTT           & \S4.3        & \texttt{intt}              & Num.\ Theory$^\ast$ \\
+		Compress$_q$   & \S4.2.1      & \texttt{pq\_compress}       & Basic \\
+		Decompress$_q$ & \S4.2.1      & \texttt{pq\_decompress}     & Basic \\
+		SampleNTTMat  & Alg.~14 (K-PKE) & \texttt{pq\_sample\_ntt\_mat}  & Advanced \\
+		CBDNTTVec     & Alg.~14      & \texttt{pq\_cbd\_ntt\_vec}    & Advanced \\
+		$\hat{A}^T\!\circ\!\hat{r}+e_1$ & Alg.~14 step 7--8 & \texttt{pq\_atr\_intt\_add\_e1} & Advanced \\
+		$\hat{t}^T\!\circ\!\hat{r}+e_2+\mu$ & Alg.~14 step 9--10 & \texttt{pq\_tr\_intt\_add\_e2\_mu} & Advanced \\
+		VecCompressEncode & Alg.~14 step 11 & \texttt{pq\_vec\_compress\_encode} & Advanced \\
+		BuildVec$_3$  & -- (auxiliary) & \texttt{pq\_build\_vec3}     & Advanced \\
+		\hline
+		\multicolumn{4}{l}{\footnotesize $^\ast$NTT/INTT are classified under Number Theory in the block toolbox but are essential PQC infrastructure.}\\
+		\multicolumn{4}{l}{\footnotesize Including NTT/INTT, the total PQC-related block count is 19 (17 PQC-specific + 2 number-theoretic).}\\
+	\end{tabular}
+\end{table}
+
+\subsection*{2.3 Code generation mechanism}
+
+以下以 NTT 积木块为例说明代码生成的内部机制（完整流水线见图~\ref{fig:codegen}）：
+
+\begin{enumerate}
+	\item \textbf{参数提取。} 生成器通过 \texttt{valueToCode(block, 'INPUT', Order.ATOMIC)} 获取输入端子的代码字符串，通过 \texttt{getFieldValue} 读取模数 $q$ 和长度 $n$。
+	\item \textbf{辅助函数按需注入。} 生成器调用 \texttt{registerNtt()}，该函数通过 \texttt{provideFunction\_('ntt', [...])} 注册包含 7 层 Cooley-Tukey 蝶形变换的 \texttt{ntt} 函数。注意 NTT 循环终止于步长 2 而非 1——这与 FIPS 203 Algorithm~6 的规范一致（\texttt{for (len = 128; len >= 2; len >>= 1)}）；当步长退化为 1 时，蝶形运算中的旋转因子恒为 1，该层可省略而不影响正确性。Blockly 收集所有 \texttt{provideFunction\_} 声明并统一注入输出代码顶部后，再执行各块的生成回调——确保输出代码不含任何未使用的辅助函数。
+\end{enumerate}
+
+最终生成器组装为 \texttt{ntt(poly, q=3329, n=256)} 并返回，优先级 \texttt{Order.ATOMIC}。INTT、SamplePolyCBD、Compress/Decompress 等其他 16 个 PQC 原语均采用相同的 \texttt{registerXxx()} $\rightarrow$ \texttt{provideFunction\_} 模式。
+
+% --------------------------------------------------------------
+\section*{3. Illustrative examples}
+
+\textbf{示例 1：NTT 正变换。} 以 ML-KEM (FIPS 203 $\S$4.3) 的 NTT 正变换为例演示典型使用流程。用户从后量子工具箱依次拖入「NTT 正变换」和「逐点乘法」积木块，设置模数 $q = 3329$、长度 $n = 256$，点击「生成代码」，CipherCat 自动输出如下可执行 Python 代码：
+
+\begin{verbatim}
+def ntt(a, q=3329, n=256):
+    gen = 17 if q == 3329 else 3
+    res = list(a)
+    ln = len(res)
+    def _brv(x, bits):
+        r = 0
+        for _ in range(bits):
+            r = (r << 1) | (x & 1)
+            x >>= 1
+        return r
+    nbits = n.bit_length() - 1
+    stride = ln // 2
+    zz = 0
+    while stride >= 2:
+        for start in range(0, ln, stride * 2):
+            zz += 1
+            zp = pow(gen, _brv(zz, nbits - 1), q)
+            for i in range(start, start + stride):
+                u = res[i]
+                t = (zp * res[i + stride]) % q
+                res[i] = (u + t) % q
+                res[i + stride] = (u - t + q) % q
+        stride >>= 1
+    return res
+
+result = ntt_mul(ntt_a, ntt_b, q=3329)
+\end{verbatim}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.85\textwidth]{NTT.png}
+	\caption{NTT block workspace and generated code in CipherCat}
+	\label{fig:ntt_block}
+\end{figure}
+
+用户可将代码复制到本地 Python 环境直接运行验证。此例展示了 CipherCat 的核心理念：用户无需手写循环和模运算细节，通过积木块连接即可观察 Cooley-Tukey 蝶形运算的层级递推结构（FIPS 203 Algorithm~6），同时获得可独立运行的标准代码。
+
+\medskip
+
+\textbf{示例 2：ML-KEM-768 密钥封装。} 作为完整的端到端验证，图~\ref{fig:kyber_workspace} 展示了由基础原语积木块搭建的 ML-KEM-768 封装工作流（FIPS 203 Algorithm~10，内调 K-PKE.Encrypt Algorithm~13）。该工作区包含 118 个积木块（其中 30 个为密码学原语块），按算法规范可划分为五个阶段：
+
+\begin{enumerate}
+	\item \textbf{输入准备（Step 1--4）。} 定义封装密钥 \texttt{ek}（$k \times 384$ 字节编码公钥）、消息 $\mu$（32 字节共享秘密）及中间状态变量。\texttt{ek} 经 ByteDecode 解码为多项式向量 $\hat{t}$。
+	\item \textbf{哈希派生（Step 5--8）。} SHA3-256 三段式接口（Absorb $\rightarrow$ Pad $\rightarrow$ Squeeze）对 $\mu$ 和 $H(\texttt{ek})$ 哈希，输出 64 字节种子，经 BytesSlice 分割为 $\hat{K}$（前 32B）和 $r$（后 32B）。
+	\item \textbf{矩阵与向量采样（Step 9--11）。} 以 $r$ 为种子，多次调用 SampleNTT 和 SamplePolyCBD（$\eta_1 = 2$）生成 $3 \times 3$ 的 NTT 域矩阵 $\hat{A}$ 和向量 $\hat{r}$。
+	\item \textbf{核心加密运算（Step 12--14）。} 通过 NTT/INTT、逐点乘法和多项式加法等基础块，手动编排 $\hat{A}^T \circ \hat{r}$（使用转置索引 $A[j][i]$）和 $\hat{t}^T \circ \hat{r}$，叠加 CBD 误差向量 $e_1$、$e_2$（$\eta_2 = 2$），分别得到 $u$ 和 $v$。加密核心由 14 个原语块通过变量串联完成。
+	\item \textbf{压缩编码（Step 15--18）。} 对 $u$（$d_u = 10$）和 $v$（$d_v = 4$）分别执行 Compress 和 ByteEncode，最终通过 ByteConcat 拼接为密文 $c$。
+\end{enumerate}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{ML-KEM-768 Encaps.png}
+	\caption{ML-KEM-768 Encaps workspace in CipherCat}
+	\label{fig:kyber_workspace}
+\end{figure}
+
+生成的 Python 代码调用 \texttt{hashlib} 的 SHAKE128/SHAKE256 提供 XOF/PRF 功能，约 450 行，覆盖 FIPS 203 Algorithm~3 至 Algorithm~14 的全部原语，可直接在本地 Python 环境中独立运行并验证封装/解封装正确性。工作区中全部使用基础原语块搭建，体现了"从零构建"的学习理念；工具箱中同时提供了 SampleNTTMat、ATrINTTAddE1 等高阶复合块以支持快速原型开发。
+
+
+\medskip
+
+\textbf{正确性验证。} 为验证 CipherCat 生成代码的正确性，我们使用 NIST ACVP 标准格式（draft-celi-acvp-ml-kem）\cite{acvp-mlkem} 的已知答案测试（KAT）向量进行双重交叉验证。（1）以 C2SP/CCTV（Community Cryptography Specification Project）发布的 ML-KEM-768 独立参考测试向量\footnote{\url{https://github.com/C2SP/CCTV/tree/main/ML-KEM}} 为基准，将 CipherCat 生成的 Encaps Python 代码（约 450 行，覆盖 FIPS 203 Algorithm~3 至 Algorithm~14）转换为 ACVP JSON 格式，在 CPython 3.12 下执行。生成的密文 $c$（1088 字节）和共享密钥 $\hat{K}$（32 字节）与 C2SP 参考值逐字节一致。（2）使用独立编写的 ACVP 自动化验证脚本（\texttt{test/nist\_acvp\_verify.py}）对相同代码进行回归测试，验证通过。向量来源包括 C2SP/CCTV 社区参考向量及通过 \texttt{gen\_acvp\_vectors.py} 从 Kyber 参考实现 KAT 转换的 ACVP 格式向量，确认 CipherCat 代码生成流水线在功能上与 FIPS 203 规范一致。
+
+% --------------------------------------------------------------
+\section*{4. Impact}
+
+CipherCat 围绕后量子密码学的可视化学习和原型开发这一核心场景，在以下方面产生影响：
+
+\begin{enumerate}
+	\item \textbf{降低 PQC 学习与实现门槛。} 传统 PQC 教学依赖规范文档阅读和手动编码，NTT 蝶形结构的层级递推关系难以仅通过伪代码理解，且底层实现细节（位逆序索引、$\mathbb{Z}_q$ 上的模乘边界处理等）极易引入错误~\cite{nejatollahi2019}。CipherCat 从两个层面解决这一问题：在理解层面，将 FIPS 203 原语封装为独立积木块，学生通过图形化组合即可构建完整 ML-KEM 流程并直观理解各步骤间的数据依赖——ML-KEM-768 示例将 Algorithm~17 内调的 K-PKE 加密（Algorithm~14）拆解为五个可视化阶段；在实现层面，代码生成流水线直接输出基于 Python 标准库 \texttt{hashlib} 的约 450 行完整可执行代码，用户可将精力集中于算法逻辑理解而非底层编码。类似于 VELCRO \cite{lim2024velcro} 在深度学习领域通过可视化降低 DNN 构建门槛的实践，CipherCat 为 PQC 领域提供了同等的可视化学习基础设施。
+	\item \textbf{促进跨领域理解与协作。} PQC 工程化需要密码学家与工程师协作，但 $\mathbb{Z}_q[X]/(X^{256}+1)$ 等数学描述对工程人员构成障碍。CipherCat 的积木块连接图提供了一种共享的、可执行的算法表示形式，降低了跨学科团队的沟通成本。
+	\item \textbf{丰富 PQC 工具生态。} 表~\ref{tab:comparison} 从可视化编程、PQC 支持、代码生成等维度对比了 CipherCat 与代表性密码学工具。CipherCat 是唯一同时提供可视化积木编程、PQC 原语和自动代码生成的平台。CryptoScratch \cite{percival2022cryptoscratch} 和 Snap!~密码学工作 \cite{lodi2022cryptography} 虽采用积木编程但仅覆盖经典密码且面向 K-12；liboqs \cite{stebila2017} 提供完整的 PQC 算法实现但定位为工程库而非教学工具。CipherCat 填补了后量子密码学在可视化编程维度的空白。
+\end{enumerate}
+
+\begin{table}[htbp]
+	\centering
+	\footnotesize
+	\caption{Feature comparison of CipherCat with representative cryptographic tools}
+	\label{tab:comparison}
+	\begin{tabular}{|p{2.8cm}|c|c|c|c|c|}
+		\hline
+		\textbf{Feature}          & \textbf{CipherCat} & \textbf{CrypTool~2} & \textbf{Cryptol} & \textbf{HACL*} & \textbf{CryptoScratch} \\
+		\hline
+		Visual block programming  & \checkmark         & \checkmark          & --               & --             & \checkmark             \\
+		\hline
+		PQC support               & \checkmark         & --                  & --               & partial$^{\dagger}$     & --                     \\
+		\hline
+		Code generation           & \checkmark         & --                  & --               & --             & --                     \\
+		\hline
+		FIPS 203 primitive blocks & \checkmark         & --                  & --               & --             & --                     \\
+		\hline
+		Desktop application       & \checkmark         & --                  & --               & --             & --                     \\
+		\hline
+			\multicolumn{6}{l}{\footnotesize $^{\dagger}$PQC support in HACL* is limited to experimental HACL*/libcrux branch, not its core verified library.} \\
+	\end{tabular}
+\end{table}
+
+
+
+\medskip
+由于 CipherCat 当前处于初始发布阶段，尚未积累大规模用户数据和使用统计。本文的影响评估主要基于架构贡献和已验证的正确性保证。后续工作计划包括：在高校密码学课程中开展受控教学实验，定量对比 CipherCat 辅助学习与传统手动实现的学习效果差异；统计开源社区的下载量、贡献者和教学案例采纳情况。
+
+% --------------------------------------------------------------
+\subsection*{Limitations}
+
+CipherCat 在当前版本中存在以下局限：（1）生成的 Python/JavaScript 代码未实现恒定时间（constant-time）执行，不适用于生产环境中需抵御侧信道攻击的场景；（2）当前 PQC 原语主要覆盖 FIPS 203 (ML-KEM)，ML-DSA (FIPS 204) 的签名原语支持尚不完整；（3）NTT 实现为纯软件版本，未利用 AVX2 等硬件加速指令集；（4）平台目前缺乏面向初学者的结构化教程系统，用户需自行对照 FIPS 规范学习积木块的使用方式；（5）虽已验证生成代码与 NIST KAT 向量的一致性，但生成代码未经过 Cryptol/SAW 等形式化验证管线的系统验证；（6）尚未开展用户可用性评估，平台的实际教学效果有待在真实课堂环境中检验。
+
+% --------------------------------------------------------------
+\section*{5. Conclusions}
+
+本文提出了 CipherCat——基于 MetaCrypt~\cite{metacrypt2024} 的后量子密码学扩展分支。通过对 FIPS 203 (ML-KEM) 算法族的系统分析，我们识别出 17 个 PQC 专用原语并将其封装为可拖拽的积木块，与 MetaCrypt 已有的 54 个传统密码学积木块共同构成 71 块的完整原语体系。平台提供从图形化工作流到 Python/JavaScript 可执行代码的自动生成流水线，并通过 ML-KEM-768 封装示例（118 个积木块 $\rightarrow$ 约 450 行可运行代码）验证了方案的可行性。
+
+CipherCat 的核心贡献在于：（1）将 NTT/INTT、CBD 采样、编码压缩等 FIPS 203 原语引入可视化编程范式；（2）构建了从积木块到可运行代码的自动生成流水线；（3）为 PQC 的教学、原型验证和跨领域沟通提供了一套可视化基础设施。
+
+后续工作包括：开发面向 ML-KEM 和 ML-DSA 标准参数集的一键算法模板；评估与形式化验证工具的对接可行性；扩充对称密码和消息认证码积木库；以及构建面向高校密码学课程的交互式教程系统。
+
+% ============================================================
+% Acknowledgements
+% ============================================================
+
+\section*{Acknowledgements}
+\label{sec:ack}
+
+本工作由 MetaCrypt 平台~\cite{metacrypt2024} 提供基础架构支撑。感谢北京电子科技学院电子与通信工程系对本文工作的支持。
+
+% ============================================================
+% References
+% ============================================================
+
+\begin{thebibliography}{00}
+
+\bibitem{acvp-mlkem}
+		Celi C, editor. ACVP ML-KEM JSON Specification. Internet-Draft draft-celi-acvp-ml-kem-01. IETF; 2026. \url{https://pages.nist.gov/ACVP/draft-celi-acvp-ml-kem.html}
+
+ibitem{metacrypt2024}
+		肖超恩, 刘昌俊, 董秀则, 王建新, 张磊. 基于模型驱动的密码算法可视化开发平台研究. 密码学报(中英文) 2024;11(02):357--370. https://doi.org/10.13868/j.cnki.jcr.000684
+
+	\bibitem{fips180}
+	National Institute of Standards and Technology. Secure Hash Standard (SHS). NIST FIPS 180-4; 2015. https://csrc.nist.gov/pubs/fips/180-4/upd1/final
+
+	\bibitem{sm3}
+	Standardization Administration of China. Information security technology — SM3 cryptographic hash algorithm. GB/T 32905-2016; 2016.
+
+	\bibitem{shor1994}
+	Shor PW. Algorithms for quantum computation: discrete logarithms and factoring. In: Proceedings 35th Annual Symposium on Foundations of Computer Science, Santa Fe, NM, USA, 1994, p. 124-34. https://doi.org/10.1109/SFCS.1994.365700
+
+	\bibitem{fips202}
+	National Institute of Standards and Technology. FIPS 202: SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions. NIST FIPS 202; 2015. https://csrc.nist.gov/pubs/fips/202/final
+
+	\bibitem{fips203}
+	National Institute of Standards and Technology. FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard. NIST FIPS 203; 2024. https://csrc.nist.gov/pubs/fips/203/final
+
+	\bibitem{fips204}
+	National Institute of Standards and Technology. FIPS 204: Module-Lattice-Based Digital Signature Standard. NIST FIPS 204; 2024. https://doi.org/10.6028/NIST.FIPS.204
+
+	\bibitem{kyber}
+	Avanzi R, Bos J, Ducas L, Kiltz E, Lepoint T, Lyubashevsky V, et al. CRYSTALS-Kyber algorithm specifications and supporting documentation [preprint]. NIST PQC Standardization, Round 3; 2019. https://pq-crystals.org/kyber/index.shtml
+
+	\bibitem{dilithium}
+	Ducas L, Kiltz E, Lepoint T, Lyubashevsky V, Schwabe P, Seiler G, et al. CRYSTALS-Dilithium algorithm specifications and supporting documentation (version 3.1) [preprint]. NIST PQC Standardization, Round 3; 2021. https://pq-crystals.org/dilithium/index.shtml
+
+	\bibitem{blockly}
+	Google. Blockly [software]. Version 12.0.0. https://github.com/RaspberryPiFoundation/blockly; 2025 [accessed 2026-05-31].
+
+	\bibitem{fraser2015}
+	Fraser N. Ten things we've learned from Blockly. In: 2015 IEEE Blocks and Beyond Workshop (Blocks and Beyond), Atlanta, GA, USA, 2015, p. 49-50. https://doi.org/10.1109/BLOCKS.2015.7369000
+
+	\bibitem{tauri}
+	Tauri Programme within the Commons Conservancy. Tauri [software]. Version 2.x. https://tauri.app; 2024 [accessed 2026-05-31].
+
+	\bibitem{nadi2016}
+	Nadi S, Kr\"uger S, Mezini M, Bodden E. Jumping through hoops: why do Java developers struggle with cryptography APIs? In: Proceedings of the 38th International Conference on Software Engineering (ICSE '16), Austin, TX, USA, 2016, p. 935-46. https://doi.org/10.1145/2884781.2884790
+
+	\bibitem{mouha2018}
+	Mouha N, Raunak MS, Kuhn DR, Kacker R. Finding bugs in cryptographic hash function implementations. IEEE Trans Reliab 2018;67(3):870-84. https://doi.org/10.1109/TR.2018.2847247
+
+	\bibitem{hazhirpasand2021}
+	Hazhirpasand M, Ghafari M. Worrisome patterns in developers: a survey in cryptography. In: 2021 36th IEEE/ACM International Conference on Automated Software Engineering Workshops (ASEW), Melbourne, Australia, 2021, p. 185-90. https://doi.org/10.1109/ASEW52652.2021.00045
+
+	\bibitem{kopal2022}
+	Kopal N, Esslinger B. New ciphers and cryptanalysis components in CrypTool 2. In: Proceedings of the 5th International Conference on Historical Cryptology (HistoCrypt 2022), Amsterdam, Netherlands, 2022, p. 127-36.
+
+	\bibitem{lewis2003}
+	Lewis JR, Martin B. Cryptol: high assurance, retargetable crypto development and validation. In: IEEE Military Communications Conference, 2003. MILCOM 2003, Boston, MA, USA, 2003, p. 820-5. https://doi.org/10.1109/MILCOM.2003.1290218
+
+	\bibitem{hacl2017}
+	Zinzindohou\'e JK, Bhargavan K, Protzenko J, Beurdouche B. HACL*: A verified modern cryptographic library. In: Proceedings of the 2017 ACM SIGSAC Conference on Computer and Communications Security (CCS '17), Dallas, Texas, USA, 2017, p. 1789-806. https://doi.org/10.1145/3133956.3134043
+
+	\bibitem{lim2024velcro}
+	Lim MY, Park SH, Lee S-H, Yoon JW, Hong PM, Yoo H, Kwon K-W, Jeong J, Lee YK. VELCRO: A visual-based programming tool for effortless deep learning model construction. SoftwareX 2024;26:101656. https://doi.org/10.1016/j.softx.2024.101656
+
+	\bibitem{nistir8413}
+	Alagic G, Apon D, Cooper D, Dang Q, Miller C, Moody D, et al. Status report on the third round of the NIST post-quantum cryptography standardization process. NISTIR 8413; 2022. https://doi.org/10.6028/NIST.IR.8413
+
+	\bibitem{nejatollahi2019}
+	Nejatollahi H, Dutt N, Ray S, Regazzoni F, Banerjee I, Cammarota R. Post-quantum lattice-based cryptography implementations: a survey. ACM Comput Surv 2019;51(6):129:1-41. https://doi.org/10.1145/3292548
+
+	\bibitem{percival2022cryptoscratch}
+	Percival N, Rayavaram P, Narain S, Lee CS. CryptoScratch: Developing and evaluating a block-based programming tool for teaching K-12 cryptography education using Scratch. In: 2022 IEEE Global Engineering Education Conference (EDUCON), Tunis, Tunisia, 2022, p. 1004--13. https://doi.org/10.1109/EDUCON52537.2022.9766637
+
+	\bibitem{lodi2022cryptography}
+	Lodi M, Sbaraglia M, Martini S. Cryptography in Grade 10: Core ideas with Snap! and unplugged. In: Proceedings of the 27th ACM Conference on Innovation and Technology in Computer Science Education (ITiCSE '22), Dublin, Ireland, 2022, p. 7 pages. https://doi.org/10.1145/3502718.3524767
+
+	\bibitem{stebila2017}
+	Stebila D, Mosca M. Post-quantum key exchange for the Internet and the Open Quantum Safe project. In: Selected Areas in Cryptography (SAC) 2016, LNCS, vol. 10532, Springer, 2017, p. 1--24. https://doi.org/10.1007/978-3-319-69453-5\_1
+
+\end{thebibliography}
+
+% ============================================================
+% Current executable software version
+% ============================================================
+
+\section*{Current executable software version}
+\label{sec:execversion}
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|l|p{9.5cm}|}
+		\hline
+		\textbf{Software item} & \textbf{Description}                              \\
+		\hline
+		Software name          & CipherCat (薛定喵编辑器)                                \\
+		\hline
+		Version                & v1.0.0                                            \\
+		\hline
+		Repository             & \url{https://github.com/P02-1010751281/CipherCat} \\
+		\hline
+		License                & MIT                                               \\
+		\hline
+		Operation system       & Windows, Linux, macOS（Tauri 桌面端）                  \\
+		\hline
+		Dependencies           & Node.js $\ge$ 24; npm; Rust（cargo, rustup）        \\
+		\hline
+	\end{tabular}
+	\caption{Current executable software version}
+	\label{tab:version}
+\end{table}
+
+\end{document}
+%%
+%% End of file `ciphercat-draft.tex'.

@@ -102,7 +102,7 @@ src/
 
 ```python
 def ntt(a, q=3329, n=256):
-    """FIPS 203 Cooley-Tukey NTT with bit-reversed zetas (Algorithm 9)"""
+    """FIPS 203 Cooley-Tukey NTT with bit-reversed zetas (Algorithm 6)"""
     gen = 17 if q == 3329 else 3
     res = list(a)
     ln = len(res)
@@ -115,7 +115,7 @@ def ntt(a, q=3329, n=256):
     nbits = n.bit_length() - 1
     stride = ln // 2
     zz = 0
-    while stride >= 1:
+    while stride >= 2:  # FIPS 203 Alg 6: for(len=128; len>=2; len>>=1)
         for start in range(0, ln, stride * 2):
             zz += 1
             zp = pow(gen, _brv(zz, nbits - 1), q)
@@ -146,7 +146,7 @@ function ntt(a, q = 3329, n = 256) {
     const nbits = Math.log2(n) | 0;
     let stride = len / 2;
     let zz = 0;
-    while (stride >= 1) {
+    while (stride >= 2) {  // FIPS 203 Alg 6: for(len=128; len>=2; len>>=1)
         for (let start = 0; start < len; start += stride * 2) {
             zz++;
             const zp = modPow(gen, brv(zz, nbits - 1), q);

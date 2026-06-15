@@ -31,8 +31,8 @@
 	\address{Department of Electronic and Communication Engineering, Beijing Electronic Science and Technology Institute, Beijing, 100070, China}
 
 	\begin{abstract}
-		CipherCat 是一个面向后量子密码学（PQC）的开源可视化编程平台，基于 Blockly 和 Vue 3 构建。平台将 FIPS 203 (ML-KEM) 标准中的 CBD 采样、NTT/INTT 变换、编码压缩、ML-KEM 复合运算等 17 个 PQC 专用原语封装为可拖拽的积木块，用户通过组合积木块构建密码算法工作流，系统自动生成可独立运行的 Python 或 JavaScript 代码。CipherCat 旨在降低 PQC 算法的学习与原型开发门槛，服务于密码学教育、算法验证和工程原型设计等场景。
-	\end{abstract}
+			后量子密码学（PQC）已进入标准化阶段（FIPS 203/204），然而 ML-KEM 等 PQC 算法的学习与原型开发面临显著门槛：其底层涉及 NTT/INTT 变换、CBD 采样、系数编码压缩等十余种数学原语，传统方式依赖阅读规范文档并手工编码实现，对学习者的抽象代数基础和底层调试能力要求极高。现有密码学工具中，CrypTool 2 侧重传统密码教学但无 PQC 支持，liboqs 提供完整的 PQC 工程实现但缺乏图形化交互入口，CryptoScratch 等可视化编程工具仅覆盖经典密码且面向 K-12 教育——均未填补 PQC 领域的可视化编程空白。本文提出 CipherCat，一个面向后量子密码学的开源可视化编程平台，基于 Blockly 和 Vue 3 构建。平台的核心贡献在于：通过对 FIPS 203 (ML-KEM) Algorithm~3--14 的系统分析，识别出 17 个 PQC 专用原语并将其封装为可拖拽的积木块，构建了从图形化工作流到可独立运行的 Python/JavaScript 代码的自动生成流水线。以 ML-KEM-768 完整封装为例，118 个积木块可生成约 450 行可执行代码，经 C2SP 和 NIST ACVP 双重 KAT 向量验证，输出结果与 FIPS 203 规范一致。CipherCat 旨在降低 PQC 算法的学习与原型开发门槛，服务于密码学教育、算法理解和快速原型验证等场景。
+		\end{abstract}
 
 	\begin{keyword}
 		可视化编程 \sep 后量子密码学 \sep Blockly \sep NTT \sep 代码生成
@@ -275,21 +275,21 @@ result = ntt_mul(ntt_a, ntt_b, q=3329)
 	\label{tab:capabilities}
 	\begin{tabular}{|l|p{6cm}|l|l|}
 		\hline
-		\textbf{Capability}        & \textbf{Description}                                   & \textbf{Scale}                & \textbf{Verified}           \\
+		\textbf{Capability}       & \textbf{Description}                                 & \textbf{Scale}                   & \textbf{Verified}        \\
 		\hline
-		NTT/INTT transform         & Cooley-Tukey (NTT) \& Gentleman-Sande (INTT)           & 7-layer butterfly (n=256)     & C2SP + ACVP KAT            \\
+		NTT/INTT transform        & Cooley-Tukey (NTT) \& Gentleman-Sande (INTT)         & 7-layer butterfly (n=256)        & C2SP + ACVP KAT          \\
 		\hline
-		CBD sampling               & SamplePolyCBD with configurable $\eta$                  & $\eta \in \{2, 3\}$           & C2SP + ACVP KAT            \\
+		CBD sampling              & SamplePolyCBD with configurable $\eta$               & $\eta \in \{2, 3\}$              & C2SP + ACVP KAT          \\
 		\hline
-		Byte encoding/compression  & ByteEncode$_d$, ByteDecode$_d$, Compress, Decompress    & $d \in \{1,4,5,10,11,12\}$    & C2SP + ACVP KAT            \\
+		Byte encoding/compression & ByteEncode$_d$, ByteDecode$_d$, Compress, Decompress & $d \in \{1,4,5,10,11,12\}$       & C2SP + ACVP KAT          \\
 		\hline
-		ML-KEM-768 Encaps          & Full encapsulation workflow (Algorithm~17)              & 118 blocks $\rightarrow$ 450 LOC & C2SP + ACVP KAT            \\
+		ML-KEM-768 Encaps         & Full encapsulation workflow (Algorithm~17)           & 118 blocks $\rightarrow$ 450 LOC & C2SP + ACVP KAT          \\
 		\hline
-		Code generation            & Python \& JavaScript auto-generation                    & 71 block types                & Manual inspection           \\
+		Code generation           & Python \& JavaScript auto-generation                 & 71 block types                   & Manual inspection        \\
 		\hline
-		Desktop application        & Tauri 2.x cross-platform packaging                     & Windows, Linux, macOS         & Build \& smoke test         \\
+		Desktop application       & Tauri 2.x cross-platform packaging                   & Windows, Linux, macOS            & Build \& smoke test      \\
 		\hline
-		Classical crypto           & SHA-2, SHA-3, SM3, S-Box, bitwise ops (inherited)      & 54 block types                & Inherited from MetaCrypt    \\
+		Classical crypto          & SHA-2, SHA-3, SM3, S-Box, bitwise ops (inherited)    & 54 block types                   & Inherited from MetaCrypt \\
 		\hline
 	\end{tabular}
 \end{table}

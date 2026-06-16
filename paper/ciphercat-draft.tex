@@ -31,8 +31,8 @@
 	\address{Department of Electronic and Communication Engineering, Beijing Electronic Science and Technology Institute, Beijing, 100070, China}
 
 	\begin{abstract}
-			后量子密码学（PQC）已进入标准化阶段（FIPS 203/204），然而 ML-KEM 等 PQC 算法的学习与原型开发面临显著门槛：其底层涉及 NTT/INTT 变换、CBD 采样、系数编码压缩等十余种数学原语，传统方式依赖阅读规范文档并手工编码实现，对学习者的抽象代数基础和底层调试能力要求极高。现有密码学工具中，CrypTool 2 侧重传统密码教学但无 PQC 支持，liboqs 提供完整的 PQC 工程实现但缺乏图形化交互入口，CryptoScratch 等可视化编程工具仅覆盖经典密码且面向 K-12 教育——均未填补 PQC 领域的可视化编程空白。本文提出 CipherCat，一个面向后量子密码学的开源可视化编程平台，基于 Blockly 和 Vue 3 构建。平台的核心贡献在于：通过对 FIPS 203 (ML-KEM) Algorithm~3--14 的系统分析，识别出 17 个 PQC 专用原语并将其封装为可拖拽的积木块，构建了从图形化工作流到可独立运行的 Python/JavaScript 代码的自动生成流水线。以 ML-KEM-768 完整封装为例，118 个积木块可生成约 450 行可执行代码，经 C2SP 和 NIST ACVP 双重 KAT 向量验证，输出结果与 FIPS 203 规范一致。CipherCat 旨在降低 PQC 算法的学习与原型开发门槛，服务于密码学教育、算法理解和快速原型验证等场景。
-		\end{abstract}
+		后量子密码学（PQC）已进入标准化阶段（FIPS 203/204），但是 ML-KEM 等 PQC 算法的学习与原型开发面临显著门槛。由于其底层涉及 NTT/INTT 变换、CBD 采样、系数编码压缩等十余种数学原语，如果仅依赖阅读规范文档并手工编码实现，对学习者的抽象代数基础和底层调试能力要求极高。现有密码学工具中，CrypTool 2 侧重传统密码教学但无 PQC 支持，liboqs 提供完整的 PQC 工程实现但缺乏图形化交互入口，CryptoScratch 等可视化编程工具仅覆盖经典密码且面向 K-12 教育——均未填补 PQC 领域的可视化编程空白。本文提出 CipherCat，一个面向后量子密码学的开源可视化编程平台，基于 Blockly 和 Vue 3 构建。平台的核心贡献在于：通过对 FIPS 203 (ML-KEM) Algorithm~3--14 的系统分析，识别出 17 个 PQC 专用原语并将其封装为可拖拽的积木块，构建了从图形化工作流到可独立运行的 Python/JavaScript 代码的自动生成流水线。以 ML-KEM-768 完整封装为例，118 个积木块可生成约 450 行可执行代码，经 C2SP 和 NIST ACVP 双重 KAT 向量验证，输出结果与 FIPS 203 规范一致。CipherCat 旨在降低 PQC 算法的学习与原型开发门槛，服务于密码学教育、算法理解等场景。
+	\end{abstract}
 
 	\begin{keyword}
 		可视化编程 \sep 后量子密码学 \sep Blockly \sep NTT \sep 代码生成
@@ -86,13 +86,13 @@ Shor 和 Grover 等量子算法 \cite{shor1994} 对 RSA、ECC 及对称密码体
 
 然而，PQC 算法的学习与开发存在显著门槛。以 ML-KEM 为例，其核心涉及 $\mathbb{Z}_q[X]/(X^{256}+1)$ 上的多项式环运算、Cooley-Tukey / Gentleman-Sande 蝶形 NTT/INTT 变换、中心二项分布（CBD）采样、系数压缩与字节编码等十余种数学原语。传统方式依赖阅读 FIPS 规范文档并手工编码实现——学习者不仅需要扎实的抽象代数和数论基础，底层实现细节（如 NTT 蝶形运算的位逆序索引、$\mathbb{Z}_q$ 上的模乘边界处理）也极易引入难以调试的错误。以 FIPS 203 Algorithm~6（NTT）为例，仅该算法就涉及 7 层蝶形递推、位逆序旋转因子索引和模 $q$ 算术——其中任何一处实现偏差都会导致静默的计算错误，而调试这类错误需要同时理解数学语义和编码细节。已有研究~\cite{nadi2016,mouha2018,hazhirpasand2021} 证实密码学 API 的误用和实现缺陷是安全漏洞的重要来源，而 PQC 算法的学习门槛则是一个先于实现正确性的问题：开发者在能够调用 API 之前，首先需要理解格密码的数学结构并正确表达算法逻辑。
 
-这种"复杂数学 $\rightarrow$ 手动编码"的门槛问题在多个数学密集型领域已有先例。在深度学习领域，VELCRO~\cite{lim2024velcro} 通过将卷积层、池化层、激活函数等 DNN 构件封装为可视化积木块，使非专家用户能够在不编写代码的情况下构建和训练神经网络。类似地，MATLAB Simulink 和 LabVIEW 在控制系统和信号处理领域的成功也表明：将领域原语转化为图形化模块是降低数学密集型工具使用门槛的通用策略。后量子密码学——其核心同样由离散数学原语（NTT、CBD 采样、编码压缩等）构成——自然适合引入这种可视化编程范式。
-
 现有密码学工具中，CrypTool 2 \cite{kopal2022} 侧重传统密码教学但无 PQC 支持，Cryptol \cite{lewis2003} 面向形式化验证而非可视化编程，HACL* \cite{hacl2017} 提供经过验证的 C 密码库但无图形化交互界面，liboqs \cite{stebila2017} 作为 Open Quantum Safe 项目的开源 C 库提供了丰富的 PQC 算法实现但对初学者缺乏图形化交互入口——均未提供面向 PQC 算法的可视化交互式构建支持。
 
-在可视化积木编程与密码学教育的交叉领域，CryptoScratch \cite{percival2022cryptoscratch} 将 AES、RSA、SHA-256 等经典密码算法封装为 Scratch 积木块，Lodi 等 \cite{lodi2022cryptography} 利用 Snap! 平台在高中开展密码学教学。然而，这些工作均面向 K-12 阶段经典密码教育，未涉及后量子密码学。CipherCat 将可视化积木编程的应用范围从经典密码教育拓展至后量子密码（PQC）领域。
+在可视化积木编程与密码学教育的交叉领域，CryptoScratch \cite{percival2022cryptoscratch} 将 AES、RSA、SHA-256 等经典密码算法封装为 Scratch 积木块，Lodi 等 \cite{lodi2022cryptography} 利用 Snap! 平台在高中开展密码学教学。然而，这些工作均面向 K-12 阶段经典密码教育，未涉及后量子密码学。
 
-CipherCat 是基于 MetaCrypt 模型驱动的密码算法可视化开发平台~\\cite{metacrypt2024} 的后量子密码学扩展分支。MetaCrypt 已提供传统密码学积木块和代码生成等基础设施，但缺乏 PQC 专用原语。CipherCat 在其架构基础上，将 FIPS 203 (ML-KEM) Algorithm~3--14 中的 17 个 PQC 原语封装为可拖拽的积木块，并提供从图形化工作流到可独立运行的 Python/JavaScript 代码的自动生成流水线。CipherCat 定位为面向密码学教学、算法理解和原型验证的可视化工具，不旨在替代生产级密码库（后者需要考虑恒定时间实现、侧信道防护等工程需求）。
+这种"复杂数学 $\rightarrow$ 手动编码"的门槛问题在多个数学密集型领域已有先例。在深度学习领域，VELCRO~\cite{lim2024velcro} 通过将卷积层、池化层、激活函数等 DNN 构件封装为可视化积木块，使非专家用户能够在不编写代码的情况下构建和训练神经网络。类似地，MATLAB Simulink 和 LabVIEW 在控制系统和信号处理领域的成功也表明：将领域原语转化为图形化模块是降低数学密集型工具使用门槛的通用策略。后量子密码学——其核心同样由离散数学原语（NTT、CBD 采样、编码压缩等）构成——自然适合引入这种可视化编程范式。
+
+CipherCat 将可视化积木编程的应用范围从经典密码教育拓展至后量子密码（PQC）领域。CipherCat 是基于 MetaCrypt 模型驱动的密码算法可视化开发平台~\\cite{metacrypt2024} 的后量子密码学扩展分支。MetaCrypt 已提供传统密码学积木块和代码生成等基础设施，但缺乏 PQC 专用原语。CipherCat 在其架构基础上，将 FIPS 203 (ML-KEM) Algorithm~3--14 中的 17 个 PQC 原语封装为可拖拽的积木块，并提供从图形化工作流到可独立运行的 Python/JavaScript 代码的自动生成流水线。CipherCat 定位为面向密码学教学、算法理解和原型验证的可视化工具，不旨在替代生产级密码库（后者需要考虑恒定时间实现、侧信道防护等工程需求）。
 
 % --------------------------------------------------------------
 \section*{2. Software description}

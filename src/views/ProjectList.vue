@@ -1,9 +1,29 @@
 <template>
   <div class="project-list">
     <header class="list-header">
-      <h1 class="list-title">{{ ui('projectList') }}</h1>
+      <h1 class="list-title">{{ ui("projectList") }}</h1>
       <div class="header-actions">
-        <select v-model="selectedLocale" class="locale-select" @change="changeLocale">
+        <button class="toolbar-btn" @click="goDocs">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+            />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+          </svg>
+          <span>{{ ui("docs") }}</span>
+        </button>
+        <select
+          v-model="selectedLocale"
+          class="locale-select"
+          @change="changeLocale"
+        >
           <option
             v-for="(info, locale) in BLOCKLY_LOCALES"
             :key="locale"
@@ -13,21 +33,32 @@
           </option>
         </select>
         <button class="toolbar-btn primary" @click="createProject">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          <span>{{ ui('newProject') }}</span>
+          <span>{{ ui("newProject") }}</span>
         </button>
       </div>
     </header>
 
     <div v-if="projects.length === 0" class="empty-state">
-      <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <svg
+        class="empty-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+      >
         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
       </svg>
-      <p>{{ ui('noProjects') }}</p>
+      <p>{{ ui("noProjects") }}</p>
     </div>
 
     <div v-else class="project-grid">
@@ -38,20 +69,29 @@
         @click="openProject(project.id!)"
       >
         <div class="card-header">
-          <h3 class="card-title">{{ project.name || ui('unnamed') || 'Untitled' }}</h3>
+          <h3 class="card-title">
+            {{ project.name || ui("unnamed") || "Untitled" }}
+          </h3>
           <button
             class="card-delete-btn"
             :title="ui('deleteProject')"
             @click.stop="confirmDelete(project.id!, project.name)"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <polyline points="3 6 5 6 21 6" />
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              <path
+                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+              />
             </svg>
           </button>
         </div>
         <div class="card-meta">
-          <span class="meta-item">{{ project.language || 'JavaScript' }}</span>
+          <span class="meta-item">{{ project.language || "JavaScript" }}</span>
           <span class="meta-item">{{ formatDate(project.updatedAt) }}</span>
         </div>
       </div>
@@ -62,8 +102,18 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getAllProjects, saveProject, deleteProject, type ProjectRecord } from '@/composables/useProjectDB';
-import { ui, useBlocklyLocale, BLOCKLY_LOCALES, type BlocklyLocale } from '@/composables/locale';
+import {
+  getAllProjects,
+  saveProject,
+  deleteProject,
+  type ProjectRecord,
+} from '@/composables/useProjectDB';
+import {
+  ui,
+  useBlocklyLocale,
+  BLOCKLY_LOCALES,
+  type BlocklyLocale,
+} from '@/composables/locale';
 
 const router = useRouter();
 const projects = ref<ProjectRecord[]>([]);
@@ -79,7 +129,8 @@ async function loadProjects() {
   try {
     const all = await getAllProjects();
     projects.value = all.sort(
-      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
     );
   } catch (err) {
     console.error('Failed to load projects:', err);
@@ -113,6 +164,10 @@ async function confirmDelete(id: number, name: string) {
   } catch (err) {
     console.error('Failed to delete project:', err);
   }
+}
+
+function goDocs() {
+  router.push('/docs');
 }
 
 function formatDate(iso: string): string {
@@ -162,7 +217,9 @@ onMounted(loadProjects);
   border-radius: 6px;
   padding: 0 22px 0 8px;
   font-size: 12px;
-  background: var(--color-bg-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%23909399' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 6px center;
+  background: var(--color-bg-card)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%23909399' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")
+    no-repeat right 6px center;
   color: var(--color-text);
   cursor: pointer;
   appearance: none;

@@ -96,8 +96,8 @@ export function useEditorProject(deps: EditorProjectDeps) {
       projectName.value = '';
       updateSaveStatus('saved');
       router.push(`/editor/${newId}`);
-    } catch {
-      // ignore
+    } catch (e) {
+      console.debug('[useEditorProject] handleNewWorkspace failed:', e);
     }
   }
 
@@ -117,7 +117,8 @@ export function useEditorProject(deps: EditorProjectDeps) {
         projectName.value = ui('unnamed');
       }
       updateSaveStatus('saved');
-    } catch {
+    } catch (e) {
+      console.debug('[useEditorProject] loadProject failed:', e);
       projectName.value = ui('unnamed');
     }
   }

@@ -1,7 +1,7 @@
 {
   "name": "ciphercat",
   "version": "1.0.0",
-  "private": false,
+  "private": true,
   "type": "module",
   "description": "CipherCat - A visual cryptography programming platform based on Blockly and Vue 3, supporting JavaScript, Python, and Kasm51 code generation",
   "author": "",
@@ -38,6 +38,7 @@
     "blockly": "^12.5.1",
     "element-plus": "^2.14.1",
     "highlight.js": "^11.11.1",
+    "marked": "^18.0.5",
     "vue": "^3.5.0",
     "vue-router": "^5.1.0"
   },

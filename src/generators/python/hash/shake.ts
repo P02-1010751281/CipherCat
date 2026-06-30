@@ -7,7 +7,7 @@ import type { Block } from 'blockly/core';
 // XOF: Extendable Output Function (SHAKE128/SHAKE256)
 pythonGenerator.forBlock['pq_xof'] = function (block: Block): [string, number] {
   const seed =
-    pythonGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || "b''";
+    pythonGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || 'b\'\'';
   const outLen =
     pythonGenerator.valueToCode(block, 'OUTLEN', Order.ATOMIC) || '168';
   const algo = block.getFieldValue('ALGO') || 'SHAKE128';
@@ -29,7 +29,7 @@ pythonGenerator.forBlock['pq_xof'] = function (block: Block): [string, number] {
 // PRF: Pseudo-Random Function (SHAKE128/SHAKE256)
 pythonGenerator.forBlock['pq_prf'] = function (block: Block): [string, number] {
   const seed =
-    pythonGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || "b''";
+    pythonGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || 'b\'\'';
   const nonce =
     pythonGenerator.valueToCode(block, 'NONCE', Order.ATOMIC) || '0';
   const outLen =

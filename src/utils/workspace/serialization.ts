@@ -83,7 +83,8 @@ export async function downloadContent(
         }),
       );
       return;
-    } catch {
+    } catch (e) {
+      console.debug('[downloadContent] writeTextFile fallback failed:', e);
       // writeTextFile 不可用，降级到弹对话框
       lastExportPath = null;
     }
@@ -111,7 +112,8 @@ export async function downloadContent(
       );
       return;
     }
-  } catch {
+  } catch (e) {
+    console.debug('[downloadContent] Tauri dialog/fs not available:', e);
     // Tauri plugin-dialog/fs not available
   }
   if (tauriDialogShown) {
@@ -279,7 +281,7 @@ function _applySboxFields(
       const rowCount = Number(block.getFieldValue('ROW')) || 4;
       const colCount = Number(block.getFieldValue('COL')) || 4;
       const size = rowCount * colCount;
-      const gd: string[] = new Array(size).fill('00');
+      const gd: string[] = Array.from({ length: size }, () => '00');
       for (const [fieldName, value] of fields) {
         const m = fieldName.match(/^SBox_(\d+)_(\d+)$/);
         if (m) {

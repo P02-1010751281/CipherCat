@@ -8,7 +8,7 @@ javascriptGenerator.forBlock['hash_sha3_pad_text'] = function (
   block: Block,
 ): [string, number] {
   const input =
-    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
   const padFn = registerSha3Pad();
   return [padFn + '(' + input + ', 136, 0x06)', Order.ATOMIC];
 };
@@ -18,7 +18,7 @@ javascriptGenerator.forBlock['hash_sha3_pad_hex'] = function (
   block: Block,
 ): [string, number] {
   const input =
-    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
   const hexFn = registerHexToBytes();
   const padFn = registerSha3Pad();
   return [padFn + '(' + hexFn + '(' + input + '), 136, 0x06)', Order.ATOMIC];

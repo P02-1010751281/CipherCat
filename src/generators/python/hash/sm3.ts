@@ -5,7 +5,7 @@ pythonGenerator.forBlock['hash_sm3_pad'] = function (
   block: Block,
 ): [string, number] {
   const input =
-    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "b''";
+    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || 'b\'\'';
   const fn = pythonGenerator.provideFunction_('sm3_pad', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg):',
     '    if isinstance(msg, str):',
@@ -30,7 +30,7 @@ pythonGenerator.forBlock['hash_sm3_pad_hex'] = function (
   block: Block,
 ): [string, number] {
   const input =
-    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
+    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
   const fn = pythonGenerator.provideFunction_('sm3_pad_hex', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg):',
     '    if isinstance(msg, bytes):',

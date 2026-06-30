@@ -61,7 +61,7 @@ function configureTextPrintBlock() {
   if (pythonGenerator) {
     pythonGenerator.forBlock['text_print'] = function (block: Block): string {
       const msg =
-        pythonGenerator.valueToCode(block, 'TEXT', Order.NONE) || "''";
+        pythonGenerator.valueToCode(block, 'TEXT', Order.NONE) || '\'\'';
       return 'print(' + msg + ')\n';
     };
     return true;
@@ -139,7 +139,7 @@ export function injectPrimitives(pyCode: string, algorithmType: string) {
       defIndent = 0;
     }
 
-    if (/^def\s+/.test(t) || /^@/.test(t)) {
+    if (/^def\s+/.test(t) || t.startsWith('@')) {
       inDef = /^def\s+/.test(t);
       defIndent = indent;
       head.push(line);
@@ -253,17 +253,17 @@ export function injectPrimitives(pyCode: string, algorithmType: string) {
     '    _parts = []',
     '    for _x in _lst:',
     '        if isinstance(_x, int):',
-    "            _parts.append(_x.to_bytes(4, 'big'))",
+    '            _parts.append(_x.to_bytes(4, \'big\'))',
     '        elif isinstance(_x, str):',
     '            try:',
     '                _parts.append(bytes.fromhex(_x))',
     '            except Exception:',
-    "                _parts.append(_x.encode('utf-8'))",
+    '                _parts.append(_x.encode(\'utf-8\'))',
     '        elif isinstance(_x, (bytes, bytearray)):',
     '            _parts.append(bytes(_x))',
     '        elif isinstance(_x, list):',
     '            _parts.append(_list_to_bytes(_x))',
-    "    return b''.join(_parts)",
+    '    return b\'\'.join(_parts)',
     '',
   ].join('\n');
 
@@ -282,7 +282,7 @@ export function injectPrimitives(pyCode: string, algorithmType: string) {
           '                    _ret = bytes(_v)',
           '                    break',
           '                if isinstance(_v, int):',
-          "                    _ret = _v.to_bytes(4, 'big')",
+          '                    _ret = _v.to_bytes(4, \'big\')',
           '                    break',
           '                if isinstance(_v, list) and 0 < len(_v) < 256:',
           '                    try:',
@@ -304,7 +304,7 @@ export function injectPrimitives(pyCode: string, algorithmType: string) {
     bodyIndented,
     '    _ret = None',
     '    try:',
-    "        if 'CVs' in globals() and 'n' in globals():",
+    '        if \'CVs\' in globals() and \'n\' in globals():',
     '            _v = CVs[n] if isinstance(n, int) and n < len(CVs) else CVs[-1]',
     '            if isinstance(_v, str):',
     '                _ret = bytes.fromhex(_v)',
@@ -343,7 +343,7 @@ export function injectPrimitives(pyCode: string, algorithmType: string) {
     `        out.extend(${algoName}(_mix))`,
     '        ctr += 1',
     '        if ctr > _max_iter:',
-    "            raise RuntimeError('primitive: exceeded max iterations without sufficient output')",
+    '            raise RuntimeError(\'primitive: exceeded max iterations without sufficient output\')',
     '    return bytes(out[:int(n_bytes)])',
     '',
   ].join('\n');

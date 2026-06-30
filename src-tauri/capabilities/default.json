@@ -1,5 +1,4 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/dev/crates/tauri-utils/schema/capability.json",
   "identifier": "default",
   "description": "Default capabilities for the Blockly Crypto Editor",
   "windows": ["main"],

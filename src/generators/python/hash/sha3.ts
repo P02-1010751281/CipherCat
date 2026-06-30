@@ -7,7 +7,7 @@ pythonGenerator.forBlock['hash_sha3_pad_text'] = function (
   block: Block,
 ): [string, number] {
   const input =
-    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
+    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
   const padFn = registerSha3Pad();
   return [padFn + '(' + input + ', rate_bytes=136, suffix=0x06)', Order.ATOMIC];
 };
@@ -17,7 +17,7 @@ pythonGenerator.forBlock['hash_sha3_pad_hex'] = function (
   block: Block,
 ): [string, number] {
   const input =
-    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
+    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
   const padFn = registerSha3Pad();
   return [
     padFn +
@@ -37,7 +37,7 @@ pythonGenerator.forBlock['hash_sha3_pad'] = function (
   block: Block,
 ): [string, number] {
   const input =
-    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "b''";
+    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || 'b\'\'';
   const rateBits = block.getFieldValue('RATE') || '1088';
   const suffix = block.getFieldValue('SUFFIX') || '0x06';
   const rateBytes = Math.floor(parseInt(rateBits) / 8);

@@ -38,7 +38,7 @@ javascriptGenerator.forBlock['hash_sha256_pad_text'] = function (
   block: Block,
 ): [string, number] {
   const input =
-    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
   return [getSha256PadFn() + '(' + input + ')', Order.ATOMIC];
 };
 
@@ -46,7 +46,7 @@ javascriptGenerator.forBlock['hash_sha256_pad_hex'] = function (
   block: Block,
 ): [string, number] {
   const input =
-    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
   const hexFn = registerHexToBytes();
   return [getSha256PadFn() + '(' + hexFn + '(' + input + '))', Order.ATOMIC];
 };

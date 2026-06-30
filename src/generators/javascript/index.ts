@@ -67,7 +67,7 @@ function configureTextPrintBlock() {
   if (javascriptGenerator) {
     javascriptGenerator.forBlock['text_print'] = function (block: Block) {
       const msg =
-        javascriptGenerator.valueToCode(block, 'TEXT', Order.NONE) || "''";
+        javascriptGenerator.valueToCode(block, 'TEXT', Order.NONE) || '\'\'';
       return 'console.log(' + msg + ');\n';
     };
     return true;

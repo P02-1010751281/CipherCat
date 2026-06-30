@@ -1,10 +1,14 @@
 import 'blockly/blocks';
 import * as Blockly from 'blockly/core';
 
-import { type CoreBlockType } from '@/blocks/core';
+import { type CtrlBlockType } from '@/blocks/ctrl';
+import { type DataBlockType } from '@/blocks/data';
+import { type ArrayBlockType } from '@/blocks/array';
+import { type LogicBlockType } from '@/blocks/logic';
 import { BIT_BLOCK_TYPES } from '@/blocks/bitwise';
 import { ALL_BLOCK_TYPES as HASH_BLOCK_TYPES } from '@/blocks/hash';
-import { ECC_BLOCK_TYPES, NT_BLOCK_TYPES } from '@/blocks/number-theory';
+import { NT_BLOCK_TYPES } from '@/blocks/numtheory';
+import { ECC_BLOCK_TYPES } from '@/blocks/ecc';
 import {
   PQ_BASIC_BLOCK_TYPES,
   PQ_ADVANCED_BLOCK_TYPES,
@@ -14,10 +18,9 @@ import { getSboxCategoryKey } from '@/blocks/sbox/category';
 export function createToolboxConfig() {
   const msg = Blockly.Msg as Record<string, string>;
 
-  // CORE_BLOCK_TYPES 按职责拆入各分类，避免重复
-  const CTRL_CORE_BLOCKS: CoreBlockType[] = ['ctrl_assign', 'ctrl_iterate'];
-  const ARRAY_CORE_BLOCKS: CoreBlockType[] = ['arr_partition_to_array'];
-  const DATA_CORE_BLOCKS: CoreBlockType[] = [
+  const ctrlTypes: CtrlBlockType[] = ['ctrl_iterate'];
+  const arrTypes: ArrayBlockType[] = ['arr_partition_to_array'];
+  const dataTypes: DataBlockType[] = [
     'data_bit_length',
     'data_byte_length',
     'data_convert_to_int',
@@ -28,7 +31,7 @@ export function createToolboxConfig() {
     'seed_hex',
     'cipher_key_from_seed',
   ];
-  const LOGIC_CORE_BLOCKS: CoreBlockType[] = [
+  const logicTypes: LogicBlockType[] = [
     'lgc_operation',
     'lgc_compound',
     'lgc_not',
@@ -45,7 +48,7 @@ export function createToolboxConfig() {
       { kind: 'block', type: 'logic_boolean' },
       { kind: 'block', type: 'logic_ternary' },
       { kind: 'block', type: 'logic_null' },
-      ...CTRL_CORE_BLOCKS.map((type) => ({ kind: 'block' as const, type })),
+      ...ctrlTypes.map((type) => ({ kind: 'block' as const, type })),
       { kind: 'block', type: 'controls_repeat_ext' },
       { kind: 'block', type: 'controls_whileUntil' },
       { kind: 'block', type: 'controls_for' },
@@ -95,7 +98,7 @@ export function createToolboxConfig() {
       { kind: 'block', type: 'lists_getSublist' },
       { kind: 'block', type: 'lists_split' },
       { kind: 'block', type: 'lists_sort' },
-      ...ARRAY_CORE_BLOCKS.map((type) => ({ kind: 'block' as const, type })),
+      ...arrTypes.map((type) => ({ kind: 'block' as const, type })),
     ],
   };
 
@@ -115,7 +118,7 @@ export function createToolboxConfig() {
       { kind: 'block', type: 'text_changeCase' },
       { kind: 'block', type: 'text_trim' },
       { kind: 'block', type: 'text_print' },
-      ...DATA_CORE_BLOCKS.map((type) => ({ kind: 'block' as const, type })),
+      ...dataTypes.map((type) => ({ kind: 'block' as const, type })),
     ],
   };
 
@@ -130,10 +133,7 @@ export function createToolboxConfig() {
     kind: 'category',
     name: msg.CRYPTO_CATEGORY_LOGIC || 'Logic',
     colour: '#5CA6A6',
-    contents: LOGIC_CORE_BLOCKS.map((type) => ({
-      kind: 'block' as const,
-      type,
-    })),
+    contents: logicTypes.map((type) => ({ kind: 'block' as const, type })),
   };
 
   const sbox = {

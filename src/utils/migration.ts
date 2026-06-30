@@ -634,6 +634,14 @@ function _migrateSingleBlock(block: Record<string, unknown>): void {
 
   const leftInput = inputs.LEFT as Record<string, unknown> | undefined;
   const leftBlock = leftInput?.block as Record<string, unknown> | undefined;
+  // LEFT 为 data_value 等下标/复杂左值（如 W[j]、Comp[7]、H[j]）时，variables_set 无法表达，
+  // 必须保留为 ctrl_assign——其代码生成器（left = right）可正确处理下标赋值。
+  // 否则迁移成 variables_set(VAR='tmp') 会丢失下标目标，导致算法状态变量（如哈希链 H）永不更新。
+  // LEFT 缺失（退化块）不在此列，仍走下方 tmp 兜底以保持旧行为。
+  if (leftBlock && leftBlock.type !== 'variables_get') {
+    block.type = 'ctrl_assign';
+    return;
+  }
   let varName = 'tmp';
 
   if (leftBlock && leftBlock.type === 'variables_get') {

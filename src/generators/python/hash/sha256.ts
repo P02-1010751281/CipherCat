@@ -5,7 +5,7 @@ pythonGenerator.forBlock['hash_sha256_pad'] = function (
   block: Block,
 ): [string, number] {
   const input =
-    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || 'b\'\'';
+    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "b''";
   const fn = pythonGenerator.provideFunction_('sha256_pad', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg):',
     '    if isinstance(msg, str):',
@@ -27,26 +27,32 @@ pythonGenerator.forBlock['hash_sha256_pad_hex'] = function (
   block: Block,
 ): [string, number] {
   const input =
-    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
-  const fn = pythonGenerator.provideFunction_('sha256_pad', [
+    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
+  // Hex strings must be decoded via bytes.fromhex, not UTF-8 encoded,
+  // otherwise "616263" is treated as 6 ASCII bytes instead of 3 binary bytes.
+  const fn = pythonGenerator.provideFunction_('sha256_pad_hex', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg):',
-    '    if isinstance(msg, str):',
-    '        msg = msg.encode("utf-8")',
-    '    elif isinstance(msg, list):',
-    '        msg = bytes(msg)',
-    '    msg = bytes(msg)',
-    '    mlen = len(msg) * 8',
-    '    msg += b"\\x80"',
-    '    while (len(msg) * 8) % 512 != 448:',
-    '        msg += b"\\x00"',
-    '    msg += mlen.to_bytes(8, "big")',
-    '    return msg',
+    '    if isinstance(msg, bytes):',
+    '        data = msg',
+    '    elif isinstance(msg, str):',
+    '        data = bytes.fromhex(msg)',
+    '    elif isinstance(msg, int):',
+    '        bl = (msg.bit_length() + 7) // 8',
+    '        data = msg.to_bytes(bl, "big")',
+    '    else:',
+    '        data = bytes(msg)',
+    '    mlen = len(data) * 8',
+    '    data += b"\\x80"',
+    '    while (len(data) * 8) % 512 != 448:',
+    '        data += b"\\x00"',
+    '    data += mlen.to_bytes(8, "big")',
+    '    return data',
   ]);
   return [fn + '(' + input + ')', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['hash_sha256_pad_text'] =
-  pythonGenerator.forBlock['hash_sha256_pad_hex'];
+  pythonGenerator.forBlock['hash_sha256_pad'];
 
 pythonGenerator.forBlock['hash_sha256_compress'] = function (
   block: Block,

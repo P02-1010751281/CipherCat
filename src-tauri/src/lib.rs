@@ -1,13 +1,15 @@
-use std::sync::mpsc;
 use tauri_plugin_dialog::DialogExt;
 
 #[tauri::command]
-async fn save_workspace(
+fn save_workspace(
     app: tauri::AppHandle,
     content: String,
     filename: String,
 ) -> Result<String, String> {
-    let (tx, rx) = mpsc::channel();
+    // Use std::sync::mpsc here because the dialog callback is sync and runs
+    // on the OS main thread. The blocking recv runs on a Tauri threadpool
+    // thread (not a tokio worker) because this command is sync (not async).
+    let (tx, rx) = std::sync::mpsc::channel();
 
     app.dialog()
         .file()

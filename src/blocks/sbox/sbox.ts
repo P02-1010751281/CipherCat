@@ -167,7 +167,7 @@ Blockly.Blocks['sbox'] = {
       for (let ri = 0; ri < r; ri++) {
         for (let ci = 0; ci < c; ci++) {
           const f = xmlElement.parentElement.querySelector(
-            "field[name='SBox_" + ri + '_' + ci + "']",
+            'field[name=\'SBox_' + ri + '_' + ci + '\']',
           );
           arr.push(f?.textContent?.trim() || '00');
         }
@@ -187,9 +187,9 @@ Blockly.Blocks['sbox'] = {
       .filter((i) => i.name?.startsWith('ROW_'))
       .forEach((i) => this.removeInput(i.name!));
     if (!this.gridData || this.gridData.length === 0) {
-      this.gridData = new Array(size).fill('00');
+      this.gridData = Array.from({ length: size }, () => '00');
     } else if (this.gridData.length !== size) {
-      const nd = new Array(size).fill('00');
+      const nd = Array.from({ length: size }, () => '00');
       for (let i = 0; i < Math.min(this.gridData.length, size); i++)
         nd[i] = this.gridData[i];
       this.gridData = nd;
@@ -309,12 +309,12 @@ Blockly.Blocks['sbox'] = {
         this.setWarningText(null);
       } catch (err) {
         this.setWarningText((err as Error).message);
-        this.gridData = new Array(size).fill('00');
+        this.gridData = Array.from({ length: size }, () => '00');
       }
     };
     reader.onerror = () => {
       this.setWarningText('CSV read failed');
-      this.gridData = new Array(size).fill('00');
+      this.gridData = Array.from({ length: size }, () => '00');
     };
     reader.readAsText(file);
   },

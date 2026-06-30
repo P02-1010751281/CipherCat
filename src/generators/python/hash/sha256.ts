@@ -5,7 +5,7 @@ pythonGenerator.forBlock['hash_sha256_pad'] = function (
   block: Block,
 ): [string, number] {
   const input =
-    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "b''";
+    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || 'b\'\'';
   const fn = pythonGenerator.provideFunction_('sha256_pad', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg):',
     '    if isinstance(msg, str):',
@@ -27,7 +27,7 @@ pythonGenerator.forBlock['hash_sha256_pad_hex'] = function (
   block: Block,
 ): [string, number] {
   const input =
-    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
+    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
   const fn = pythonGenerator.provideFunction_('sha256_pad', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg):',
     '    if isinstance(msg, str):',

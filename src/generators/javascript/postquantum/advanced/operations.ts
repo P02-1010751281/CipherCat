@@ -81,31 +81,6 @@ function registerSampleA(): string {
   ]);
 }
 
-function registerSampleNtt(): string {
-  const shakeName = registerShake128Once();
-  const nttFn = registerNtt();
-  return javascriptGenerator.provideFunction_('sampleNtt', [
-    'function ' +
-      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
-      '(seed, q) {',
-    '  q = q || 3329;',
-    '  let outBytes = 672;',
-    '  while (true) {',
-    '    let coeffs = [];',
-    '    let buf = ' + shakeName + '(seed, outBytes);',
-    '    for (let pos = 0; coeffs.length < 256 && pos + 3 <= buf.length; pos += 3) {',
-    '      let d1 = (buf[pos] | ((buf[pos + 1] & 0x0F) << 8)) & 0xFFF;',
-    '      let d2 = ((buf[pos + 1] >> 4) | (buf[pos + 2] << 4)) & 0xFFF;',
-    '      if (d1 < q) coeffs.push(d1);',
-    '      if (d2 < q && coeffs.length < 256) coeffs.push(d2);',
-    '    }',
-    '    if (coeffs.length >= 256) return ' + nttFn + '(coeffs, q);',
-    '    outBytes *= 2;',
-    '  }',
-    '}',
-  ]);
-}
-
 /** Generate k×k NTT matrix A from a seed using XOF-based rejection sampling. */
 javascriptGenerator.forBlock['pq_sample_ntt_mat'] = function (
   block: Block,

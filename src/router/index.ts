@@ -13,6 +13,11 @@ const router = createRouter({
       name: 'Editor',
       component: () => import('@/App.vue'),
     },
+    {
+      path: '/docs',
+      name: 'Docs',
+      component: () => import('@/views/DocsView.vue'),
+    },
   ],
 });
 

@@ -537,6 +537,13 @@ const UI_MESSAGES: Record<BlocklyLocale, Record<string, string>> = {
     newWorkspaceConfirmTitle: '确认新建',
     unnamed: '未命名',
     saveError: '保存失败',
+    docs: '文档',
+    docsTitle: '算法参考文档',
+    docsSearch: '搜索文档...',
+    docsLoading: '加载中...',
+    docsWelcome: '欢迎查阅算法参考文档',
+    docsWelcomeDesc:
+      '选择左侧的文档分类浏览 FIPS 标准的算法规范、参数说明和实现参考。',
   },
   en: {
     codeGenerator: 'Code Generator:',
@@ -577,6 +584,13 @@ const UI_MESSAGES: Record<BlocklyLocale, Record<string, string>> = {
     saveError: 'Save failed',
     exported: 'Workspace exported',
     exportError: 'Export failed',
+    docs: 'Docs',
+    docsTitle: 'Algorithm Reference',
+    docsSearch: 'Search docs...',
+    docsLoading: 'Loading...',
+    docsWelcome: 'Welcome to Algorithm Reference',
+    docsWelcomeDesc:
+      'Browse FIPS standard algorithm specifications, parameters, and implementation references from the sidebar.',
   },
 };
 

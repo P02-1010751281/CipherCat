@@ -1,6 +1,7 @@
 const BLOCK_TYPE_MIGRATION_MAP: Record<string, string> = {
   crypto_assign: 'ctrl_assign',
   crypto_iterate: 'ctrl_iterate',
+  ctrl_assign: 'variables_set', // ctrl_assign 赋值块 → Blockly 内置变量赋值
   math_number: 'data_value',
   crypto_number: 'data_value',
   crypto_expr_infix: 'bit_expr_infix',
@@ -231,6 +232,8 @@ export function migrateJsonState(
     // deferSboxFields 已移除：Blockly 12 原生支持大量字段，不再搬移到 _sbx_def_
     migrateCompoundInstrField(parsed);
     migrateBitOpFieldValues(parsed);
+    // ctrl_assign 赋值块 → variables_set（Blockly 内置变量赋值）
+    migrateAssignmentBlocks(parsed);
     return parsed as Record<string, unknown>;
   } catch {
     return state;
@@ -548,6 +551,112 @@ function migrateBitOpFieldValues(obj: unknown): void {
   }
 }
 
+/**
+ * ctrl_assign 赋值块 → variables_set（Blockly 内置变量赋值）结构迁移 (JSON)
+ *
+ * 迁移步骤:
+ *   1. 类型已由 BLOCK_TYPE_MIGRATION_MAP 从 ctrl_assign 改为 variables_set
+ *   2. 从 inputs.LEFT 的 variables_get 内块提取 VAR 字段
+ *   3. 删除 inputs.LEFT
+ *   4. inputs.RIGHT 重命名为 VALUE
+ */
+function migrateAssignmentBlocks(obj: unknown): void {
+  if (Array.isArray(obj)) {
+    for (const item of obj) migrateAssignmentBlocks(item);
+    return;
+  }
+  if (typeof obj !== 'object' || obj === null) return;
+
+  const record = obj as Record<string, unknown>;
+
+  for (const key of Object.keys(record)) {
+    if (key === 'variables' || key === 'blocks') continue;
+    migrateAssignmentBlocks(record[key]);
+  }
+
+  if ('blocks' in record) {
+    const blocksVal = record.blocks;
+    if (Array.isArray(blocksVal)) {
+      _migrateBlocksArray(blocksVal);
+    } else if (blocksVal && typeof blocksVal === 'object') {
+      const inner = (blocksVal as Record<string, unknown>).blocks;
+      if (Array.isArray(inner)) {
+        _migrateBlocksArray(inner);
+      }
+    }
+  }
+}
+
+function _migrateBlocksArray(items: Record<string, unknown>[]): void {
+  for (const block of items) {
+    _migrateSingleBlock(block);
+
+    if (block.inputs && typeof block.inputs === 'object') {
+      for (const inputVal of Object.values(
+        block.inputs as Record<string, unknown>,
+      )) {
+        if (
+          inputVal &&
+          typeof inputVal === 'object' &&
+          'block' in (inputVal as Record<string, unknown>)
+        ) {
+          _migrateBlocksArray([
+            (inputVal as Record<string, unknown>).block as Record<
+              string,
+              unknown
+            >,
+          ]);
+        }
+      }
+    }
+    if (
+      block.next &&
+      typeof block.next === 'object' &&
+      'block' in (block.next as Record<string, unknown>)
+    ) {
+      _migrateBlocksArray([
+        (block.next as Record<string, unknown>).block as Record<
+          string,
+          unknown
+        >,
+      ]);
+    }
+  }
+}
+
+function _migrateSingleBlock(block: Record<string, unknown>): void {
+  if (block.type !== 'variables_set') return;
+  const fields = block.fields as Record<string, unknown> | undefined;
+  if (fields && typeof fields === 'object' && 'VAR' in fields) return;
+
+  const inputs = block.inputs as Record<string, unknown> | undefined;
+  if (!inputs || typeof inputs !== 'object') return;
+
+  const leftInput = inputs.LEFT as Record<string, unknown> | undefined;
+  const leftBlock = leftInput?.block as Record<string, unknown> | undefined;
+  let varName = 'tmp';
+
+  if (leftBlock && leftBlock.type === 'variables_get') {
+    const leftFields = leftBlock.fields as Record<string, unknown> | undefined;
+    if (leftFields && typeof leftFields.VAR === 'string') {
+      varName = leftFields.VAR;
+    } else if (leftFields && typeof leftFields.VAR === 'object') {
+      const varObj = leftFields.VAR as Record<string, unknown>;
+      varName = (varObj.name as string) || (varObj.id as string) || 'tmp';
+    }
+  }
+
+  if (!block.fields || typeof block.fields !== 'object') {
+    block.fields = {};
+  }
+  (block.fields as Record<string, unknown>).VAR = varName;
+  delete inputs.LEFT;
+
+  if ('RIGHT' in inputs) {
+    inputs.VALUE = inputs.RIGHT;
+    delete inputs.RIGHT;
+  }
+}
 export function getMigrationMap(): Record<string, string> {
   return { ...BLOCK_TYPE_MIGRATION_MAP };
 }

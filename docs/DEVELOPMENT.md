@@ -32,6 +32,7 @@ src/blocks/post-quantum/basic/your-block.ts
 
 ```typescript
 import * as Blockly from 'blockly/core';
+import { TYPE_BYTES, TYPE_INT_LIST } from '@/constants/block-types';
 
 // 1. 在文件顶部声明块类型常量
 export const YOUR_BLOCK_TYPES = ['pq_your_block'] as const;
@@ -41,11 +42,11 @@ export type YourBlockType = (typeof YOUR_BLOCK_TYPES)[number];
 Blockly.Blocks['pq_your_block'] = {
   init: function () {
     this.appendValueInput('INPUT')
-      .setCheck(null)
+      .setCheck(TYPE_BYTES)  // 使用类型常量，而非 null
       .appendField('YourBlock(');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);  // 输出类型
     this.setColour(230);             // 后量子类目色号
     this.setTooltip('Your block description');
     this.setHelpUrl('https://...');
@@ -214,6 +215,7 @@ Blockly.Blocks['pq_your_block'] = {
 | 数论 | `src/blocks/numtheory/` | `src/generators/javascript/numtheory/` | `src/generators/python/numtheory/` |
 | 椭圆曲线 | `src/blocks/ecc/` | `src/generators/javascript/ecc/` | `src/generators/python/ecc/` |
 | 后量子 | `src/blocks/post-quantum/` | `src/generators/javascript/postquantum/` | `src/generators/python/postquantum/` |
+| 函数封装 | `src/blocks/procedure/` | `src/generators/javascript/procedure/` | `src/generators/python/procedure/` |
 
 > 注意：blocks 目录和 generators 目录的命名略有不同（`bitwise` vs `bit`, `post-quantum` vs `postquantum`），遵循现有模式即可。
 

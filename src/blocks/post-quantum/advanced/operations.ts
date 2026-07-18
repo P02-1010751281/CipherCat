@@ -11,6 +11,7 @@
  *
  * 参考: FIPS 203 — https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
  */
+import { TYPE_BYTES, TYPE_INT_LIST } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const ADVANCED_OPERATIONS_BLOCK_TYPES = [
@@ -27,7 +28,7 @@ export type AdvancedOperationsBlockType =
 
 Blockly.Blocks['pq_sample_ntt_mat'] = {
   init: function () {
-    this.appendValueInput('SEED').setCheck(null).appendField('SampleNTTMat(');
+    this.appendValueInput('SEED').setCheck(TYPE_BYTES).appendField('SampleNTTMat(');
     this.appendDummyInput()
       .appendField('k=')
       .appendField(
@@ -44,7 +45,7 @@ Blockly.Blocks['pq_sample_ntt_mat'] = {
       .appendField(new Blockly.FieldDropdown([['3329', '3329']]), 'MODULUS');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(290);
     this.setTooltip(
       'SampleNTTMat(seed, k, q): Generate k×k SampleNTT matrix A from seed ρ. ' +
@@ -57,7 +58,7 @@ Blockly.Blocks['pq_sample_ntt_mat'] = {
 
 Blockly.Blocks['pq_cbd_ntt_vec'] = {
   init: function () {
-    this.appendValueInput('SEED').setCheck(null).appendField('CBDNTTVec(');
+    this.appendValueInput('SEED').setCheck(TYPE_BYTES).appendField('CBDNTTVec(');
     this.appendDummyInput()
       .appendField('k=')
       .appendField(
@@ -83,7 +84,7 @@ Blockly.Blocks['pq_cbd_ntt_vec'] = {
       .appendField(new Blockly.FieldDropdown([['3329', '3329']]), 'MODULUS');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(290);
     this.setTooltip(
       'CBDNTTVec(seed, k, η, q): Generate k CBD polynomials and NTT them. ' +
@@ -118,7 +119,7 @@ Blockly.Blocks['pq_atr_intt_add_e1'] = {
       );
     this.appendValueInput('A').setCheck(null).appendField(', A=');
     this.appendValueInput('RHAT').setCheck(null).appendField(', r̂=');
-    this.appendValueInput('RSEED').setCheck(null).appendField(', seed=');
+    this.appendValueInput('RSEED').setCheck(TYPE_BYTES).appendField(', seed=');
     this.appendDummyInput()
       .appendField(', q=')
       .appendField(new Blockly.FieldDropdown([['3329', '3329']]), 'MODULUS')
@@ -159,7 +160,7 @@ Blockly.Blocks['pq_tr_intt_add_e2_mu'] = {
       );
     this.appendValueInput('THAT').setCheck(null).appendField(', t̂=');
     this.appendValueInput('RHAT').setCheck(null).appendField(', r̂=');
-    this.appendValueInput('RSEED').setCheck(null).appendField(', seed=');
+    this.appendValueInput('RSEED').setCheck(TYPE_BYTES).appendField(', seed=');
     this.appendValueInput('MU').setCheck(null).appendField(', μ=');
     this.appendDummyInput()
       .appendField(', q=')
@@ -213,7 +214,7 @@ Blockly.Blocks['pq_vec_compress_encode'] = {
       .appendField(new Blockly.FieldDropdown([['3329', '3329']]), 'MODULUS');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(260);
     this.setTooltip(
       'VecCompressEncode(u, d, q): Compress each polynomial in vector u to d bits, ' +

@@ -14,6 +14,7 @@ import {
   PQ_ADVANCED_BLOCK_TYPES,
 } from '@/blocks/post-quantum';
 import { getSboxCategoryKey } from '@/blocks/sbox/category';
+import { PROCEDURE_CATEGORY_KEY } from '@/blocks/procedure/category';
 
 export function createToolboxConfig() {
   const msg = Blockly.Msg as Record<string, string>;
@@ -191,7 +192,7 @@ export function createToolboxConfig() {
     kind: 'category',
     name: msg.CRYPTO_CATEGORY_PROCEDURE || 'Functions',
     colour: '#A6745C',
-    custom: 'PROCEDURE',
+    custom: PROCEDURE_CATEGORY_KEY,
   };
 
   return {

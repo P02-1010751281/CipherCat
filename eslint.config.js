@@ -12,6 +12,7 @@ export default [
       '**/coverage/**',
       '**/node_modules/**',
       '**/target/**',
+      '**/.cargo/**',
     ],
   },
 

@@ -1,4 +1,5 @@
 import * as Blockly from 'blockly/core';
+import { TYPE_NUMBER } from '@/constants/block-types';
 
 export const OPERATION_BLOCK_TYPES = [
   'bit_operation'
@@ -18,13 +19,13 @@ Blockly.Blocks['bit_operation'] = {
       [Blockly.Msg.CRYPTO_BITWISE_LEFT_ROTATE || '循环左移(<<<)', 'LEFT_ROTATE']
     ]);
     this.appendValueInput('A')
-      .setCheck(null);
+      .setCheck(TYPE_NUMBER);
     this.appendDummyInput()
       .appendField(dropdown, 'OP');
     this.appendValueInput('B')
-      .setCheck(null);
+      .setCheck(TYPE_NUMBER);
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_NUMBER);
     this.setColour(345);
     this.setTooltip(Blockly.Msg.CRYPTO_BIT_OPERATION_TOOLTIP || '对输入执行按位运算（逻辑/移位/循环），可前后拼接');
     this.setHelpUrl('');

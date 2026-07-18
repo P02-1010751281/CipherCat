@@ -52,3 +52,9 @@ test/
 
 # Tauri
 src-tauri/target/
+.cargo/
+
+# Reasonix
+.reasonix/
+reasonix.toml
+session-*.md

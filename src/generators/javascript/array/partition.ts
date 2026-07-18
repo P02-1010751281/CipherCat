@@ -6,8 +6,51 @@ javascriptGenerator.forBlock['arr_partition_to_array'] = function(block: Block):
   const count = javascriptGenerator.valueToCode(block, 'COUNT', Order.ATOMIC) || '0';
   const target = javascriptGenerator.valueToCode(block, 'TARGET', Order.ATOMIC) || 'W';
 
+  // 与 Python 版对齐：字节容器保持 Uint8Array，int 容器转为 32-bit 字
+  const targetTrimmed = String(target).trim();
+  const isByteContainer = /^(?:B|Block|padded|data|state)$/.test(targetTrimmed);
+
+  if (isByteContainer) {
+    return `
+// 均匀划分 — 字节容器（保持 Uint8Array）
+(function() {
+  var __crypto_data__ = ${src};
+  if (__crypto_data__ instanceof Uint8Array) {
+    // 已是 Uint8Array，无需转换
+  } else if (typeof __crypto_data__ === 'number') {
+    var __crypto_num__ = __crypto_data__ >>> 0;
+    var __crypto_bytes__ = Math.max(1, (32 - Math.clz32(__crypto_num__) + 7) / 8 | 0);
+    __crypto_data__ = new Uint8Array(__crypto_bytes__);
+    for (var __j__ = 0; __j__ < __crypto_bytes__; __j__++) {
+      __crypto_data__[__crypto_bytes__ - 1 - __j__] = (__crypto_num__ >>> (__j__ * 8)) & 0xFF;
+    }
+  } else if (Array.isArray(__crypto_data__)) {
+    __crypto_data__ = new Uint8Array(__crypto_data__);
+  } else {
+    ${target} = new Uint8Array(0);
+    return;
+  }
+
+  var __crypto_total__ = __crypto_data__.length;
+  var __crypto_n__ = parseInt(${count});
+  if (__crypto_n__ <= 0 || __crypto_total__ % __crypto_n__ !== 0) {
+    ${target} = new Uint8Array(0);
+    return;
+  }
+  var __crypto_chunk_size__ = __crypto_total__ / __crypto_n__;
+  ${target} = [];
+  for (var __crypto_i__ = 0; __crypto_i__ < __crypto_n__; __crypto_i__++) {
+    ${target}[__crypto_i__] = __crypto_data__.slice(
+      __crypto_i__ * __crypto_chunk_size__,
+      (__crypto_i__ + 1) * __crypto_chunk_size__
+    );
+  }
+})();
+`;
+  }
+
   return `
-// 均匀划分（严格整除，写入预分配数组）
+// 均匀划分 — int 容器（转换为 32-bit 字）
 (function() {
   var __crypto_data__ = ${src};
 

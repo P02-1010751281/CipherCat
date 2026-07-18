@@ -14,6 +14,7 @@
  *
  * 参考: FIPS 203 — https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
  */
+import { TYPE_BYTES } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const BASIC_OPERATIONS_BLOCK_TYPES = [
@@ -27,11 +28,11 @@ export type BasicOperationsBlockType =
 
 Blockly.Blocks['pq_byte_concat'] = {
   init: function () {
-    this.appendValueInput('A').setCheck(null).appendField('BytesConcat(');
-    this.appendValueInput('B').setCheck(null).appendField('||');
+    this.appendValueInput('A').setCheck(TYPE_BYTES).appendField('BytesConcat(');
+    this.appendValueInput('B').setCheck(TYPE_BYTES).appendField('||');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip(
       'BytesConcat(A, B): Concatenate two byte strings A || B. ' +
@@ -43,12 +44,12 @@ Blockly.Blocks['pq_byte_concat'] = {
 
 Blockly.Blocks['pq_bytes_slice'] = {
   init: function () {
-    this.appendValueInput('INPUT').setCheck(null).appendField('BytesSlice(');
+    this.appendValueInput('INPUT').setCheck(TYPE_BYTES).appendField('BytesSlice(');
     this.appendValueInput('START').setCheck(null).appendField('[');
     this.appendValueInput('END').setCheck(null).appendField(':');
     this.appendDummyInput().appendField('])');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip(
       'BytesSlice(B, start, end): Extract bytes B[start:end]. Used to split 64-byte G output ' +
@@ -60,11 +61,11 @@ Blockly.Blocks['pq_bytes_slice'] = {
 
 Blockly.Blocks['pq_seed_with_nonce'] = {
   init: function () {
-    this.appendValueInput('SEED').setCheck(null).appendField('SeedWithNonce(');
+    this.appendValueInput('SEED').setCheck(TYPE_BYTES).appendField('SeedWithNonce(');
     this.appendValueInput('NONCE').setCheck(null).appendField('||');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip(
       'SeedWithNonce(seed, nonce): Append single byte nonce to seed bytes. ' +

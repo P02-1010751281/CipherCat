@@ -1,4 +1,5 @@
 import * as Blockly from 'blockly/core';
+import { TYPE_NUMBER } from '@/constants/block-types';
 
 export const ROTATE_BLOCK_TYPES = [
   'bit_rotate_left',
@@ -12,7 +13,7 @@ export type RotateBlockType = typeof ROTATE_BLOCK_TYPES[number];
 Blockly.Blocks['bit_rotate_left'] = {
   init: function() {
     this.appendValueInput('Input')
-      .setCheck(null)
+      .setCheck(TYPE_NUMBER)
       .appendField(Blockly.Msg.CRYPTO_ROTATE_LEFT || '32位循环左移 输入');
     this.appendDummyInput()
       .appendField(Blockly.Msg.CRYPTO_ROTATE_LEFT_BIT || '位数')
@@ -32,7 +33,7 @@ Blockly.Blocks['bit_rotate_left'] = {
 Blockly.Blocks['bit_rotate_right'] = {
   init: function() {
     this.appendValueInput('Input')
-      .setCheck(null)
+      .setCheck(TYPE_NUMBER)
       .appendField(Blockly.Msg.CRYPTO_ROTATE_RIGHT || '32位循环右移 输入');
     this.appendDummyInput()
       .appendField(Blockly.Msg.CRYPTO_ROTATE_LEFT_BIT || '位数')
@@ -58,7 +59,7 @@ Blockly.Blocks['bit_rotate_left_op'] = {
       ['ROL32_ADD', 'ROL32_ADD']
     ]);
     this.appendValueInput('Input')
-      .setCheck(null)
+      .setCheck(TYPE_NUMBER)
       .appendField(Blockly.Msg.CRYPTO_ROTATE_LEFT_OP || '32位循环左移与操作 输入');
     this.appendDummyInput()
       .appendField(dropdown, 'option');
@@ -86,7 +87,7 @@ Blockly.Blocks['bit_rotate_right_op'] = {
       ['ROR32_ADD', 'ROR32_ADD']
     ]);
     this.appendValueInput('Input')
-      .setCheck(null)
+      .setCheck(TYPE_NUMBER)
       .appendField(Blockly.Msg.CRYPTO_ROTATE_RIGHT_OP || '32位循环右移与操作 输入');
     this.appendDummyInput()
       .appendField(dropdown, 'option');

@@ -13,6 +13,7 @@
  *   FIPS 202 — https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf
  *   FIPS 203 — https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
  */
+import { TYPE_BYTES, TYPE_NUMBER } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const SHAKE_BLOCK_TYPES = ['pq_xof', 'pq_prf'] as const;
@@ -34,10 +35,10 @@ Blockly.Blocks['pq_xof'] = {
         ]),
         'ALGO',
       );
-    this.appendValueInput('SEED').setCheck(null).appendField('seed=');
-    this.appendValueInput('OUTLEN').setCheck('Number').appendField('outLen=');
+    this.appendValueInput('SEED').setCheck(TYPE_BYTES).appendField('seed=');
+    this.appendValueInput('OUTLEN').setCheck(TYPE_NUMBER).appendField('outLen=');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_XOF_TOOLTIP ||
@@ -62,11 +63,11 @@ Blockly.Blocks['pq_prf'] = {
         ]),
         'ALGO',
       );
-    this.appendValueInput('SEED').setCheck(null).appendField('seed=');
-    this.appendValueInput('NONCE').setCheck('Number').appendField('nonce=');
-    this.appendValueInput('OUTLEN').setCheck('Number').appendField('outLen=');
+    this.appendValueInput('SEED').setCheck(TYPE_BYTES).appendField('seed=');
+    this.appendValueInput('NONCE').setCheck(TYPE_NUMBER).appendField('nonce=');
+    this.appendValueInput('OUTLEN').setCheck(TYPE_NUMBER).appendField('outLen=');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_PRF_TOOLTIP ||

@@ -4,6 +4,7 @@
  * - pad: 消息填充 (1 || 0* || len), 对齐 512-bit 块
  * - compress: CF 压缩函数 (64 轮)
  */
+import { TYPE_BYTES } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const SM3_BLOCK_TYPES = [
@@ -21,7 +22,7 @@ Blockly.Blocks['hash_sm3_pad'] = {
       .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_SM3_PAD || 'SM3 Pad');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SM3_PAD_TOOLTIP ||
@@ -37,7 +38,7 @@ Blockly.Blocks['hash_sm3_pad_text'] = {
       .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_SM3_PAD_TEXT || 'SM3 Text Pad');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SM3_PAD_TEXT_TOOLTIP ||
@@ -53,7 +54,7 @@ Blockly.Blocks['hash_sm3_pad_hex'] = {
       .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_SM3_PAD_HEX || 'SM3 Hex Pad');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SM3_PAD_HEX_TOOLTIP || 'SM3 hex string padding',

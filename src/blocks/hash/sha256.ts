@@ -6,6 +6,7 @@
  *
  * 参考: https://csrc.nist.gov/pubs/fips/180-4/upd1/final
  */
+import { TYPE_BYTES } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const SHA256_BLOCK_TYPES = [
@@ -23,7 +24,7 @@ Blockly.Blocks['hash_sha256_pad'] = {
       .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_SHA256_PAD || 'SHA-256 Pad');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SHA256_PAD_TOOLTIP ||
@@ -39,7 +40,7 @@ Blockly.Blocks['hash_sha256_pad_text'] = {
       .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_SHA256_PAD_TEXT || 'SHA-256 Text Pad');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SHA256_PAD_TEXT_TOOLTIP ||
@@ -55,7 +56,7 @@ Blockly.Blocks['hash_sha256_pad_hex'] = {
       .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_SHA256_PAD_HEX || 'SHA-256 Hex Pad');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SHA256_PAD_HEX_TOOLTIP || 'SHA-256 hex string padding',

@@ -8,6 +8,7 @@ export * from './hash';
 export * from './numtheory';
 export * from './ecc';
 export * from './post-quantum';
+export * from './procedure';
 
 import { CTRL_BLOCK_TYPES, type CtrlBlockType } from './ctrl';
 import { DATA_BLOCK_TYPES, type DataBlockType } from './data';
@@ -22,6 +23,10 @@ import {
 import { NT_BLOCK_TYPES, type NtBlockType } from './numtheory';
 import { ECC_BLOCK_TYPES, type EccBlockType } from './ecc';
 import { PQ_BLOCK_TYPES, type PostQuantumBlockType } from './post-quantum';
+import {
+  PROCEDURE_BLOCK_TYPES,
+  type ProcedureBlockType,
+} from './procedure';
 
 export const ALL_BLOCK_TYPES = [
   ...CTRL_BLOCK_TYPES,
@@ -34,6 +39,7 @@ export const ALL_BLOCK_TYPES = [
   ...NT_BLOCK_TYPES,
   ...ECC_BLOCK_TYPES,
   ...PQ_BLOCK_TYPES,
+  ...PROCEDURE_BLOCK_TYPES,
 ] as const;
 
 export type AllBlockType =
@@ -46,4 +52,5 @@ export type AllBlockType =
   | HashBlockType
   | NtBlockType
   | EccBlockType
-  | PostQuantumBlockType;
+  | PostQuantumBlockType
+  | ProcedureBlockType;

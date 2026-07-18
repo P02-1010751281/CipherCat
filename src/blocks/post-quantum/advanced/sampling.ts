@@ -23,6 +23,7 @@
  *
  * 参考: FIPS 203 — https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
  */
+import { TYPE_BYTES, TYPE_INT_LIST } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const ADVANCED_SAMPLING_BLOCK_TYPES = [
@@ -41,7 +42,7 @@ export type AdvancedSamplingBlockType =
 //   4. 收集到 256 个有效系数（SHAKE128 输出即 NTT 域，无需再调用 NTT()）
 Blockly.Blocks['pq_sample_ntt'] = {
   init: function () {
-    this.appendValueInput('SEED').setCheck(null).appendField('SampleNTT(');
+    this.appendValueInput('SEED').setCheck(TYPE_BYTES).appendField('SampleNTT(');
     this.appendDummyInput()
       .appendField(', q=')
       .appendField(
@@ -50,7 +51,7 @@ Blockly.Blocks['pq_sample_ntt'] = {
       );
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(230);
     this.setTooltip(
       'SampleNTT: Sample a polynomial in NTT domain using XOF/SHAKE128. Reads 3-byte chunks, accepts values < q. SHAKE128 output coefficients are already in NTT domain (FIPS 203, Algorithm 7)',
@@ -67,7 +68,7 @@ Blockly.Blocks['pq_sample_ntt'] = {
 //      其中 b_i 是 PRF 输出字节的对应比特
 Blockly.Blocks['pq_sample_poly_cbd'] = {
   init: function () {
-    this.appendValueInput('SEED').setCheck(null).appendField('SamplePolyCBD(');
+    this.appendValueInput('SEED').setCheck(TYPE_BYTES).appendField('SamplePolyCBD(');
     this.appendDummyInput()
       .appendField(', η=')
       .appendField(
@@ -85,7 +86,7 @@ Blockly.Blocks['pq_sample_poly_cbd'] = {
       );
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(230);
     this.setTooltip(
       'SamplePolyCBD_η: Sample a polynomial from centered binomial distribution CBD_η using PRF/SHAKE256 (FIPS 203, Algorithm 8)',

@@ -2,7 +2,7 @@
 
 🐱 **后量子密码学可视化编程平台** — 基于 Blockly 12.x 和 Vue 3 (Composition API + TypeScript)。
 
-CipherCat 让你像搭乐高一样拖拽积木块来编写密码学算法，一键生成 JavaScript 或 Python 可执行代码。覆盖从位运算、S-Box、哈希函数到后量子密码（ML-KEM / ML-DSA）的全套密码学原语，共 71+ 个积木块。
+CipherCat 让你像搭乐高一样拖拽积木块来编写密码学算法，一键生成 JavaScript 或 Python 可执行代码。覆盖从位运算、S-Box、哈希函数到后量子密码（ML-KEM / ML-DSA）的全套密码学原语，共 80+ 个积木块，含 11 个类目和完整的类型约束系统。
 
 ## 文档结构
 

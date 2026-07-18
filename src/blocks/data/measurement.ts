@@ -1,4 +1,5 @@
 import * as Blockly from 'blockly/core';
+import { TYPE_NUMBER } from '@/constants/block-types';
 
 export const MEASUREMENT_BLOCK_TYPES = [
   'data_bit_length',
@@ -16,7 +17,7 @@ Blockly.Blocks['data_bit_length'] = {
     this.appendDummyInput()
       .appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_NUMBER);
     this.setColour(200);
     this.setTooltip(Blockly.Msg.CRYPTO_MEASURE_BIT_LENGTH_TOOLTIP || 'Return the bit length of the input');
     this.setHelpUrl('');
@@ -32,7 +33,7 @@ Blockly.Blocks['data_byte_length'] = {
     this.appendDummyInput()
       .appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_NUMBER);
     this.setColour(200);
     this.setTooltip(Blockly.Msg.CRYPTO_MEASURE_BYTE_LENGTH_TOOLTIP || 'Return the byte length of the input');
     this.setHelpUrl('');

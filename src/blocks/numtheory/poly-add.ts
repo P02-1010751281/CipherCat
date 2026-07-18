@@ -9,6 +9,7 @@
  *
  * 参考: FIPS 203 — https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
  */
+import { TYPE_INT_LIST } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const POLY_ADD_BLOCK_TYPES = [
@@ -19,9 +20,9 @@ export type PolyAddBlockType = typeof POLY_ADD_BLOCK_TYPES[number];
 
 Blockly.Blocks['pq_poly_add'] = {
   init: function() {
-    this.appendValueInput('A').setCheck(null)
+    this.appendValueInput('A').setCheck(TYPE_INT_LIST)
       .appendField('PolyAdd(');
-    this.appendValueInput('B').setCheck(null)
+    this.appendValueInput('B').setCheck(TYPE_INT_LIST)
       .appendField('+');
     this.appendDummyInput()
       .appendField(', q=')
@@ -31,7 +32,7 @@ Blockly.Blocks['pq_poly_add'] = {
     this.appendDummyInput()
       .appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(250);
     this.setTooltip(
       'PolyAdd(A, B): Component-wise polynomial addition in R_q, each coefficient mod q. ' +

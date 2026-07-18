@@ -5,6 +5,7 @@
  * 生成器原样透传，不做数值转换和引号包裹。
  */
 import * as Blockly from 'blockly/core';
+import { TYPE_BYTES, TYPE_INT_LIST } from '@/constants/block-types';
 
 export const NUMBER_BLOCK_TYPES = [
   'cipher_key_from_seed',
@@ -31,7 +32,7 @@ Blockly.Blocks['data_value'] = {
 Blockly.Blocks['seed_bytes'] = {
   init: function () {
     this.appendDummyInput().appendField('seed (bytes)');
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(230);
     this.setTooltip('当前种子原始字节 (data)');
     this.setHelpUrl('');
@@ -52,7 +53,7 @@ Blockly.Blocks['seed_hex'] = {
 Blockly.Blocks['cipher_key_from_seed'] = {
   init: function () {
     this.appendDummyInput().appendField('密钥 (from seed)');
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(230);
     this.setTooltip('从 seed 派生 4 个 32-bit 字，输出 Python 列表表达式');
     this.setHelpUrl('');

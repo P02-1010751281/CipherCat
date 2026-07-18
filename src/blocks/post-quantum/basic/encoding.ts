@@ -17,6 +17,7 @@
  */
 
 import * as Blockly from 'blockly/core';
+import { TYPE_BYTES, TYPE_INT_LIST } from '@/constants/block-types';
 
 export const ENCODING_BLOCK_TYPES = [
   'pq_bytes_to_bits',
@@ -29,10 +30,10 @@ export type EncodingBlockType = (typeof ENCODING_BLOCK_TYPES)[number];
 
 Blockly.Blocks['pq_bytes_to_bits'] = {
   init: function () {
-    this.appendValueInput('INPUT').setCheck(null).appendField('BytesToBits(');
+    this.appendValueInput('INPUT').setCheck(TYPE_BYTES).appendField('BytesToBits(');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(230);
     this.setTooltip(
       'Convert byte array to bit array (little-endian per byte). ' +
@@ -44,10 +45,10 @@ Blockly.Blocks['pq_bytes_to_bits'] = {
 
 Blockly.Blocks['pq_bits_to_bytes'] = {
   init: function () {
-    this.appendValueInput('INPUT').setCheck(null).appendField('BitsToBytes(');
+    this.appendValueInput('INPUT').setCheck(TYPE_INT_LIST).appendField('BitsToBytes(');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(230);
     this.setTooltip(
       'Convert bit array back to byte array. Groups 8 consecutive bits into one byte: ' +
@@ -59,7 +60,7 @@ Blockly.Blocks['pq_bits_to_bytes'] = {
 
 Blockly.Blocks['pq_byte_encode'] = {
   init: function () {
-    this.appendValueInput('INPUT').setCheck(null).appendField('ByteEncode(');
+    this.appendValueInput('INPUT').setCheck(TYPE_INT_LIST).appendField('ByteEncode(');
     this.appendDummyInput()
       .appendField(', d=')
       .appendField(
@@ -75,7 +76,7 @@ Blockly.Blocks['pq_byte_encode'] = {
       );
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(230);
     this.setTooltip(
       'ByteEncode_d: Encode polynomial coefficients into compact bytes using d-bit packing ' +
@@ -87,7 +88,7 @@ Blockly.Blocks['pq_byte_encode'] = {
 
 Blockly.Blocks['pq_byte_decode'] = {
   init: function () {
-    this.appendValueInput('INPUT').setCheck(null).appendField('ByteDecode(');
+    this.appendValueInput('INPUT').setCheck(TYPE_BYTES).appendField('ByteDecode(');
     this.appendDummyInput()
       .appendField(', d=')
       .appendField(
@@ -103,7 +104,7 @@ Blockly.Blocks['pq_byte_decode'] = {
       );
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(230);
     this.setTooltip(
       'ByteDecode_d: Decode compact bytes into polynomial coefficients using d-bit unpacking ' +

@@ -16,6 +16,7 @@
  * 参考: FIPS 203 — https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
  *       NTT 教程 — https://higashi.blog/2023/12/15/ntt-03/
  */
+import { TYPE_INT_LIST } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const NTT_BLOCK_TYPES = [
@@ -33,7 +34,7 @@ export type NttBlockType = (typeof NTT_BLOCK_TYPES)[number];
 // 迭代方向: stride 从 n/2 递减到 1
 Blockly.Blocks['pq_ntt'] = {
   init: function () {
-    this.appendValueInput('INPUT').setCheck(null).appendField('NTT(');
+    this.appendValueInput('INPUT').setCheck(TYPE_INT_LIST).appendField('NTT(');
     this.appendDummyInput()
       .appendField(', q=')
       .appendField(
@@ -54,7 +55,7 @@ Blockly.Blocks['pq_ntt'] = {
       );
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(230);
     this.setTooltip(
       Blockly.Msg.CRYPTO_NTT_TOOLTIP ||
@@ -71,7 +72,7 @@ Blockly.Blocks['pq_ntt'] = {
 // 最后需乘以 n⁻¹ mod q
 Blockly.Blocks['pq_intt'] = {
   init: function () {
-    this.appendValueInput('INPUT').setCheck(null).appendField('INTT(');
+    this.appendValueInput('INPUT').setCheck(TYPE_INT_LIST).appendField('INTT(');
     this.appendDummyInput()
       .appendField(', q=')
       .appendField(
@@ -92,7 +93,7 @@ Blockly.Blocks['pq_intt'] = {
       );
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(230);
     this.setTooltip(
       Blockly.Msg.CRYPTO_INTT_TOOLTIP ||
@@ -110,9 +111,9 @@ Blockly.Blocks['pq_intt'] = {
 Blockly.Blocks['pq_ntt_mul'] = {
   init: function () {
     this.appendValueInput('A')
-      .setCheck(null)
+      .setCheck(TYPE_INT_LIST)
       .appendField(Blockly.Msg.CRYPTO_NTT_MUL || 'NTT Mul(');
-    this.appendValueInput('B').setCheck(null).appendField(',');
+    this.appendValueInput('B').setCheck(TYPE_INT_LIST).appendField(',');
     this.appendDummyInput()
       .appendField(', q=')
       .appendField(
@@ -121,7 +122,7 @@ Blockly.Blocks['pq_ntt_mul'] = {
       );
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(230);
     this.setTooltip(
       Blockly.Msg.CRYPTO_NTT_MUL_TOOLTIP ||

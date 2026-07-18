@@ -7,11 +7,11 @@ pythonGenerator.forBlock['bit_expr_infix'] = function(block: Block): [string, nu
   const op = block.getFieldValue('OP');
   let code = '';
   if(op === 'XOR') {
-    code = `(${value_a} ^ ${value_b})`;
+    code = `(${value_a} ^ ${value_b}) & 0xFFFFFFFF`;
   } else if(op === 'AND') {
-    code = `(${value_a} & ${value_b})`;
+    code = `(${value_a} & ${value_b}) & 0xFFFFFFFF`;
   } else if(op === 'OR') {
-    code = `(${value_a} | ${value_b})`;
+    code = `(${value_a} | ${value_b}) & 0xFFFFFFFF`;
   } else if(op === 'EQ') {
     code = `(${value_a} == ${value_b})`;
   }

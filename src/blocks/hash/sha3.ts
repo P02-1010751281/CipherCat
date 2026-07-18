@@ -16,6 +16,7 @@
  * 参考: https://csrc.nist.gov/pubs/fips/202/final
  *       https://keccak.team/keccak_specs_summary.html
  */
+import { TYPE_BYTES, TYPE_NUMBER } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const SHA3_BLOCK_TYPES = [
@@ -37,7 +38,7 @@ Blockly.Blocks['hash_sha3_pad_text'] = {
       .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_SHA3_PAD_TEXT || 'SHA-3 Text Pad');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SHA3_PAD_TEXT_TOOLTIP ||
@@ -54,7 +55,7 @@ Blockly.Blocks['hash_sha3_pad_hex'] = {
       .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_SHA3_PAD_HEX || 'SHA-3 Hex Pad');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SHA3_PAD_HEX_TOOLTIP ||
@@ -92,7 +93,7 @@ Blockly.Blocks['hash_sha3_pad'] = {
         'SUFFIX',
       );
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SHA3_PAD_TOOLTIP ||
@@ -137,7 +138,7 @@ Blockly.Blocks['hash_sha3_absorb'] = {
       Blockly.Msg.CRYPTO_SHA3_ABSORB || 'Absorb',
     );
     this.appendValueInput('STATE').setCheck(null).appendField('state=');
-    this.appendValueInput('BLOCK').setCheck(null).appendField('block=');
+    this.appendValueInput('BLOCK').setCheck(TYPE_BYTES).appendField('block=');
     this.appendDummyInput()
       .appendField(Blockly.Msg.CRYPTO_SHA3_RATE || 'rate=')
       .appendField(
@@ -169,7 +170,7 @@ Blockly.Blocks['hash_sha3_squeeze'] = {
     );
     this.appendValueInput('STATE').setCheck(null).appendField('state=');
     this.appendValueInput('OUTLEN')
-      .setCheck(null)
+      .setCheck(TYPE_NUMBER)
       .appendField(Blockly.Msg.CRYPTO_SHA3_OUTLEN || 'outLen=');
     this.appendDummyInput()
       .appendField(Blockly.Msg.CRYPTO_SHA3_RATE || 'rate=')
@@ -184,7 +185,7 @@ Blockly.Blocks['hash_sha3_squeeze'] = {
         'RATE',
       );
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_BYTES);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SHA3_SQUEEZE_TOOLTIP ||

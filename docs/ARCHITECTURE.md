@@ -84,7 +84,7 @@ BlocklyEditor.vue (组件)
 
 ### 积木块定义 (`src/blocks/`)
 
-按密码学领域分为 10 个类目，每个类目有独立的 `index.ts` 导出类型和块定义：
+按密码学领域分为 11 个类目，每个类目有独立的 `index.ts` 导出类型和块定义：
 
 | 目录 | 类目 | 说明 |
 |------|------|------|
@@ -98,8 +98,29 @@ BlocklyEditor.vue (组件)
 | `numtheory/` | 数论 | NTT/INTT/Montgomery 约简、椭圆曲线、模逆 |
 | `ecc/` | 椭圆曲线 | 曲线参数、点加/倍点/点乘 |
 | `post-quantum/` | 后量子 | 基础（编解码/压缩）+ 高级（采样/NTT/向量操作） |
+| `procedure/` | 函数封装 | 密码学函数模板、独立 return 块、导入/导出 |
 
 所有块类型汇总到 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES` 联合类型中。
+
+### 类型系统 (`src/constants/block-types.ts`)
+
+CipherCat 定义了**密码学领域类型常量**，用于 Blockly 的 `setCheck()`/`setOutput()` 连接约束：
+
+| 类型常量 | Blockly 类型字符串 | 语义 |
+|---------|-------------------|------|
+| `TYPE_BYTES` | `Bytes` | 字节序列 |
+| `TYPE_INT_LIST` | `IntList` | 整数列表/多项式系数 |
+| `TYPE_SBOX` | `SBox` | S-box 查找表 |
+| `TYPE_NUMBER` | `Number` | Blockly 原生数字 |
+
+类型系统同时包含 **`TYPE_MAP`** 映射表，定义了 Blockly ↔ Python ↔ JavaScript 的底层语言对齐：
+
+| Blockly | Python | JavaScript |
+|---------|--------|-----------|
+| `Bytes` | `bytes` | `Uint8Array` |
+| `IntList` | `list[int]` | `number[]` |
+| `Number` | `int` | `number` |
+| `SBox` | `list[list[int]]` | `number[][]` |
 
 ### 代码生成器 (`src/generators/`)
 
@@ -146,6 +167,7 @@ src/generators/
 |------|------|
 | `code-languages.ts` | 支持的语言枚举（Python / JavaScript） |
 | `workspace-config.ts` | Blockly 工作区配置（网格、缩放、滚动条等） |
+| `block-types.ts` | 密码学类型常量（Bytes/IntList/SBox）+ TYPE_MAP 语言对齐表 |
 
 ---
 

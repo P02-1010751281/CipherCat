@@ -8,6 +8,7 @@ import './hash';
 import './numtheory';
 import './ecc';
 import './postquantum';
+import './procedure';
 
 import { Block } from 'blockly/core';
 import { javascriptGenerator, Order } from 'blockly/javascript';

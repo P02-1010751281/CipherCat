@@ -348,7 +348,7 @@ Blockly.Blocks['aes_round'] = {
 | M4 | ARCHITECTURE.md、`gmt-0003-SM2/` |
 | M5 | 按需 |
 
-建议新增：`USAGE.md`（P1 用户手册）、`BLOCK-REFERENCE.md`（P1 块参考）、`TYPE-SYSTEM.md`（P2 类型系统深度文档）
+建议新增：`USAGE.md`（P1 用户手册）、`BLOCK-REFERENCE.md`（P1 块参考）。`TYPE-SYSTEM.md` ✅ 已创建。
 
 ---
 

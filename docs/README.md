@@ -20,8 +20,9 @@
 
 | 文档 | 受众 | 说明 |
 |------|------|------|
-| [IMPLEMENTATION-PLAN.md](./IMPLEMENTATION-PLAN.md) | 开发者/PM | 完整实施计划：5 里程碑 77→130 块 |
+| [IMPLEMENTATION-PLAN.md](./IMPLEMENTATION-PLAN.md) | 开发者/PM | 完整实施计划：7 里程碑 77→140 块 |
 | [AUDIT-REPORT.md](./AUDIT-REPORT.md) | 开发者 | 密码原语完整性审计（含国密专项） |
+| [TYPE-SYSTEM.md](./TYPE-SYSTEM.md) | 开发者 | 数据类型规范：定义、值域、转换规则、兼容矩阵 |
 | [SYNC-PLAN.md](./SYNC-PLAN.md) | 开发者 | CipherCat → metacrypt_server 同步计划 |
 
 ### 🔬 算法规范

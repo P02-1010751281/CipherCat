@@ -48,14 +48,16 @@ Blockly.Blocks['hash_hmac'] = { init: function(this: any) {
 Blockly.Blocks['md_iterate'] = { init: function(this: any) {
   this.appendValueInput('IV').setCheck(TYPE_INT_LIST).appendField('🔧 MD Iterate(');
   this.appendValueInput('BLOCKS').setCheck(TYPE_INT_LIST).appendField(',blocks:');
-  this.appendDummyInput().appendField(')'); this.setInputsInline(true);
-  this.setOutput(true, TYPE_INT_LIST); this.setColour(285); this.setTooltip('Merkle-Damgård');
+  this.appendDummyInput().appendField(',algo:').appendField(new Blockly.FieldDropdown([['SHA-256','sha256'],['SM3','sm3']]), 'ALGO').appendField(')');
+  this.setInputsInline(true); this.setOutput(true, TYPE_INT_LIST); this.setColour(285);
+  this.setTooltip('Merkle-Damgård迭代: H_i=compress(H_{i-1},M_i)');
 }};
 Blockly.Blocks['sponge_duplex'] = { init: function(this: any) {
   this.appendValueInput('STATE').setCheck(TYPE_INT_LIST).appendField('🔧 Sponge Duplex(');
   this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField(',data:');
-  this.appendDummyInput().appendField(')'); this.setInputsInline(true);
-  this.setOutput(true, TYPE_BYTES); this.setColour(285); this.setTooltip('海绵双工');
+  this.appendDummyInput().appendField(',perm:').appendField(new Blockly.FieldDropdown([['Keccak-f[1600]','keccak_f1600'],['Keccak-f[800]','keccak_f800']]), 'PERM').appendField(')');
+  this.setInputsInline(true); this.setOutput(true, TYPE_BYTES); this.setColour(285);
+  this.setTooltip('海绵双工: absorb→permutation→squeeze一步完成');
 }};
 
 // M4 一键块

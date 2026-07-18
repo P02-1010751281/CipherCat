@@ -145,25 +145,18 @@ SM4 是中国商用分组密码标准（128-bit 分组，128-bit 密钥，32 轮
 
 ## 四、建议路线图（更新版）
 
-### 第一阶段：AES + SM4（对称密码核心，P0）
-1. **AES**（6-8 块）：SubBytes/ShiftRows/MixColumns/AddRoundKey + 密钥扩展
-2. **SM4**（6-8 块）：轮函数/密钥扩展/加密/解密
-3. **分组模式**（3 块）：ECB/CBC/CTR（AES 和 SM4 共用）
-4. **PKCS#7 填充**（1 块）
-5. **HMAC**（1 块）+ HMAC-SM3
-6. **大数运算**（4 块）+ **RSA**（3 块）
+详细实施计划见 [IMPLEMENTATION-PLAN.md](./IMPLEMENTATION-PLAN.md)。
 
-### 第二阶段：协议层封装（P1）
-7. ECDH/ECDSA 封装 + SM2 签名/加密
-8. ML-KEM 一键封装（KeyGen/Encaps/Decaps）
-9. PBKDF2/HKDF
-10. Base64/Hex/Endian
-11. SM3 一键哈希 + SHA-1
+### 里程碑总览
 
-### 第三阶段：扩展生态（P2）
-12. SHA3-xxx / BLAKE2 / SHA-224/384/512
-13. ML-DSA（Dilithium）
-14. ZUC / SM9
+| 里程碑 | 块数 | 内容 | 状态 |
+|--------|------|------|------|
+| **当前** | 77 | 11 类目，ML-KEM 最强，对称密码缺失 | ✅ |
+| **M1: 清理** | 71 | 移除 6 个复合块 + TYPE_BITS + 重命名海绵块 + TYPE_MATRIX | ⬜ |
+| **M2: 对称密码** | 85 | AES(5) + SM4(3) + 模式(4) + 填充(2) = **+14** | ⬜ |
+| **M3: 数学+辅助** | 94 | 取模/模幂/除余/大数(4)/HMAC/GF(2⁸) = **+9** | ⬜ |
+| **M4: 协议封装** | 111 | ML-KEM封装(3) + ECDH/ECDSA(3) + SM2(2) + KDF(2) + SM3-HMAC(2) + 编码(5) = **+17** | ⬜ |
+| **M5: 扩展** | ~130 | SHA-1/BLAKE2/ML-DSA/ZUC 按需 | ⬜ |
 
 ## 五、核心结论
 

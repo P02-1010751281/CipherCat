@@ -19,6 +19,15 @@ export const TYPE_INT_LIST = 'IntList';
 /** S-box 查找表 — 需与 blocks/sbox 中的类型字符串保持一致 */
 export const TYPE_SBOX = 'SBox';
 
+/** 比特数组 — {0,1} 序列，严格区别于 IntList */
+export const TYPE_BITS = 'Bits';
+
+/** 矩阵标签 — 二维 IntList，密码学矩阵非通用线性代数 */
+export const TYPE_MATRIX = 'Matrix';
+
+/** 向量标签 — 一维 IntList */
+export const TYPE_VECTOR = 'Vector';
+
 /** Blockly 原生数字类型（用于标量常数） */
 export const TYPE_NUMBER = 'Number';
 
@@ -96,5 +105,26 @@ export const TYPE_MAP: Record<string, TypeMapping> = {
     pythonHint: 'list[list[int]]',
     javascript: 'number[][]',
     mcl: 'SBOX',
+  },
+  [TYPE_BITS]: {
+    blockly: TYPE_BITS,
+    python: 'list[int]',
+    pythonHint: 'list[int]',
+    javascript: 'number[]',
+    mcl: 'BITS',
+  },
+  [TYPE_MATRIX]: {
+    blockly: TYPE_MATRIX,
+    python: 'list[list[int]]',
+    pythonHint: 'list[list[int]]',
+    javascript: 'number[][]',
+    mcl: 'MATRIX',
+  },
+  [TYPE_VECTOR]: {
+    blockly: TYPE_VECTOR,
+    python: 'list[int]',
+    pythonHint: 'list[int]',
+    javascript: 'number[]',
+    mcl: 'VECTOR',
   },
 };

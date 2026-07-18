@@ -41,6 +41,11 @@ const BLOCK_TYPE_MIGRATION_MAP: Record<string, string> = {
   crypto_sha256_pad: 'hash_sha256_pad',
   crypto_sha256_pad_hex: 'hash_sha256_pad_hex',
   crypto_sha256_pad_text: 'hash_sha256_pad_text',
+  hash_sha3_pad: 'sponge_pad',
+  hash_sha3_keccak_f: 'keccak_f',
+  hash_sha3_absorb: 'sponge_absorb',
+  hash_sha3_squeeze: 'sponge_squeeze',
+  hash_sha3_state_init: 'keccak_state_init',
 };
 
 export function migrateBlockType(oldType: string): string {

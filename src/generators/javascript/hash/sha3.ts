@@ -25,7 +25,7 @@ javascriptGenerator.forBlock['hash_sha3_pad_hex'] = function (
 };
 
 /** SHA-3 padding — bytes input → returns padded bytes. */
-javascriptGenerator.forBlock['hash_sha3_pad'] = function (
+javascriptGenerator.forBlock['sponge_pad'] = function (
   block: Block,
 ): [string, number] {
   const input =
@@ -40,7 +40,7 @@ javascriptGenerator.forBlock['hash_sha3_pad'] = function (
 };
 
 /** Keccak-f[b] — state → returns permuted state. */
-javascriptGenerator.forBlock['hash_sha3_keccak_f'] = function (
+javascriptGenerator.forBlock['keccak_f'] = function (
   block: Block,
 ): [string, number] {
   const state =
@@ -50,7 +50,7 @@ javascriptGenerator.forBlock['hash_sha3_keccak_f'] = function (
 };
 
 /** Absorb — (state, block) → returns new state. */
-javascriptGenerator.forBlock['hash_sha3_absorb'] = function (
+javascriptGenerator.forBlock['sponge_absorb'] = function (
   block: Block,
 ): [string, number] {
   const state =
@@ -89,7 +89,7 @@ javascriptGenerator.forBlock['hash_sha3_absorb'] = function (
 };
 
 /** Squeeze — (state, outLen) → returns bytes. */
-javascriptGenerator.forBlock['hash_sha3_squeeze'] = function (
+javascriptGenerator.forBlock['sponge_squeeze'] = function (
   block: Block,
 ): [string, number] {
   const state =
@@ -126,7 +126,7 @@ javascriptGenerator.forBlock['hash_sha3_squeeze'] = function (
 };
 
 /** State initialization — returns new Array(25).fill(0n). */
-javascriptGenerator.forBlock['hash_sha3_state_init'] = function (
+javascriptGenerator.forBlock['keccak_state_init'] = function (
   _block: Block,
 ): [string, number] {
   void _block;

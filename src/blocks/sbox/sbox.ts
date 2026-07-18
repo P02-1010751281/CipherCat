@@ -180,12 +180,18 @@ Blockly.Blocks['sbox'] = {
   },
 
    
+  /**
+   * 调整 gridData 大小以匹配当前 ROW×COL。
+   * ROW_ input 清理是历史兼容代码（当前版本无此类 input）。
+   */
   updateShape: function (this: SBoxBlock) {
     const { maxRow, maxCol } = getSboxRowCol.call(this);
     const size = maxRow * maxCol;
+    // 历史兼容：清理旧版 ROW_ 输入
     this.inputList
       .filter((i) => i.name?.startsWith('ROW_'))
       .forEach((i) => this.removeInput(i.name!));
+    // gridData 大小同步
     if (!this.gridData || this.gridData.length === 0) {
       this.gridData = Array.from({ length: size }, () => '00');
     } else if (this.gridData.length !== size) {

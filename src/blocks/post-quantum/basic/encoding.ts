@@ -17,7 +17,7 @@
  */
 
 import * as Blockly from 'blockly/core';
-import { TYPE_BYTES, TYPE_INT_LIST } from '@/constants/block-types';
+import { TYPE_BYTES, TYPE_INT_LIST, TYPE_BITS } from '@/constants/block-types';
 
 export const ENCODING_BLOCK_TYPES = [
   'pq_bytes_to_bits',
@@ -33,7 +33,7 @@ Blockly.Blocks['pq_bytes_to_bits'] = {
     this.appendValueInput('INPUT').setCheck(TYPE_BYTES).appendField('BytesToBits(');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, TYPE_INT_LIST);
+    this.setOutput(true, TYPE_BITS);
     this.setColour(230);
     this.setTooltip(
       'Convert byte array to bit array (little-endian per byte). ' +
@@ -45,7 +45,7 @@ Blockly.Blocks['pq_bytes_to_bits'] = {
 
 Blockly.Blocks['pq_bits_to_bytes'] = {
   init: function () {
-    this.appendValueInput('INPUT').setCheck(TYPE_INT_LIST).appendField('BitsToBytes(');
+    this.appendValueInput('INPUT').setCheck(TYPE_BITS).appendField('BitsToBytes(');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
     this.setOutput(true, TYPE_BYTES);

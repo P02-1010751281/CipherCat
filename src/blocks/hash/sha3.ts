@@ -20,13 +20,13 @@ import { TYPE_BYTES, TYPE_NUMBER } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const SHA3_BLOCK_TYPES = [
-  'hash_sha3_state_init',
-  'hash_sha3_keccak_f',
-  'hash_sha3_pad',
+  'keccak_state_init',
+  'keccak_f',
+  'sponge_pad',
   'hash_sha3_pad_text',
   'hash_sha3_pad_hex',
-  'hash_sha3_absorb',
-  'hash_sha3_squeeze',
+  'sponge_absorb',
+  'sponge_squeeze',
 ] as const;
 
 export type Sha3BlockType = (typeof SHA3_BLOCK_TYPES)[number];
@@ -66,7 +66,7 @@ Blockly.Blocks['hash_sha3_pad_hex'] = {
 };
 
 // SHA-3 pad10*1 — configurable rate and suffix, returns padded bytes
-Blockly.Blocks['hash_sha3_pad'] = {
+Blockly.Blocks['sponge_pad'] = {
   init: function () {
     this.appendValueInput('INPUT')
       .setCheck(null)
@@ -105,7 +105,7 @@ Blockly.Blocks['hash_sha3_pad'] = {
 
 // Keccak-f[b] permutation — 24 rounds, 5×5 lane state, returns permuted state
 // Steps: θ (theta), ρ (rho), π (pi), χ (chi), ι (iota)
-Blockly.Blocks['hash_sha3_keccak_f'] = {
+Blockly.Blocks['keccak_f'] = {
   init: function () {
     this.appendDummyInput()
       .appendField('Keccak-f[')
@@ -132,7 +132,7 @@ Blockly.Blocks['hash_sha3_keccak_f'] = {
 };
 
 // Sponge absorb (FIPS 202 §4): XOR block into state lanes, then Keccak-f
-Blockly.Blocks['hash_sha3_absorb'] = {
+Blockly.Blocks['sponge_absorb'] = {
   init: function () {
     this.appendDummyInput().appendField(
       Blockly.Msg.CRYPTO_SHA3_ABSORB || 'Absorb',
@@ -163,7 +163,7 @@ Blockly.Blocks['hash_sha3_absorb'] = {
 };
 
 // Sponge squeeze (FIPS 202 §4): read r bits from state, re-permute if needed
-Blockly.Blocks['hash_sha3_squeeze'] = {
+Blockly.Blocks['sponge_squeeze'] = {
   init: function () {
     this.appendDummyInput().appendField(
       Blockly.Msg.CRYPTO_SHA3_SQUEEZE || 'Squeeze',
@@ -196,7 +196,7 @@ Blockly.Blocks['hash_sha3_squeeze'] = {
 };
 
 // Keccak sponge initial state: 5×5 lanes of zeros
-Blockly.Blocks['hash_sha3_state_init'] = {
+Blockly.Blocks['keccak_state_init'] = {
   init: function () {
     this.appendDummyInput().appendField('Keccak Init');
     this.setOutput(true, null);

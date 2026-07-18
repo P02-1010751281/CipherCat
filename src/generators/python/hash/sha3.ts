@@ -33,7 +33,7 @@ pythonGenerator.forBlock['hash_sha3_pad_hex'] = function (
 };
 
 /** SHA-3 padding — bytes input → returns padded bytes. */
-pythonGenerator.forBlock['hash_sha3_pad'] = function (
+pythonGenerator.forBlock['sponge_pad'] = function (
   block: Block,
 ): [string, number] {
   const input =
@@ -56,7 +56,7 @@ pythonGenerator.forBlock['hash_sha3_pad'] = function (
 };
 
 /** Keccak-f[b] — state → returns permuted state. */
-pythonGenerator.forBlock['hash_sha3_keccak_f'] = function (
+pythonGenerator.forBlock['keccak_f'] = function (
   block: Block,
 ): [string, number] {
   const state =
@@ -70,7 +70,7 @@ pythonGenerator.forBlock['hash_sha3_keccak_f'] = function (
 };
 
 /** Absorb — (state, block) → returns new state. */
-pythonGenerator.forBlock['hash_sha3_absorb'] = function (
+pythonGenerator.forBlock['sponge_absorb'] = function (
   block: Block,
 ): [string, number] {
   const state =
@@ -111,7 +111,7 @@ pythonGenerator.forBlock['hash_sha3_absorb'] = function (
 };
 
 /** Squeeze — (state, outLen) → returns bytes. */
-pythonGenerator.forBlock['hash_sha3_squeeze'] = function (
+pythonGenerator.forBlock['sponge_squeeze'] = function (
   block: Block,
 ): [string, number] {
   const state =
@@ -155,7 +155,7 @@ pythonGenerator.forBlock['hash_sha3_squeeze'] = function (
 };
 
 /** State initialization — returns [0]*25. */
-pythonGenerator.forBlock['hash_sha3_state_init'] = function (
+pythonGenerator.forBlock['keccak_state_init'] = function (
   _block: Block,
 ): [string, number] {
   void _block;

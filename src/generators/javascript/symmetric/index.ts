@@ -4,3 +4,4 @@
 import './aes/blocks';
 import './sm4/blocks';
 import './padding/blocks';
+import './convenience';

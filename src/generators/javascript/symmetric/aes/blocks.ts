@@ -95,3 +95,118 @@ javascriptGenerator.forBlock['aes_add_round_key'] = function (block: Block): [st
   ]);
   return [fn + '(' + state + ', ' + rk + ')', Order.ATOMIC];
 };
+
+// ─────────────────────────────────────────────
+// AES 便利块生成器
+// ─────────────────────────────────────────────
+
+javascriptGenerator.forBlock['aes_round'] = function (block: Block): [string, number] {
+  const state = javascriptGenerator.valueToCode(block, 'STATE', Order.ATOMIC) || '[]';
+  const rk = javascriptGenerator.valueToCode(block, 'ROUND_KEY', Order.ATOMIC) || '[]';
+  const sboxName = registerAesSbox();
+  const fn = javascriptGenerator.provideFunction_('aesRound', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(s, rk) {',
+    '  var t = s.slice();',
+    '  var sbox = ' + sboxName + ';',
+    '  // SubBytes',
+    '  for (var i = 0; i < 16; i++) s[i] = sbox[t[i]];',
+    '  // ShiftRows',
+    '  t = s.slice();',
+    '  s[1]=t[5]; s[5]=t[9]; s[9]=t[13]; s[13]=t[1];',
+    '  s[2]=t[10]; s[6]=t[14]; s[10]=t[2]; s[14]=t[6];',
+    '  s[3]=t[15]; s[7]=t[3]; s[11]=t[7]; s[15]=t[11];',
+    '  // MixColumns',
+    '  function xtime(x) { return ((x << 1) ^ (((x >> 7) & 1) * 0x1b)) & 0xFF; }',
+    '  function mix(c) {',
+    '    var tc = c.slice();',
+    '    c[0] = xtime(tc[0]^tc[1]) ^ tc[1] ^ tc[2] ^ tc[3];',
+    '    c[1] = xtime(tc[1]^tc[2]) ^ tc[2] ^ tc[3] ^ tc[0];',
+    '    c[2] = xtime(tc[2]^tc[3]) ^ tc[3] ^ tc[0] ^ tc[1];',
+    '    c[3] = xtime(tc[3]^tc[0]) ^ tc[0] ^ tc[1] ^ tc[2];',
+    '  }',
+    '  for (var c = 0; c < 4; c++) {',
+    '    var col = [s[c], s[c+4], s[c+8], s[c+12]];',
+    '    mix(col);',
+    '    s[c]=col[0]; s[c+4]=col[1]; s[c+8]=col[2]; s[c+12]=col[3];',
+    '  }',
+    '  // AddRoundKey',
+    '  for (var i = 0; i < 16; i++) s[i] ^= rk[i];',
+    '  return s;',
+    '}',
+  ]);
+  return [fn + '(' + state + ', ' + rk + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['aes_last_round'] = function (block: Block): [string, number] {
+  const state = javascriptGenerator.valueToCode(block, 'STATE', Order.ATOMIC) || '[]';
+  const rk = javascriptGenerator.valueToCode(block, 'ROUND_KEY', Order.ATOMIC) || '[]';
+  const sboxName = registerAesSbox();
+  const fn = javascriptGenerator.provideFunction_('aesLastRound', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(s, rk) {',
+    '  var t = s.slice();',
+    '  var sbox = ' + sboxName + ';',
+    '  // SubBytes',
+    '  for (var i = 0; i < 16; i++) s[i] = sbox[t[i]];',
+    '  // ShiftRows',
+    '  t = s.slice();',
+    '  s[1]=t[5]; s[5]=t[9]; s[9]=t[13]; s[13]=t[1];',
+    '  s[2]=t[10]; s[6]=t[14]; s[10]=t[2]; s[14]=t[6];',
+    '  s[3]=t[15]; s[7]=t[3]; s[11]=t[7]; s[15]=t[11];',
+    '  // AddRoundKey (skip MixColumns)',
+    '  for (var i = 0; i < 16; i++) s[i] ^= rk[i];',
+    '  return s;',
+    '}',
+  ]);
+  return [fn + '(' + state + ', ' + rk + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['aes_key_schedule'] = function (block: Block): [string, number] {
+  const key = javascriptGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
+  const sboxName = registerAesSbox();
+  const fn = javascriptGenerator.provideFunction_('aesKeySchedule', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key) {',
+    '  var sbox = ' + sboxName + ';',
+    '  var nk = key.length / 4;',
+    '  var nr = nk + 6;',
+    '  var totalWords = 4 * (nr + 1);',
+    '  var w = [];',
+    '  for (var i = 0; i < nk; i++) {',
+    '    w[i] = ((key[4*i] << 24) | (key[4*i+1] << 16) | (key[4*i+2] << 8) | key[4*i+3]) >>> 0;',
+    '  }',
+    '  var rcon = [0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x1b,0x36];',
+    '  for (var i = nk; i < totalWords; i++) {',
+    '    var temp = w[i-1];',
+    '    if (i % nk === 0) {',
+    '      // RotWord',
+    '      temp = ((temp << 8) | (temp >>> 24)) >>> 0;',
+    '      // SubWord',
+    '      var b0 = sbox[(temp >>> 24) & 0xFF];',
+    '      var b1 = sbox[(temp >>> 16) & 0xFF];',
+    '      var b2 = sbox[(temp >>> 8) & 0xFF];',
+    '      var b3 = sbox[temp & 0xFF];',
+    '      temp = ((b0 << 24) | (b1 << 16) | (b2 << 8) | b3) >>> 0;',
+    '      // XOR Rcon',
+    '      temp ^= rcon[(i/nk)-1];',
+    '    } else if (nk > 6 && i % nk === 4) {',
+    '      // AES-256 额外 SubWord',
+    '      var b0 = sbox[(temp >>> 24) & 0xFF];',
+    '      var b1 = sbox[(temp >>> 16) & 0xFF];',
+    '      var b2 = sbox[(temp >>> 8) & 0xFF];',
+    '      var b3 = sbox[temp & 0xFF];',
+    '      temp = ((b0 << 24) | (b1 << 16) | (b2 << 8) | b3) >>> 0;',
+    '    }',
+    '    w[i] = (w[i-nk] ^ temp) >>> 0;',
+    '  }',
+    '  // 展平为字节数组',
+    '  var result = [];',
+    '  for (var i = 0; i < totalWords; i++) {',
+    '    result.push((w[i] >>> 24) & 0xFF);',
+    '    result.push((w[i] >>> 16) & 0xFF);',
+    '    result.push((w[i] >>> 8) & 0xFF);',
+    '    result.push(w[i] & 0xFF);',
+    '  }',
+    '  return result;',
+    '}',
+  ]);
+  return [fn + '(' + key + ')', Order.ATOMIC];
+};

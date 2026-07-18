@@ -66,10 +66,7 @@ const _o = (t: string, l: string, ot = TYPE_BYTES) => { Blockly.Blocks[t] = { in
   this.appendDummyInput().appendField(')'); this.setInputsInline(true);
   this.setOutput(true, ot); this.setColour(320); this.setTooltip(l);
 }};};
-_o('ml_kem_keygen','ML-KEM.KeyGen'); _o('ml_kem_encaps','ML-KEM.Encaps');
-_o('ml_kem_decaps','ML-KEM.Decaps'); _o('ecdh_key_exchange','ECDH');
-_o('ecdsa_sign','ECDSA.Sign'); _o('ecdsa_verify','ECDSA.Verify');
-_o('sm2_sign','SM2.Sign'); _o('sm2_encrypt','SM2.Encrypt');
+_o('ml_kem_keygen','ML-KEM.KeyGen');
 _o('sm3_hash','SM3.Hash'); _o('sm3_hmac','HMAC-SM3');
 _o('hmac_sha256','HMAC-SHA256'); _o('kdf_pbkdf2','PBKDF2'); _o('kdf_hkdf','HKDF');
 

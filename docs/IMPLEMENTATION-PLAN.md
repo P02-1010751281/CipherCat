@@ -329,7 +329,7 @@ Blockly.Blocks['aes_round'] = {
 | **M2: 对称便利** | 89 | aes_round/last_round/key_schedule + sm4_round/key_schedule + 4 模式 | 层2 |
 | **M2.5: 后量子便利** | 96 | ntt_vec/intt_vec/cbd_ntt_vec/mat_vec_mul/vec_add/vec_sub/sample_ntt_mat | 层2 |
 | **M3: 数学+辅助** | 106 | 取模/模幂/除余/大数(4)/HMAC/md_iterate/sponge_duplex | 层1+2 |
-| **M4: 一键封装** | 124 | ML-KEM一键(3) + ECDH/ECDSA(3) + SM2(2) + KDF(2) + 哈希一键(3) + 编码(5) | 层3 |
+| **M4: 一键封装** | 110 | ML-KEM(1) + 哈希(3) + KDF(2) + 编码(5) | 层3 |
 | **M5: 扩展** | ~140 | SHA-1/SHA3/ML-DSA/ZUC/BLAKE2 | 按需 |
 
 ---

@@ -141,28 +141,6 @@ pythonGenerator.forBlock['ml_kem_keygen'] = function(): [string, number] {
   ]);
   return [fn+'(b"")', Order.ATOMIC];
 };
-pythonGenerator.forBlock['ml_kem_encaps'] = function(): [string, number] {
-  return ['# ML-KEM.Encaps — 请在画布上用原子块手动实现 (FIPS 203 Alg 15)', Order.ATOMIC];
-};
-pythonGenerator.forBlock['ml_kem_decaps'] = function(): [string, number] {
-  return ['# ML-KEM.Decaps — 请在画布上用原子块手动实现 (FIPS 203 Alg 16)', Order.ATOMIC];
-};
-
-pythonGenerator.forBlock['ecdh_key_exchange'] = function(b: Block): [string, number] {
-  return [pythonGenerator.valueToCode(b,'A',Order.ATOMIC)||'0', Order.ATOMIC];
-};
-pythonGenerator.forBlock['ecdsa_sign'] = function(): [string, number] {
-  return ['# ECDSA.Sign — 使用 ecc_multiply + nt_mod_inverse 手动组合', Order.ATOMIC];
-};
-pythonGenerator.forBlock['ecdsa_verify'] = function(): [string, number] {
-  return ['# ECDSA.Verify — 使用 ecc_* 原子块验证', Order.ATOMIC];
-};
-pythonGenerator.forBlock['sm2_sign'] = function(): [string, number] {
-  return ['# SM2.Sign — 使用 SM2 曲线参数 + sm3_hash 组合', Order.ATOMIC];
-};
-pythonGenerator.forBlock['sm2_encrypt'] = function(): [string, number] {
-  return ['# SM2.Encrypt — 使用 SM2 曲线参数 + sm3_hash + KDF 组合', Order.ATOMIC];
-};
 
 // SM3 一键
 pythonGenerator.forBlock['sm3_hash'] = function(b: Block): [string, number] {

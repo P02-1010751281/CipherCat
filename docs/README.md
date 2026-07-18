@@ -2,7 +2,7 @@
 
 🐱 **后量子密码学可视化编程平台** — 基于 Blockly 12.x 和 Vue 3 (Composition API + TypeScript)。
 
-覆盖从位运算、S-Box、哈希函数到后量子密码（ML-KEM / ML-DSA）的全套密码学原语，80+ 积木块，11 类目，完整类型约束系统。
+覆盖从位运算、S-Box、哈希函数到后量子密码（ML-KEM / ML-DSA）的全套密码学原语，110+ 积木块，12 类目，完整类型约束系统。每块标注国际/国密标准依据，详见 [BLOCK-STANDARDS.md](./BLOCK-STANDARDS.md)。
 
 ---
 

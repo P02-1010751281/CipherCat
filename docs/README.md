@@ -29,9 +29,14 @@
 
 | 文档 | 说明 |
 |------|------|
-| [fips202-SHA3/](./fips202-SHA3/) | FIPS 202 SHA-3 / SHAKE / KECCAK-p 算法参考 |
-| [fips203-ML-KEM/](./fips203-ML-KEM/) | FIPS 203 ML-KEM (Kyber) 密钥封装算法 |
-| [fips204-ML-DSA/](./fips204-ML-DSA/) | FIPS 204 ML-DSA (Dilithium) 数字签名算法 |
+| [blocks/INDEX.md](./blocks/INDEX.md) | 积木块标准依据参考（按类目拆分） |
+| [fips197-AES/](./fips197-AES/) | FIPS 197 AES 算法参考 |
+| [fips180-4-SHA2/](./fips180-4-SHA2/) | FIPS 180-4 SHA-2 算法参考 |
+| [fips202-SHA3/](./fips202-SHA3/) | FIPS 202 SHA-3 / SHAKE / KECCAK-p |
+| [fips203-ML-KEM/](./fips203-ML-KEM/) | FIPS 203 ML-KEM (Kyber) |
+| [fips204-ML-DSA/](./fips204-ML-DSA/) | FIPS 204 ML-DSA (Dilithium) |
+| [gmt-0002-SM4/](./gmt-0002-SM4/) | GM/T 0002 SM4 国密分组密码 |
+| [gmt-0004-SM3/](./gmt-0004-SM3/) | GM/T 0004 SM3 国密哈希 |
 
 ### 📝 规范文件（根目录）
 

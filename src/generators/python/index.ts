@@ -9,6 +9,7 @@ import './numtheory';
 import './ecc';
 import './postquantum';
 import './procedure';
+import './symmetric';
 
 import { Block } from 'blockly/core';
 import { pythonGenerator, Order } from 'blockly/python';

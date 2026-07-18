@@ -15,6 +15,7 @@ import {
 } from '@/blocks/post-quantum';
 import { getSboxCategoryKey } from '@/blocks/sbox/category';
 import { PROCEDURE_CATEGORY_KEY } from '@/blocks/procedure/category';
+import { SYMMETRIC_BLOCK_TYPES } from '@/blocks/symmetric';
 
 export function createToolboxConfig() {
   const msg = Blockly.Msg as Record<string, string>;
@@ -154,6 +155,16 @@ export function createToolboxConfig() {
     })),
   };
 
+  const symmetric = {
+    kind: 'category',
+    name: msg.CRYPTO_CATEGORY_SYMMETRIC || 'Symmetric Cipher',
+    colour: '#34A853',
+    contents: SYMMETRIC_BLOCK_TYPES.map((type) => ({
+      kind: 'block' as const,
+      type,
+    })),
+  };
+
   const numtheory = {
     kind: 'category',
     name: msg.CRYPTO_CATEGORY_NUMTHEORY || 'Number Theory',
@@ -207,6 +218,7 @@ export function createToolboxConfig() {
       logicUnit,
       sbox,
       hash,
+      symmetric,
       numtheory,
       ecc,
       postquantumBasic,

@@ -9,6 +9,7 @@ export * from './numtheory';
 export * from './ecc';
 export * from './post-quantum';
 export * from './procedure';
+export * from './symmetric';
 
 import { CTRL_BLOCK_TYPES, type CtrlBlockType } from './ctrl';
 import { DATA_BLOCK_TYPES, type DataBlockType } from './data';
@@ -27,6 +28,10 @@ import {
   PROCEDURE_BLOCK_TYPES,
   type ProcedureBlockType,
 } from './procedure';
+import {
+  SYMMETRIC_BLOCK_TYPES,
+  type SymmetricBlockType,
+} from './symmetric';
 
 export const ALL_BLOCK_TYPES = [
   ...CTRL_BLOCK_TYPES,
@@ -40,6 +45,7 @@ export const ALL_BLOCK_TYPES = [
   ...ECC_BLOCK_TYPES,
   ...PQ_BLOCK_TYPES,
   ...PROCEDURE_BLOCK_TYPES,
+  ...SYMMETRIC_BLOCK_TYPES,
 ] as const;
 
 export type AllBlockType =
@@ -53,4 +59,5 @@ export type AllBlockType =
   | NtBlockType
   | EccBlockType
   | PostQuantumBlockType
-  | ProcedureBlockType;
+  | ProcedureBlockType
+  | SymmetricBlockType;

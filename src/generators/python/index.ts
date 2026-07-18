@@ -354,3 +354,4 @@ export function injectPrimitives(pyCode: string, algorithmType: string) {
   const sep = headJoined && headJoined.slice(-1) !== '\n' ? '\n' : '';
   return headJoined + sep + algo + prim;
 }
+import './remaining';

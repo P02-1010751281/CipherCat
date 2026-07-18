@@ -82,3 +82,4 @@ function configureTextPrintBlock() {
 configureTextPrintBlock();
 
 export { configureTextPrintBlock };
+import './remaining';

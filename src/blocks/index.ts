@@ -10,6 +10,7 @@ export * from './ecc';
 export * from './post-quantum';
 export * from './procedure';
 export * from './symmetric';
+export * from './remaining';
 
 import { CTRL_BLOCK_TYPES, type CtrlBlockType } from './ctrl';
 import { DATA_BLOCK_TYPES, type DataBlockType } from './data';

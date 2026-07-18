@@ -233,3 +233,41 @@ Blockly.Blocks['aes_sub_bytes'] = {
 | **M3: 数学+辅助** | 94 | 取模/模幂/大数/HMAC/GF |
 | **M4: 协议封装** | 111 | ML-KEM封装 + ECDH/ECDSA + SM2 + KDF + 编码 |
 | **M5: 扩展** | ~130 | SHA-1/SHA3/ML-DSA/ZUC |
+
+## 九、文档系统
+
+### 当前文档结构
+
+```
+docs/
+├── README.md                       # 文档中心索引
+├── ARCHITECTURE.md                  # 系统架构
+├── DEVELOPMENT.md                   # 开发指南
+├── IMPLEMENTATION-PLAN.md           # 本文件
+├── AUDIT-REPORT.md                  # 密码原语审计
+├── SYNC-PLAN.md                     # metacrypt_server 同步计划
+├── fips202-SHA3/                    # SHA-3 算法规范
+├── fips203-ML-KEM/                  # ML-KEM 算法规范
+└── fips204-ML-DSA/                  # ML-DSA 算法规范
+```
+
+### 各阶段需更新的文档
+
+| 里程碑 | 文档更新 |
+|--------|---------|
+| **M1: 清理** | ARCHITECTURE.md（更新类目 + 类型系统）、DEVELOPMENT.md（更新类目表） |
+| **M2: 对称密码** | ARCHITECTURE.md（新增 symmetric 类目）、DEVELOPMENT.md（新增示例）、docs/README.md（块数）、新增 `fips197-AES/` + `gmt-0002-SM4/` 算法规范 |
+| **M3: 数学+辅助** | ARCHITECTURE.md（numtheory 扩展） |
+| **M4: 协议封装** | ARCHITECTURE.md + 可能的规范目录 |
+| **M5: 扩展** | 按需 |
+
+### 建议新增文档
+
+| 文档 | 优先级 | 说明 |
+|------|--------|------|
+| `USAGE.md` | P1 | 用户手册（界面导航、块分类速查、代码生成流程） |
+| `BLOCK-REFERENCE.md` | P1 | 积木块完整参考（输入/输出/类型/工具提示） |
+| `TYPE-SYSTEM.md` | P2 | 类型系统深度文档（转换规则） |
+| `fips197-AES/` | M2 | AES 算法规范 |
+| `gmt-0002-SM4/` | M2 | SM4 国密算法规范 |
+| `gmt-0003-SM2/` | M4 | SM2 国密算法规范 |

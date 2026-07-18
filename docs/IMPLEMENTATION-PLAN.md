@@ -1,6 +1,6 @@
 # CipherCat 密码原语完整实施计划
 
-> 版本 v1.0 | 2026-07-18 | 基于审计报告 v2.0 + 类型系统分析 + 架构审查
+> 版本 v2.0 | 2026-07-18 | 三层原语体系 + 完整里程碑
 
 ## 一、当前基准
 
@@ -8,266 +8,330 @@
 - **类型系统**：Bytes / IntList / Number / SBox（刚建立）
 - **后量子最强**（ML-KEM 底层全覆盖），**对称密码完全缺失**
 
-## 二、实施路线
+## 二、三层原语体系
 
-### 阶段 0：清理 + 类型增强（先做，约 0 天）
+纯原子原语会让用户拖 20 个块才能做一次 AES 加密。三层共存，按需选择粒度：
 
-| # | 操作 | 文件 | 块数变化 |
-|---|------|------|---------|
-| 0a | **移除 6 个不通用复合块**：`pq_atr_intt_add_e1`、`pq_tr_intt_add_e2_mu`、`pq_vec_compress_encode`、`pq_sample_ntt_mat`、`pq_cbd_ntt_vec`、`pq_build_vec3` | `post-quantum/advanced/operations.ts`、`sampling.ts` | **-6** |
-| 0b | **新增 `TYPE_BITS` 类型**：`bits` | `block-types.ts` + `encoding.ts` | 0 |
-| 0c | **重命名 5 个海绵/Keccak 块**：`hash_sha3_pad`→`sponge_pad` 等 | `hash/sha3.ts` + `migration.ts` + 2 个测试 JSON | 0 |
-| 0d | **新增 `TYPE_MATRIX` 标签** | `block-types.ts` + `post-quantum/advanced/` | 0 |
-| 0e | **`arr_partition_to_array` 改进**：添加显式类型参数替代变量名分支 | `array/partition.ts` + `migration.ts` | 0 |
-| 0f | **S-box `updateShape` 空壳清理** | `blocks/sbox/sbox.ts` | 0 |
+```
+层3: 一键封装 ── "拖出来就能用"（快速验证、演示）
+    │            ML-KEM.KeyGen, SM3.Hash, SM2.Sign
+    │
+层2: 便利组合 ── "一个块 = 一组原子操作"（日常使用）
+    │            aes_round, sm4_round, sponge_duplex, md_iterate
+    │
+层1: 原子原语 ── "最小不可拆操作"（专家调试、自定义算法）
+                 aes_sub_bytes, nt_mod_pow, pq_ntt, bit_xor
+```
 
-> 阶段 0 完成后：71 块，类型系统 5 种（Bytes/IntList/Number/SBox/Bits + Matrix 标签）
+### 设计原则
 
-### 阶段 1：AES + SM4 对称密码（P0，约 3-5 天）
+| 原则 | 说明 |
+|------|------|
+| **无新语义** | 层2/3 块必须是层1 原子块的有序组合，生成器内联展开为原子块代码 |
+| **可审计** | 右键菜单「展开为原子块」用于教学验证 |
+| **不独占** | 工具箱中与原子块同区展示，标注🔧便利块 / ⚡一键块 |
+| **可降级** | 用户随时可用原子块手动替代便利块 |
+
+### 便利块展开示例
+
+```typescript
+// aes_round（层2）生成器内联展开为 4 个原子块
+// SubBytes(state) → ShiftRows → MixColumns → AddRoundKey(state, rk)
+// 等于用户在画布上拖 4 个块的效果，但一个块搞定
+```
+
+### 各层块数预估
+
+| 层 | 块数 | 典型块 |
+|----|------|--------|
+| 层1 原子 | ~80 | sub_bytes, mod_pow, ntt, hmac |
+| 层2 便利 | ~25 | aes_round, sm4_round, sponge_duplex, md_iterate |
+| 层3 一键 | ~20 | ml_kem_keygen, sm3_hash, ecdsa_sign |
+
+> 最终 ~125 块，其中 ~55 个是新增（层1+层2+层3 原子便利一键），其余 70 个是现有块
+
+---
+
+## 三、实施路线
+
+### 阶段 0：清理 + 类型增强（先做）
+
+| # | 操作 | 块变化 | 层 |
+|---|------|--------|-----|
+| 0a | **移除 6 个不通用复合块**：`pq_atr_intt_add_e1`、`pq_tr_intt_add_e2_mu`、`pq_vec_compress_encode`、`pq_sample_ntt_mat`、`pq_cbd_ntt_vec`、`pq_build_vec3` | **-6** | — |
+| 0b | **新增 `TYPE_BITS`**：`block-types.ts` + `encoding.ts`（3 处） | 0 | — |
+| 0c | **重命名海绵/Keccak 块**：`hash_sha3_*`→`sponge_*`/`keccak_*`（5 块 + migration + 2 测试 JSON） | 0 | — |
+| 0d | **新增 `TYPE_MATRIX` `TYPE_VECTOR` 标签** | 0 | — |
+| 0e | **S-box `updateShape` 空壳清理** `blocks/sbox/sbox.ts` | 0 | — |
+
+> 阶段 0 后：**71 块**，类型 7 种
+
+---
+
+### 阶段 1：对称密码 — 原子层（层1，~3 天）
+
+| # | 块名 | 类目 | 说明 | 类型 |
+|---|------|------|------|------|
+| 1.1 | `aes_sub_bytes` | `symmetric/aes/` | SubBytes：S-box 替换 16 字节 | IntList→IntList |
+| 1.2 | `aes_shift_rows` | `symmetric/aes/` | ShiftRows：第 i 行左移 i 字节 | IntList→IntList |
+| 1.3 | `aes_mix_columns` | `symmetric/aes/` | MixColumns：GF(2⁸) 列混合 | IntList→IntList |
+| 1.4 | `aes_add_round_key` | `symmetric/aes/` | AddRoundKey：状态 ⊕ 轮密钥 | IntList×2→IntList |
+| 1.5 | `sm4_round_func` | `symmetric/sm4/` | 轮函数 F(x0,x1,x2,x3,rk) | IntList×2→IntList |
+| 1.6 | `sm4_linear_transform` | `symmetric/sm4/` | L(B)=B⊕(B<<<2)⊕(B<<<10)⊕(B<<<18)⊕(B<<<24) | IntList→IntList |
+| 1.7 | `pad_pkcs7` | `symmetric/padding/` | PKCS#7 填充 | Bytes→Bytes |
+| 1.8 | `pad_zero` | `symmetric/padding/` | 零填充 | Bytes→Bytes |
+| 1.9 | `gf_mul` | `numtheory/` | GF(2⁸) 域乘法 | Number×2→Number |
+
+> 阶段 1 后：80 块（+9 原子块）
+
+---
+
+### 阶段 2：对称密码 — 便利层 + 模式（层2，~3 天）
+
+| # | 块名 | 类目 | 说明 | 底层原子展开 |
+|---|------|------|------|------------|
+| 2.1 | `aes_round` | `symmetric/aes/` | AES 完整轮 | SubBytes→ShiftRows→MixColumns→AddRoundKey |
+| 2.2 | `aes_last_round` | `symmetric/aes/` | AES 最后一轮（跳过 MixColumns） | SubBytes→ShiftRows→AddRoundKey |
+| 2.3 | `aes_key_schedule` | `symmetric/aes/` | 完整密钥扩展 128/192/256 | RotWord→SubWord→Rcon→循环 |
+| 2.4 | `sm4_round` | `symmetric/sm4/` | SM4 完整轮（含密钥异或） | sm4_round_func + xor |
+| 2.5 | `sm4_key_schedule` | `symmetric/sm4/` | SM4 32 轮密钥生成 | 线性变换→循环 |
+| 2.6 | `mode_ecb` | `symmetric/modes/` | ECB 电子密码本 | — |
+| 2.7 | `mode_cbc` | `symmetric/modes/` | CBC 密码块链接 | — |
+| 2.8 | `mode_ctr` | `symmetric/modes/` | CTR 计数器模式 | — |
+| 2.9 | `mode_gcm` | `symmetric/modes/` | GCM 认证加密 | — |
+
+> 阶段 2 后：**89 块**（+9 便利块 + 模式）
+
+---
+
+### 阶段 3：数学 + 通用辅助（层1+层2，~3 天）
+
+| # | 块名 | 类目 | 层 | 说明 |
+|---|------|------|----|------|
+| 3.1 | `nt_mod` | `numtheory/` | 1 | 通用取模 a mod n |
+| 3.2 | `nt_mod_pow` | `numtheory/` | 1 | 模幂 a^b mod n |
+| 3.3 | `nt_div_rem` | `numtheory/` | 1 | 整数除法+余数 |
+| 3.4 | `bn_add` | `numtheory/bignum/` | 1 | 大数加法 |
+| 3.5 | `bn_sub` | `numtheory/bignum/` | 1 | 大数减法 |
+| 3.6 | `bn_mul` | `numtheory/bignum/` | 1 | 大数乘法 |
+| 3.7 | `bn_div` | `numtheory/bignum/` | 1 | 大数除法 |
+| 3.8 | `hash_hmac` | `hash/` | 1 | HMAC（可切换 SHA-256/SM3/SHA-3） |
+| 3.9 | `md_iterate` | `hash/` | 2 | Merkle-Damgård 迭代框架 |
+| 3.10 | `sponge_duplex` | `hash/` | 2 | 海绵双工 absorb+squeeze 一次完成 |
+
+> 阶段 3 后：**99 块**（+10）
+
+---
+
+### 阶段 4：一键封装 + 协议层（层3，~4 天）
 
 | # | 块名 | 类目 | 说明 |
 |---|------|------|------|
-| 1.1 | `aes_sub_bytes` | `symmetric/aes/` | AES SubBytes：对 16 字节状态执行 S-box 替换（FIPS 197 §5.1.1） |
-| 1.2 | `aes_shift_rows` | `symmetric/aes/` | AES ShiftRows：循环左移第 i 行 i 个字节（§5.1.2） |
-| 1.3 | `aes_mix_columns` | `symmetric/aes/` | AES MixColumns：GF(2⁸) 矩阵乘法（§5.1.3） |
-| 1.4 | `aes_add_round_key` | `symmetric/aes/` | AES AddRoundKey：状态 ⊕ 轮密钥 |
-| 1.5 | `aes_key_expansion` | `symmetric/aes/` | AES 密钥扩展：128/192/256-bit 密钥 → 轮密钥 |
-| 1.6 | `sm4_round_func` | `symmetric/sm4/` | SM4 轮函数 F(x0,x1,x2,x3,rk) |
-| 1.7 | `sm4_key_expansion` | `symmetric/sm4/` | SM4 密钥扩展（32 轮密钥） |
-| 1.8 | `sm4_linear_transform` | `symmetric/sm4/` | SM4 线性变换 L(B) = B⊕(B<<<2)⊕(B<<<10)⊕(B<<<18)⊕(B<<<24) |
-| 1.9 | `mode_ecb` | `symmetric/modes/` | ECB 模式：N 个分组独立加密 |
-| 1.10 | `mode_cbc` | `symmetric/modes/` | CBC 模式：Ci = E(Pi⊕Ci-1) |
-| 1.11 | `mode_ctr` | `symmetric/modes/` | CTR 模式：流密码 |
-| 1.12 | `mode_gcm` | `symmetric/modes/` | GCM 模式：认证加密（需 GHASH） |
-| 1.13 | `pad_pkcs7` | `symmetric/padding/` | PKCS#7 填充 |
-| 1.14 | `pad_zero` | `symmetric/padding/` | 零填充 |
+| 4.1 | `ml_kem_keygen` | `post-quantum/` | ML-KEM 密钥生成（一键） |
+| 4.2 | `ml_kem_encaps` | `post-quantum/` | ML-KEM 封装（一键） |
+| 4.3 | `ml_kem_decaps` | `post-quantum/` | ML-KEM 解封（一键） |
+| 4.4 | `ecdh_key_exchange` | `ecc/` | ECDH 密钥交换 |
+| 4.5 | `ecdsa_sign` | `ecc/` | ECDSA 签名 |
+| 4.6 | `ecdsa_verify` | `ecc/` | ECDSA 验签 |
+| 4.7 | `sm2_sign` | `ecc/` | SM2 数字签名 |
+| 4.8 | `sm2_encrypt` | `ecc/` | SM2 公钥加密 |
+| 4.9 | `sm3_hash` | `hash/` | SM3 一键哈希 |
+| 4.10 | `sm3_hmac` | `hash/` | HMAC-SM3 |
+| 4.11 | `hmac_sha256` | `hash/` | HMAC-SHA-256 |
+| 4.12 | `kdf_pbkdf2` | `hash/` | PBKDF2 |
+| 4.13 | `kdf_hkdf` | `hash/` | HKDF |
+| 4.14 | `base64_encode` | `data/` | Base64 编码 |
+| 4.15 | `base64_decode` | `data/` | Base64 解码 |
+| 4.16 | `hex_to_bytes` | `data/` | Hex→Bytes |
+| 4.17 | `bytes_to_hex` | `data/` | Bytes→Hex |
+| 4.18 | `endian_swap` | `data/` | 大端/小端 |
 
-> 阶段 1 完成后：85 块（+14）
+> 阶段 4 后：**117 块**（+18 一键块）
 
-### 阶段 2：数学原语 + 通用辅助（P0，约 2-3 天）
+---
 
-| # | 块名 | 类目 | 说明 |
-|---|------|------|------|
-| 2.1 | `nt_mod` | `numtheory/` | 通用取模：a mod n |
-| 2.2 | `nt_mod_pow` | `numtheory/` | 模幂：a^b mod n |
-| 2.3 | `nt_div_rem` | `numtheory/` | 整数除法 + 余数 |
-| 2.4 | `bn_add` | `numtheory/bignum/` | 大数加法（IntList limbs） |
-| 2.5 | `bn_sub` | `numtheory/bignum/` | 大数减法 |
-| 2.6 | `bn_mul` | `numtheory/bignum/` | 大数乘法 |
-| 2.7 | `bn_div` | `numtheory/bignum/` | 大数除法 |
-| 2.8 | `hash_hmac` | `hash/` | HMAC：可切换底层哈希（SHA-256/SM3） |
-| 2.9 | `gf_mul` | `numtheory/` | GF(2⁸) 域乘法（AES MixColumns 需要） |
-
-> 阶段 2 完成后：94 块（+9）
-
-### 阶段 3：一键封装 + 协议层（P1，约 3-5 天）
-
-| # | 块名 | 类目 | 说明 |
-|---|------|------|------|
-| 3.1 | `ml_kem_keygen` | `post-quantum/` | ML-KEM KeyGen：生成 (ek, dk) |
-| 3.2 | `ml_kem_encaps` | `post-quantum/` | ML-KEM Encaps：ek → (K, c) |
-| 3.3 | `ml_kem_decaps` | `post-quantum/` | ML-KEM Decaps：dk + c → K |
-| 3.4 | `ecdh_key_exchange` | `ecc/` | ECDH 密钥交换 |
-| 3.5 | `ecdsa_sign` | `ecc/` | ECDSA 签名 |
-| 3.6 | `ecdsa_verify` | `ecc/` | ECDSA 验签 |
-| 3.7 | `sm2_sign` | `symmetric/` 或 `ecc/` | SM2 数字签名 |
-| 3.8 | `sm2_encrypt` | 同上 | SM2 公钥加密 |
-| 3.9 | `kdf_pbkdf2` | `hash/` | PBKDF2 密钥派生 |
-| 3.10 | `kdf_hkdf` | `hash/` | HKDF 密钥派生 |
-| 3.11 | `sm3_hash` | `hash/` | SM3 一键完整哈希 |
-| 3.12 | `sm3_hmac` | `hash/` | HMAC-SM3 |
-| 3.13 | `base64_encode` | `data/` | Base64 编码 |
-| 3.14 | `base64_decode` | `data/` | Base64 解码 |
-| 3.15 | `hex_to_bytes` | `data/` | Hex → Bytes |
-| 3.16 | `bytes_to_hex` | `data/` | Bytes → Hex |
-| 3.17 | `endian_swap` | `data/` | 大端/小端转换 |
-
-> 阶段 3 完成后：111 块（+17）
-
-### 阶段 4：扩展生态（P2，按需）
+### 阶段 5：扩展生态（P2，按需）
 
 | # | 块名 | 说明 |
 |---|------|------|
-| 4.1 | `sha1_pad` / `sha1_compress` | SHA-1 |
-| 4.2 | `sha3_224` / `sha3_256` / `sha3_384` / `sha3_512` | SHA3 一键封装 |
-| 4.3 | `blake2b` / `blake2s` | BLAKE2 |
-| 4.4 | `argon2_hash` | Argon2 |
-| 4.5 | ML-DSA (Dilithium) 全套 | 后量子签名（约 10+ 块） |
-| 4.6 | ZUC 全套 | 国密序列密码（约 5-8 块） |
-| 4.7 | `sbox_analyze` | S-box 非线性度/差分均匀度分析 |
+| 5.1 | `sha1_pad` / `sha1_compress` | SHA-1 |
+| 5.2 | `sha3_224` / `sha3_256` / `sha3_384` / `sha3_512` | SHA3 一键封装 |
+| 5.3 | ML-DSA 全套 | 后量子签名（约 10+ 块） |
+| 5.4 | `sbox_analyze` | S-box 非线性度分析 |
+| 5.5 | ZUC 全套 | 国密序列密码（约 5-8 块） |
+| 5.6 | `blake2b` / `argon2_hash` | 现代哈希 |
 
-## 三、目录结构（完成后）
+> 最终：**~130 块**
+
+---
+
+## 四、目录结构（M4 完成后）
 
 ```
 src/blocks/
-├── ctrl/                    # 控制流（1 块）
-├── data/                    # 数据转换（9 + 4 = 13 块）
-├── array/                   # 数组（1 块）
-├── logic/                   # 逻辑（3 块）
-├── bitwise/                 # 位运算（8 块）
-├── sbox/                    # S-box（4 块）
+├── ctrl/                    # 控制流
+├── data/                    # 数据转换（+base64 +hex +endian）
+├── array/                   # 数组
+├── logic/                   # 逻辑
+├── bitwise/                 # 位运算
+├── sbox/                    # S-box
 ├── symmetric/               # ⭐ 新建：对称密码
-│   ├── index.ts
-│   ├── aes/
+│   ├── aes/                 #   层1原子 + 层2便利
 │   │   ├── subbytes.ts
 │   │   ├── shiftrows.ts
 │   │   ├── mixcolumns.ts
 │   │   ├── addroundkey.ts
-│   │   └── key-expansion.ts
+│   │   ├── round.ts         # 层2便利
+│   │   ├── last-round.ts    # 层2便利
+│   │   └── key-schedule.ts  # 层2便利
 │   ├── sm4/
-│   │   ├── round-func.ts
-│   │   ├── key-expansion.ts
-│   │   └── linear-transform.ts
-│   ├── modes/
+│   │   ├── round-func.ts    # 层1
+│   │   ├── linear-transform.ts
+│   │   ├── round.ts         # 层2便利
+│   │   └── key-schedule.ts  # 层2便利
+│   ├── modes/               # 层2便利（AES+SM4共用）
 │   │   ├── ecb.ts
 │   │   ├── cbc.ts
 │   │   ├── ctr.ts
 │   │   └── gcm.ts
-│   └── padding/
+│   └── padding/             # 层1
 │       ├── pkcs7.ts
 │       └── zero.ts
-├── hash/                    # 哈希（17 + 4 = 21 块：+HMAC +SM3一键 +SM3-HMAC +PBKDF2 +HKDF）
-├── numtheory/               # 数论（7 + 7 = 14 块：+mod +modpow +divrem +GF +大数×3）
+├── hash/                    # 哈希
+│   ├── hmac.ts              # 层1
+│   ├── md-iterate.ts        # 层2便利
+│   ├── sponge-duplex.ts     # 层2便利
+│   ├── sm3-hash.ts          # 层3一键
+│   ├── sm3-hmac.ts          # 层3一键
+│   ├── hmac-sha256.ts       # 层3一键
+│   └── ...（现有 sha256/sm3/sha3/shake 不变）
+├── numtheory/               # 数论
+│   ├── mod.ts / mod-pow.ts / div-rem.ts / gf-mul.ts
 │   └── bignum/
-│       ├── add.ts
-│       ├── sub.ts
-│       ├── mul.ts
-│       └── div.ts
-├── ecc/                     # ECC（5 + 3 = 8 块：+ECDH +ECDSAsign +ECDSAverify）
-├── post-quantum/            # 后量子（11 块，已移除 6 个复合块）
-└── procedure/               # 函数封装（5 块）
+│       ├── add.ts / sub.ts / mul.ts / div.ts
+├── ecc/                     # ECC（+ecdh +ecdsa +sm2）
+├── post-quantum/            # 后量子（+ml_kem_* 一键块）
+└── procedure/               # 函数封装
 ```
 
-## 四、类型系统（完成后）
+---
+
+## 五、类型系统（完成后）
 
 ```
-src/constants/block-types.ts
-
 TYPE_BYTES   = 'Bytes'     # 字节序列
-TYPE_INT_LIST = 'IntList'  # 整数列表 / 多项式系数
+TYPE_INT_LIST = 'IntList'  # 整数列表/多项式系数
 TYPE_BITS    = 'Bits'      # 比特数组 {0,1}
-TYPE_NUMBER  = 'Number'    # 标量（Blockly 原生）
+TYPE_NUMBER  = 'Number'    # 标量
 TYPE_SBOX    = 'SBox'      # S-box 查找表
-TYPE_MATRIX  = 'Matrix'    # 矩阵（标签，无专用原语块）
-TYPE_VECTOR  = 'Vector'    # 向量（可选标签）
+TYPE_MATRIX  = 'Matrix'    # 矩阵标签
+TYPE_VECTOR  = 'Vector'    # 向量标签（可选）
 ```
 
-## 五、Migration 处理
+**所有块必须声明类型约束**，生成器代码产生的运行时类型需与声明一致。
 
-| 改动 | 需加映射 | 复杂度 |
-|------|---------|--------|
-| 移除 6 个复合块 | 无 | ⚪ |
-| `hash_sha3_*` → `sponge_*`/`keccak_*` | **5 条映射** | 🟢 |
-| `hash_sha3_state_init` → `keccak_state_init` | 同上 | 🟢 |
-| `arr_partition` 加参数 | 无（不改块名） | ⚪ |
-| TYPE_BITS / TYPE_MATRIX | 无（不影响序列化） | ⚪ |
-| 所有新建块 | 无（全新无旧版） | ⚪ |
-
-**Migration 总计：只需加 5 行映射 + 更新 2 个测试 JSON 中的块名。**
+---
 
 ## 六、块设计规范
+
+### 三层标注
+
+| 层 | 工具箱标注 | 色号偏移 | 右键菜单 |
+|----|-----------|---------|---------|
+| 1 原子 | 无标注 | 默认色号 | — |
+| 2 便利 | 🔧 | 默认色号 +15 | 「展开为原子块」 |
+| 3 一键 | ⚡ | 默认色号 +30 | 「展开为原子块」 |
 
 ### 命名
 
 ```
-块类型:  <category>_<name>       全小写下划线
-文件:    kebab-case.ts
-常量:    UPPER_SNAKE_CASE
-导出:    <CATEGORY>_BLOCK_TYPES, type <Category>BlockType
+原子块:   <category>_<operation>        aes_sub_bytes, nt_mod_pow
+便利块:   <category>_<composite>        aes_round, sm4_key_schedule
+一键块:   <algorithm>_<action>           ml_kem_keygen, sm3_hash
+文件:     kebab-case.ts
+常量:     UPPER_SNAKE_CASE
 ```
 
 ### 结构模板
 
 ```typescript
 import * as Blockly from 'blockly/core';
-import { TYPE_BYTES, TYPE_INT_LIST } from '@/constants/block-types';
+import { TYPE_INT_LIST } from '@/constants/block-types';
 
-export const AES_BLOCK_TYPES = ['aes_sub_bytes'] as const;
+export const AES_BLOCK_TYPES = ['aes_sub_bytes', 'aes_round'] as const;
 export type AesBlockType = (typeof AES_BLOCK_TYPES)[number];
 
+// 层1：原子原语
 Blockly.Blocks['aes_sub_bytes'] = {
   init: function () {
-    this.appendValueInput('STATE')
-      .setCheck(TYPE_INT_LIST)
-      .appendField('SubBytes(');
+    this.appendValueInput('STATE').setCheck(TYPE_INT_LIST).appendField('SubBytes(');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
     this.setOutput(true, TYPE_INT_LIST);
-    this.setColour(180);                        // 对称密码: 绿色系
-    this.setTooltip('... (FIPS 197 §5.1.1)');
-    this.setHelpUrl('https://...');
+    this.setColour(180);
+    this.setTooltip('AES SubBytes: S-box 替换 16 字节状态 (FIPS 197 §5.1.1)');
+    this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf');
+  },
+};
+
+// 层2：便利组合（一个块 = SubBytes+ShiftRows+MixColumns+AddRoundKey）
+Blockly.Blocks['aes_round'] = {
+  init: function () {
+    this.appendValueInput('STATE').setCheck(TYPE_INT_LIST).appendField('🔧 AES Round(');
+    this.appendValueInput('ROUND_KEY').setCheck(TYPE_INT_LIST).appendField(', rk:');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_INT_LIST);
+    this.setColour(195);  // 180 + 15
+    this.setTooltip(
+      'AES 完整轮: SubBytes→ShiftRows→MixColumns→AddRoundKey\n' +
+      '右键可展开为 4 个原子块'
+    );
   },
 };
 ```
 
-### 颜色规范
+---
 
-| 类目 | 色号 |
-|------|------|
-| 对称密码 | 180 |
-| 大数 | 60 |
-| 填充 | 330 |
-| 模式 | 160 |
+## 七、Migration 处理
 
-### 类型对齐
+| 改动 | 需加映射 | 复杂度 |
+|------|---------|--------|
+| 移除 6 个复合块 | 无 | ⚪ |
+| `hash_sha3_*` → `sponge_*`/`keccak_*` | **5 条映射** | 🟢 |
+| TYPE_BITS / TYPE_MATRIX | 无（不影响序列化） | ⚪ |
+| 全部新建块 | 无 | ⚪ |
 
-每个块必须声明 `setCheck(TYPE_*)` 和 `setOutput(true, TYPE_*)`。生成器代码产生的运行时类型需与声明一致。
+**总计：5 行映射 + 2 个测试 JSON 块名更新。**
 
-## 七、文档清单（需更新）
-
-| 文件 | 更新内容 |
-|------|---------|
-| `docs/ARCHITECTURE.md` | 12 类目 + 类型系统 |
-| `docs/DEVELOPMENT.md` | 新建 symmetric 类目示例 |
-| `docs/README.md` | 块数 |
-| `docs/AUDIT-REPORT.md` | 标记已实现项 |
-| 本项目 `IMPLEMENTATION-PLAN.md` | 进度跟踪 |
+---
 
 ## 八、里程碑
 
-| 里程碑 | 块数 | 内容 |
-|--------|------|------|
-| **当前** | 77 | 11 类目 |
-| **M1: 清理** | 71 | 移除复合块 + 类型增强 + 重命名 |
-| **M2: 对称密码** | 85 | AES + SM4 + 模式 + 填充 |
-| **M3: 数学+辅助** | 94 | 取模/模幂/大数/HMAC/GF |
-| **M4: 协议封装** | 111 | ML-KEM封装 + ECDH/ECDSA + SM2 + KDF + 编码 |
-| **M5: 扩展** | ~130 | SHA-1/SHA3/ML-DSA/ZUC |
+| 里程碑 | 块数 | 核心内容 | 层 |
+|--------|------|---------|-----|
+| **当前** | 77 | 11 类目 | — |
+| **M0: 清理** | 71 | 移除 6 块 + TYPE_BITS + 重命名 + TYPE_MATRIX + S-box 清理 | — |
+| **M1: 对称原子** | 80 | AES原子(4) + SM4原子(2) + 填充(2) + GF(2⁸)(1) | 层1 |
+| **M2: 对称便利** | 89 | aes_round/last_round/key_schedule + sm4_round/key_schedule + 4 模式 | 层2 |
+| **M3: 数学+辅助** | 99 | 取模/模幂/除余/大数(4)/HMAC/md_iterate/sponge_duplex | 层1+2 |
+| **M4: 一键封装** | 117 | ML-KEM一键(3) + ECDH/ECDSA(3) + SM2(2) + KDF(2) + 哈希一键(3) + 编码(5) | 层3 |
+| **M5: 扩展** | ~130 | SHA-1/SHA3/ML-DSA/ZUC/BLAKE2 | 按需 |
+
+---
 
 ## 九、文档系统
 
-### 当前文档结构
+见 `docs/README.md` 完整索引。
 
-```
-docs/
-├── README.md                       # 文档中心索引
-├── ARCHITECTURE.md                  # 系统架构
-├── DEVELOPMENT.md                   # 开发指南
-├── IMPLEMENTATION-PLAN.md           # 本文件
-├── AUDIT-REPORT.md                  # 密码原语审计
-├── SYNC-PLAN.md                     # metacrypt_server 同步计划
-├── fips202-SHA3/                    # SHA-3 算法规范
-├── fips203-ML-KEM/                  # ML-KEM 算法规范
-└── fips204-ML-DSA/                  # ML-DSA 算法规范
-```
-
-### 各阶段需更新的文档
+各里程碑文档更新：
 
 | 里程碑 | 文档更新 |
 |--------|---------|
-| **M1: 清理** | ARCHITECTURE.md（更新类目 + 类型系统）、DEVELOPMENT.md（更新类目表） |
-| **M2: 对称密码** | ARCHITECTURE.md（新增 symmetric 类目）、DEVELOPMENT.md（新增示例）、docs/README.md（块数）、新增 `fips197-AES/` + `gmt-0002-SM4/` 算法规范 |
-| **M3: 数学+辅助** | ARCHITECTURE.md（numtheory 扩展） |
-| **M4: 协议封装** | ARCHITECTURE.md + 可能的规范目录 |
-| **M5: 扩展** | 按需 |
+| M0 | ARCHITECTURE.md、DEVELOPMENT.md |
+| M1-M2 | ARCHITECTURE.md（symmetric 类目）、DEVELOPMENT.md、新增 `fips197-AES/` + `gmt-0002-SM4/` |
+| M3 | ARCHITECTURE.md（numtheory 扩展） |
+| M4 | ARCHITECTURE.md、`gmt-0003-SM2/` |
+| M5 | 按需 |
 
-### 建议新增文档
-
-| 文档 | 优先级 | 说明 |
-|------|--------|------|
-| `USAGE.md` | P1 | 用户手册（界面导航、块分类速查、代码生成流程） |
-| `BLOCK-REFERENCE.md` | P1 | 积木块完整参考（输入/输出/类型/工具提示） |
-| `TYPE-SYSTEM.md` | P2 | 类型系统深度文档（转换规则） |
-| `fips197-AES/` | M2 | AES 算法规范 |
-| `gmt-0002-SM4/` | M2 | SM4 国密算法规范 |
-| `gmt-0003-SM2/` | M4 | SM2 国密算法规范 |
+建议新增：`USAGE.md`（P1 用户手册）、`BLOCK-REFERENCE.md`（P1 块参考）、`TYPE-SYSTEM.md`（P2 类型系统深度文档）

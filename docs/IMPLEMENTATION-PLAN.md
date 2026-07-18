@@ -50,8 +50,6 @@
 
 > 最终 ~125 块，其中 ~55 个是新增（层1+层2+层3 原子便利一键），其余 70 个是现有块
 
----
-
 ## 三、实施路线
 
 ### 阶段 0：清理 + 类型增强（先做）
@@ -104,7 +102,22 @@
 
 ---
 
-### 阶段 3：数学 + 通用辅助（层1+层2，~3 天）
+### 阶段 2.5：后量子密码 — 便利层（层2，~3 天）
+
+当前后量子有 17 个层1 原子块（M0 移除 6 个复合块后剩 11 个），缺层2 便利块。
+全部对齐 FIPS 203 ML-KEM 的算法步骤。
+
+| # | 块名 | 说明 | 原子展开 | FIPS 203 |
+|---|------|------|---------|----------|
+| 2.5.1 | `pq_ntt_vec` | 向量 NTT：对 k 个多项式做 NTT | `ctrl_iterate`×k + `pq_ntt` | Alg 14 step 6 |
+| 2.5.2 | `pq_intt_vec` | 向量 INTT：对 k 个多项式做 INTT | `ctrl_iterate`×k + `pq_intt` | Alg 14 step 12 |
+| 2.5.3 | `pq_cbd_ntt_vec` | CBD 采样+NTT：k 个 CBD 多项式→NTT | `ctrl_iterate`×k + `pq_sample_poly_cbd` + `pq_ntt` | Alg 14 step 5-6 |
+| 2.5.4 | `pq_mat_vec_mul_ntt` | NTT 域矩阵×向量：Âᵀ∘r̂ | 双层循环 + `pq_ntt_mul` + `pq_poly_add` | Alg 14 step 8-9 |
+| 2.5.5 | `pq_vec_add` | 向量逐元素加法 | `ctrl_iterate`×k + `pq_poly_add` | Alg 14 step 10,12 |
+| 2.5.6 | `pq_vec_sub` | 向量逐元素减法 | `ctrl_iterate`×k + 域减法 | 验证步骤 |
+| 2.5.7 | `pq_sample_ntt_mat` | NTT 域矩阵生成（k×k，带 k 参数） | 双层循环 + `pq_sample_ntt` | Alg 14 step 4 |
+
+> 阶段 2.5 后：**96 块**（+7 后量子便利块）
 
 | # | 块名 | 类目 | 层 | 说明 |
 |---|------|------|----|------|
@@ -119,7 +132,7 @@
 | 3.9 | `md_iterate` | `hash/` | 2 | Merkle-Damgård 迭代框架 |
 | 3.10 | `sponge_duplex` | `hash/` | 2 | 海绵双工 absorb+squeeze 一次完成 |
 
-> 阶段 3 后：**99 块**（+10）
+> 阶段 3 后：**106 块**（+10）
 
 ---
 
@@ -146,7 +159,7 @@
 | 4.17 | `bytes_to_hex` | `data/` | Bytes→Hex |
 | 4.18 | `endian_swap` | `data/` | 大端/小端 |
 
-> 阶段 4 后：**117 块**（+18 一键块）
+> 阶段 4 后：**124 块**（+18 一键块）
 
 ---
 
@@ -314,9 +327,10 @@ Blockly.Blocks['aes_round'] = {
 | **M0: 清理** | 71 | 移除 6 块 + TYPE_BITS + 重命名 + TYPE_MATRIX + S-box 清理 | — |
 | **M1: 对称原子** | 80 | AES原子(4) + SM4原子(2) + 填充(2) + GF(2⁸)(1) | 层1 |
 | **M2: 对称便利** | 89 | aes_round/last_round/key_schedule + sm4_round/key_schedule + 4 模式 | 层2 |
-| **M3: 数学+辅助** | 99 | 取模/模幂/除余/大数(4)/HMAC/md_iterate/sponge_duplex | 层1+2 |
-| **M4: 一键封装** | 117 | ML-KEM一键(3) + ECDH/ECDSA(3) + SM2(2) + KDF(2) + 哈希一键(3) + 编码(5) | 层3 |
-| **M5: 扩展** | ~130 | SHA-1/SHA3/ML-DSA/ZUC/BLAKE2 | 按需 |
+| **M2.5: 后量子便利** | 96 | ntt_vec/intt_vec/cbd_ntt_vec/mat_vec_mul/vec_add/vec_sub/sample_ntt_mat | 层2 |
+| **M3: 数学+辅助** | 106 | 取模/模幂/除余/大数(4)/HMAC/md_iterate/sponge_duplex | 层1+2 |
+| **M4: 一键封装** | 124 | ML-KEM一键(3) + ECDH/ECDSA(3) + SM2(2) + KDF(2) + 哈希一键(3) + 编码(5) | 层3 |
+| **M5: 扩展** | ~140 | SHA-1/SHA3/ML-DSA/ZUC/BLAKE2 | 按需 |
 
 ---
 
@@ -335,3 +349,66 @@ Blockly.Blocks['aes_round'] = {
 | M5 | 按需 |
 
 建议新增：`USAGE.md`（P1 用户手册）、`BLOCK-REFERENCE.md`（P1 块参考）、`TYPE-SYSTEM.md`（P2 类型系统深度文档）
+
+---
+
+## 十、算法规范与标准文档下载索引
+
+### 国际标准
+
+| 算法 | 标准号 | 下载链接 |
+|------|--------|---------|
+| **AES** | FIPS 197 | https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf |
+| **SHA-256/SHA-2** | FIPS 180-4 | https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf |
+| **SHA-3** | FIPS 202 | https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf |
+| **SHAKE** | FIPS 202 (§6) | 同上 |
+| **ML-KEM** | FIPS 203 | https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf |
+| **ML-DSA** | FIPS 204 | https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf |
+| **SLH-DSA** | FIPS 205 | https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.205.pdf |
+| **HMAC** | FIPS 198-1 | https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.198-1.pdf |
+| **PBKDF2** | NIST SP 800-132 | https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf |
+| **HKDF** | RFC 5869 | https://www.rfc-editor.org/rfc/rfc5869 |
+| **RSA** | PKCS#1 v2.2 (RFC 8017) | https://www.rfc-editor.org/rfc/rfc8017 |
+| **ECDSA** | FIPS 186-5 | https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf |
+| **EdDSA/Ed25519** | RFC 8032 | https://www.rfc-editor.org/rfc/rfc8032 |
+| **X25519/X448** | RFC 7748 | https://www.rfc-editor.org/rfc/rfc7748 |
+| **AES-GCM** | NIST SP 800-38D | https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf |
+| **AES-CBC/CTR** | NIST SP 800-38A | https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf |
+| **DRBG** | NIST SP 800-90A | https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-90Ar1.pdf |
+| **Base64** | RFC 4648 | https://www.rfc-editor.org/rfc/rfc4648 |
+| **PKCS#7 填充** | RFC 2315 (§10.3) | https://www.rfc-editor.org/rfc/rfc2315#section-10.3 |
+
+### 中国国密标准
+
+| 算法 | 标准号 | 下载链接 |
+|------|--------|---------|
+| **SM2** | GM/T 0003-2012 | http://www.gmbz.org.cn/main/viewfile/2018011001400692565.html |
+| **SM3** | GM/T 0004-2012 | http://www.gmbz.org.cn/main/viewfile/2018011002383823521.html |
+| **SM4** | GM/T 0002-2012 | http://www.gmbz.org.cn/main/viewfile/2018011001400692566.html |
+| **ZUC** | GM/T 0001-2016 | http://www.gmbz.org.cn/ |
+| **SM9** | GM/T 0044-2016 | http://www.gmbz.org.cn/ |
+| 国密标准总目录 | — | https://www.oscca.gov.cn/sca/xxgk/bzgf.shtml |
+
+### 参考实现
+
+| 算法 | 语言 | 仓库 |
+|------|------|------|
+| AES/SHA/RSA | Python | `pip install pycryptodome` (PyCryptodome) |
+| SM2/SM3/SM4 | Python | `pip install gmssl` (GmSSL) |
+| SM2/SM3/SM4/ SM9/ZUC | C | https://github.com/guanzhi/GmSSL |
+| ML-KEM/ML-DSA | C | https://github.com/pq-crystals (参考实现) |
+| ML-KEM/ML-DSA | Python | https://github.com/GiacomoPope/kyber-py |
+| SHA-3/Keccak | Python | `hashlib` (Python 标准库) |
+| BLAKE2 | Python | `hashlib` (Python 标准库) |
+
+### 已内置的规范文档
+
+CipherCat `docs/` 下已包含：
+- `fips202-SHA3/` — SHA-3/Keccak/SHAKE 算法步骤详解
+- `fips203-ML-KEM/` — ML-KEM 参数+算法步骤+构建指南
+- `fips204-ML-DSA/` — ML-DSA 参数+算法步骤
+
+建议后续增加：
+- `fips197-AES/` — M1 阶段同步
+- `gmt-0002-SM4/` — M1 阶段同步
+- `gmt-0003-SM2/` — M4 阶段同步

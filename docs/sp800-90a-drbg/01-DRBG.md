@@ -1678,34 +1678,24 @@ approved hash function.
 37
 
 NIST  SP  800-90A  Rev.  1   HASH_DRBG   Recommendation  for  Random  Number
-|     |     |     |     | Generation  Using  Deterministic  RBGs   |     |     |
-| --- | --- | --- | --- | ---------------------------------------- | --- | --- |
 
 Table  2: Definitions  for  Hash-Based  DRBG  Mechanisms
-|     |     | SHA-1   | SHA-224   | SHA-256   | SHA-384   | SHA-512   |
+|  |  | SHA-1 | SHA-224 | SHA-256 | SHA-384 | SHA-512 |
 | --- | --- | ------- | --------- | --------- | --------- | --------- |
-|     |     |         | and  SHA- | and       |           |           |
+|  |  |  | and  SHA- | and |
 512/224
 SHA-
 512/256
-| Supported security  strengths         |     |     |     | See  [SP 800-57]   |     |     |
-| ------------------------------------- | --- | --- | --- | ------------------ | --- | --- |
-| highest_supported_security_strength   |     |     |     | See [SP 800-57]    |     |     |
+| Supported security  strengths |  |  |  | See  [SP 800-57] |
+| ------------------------------------- | --- | --- | --- | ------------------ |
+| highest_supported_security_strength |  |  |  | See [SP 800-57] |
 Output  Block  Length  (outlen)   160   224   256   384   512
-| Required  minimum  entropy  for   |     |     |     | security_strength   |     |     |
-| --------------------------------- | --- | --- | --- | ------------------- | --- | --- |
 instantiate and reseed
-| Minimum  entropy  input  length   |     |     |     | security_strength   |     |     |
-| --------------------------------- | --- | --- | --- | ------------------- | --- | --- |
 (min_length)
 235  bits
 Maximum  entropy  input  length
 (max_  length)
-| Seed length (seedlen) for   |     | 440   | 440   | 440   | 888   | 888   |
-| --------------------------- | --- | ----- | ----- | ----- | ----- | ----- |
 Hash_DRBG
-| Maximum  personalization  string   |     |     |     | 235  bits   |     |     |
-| ---------------------------------- | --- | --- | --- | ----------- | --- | --- |
 length
 (max_personalization_string_length)
 235  bits
@@ -1713,8 +1703,6 @@ Maximum  additional_input  length
 (max_additional_input_length)
 219  bits
 max_number_of_bits_per_request
-| Maximum  number  of  requests   |     |     |     | 248    |     |     |
-| ------------------------------- | --- | --- | --- | ------ | --- | --- |
 between reseeds  (reseed_interval)
 
 Note that since SHA-224 is based on SHA-256, there is no efficiency benefit when using SHA-
@@ -2123,57 +2111,41 @@ mechanism.
 48
 
 NIST  SP  800-90A  Rev.  1     Recommendation  for  Random  Number
-|     |     | Generation  Using  Deterministic  RBGs   |     |     |
-| --- | --- | ---------------------------------------- | --- | --- |
 
 Table  3: Definitions  for  the  CTR_DRBG
-|                                       | 3 Key TDEA   | AES-              | AES-  | AES-  |
+|  | 3 Key TDEA | AES- | AES- | AES- |
 | ------------------------------------- | ------------ | ----------------- | ----- | ----- |
-|                                       |              | 128               | 192   | 256   |
-| Supported security strengths          |              | See [SP 800-57]   |       |       |
-| highest_supported_security_strength   |              | See [SP 800-57]   |       |       |
-| Input  and output block length        | 64           | 128               | 128   | 128   |
+|  |  | 128 | 192 | 256 |
+| Supported security strengths |  | See [SP 800-57] |
+| highest_supported_security_strength |  | See [SP 800-57] |
+| Input  and output block length | 64 | 128 | 128 | 128 |
 (blocklen)
-| Counter field length (ctr_len)   | 4 ≤  ctr_len  ≤  blocklen   |                     |       |       |
+| Counter field length (ctr_len) | 4 ≤  ctr_len  ≤  blocklen |
 | -------------------------------- | --------------------------- | ------------------- | ----- | ----- |
-| Key length (keylen)              | 168                         | 128                 | 192   | 256   |
-| Required minimum entropy for     |                             | security_strength   |       |       |
+| Key length (keylen) | 168 | 128 | 192 | 256 |
+| Required minimum entropy for |  | security_strength |
 instantiate and reseed
 Seed length (seedlen = outlen + keylen)   232   256   320   384
-| If a derivation function is used:   |     |                     |     |     |
-| ----------------------------------- | --- | ------------------- | --- | --- |
-| Minimum entropy input length        |     | security_strength   |     |     |
+| If a derivation function is used: |
+| ----------------------------------- | --- | ------------------- |
+| Minimum entropy input length |  | security_strength |
 (min _length)
-| Maximum entropy input length   |     | 235  bits   |     |     |
-| ------------------------------ | --- | ----------- | --- | --- |
 (max _length)
 235  bits
 Maximum  personalization  string
 length
 (max_personalization_string_length)
-| Maximum additional_input  length   |     | 235  bits   |     |     |
-| ---------------------------------- | --- | ----------- | --- | --- |
 (max_additional_input_length)
-| If a derivation function is not used:   |     |           |     |     |
-| --------------------------------------- | --- | --------- | --- | --- |
-| Minimum entropy input length            |     | seedlen   |     |     |
+| If a derivation function is not used: |
+| --------------------------------------- | --- | --------- |
+| Minimum entropy input length |  | seedlen |
 (min _length  = blocklen  + keylen)
-| Maximum entropy input length   |     | seedlen   |     |     |
-| ------------------------------ | --- | --------- | --- | --- |
 (max _length   = blocklen  + keylen)
-| Maximum personalization string   |     | seedlen   |     |     |
-| -------------------------------- | --- | --------- | --- | --- |
 length
 (max_personalization_string_length)
-| Maximum  additional_input  length   |     | seedlen   |     |     |
-| ----------------------------------- | --- | --------- | --- | --- |
 (max_additional_input_length)
-|     | min(B, 213  )   |     | min(B, 219)    |     |
-| --- | --------------- | --- | -------------- | --- |
 max_number_of_bits_per_request
 (for B  =  (2ctr_len  - 4)  ×  blocklen)
-| Maximum number  of requests between   | 232    |     | 248    |     |
-| ------------------------------------- | ------ | --- | ------ | --- |
 reseeds (reseed_interval)
 
 Note that the claimed security strength for CTR_DRBG  depends on limiting the total number of
@@ -2823,19 +2795,13 @@ expected.
 66
 
 NIST  SP  800-90A  Rev.  1     Recommendation  for  Random  Number
-|     |     |     | Generation  Using  Deterministic  RBGs   |     |
-| --- | --- | --- | ---------------------------------------- | --- |
 Appendix  A:  (Normative)
 
 Conversion  and  Auxiliary  Routines
 
 A.1   Bitstring  to  an  Integer
-| Bitstring_to_integer (b | , b ,…, b ):   |     |     |     |
-| ----------------------- | -------------- | --- | --- | --- |
 1 2 n
 Input:
-| 1. 	  b | , b ,…, b   The bitstring to be converted.   |     |     |     |
-| ------- | -------------------------------------------- | --- | --- | --- |
 1 2 n
 Output:
 1. 	  x   The requested integer representation of the bitstring.
@@ -2847,32 +2813,21 @@ n
 
 | 2. 	  x = ∑  | 2 (n−i)
 b.  |     |     |     |
-| ------------ | ----------- | --- | --- | --- |
 i
 
 i=1
 
-| 3.   | Return (x).   |     |     |     |
-| ---- | ------------- | --- | --- | --- |
 In this Recommendation, the binary length of an integer x  is defined as the smallest integer n
 sa€ti sfying x  < 2n .
 A.2   Integer  to  a  Bitstring
 Integer_to_bitstring (x):
 Input:
-| 1. 	  x   | The non-negative integer to be converted.   |     |     |     |
-| --------- | ------------------------------------------- | --- | --- | --- |
 Output:
-| 1. 	  b | , b , ..., b   The bitstring representation of the integer x.   |     |     |     |
-| ------- | --------------------------------------------------------------- | --- | --- | --- |
 1 2 n
 Process:
 1. 	  Let (b , b , ..., b ) represent the bitstring, where  b  = 0 or 1, and b  is the most
-|     | 1 2 n |     | 1   | 1   |
-| --- | ----- | --- | --- | --- |
 significant bit, while  b  is the least significant bit.
 n
-| 2. 	  For any integer n  that satisfies  x  < 2n, the bits  b shall  satisfy:  |     |     |     |     |
-| ------------------------------------------------------------------------------ | --- | --- | --- | --- |
 i
 
 n
@@ -2883,8 +2838,6 @@ i
 
 i=1
 
-| 3. 	  Return (b | , b , ..., b ).   |     |     |     |
-| --------------- | ----------------- | --- | --- | --- |
 1 2 n
 In this Recommendation, the binary length of the integer x  is defined as the smallest integer n
 that s€at isfies  x  < 2n .
@@ -3831,26 +3784,20 @@ and the storage space required for the internal state (see Section 10.2.1.1).
 91
 
 NIST  SP  800-90A  Rev.  1     Recommendation  for  Random  Number
-|     |     |     |     | Generation  Using  Deterministic  RBGs   |
-| --- | --- | --- | --- | ---------------------------------------- |
 Algorithm Choices.  The choice of block cipher algorithms and key sizes that may be used by
 CTR_DRBG  is discussed in Section 10.2.1.
 C.4   Summary  for  DRBG  Selection
 Table  C-1 provides a summary of the costs and constraints  of the DRBG  mechanisms  in this
 Recommendation.
 Table  C-1:  DRBG  Mechanism  Summary
-|     |                   |     | Dominating              | Constraints               |
+|  |  |  | Dominating | Constraints |
 | --- | ----------------- | --- | ----------------------- | ------------------------- |
-|     |                   |     | Cost/Block              | (max.)                    |
-|     | Hash_DRBG         |     | 2 hash function calls   | 248  calls of 219  bits   |
-|     | HMAC_DRBG         |     | 4 hash function calls   | 248  calls of 219  bits   |
-|     | CTR_DRBG (TDEA)   |     | 1 TDEA encrypt          | 232  calls of 213  bits   |
+|  |  |  | Cost/Block | (max.) |
+|  | Hash_DRBG |  | 2 hash function calls | 248  calls of 219  bits |
+|  | HMAC_DRBG |  | 4 hash function calls | 248  calls of 219  bits |
+|  | CTR_DRBG (TDEA) |  | 1 TDEA encrypt | 232  calls of 213  bits |
 248  calls of 219  bits
-|     | CTR_DRBG (AES)   |     | 1 AES encrypt   |     |
-| --- | ---------------- | --- | --------------- | --- |
 
-|     |     |     |     |     |
-| --- | --- | --- | --- | --- |
 92
 
 NIST SP 800-90A Rev. 1 Recommendation for Random Number

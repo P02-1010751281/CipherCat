@@ -711,60 +711,48 @@ November 2024
 Table 3 lists the notations used in this standard.
 284
 Table 3. Notations
-| Notation  | Definition          |     |     |
-| --------- | ------------------- | --- | --- |
-| 𝐾         | 128-bit secret key  |     |     |
-| 𝑁         | 128-bit nonce       |     |     |
-| 𝐴         | Associated data     |     |     |
+| Notation | Definition |
+| --------- | ------------------- |
+| 𝐾 | 128-bit secret key |
+| 𝑁 | 128-bit nonce |
+| 𝐴 | Associated data |
 𝑖th block of associated data 𝐴
 𝐴
 𝑖
-| 𝑃   | Plaintext  |     |     |
-| --- | ---------- | --- | --- |
 𝑖th block of plaintext 𝑃
 𝑃
 𝑖
-| 𝐶   | Ciphertext  |     |     |
-| --- | ----------- | --- | --- |
 𝑖th block of ciphertext 𝐶
 𝐶
 𝑖
-| 𝑍   | Customization string                 |     |     |
-| --- | ------------------------------------ | --- | --- |
-| 𝑍   | 𝑖th block of customization string 𝑍  |     |     |
+| 𝑍 | Customization string |
+| --- | ------------------------------------ |
+| 𝑍 | 𝑖th block of customization string 𝑍 |
 𝑖
-| 𝑇   | 128-bit authentication tag     |     |     |
-| --- | ------------------------------ | --- | --- |
-| 𝐼𝑉  | 64-bit constant initial value  |     |     |
+| 𝑇 | 128-bit authentication tag |
+| --- | ------------------------------ |
+| 𝐼𝑉 | 64-bit constant initial value |
 fail  Error message to indicate that the verification of authenticated cipher-
 text failed
 Message
 𝑀
-| 𝑀   | 𝑖th block of message 𝑀  |     |     |
-| --- | ----------------------- | --- | --- |
 𝑖
-| 𝐻   | Hash value 𝐻               |     |     |
-| --- | -------------------------- | --- | --- |
-| 𝐻   | 𝑖th block of hash value 𝐻  |     |     |
+| 𝐻 | Hash value 𝐻 |
+| --- | -------------------------- |
+| 𝐻 | 𝑖th block of hash value 𝐻 |
 𝑖
-| S   | 320-bit internal state of the underlying permutation  |     |     |
-| --- | ----------------------------------------------------- | --- | --- |
 𝑆 ,…,𝑆 The  five  64-bit  words  of  the  internal  state  S,  where  S  =
-| 0      | 4                                                    |                         |                           |
 | ------ | ---------------------------------------------------- | ----------------------- | ------------------------- |
-|        | 𝑆 ‖ 𝑆                                                | ‖ … ‖ 𝑆                 |                           |
-|        | 0 1                                                  | 4                       |                           |
-| 𝑠      | 𝑗th bit of 𝑆                                         | , 0 ≤ 𝑖 ≤ 4,0 ≤ 𝑗 ≤ 63  |                           |
-| (𝑖,𝑗)  |                                                      | 𝑖                       |                           |
-| 𝑆 [𝑗]  | 𝑗𝑡ℎ byte of state word 𝑆                             |                         | for 0 ≤ 𝑖 ≤ 4, 0 ≤ 𝑗 ≤ 7  |
-| 𝑖      |                                                      |                         | 𝑖                         |
-| 𝜆      | Length of the truncated tag in bits                  |                         |                           |
-| 𝑟      | The rate of an algorithm                             |                         |                           |
-| 𝑐      | The constant value for round 𝑖 of Ascon permutation  |                         |                           |
+|  | 𝑆 ‖ 𝑆 | ‖ … ‖ 𝑆 |
+|  | 0 1 | 4 |
+| 𝑠 | 𝑗th bit of 𝑆 | , 0 ≤ 𝑖 ≤ 4,0 ≤ 𝑗 ≤ 63 |
+| (𝑖,𝑗) |  | 𝑖 |
+| 𝑆 [𝑗] | 𝑗𝑡ℎ byte of state word 𝑆 |  | for 0 ≤ 𝑖 ≤ 4, 0 ≤ 𝑗 ≤ 7 |
+| 𝜆 | Length of the truncated tag in bits |
+| 𝑟 | The rate of an algorithm |
+| 𝑐 | The constant value for round 𝑖 of Ascon permutation |
 𝑖
 𝑝 ,𝑝 ,𝑝 Constant-addition, substitution and linear layers of the round function 𝑝
-| 𝐶 𝑆 | 𝐿   |     |     |
-| --- | --- | --- | --- |
 6
 
 NIST SP 800-232 ipd (Initial Public Draft)
@@ -855,15 +843,11 @@ The permutations follow the Substitution-Permutation-Network (SPN) structure and
 296
 of iterations of the round function 𝑝 that is defined as the composition of three steps
 297
-|      |     |     | 𝑝 = 𝑝 | ∘ 𝑝 | ∘ 𝑝 ,  |     |     | (1)  |
-| ---- | --- | --- | ----- | --- | ------ | --- | --- | ---- |
-| 298  |     |     |       | 𝐿   | 𝑆  𝐶   |     |     |      |
 where 𝑝 is the constant-addition layer (see Sec. 3.2), 𝑝 is the substitution layer (see Sec.
 299
-| 𝐶           |                                                |     |     |     |     | 𝑆   |     |     |
-| ----------- | ---------------------------------------------- | --- | --- | --- | --- | --- | --- | --- |
-| 3.3), and 𝑝 | is the linear diffusion layer (see Sec. 3.4).  |     |     |     |     |     |     |     |
-| 300         | 𝐿                                              |     |     |     |     |     |     |     |
+| ----------- | ---------------------------------------------- |
+| 3.3), and 𝑝 | is the linear diffusion layer (see Sec. 3.4). |
+| 300 | 𝐿 |
 Note that 𝐴𝑠𝑐𝑜𝑛-𝑝[8] and 𝐴𝑠𝑐𝑜𝑛-𝑝[12] are the main building blocks of the Ascon family,
 301
 and the permutation instantiated with other numbers of rounds may later be used to
@@ -874,14 +858,12 @@ standardize other functionalities.
 304
 The permutations operate on the 320-bit state S, which is represented as five 64-bit words
 305
-| denoted as 𝑆 | for 0 ≤ 𝑖 ≤ 4:  |     |        |       |       |        |     |      |
+| denoted as 𝑆 | for 0 ≤ 𝑖 ≤ 4: |
 | ------------ | --------------- | --- | ------ | ----- | ----- | ------ | --- | ---- |
-| 306          | 𝑖               |     |        |       |       |        |     |      |
-|              |                 |     | S =𝑆 ∥ | 𝑆 ∥ 𝑆 | ∥ 𝑆   | ∥ 𝑆 .  |     | (2)  |
-| 307          |                 |     | 0      | 1     | 2  3  | 4      |     |      |
+| 306 | 𝑖 |
+|  |  |  | S =𝑆 ∥ | 𝑆 ∥ 𝑆 | ∥ 𝑆 | ∥ 𝑆 . |  | (2) |
+| 307 |  |  | 0 | 1 | 2  3 | 4 |
 Let 𝑠 represents the 𝑗th bit of 𝑆 , 0 ≤ 𝑗 < 64. In this specification of the Ascon permuta-
-| 308  (𝑖,𝑗)  |     |     | 𝑖   |     |     |     |     |     |
-| ----------- | --- | --- | --- | --- | --- | --- | --- | --- |
 tion, each state word represents a 64-bit unsigned integer, where the least significant bit is
 309
 the rightmost bit. Details on other representations of the state can be found in Appendix A.
@@ -890,44 +872,37 @@ the rightmost bit. Details on other representations of the state can be found in
 311
 𝐶
 The constant 𝑐 of round 𝑖 of the Ascon permutation 𝐴𝑠𝑐𝑜𝑛-𝑝[𝑟𝑛𝑑] (instantiated with 𝑟𝑛𝑑
-| 312  | 𝑖   |     |     |     |     |     |     |     |
-| ---- | --- | --- | --- | --- | --- | --- | --- | --- |
 rounds), for 𝑟𝑛𝑑 ≤ 16 and 0 ≤ 𝑖 ≤ 𝑟𝑛𝑑−1, is defined as
 313
-|      |     |     | 𝑐 = const |          |     | ,   |     | (3)  |
+|  |  |  | 𝑐 = const |  |  | , |  | (3) |
 | ---- | --- | --- | --------- | -------- | --- | --- | --- | ---- |
-| 314  |     |     | 𝑖         | 16−𝑟𝑛𝑑+𝑖 |     |     |     |      |
+| 314 |  |  | 𝑖 | 16−𝑟𝑛𝑑+𝑖 |
 where const ,…,const are defined in Table 5. The constant-addition layer 𝑝 adds a
 315
-|                         | 0   | 15    |                         |     |        |     | 𝐶   |      |
 | ----------------------- | --- | ----- | ----------------------- | --- | ------ | --- | --- | ---- |
-| 64-bit round constant 𝑐 |     | to 𝑆  | in round 𝑖, for 𝑖 ≥ 0,  |     |        |     |     |      |
-| 316                     |     | 𝑖  2  |                         |     |        |     |     |      |
-|                         |     |       | 𝑆                       | = 𝑆 | ⊕ 𝑐 .  |     |     | (4)  |
-| 317                     |     |       | 2                       | 2   | 𝑖      |     |     |      |
+| 64-bit round constant 𝑐 |  | to 𝑆 | in round 𝑖, for 𝑖 ≥ 0, |
+| 316 |  | 𝑖  2 |
+|  |  |  | 𝑆 | = 𝑆 | ⊕ 𝑐 . |  |  | (4) |
+| 317 |  |  | 2 | 2 | 𝑖 |
 9
 
 NIST SP 800-232 ipd (Initial Public Draft)
 November 2024
 Table 5. The constants const to derive round constants of the Ascon permutations
 𝑖
-|     | 𝑖                      | const | 𝑖                       | const |     |     |
-| --- | ---------------------- | ----- | ----------------------- | ----- | --- | --- |
-|     |                        | 𝑖     |                         | 𝑖     |     |     |
-|     | 0  0x000000000000003c  |       | 8  0x00000000000000b4   |       |     |     |
-|     | 1  0x000000000000002d  |       | 9  0x00000000000000a5   |       |     |     |
-|     | 2  0x000000000000001e  |       | 10  0x0000000000000096  |       |     |     |
-|     | 3  0x000000000000000f  |       | 11  0x0000000000000087  |       |     |     |
-|     | 4  0x00000000000000f0  |       | 12  0x0000000000000078  |       |     |     |
-|     | 5                      |       | 13                      |       |     |     |
-|     | 0x00000000000000e1     |       | 0x0000000000000069      |       |     |     |
-|     | 6  0x00000000000000d2  |       | 14  0x000000000000005a  |       |     |     |
-|     | 7  0x00000000000000c3  |       | 15  0x000000000000004b  |       |     |     |
+|  | 𝑖 | const | 𝑖 | const |
+| --- | ---------------------- | ----- | ----------------------- | ----- |
+|  | 0  0x000000000000003c |  | 8  0x00000000000000b4 |
+|  | 1  0x000000000000002d |  | 9  0x00000000000000a5 |
+|  | 2  0x000000000000001e |  | 10  0x0000000000000096 |
+|  | 3  0x000000000000000f |  | 11  0x0000000000000087 |
+|  | 4  0x00000000000000f0 |  | 12  0x0000000000000078 |
+|  | 0x00000000000000e1 |  | 0x0000000000000069 |
+|  | 6  0x00000000000000d2 |  | 14  0x000000000000005a |
+|  | 7  0x00000000000000c3 |  | 15  0x000000000000004b |
 Since the first 56 bits of the constants are zero, in practice, this is equivalent to applying
 318
 the constant to only the least significant eight bits of 𝑆 , as shown in Fig. 1.
-| 319  |     |     |     | 2   |     |     |
-| ---- | --- | --- | --- | --- | --- | --- |
 𝑆
 𝑆 0
 1
@@ -939,16 +914,14 @@ the constant to only the least significant eight bits of 𝑆 , as shown in Fig.
 Figure 1. Constant-Addition Layer 𝑝
 𝐶
 3.3. Substitution Layer 𝑝
-| 320  |     | 𝑆   |     |     |     |     |
-| ---- | --- | --- | --- | --- | --- | --- |
 The substitution layer 𝑝 updates the state S with 64 parallel applications of the 5-bit
 321
 𝑆
 substitution box SBOX, as
 322
-|      | (𝑠 ,𝑠 | ,…,𝑠 ) = SBOX(𝑠 |       | ,𝑠 ,…,𝑠 | )     | (5) |
-| ---- | ----- | --------------- | ----- | ------- | ----- | --- |
-| 323  | (0,𝑗) | (1,𝑗) (4,𝑗)     | (0,𝑗) | (1,𝑗)   | (4,𝑗) |     |
+|  | (𝑠 ,𝑠 | ,…,𝑠 ) = SBOX(𝑠 |  | ,𝑠 ,…,𝑠 | ) | (5) |
+| ---- | ----- | --------------- | ----- | ------- | ----- |
+| 323 | (0,𝑗) | (1,𝑗) (4,𝑗) | (0,𝑗) | (1,𝑗) | (4,𝑗) |
 for 0 ≤ 𝑗 < 64, as shown in Fig. 2.
 324
 𝑆
@@ -963,8 +936,6 @@ for 0 ≤ 𝑗 < 64, as shown in Fig. 2.
 Figure 2. Substitution layer 𝑝
 𝑆
 The 5-bit SBOX has a 5-bit input 𝑥 = (𝑥 ,𝑥 ,…,𝑥 ) and computes the 5-bit output using
-| 325  |     | 0   | 1 4 |     |     |     |
-| ---- | --- | --- | --- | --- | --- | --- |
 the circuit provided in Figure 3. SBOX may also be implemented as a lookup table, as shown
 326
 in Table 6.
@@ -975,33 +946,17 @@ NIST SP 800-232 ipd (Initial Public Draft)
 November 2024
 y
 x
-|     |     |     |     | 0   |     |     |     | 0   |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-1
-|     |     |     | x   |     |     |     |     | y   |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|     |     |     |     | 1   |     |     |     | 1   |     |     |
-1
-|     |     |     | x   |     |     |     |     | y   |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|     |     |     |     | 2   |     |     |     | 2   |     |     |
 1
 1
-|     |     |     | x   |     |     |     |     | y   |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|     |     |     |     | 3   |     |     |     | 3   |     |     |
 1
-|     |     |     | x   |     |     |     |     | y   |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|     |     |     |     | 4   |     |     |     | 4   |     |     |
+1
+1
 1
 Figure 3. 5-bit S-box SBOX
 3.4. Linear Diffusion Layer 𝑝
 328
 𝐿
 The linear diffusion layer 𝑝 provides diffusion within each 64-bit word 𝑆 , as shown in Fig.
-| 329  |     |     | 𝐿   |     |     |     |     |     | 𝑖   |     |
-| ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 4.
 330
 𝑆
@@ -1017,24 +972,11 @@ The linear diffusion layer 𝑝 provides diffusion within each 64-bit word 𝑆 
 Figure 4. Linear diffusion layer 𝑝
 𝐿
 This layer applies the linear functions Σ to their corresponding state words as 𝑆 ← Σ (𝑆 ),
-|                             |     |     |     |                 | 𝑖   |     |     |     | 𝑖   | 𝑖 𝑖 |
-| --------------------------- | --- | --- | --- | --------------- | --- | --- | --- | --- | --- | --- |
-| for 0 ≤ 𝑖 ≤ 4, where each Σ |     |     |     | is defined as:  |     |     |     |     |     |     |
+|  |  |  |  |  | 𝑖 |  |  |  | 𝑖 | 𝑖 𝑖 |
+| --------------------------- | --- | --- | --- | --------------- |
+| for 0 ≤ 𝑖 ≤ 4, where each Σ |  |  |  | is defined as: |
 𝑖
-|     |     |     | Σ (𝑆 | ) = 𝑆 ⊕ (𝑆 | ⋙ 19) ⊕ (𝑆 |         | ⋙ 28)  |     |     | (6)   |
-| --- | --- | --- | ---- | ---------- | ---------- | ------- | ------ | --- | --- | ----- |
-|     |     |     | 0    | 0 0        | 0          |         | 0      |     |     |       |
-|     |     |     | Σ (𝑆 | ) = 𝑆 ⊕ (𝑆 | ⋙ 61) ⊕ (𝑆 |         | ⋙ 39)  |     |     | (7)   |
-|     |     |     | 1    | 1 1        | 1          |         | 1      |     |     |       |
-|     |     |     | Σ (𝑆 | ) = 𝑆 ⊕ (𝑆 | ⋙          | 1) ⊕ (𝑆 | ⋙      | 6)  |     | (8)   |
-|     |     |     | 2    | 2 2        | 2          |         | 2      |     |     |       |
-|     |     |     | Σ (𝑆 | ) = 𝑆 ⊕ (𝑆 | ⋙ 10) ⊕ (𝑆 |         | ⋙ 17)  |     |     | (9)   |
-|     |     |     | 3    | 3 3        | 3          |         | 3      |     |     |       |
-|     |     |     | Σ (𝑆 | ) = 𝑆 ⊕ (𝑆 | ⋙          | 7) ⊕ (𝑆 | ⋙ 41)  |     |     | (10)  |
-|     |     |     | 4    | 4 4        | 4          |         | 4      |     |     |       |
 Table 6. Lookup table representation of SBOX
-|     | 𝑥  0  | 1   | 2  3  | 4  5  | 6   | 7  8  | 9   | a  b  | c  d  | e  f  |
-| --- | ----- | --- | ----- | ----- | --- | ----- | --- | ----- | ----- | ----- |
 SBOX(𝑥)  4  b  1f  14  1a  15  9  2  1b  5  8  12  1d  3  6  1c
 𝑥  10  11  12  13  14  15  16  17  18  19  1a  1b  1c  1d  1e  1f
 SBOX(𝑥)  1e  13  7  e  0  d  11  18  10  c  1  19  16  a  f  17
@@ -1063,19 +1005,15 @@ associated data 𝐴, and variable-length plaintext 𝑃  as inputs and outputs 
 339
 (where |𝐶| = |𝑃|) and 128-authentication tag 𝑇 (see Section 4.2.1 for the truncation option):
 340
-|     |     | Ascon-AEAD128.enc(𝐾,𝑁,𝐴,𝑃) = (𝐶,𝑇),  |     |     |     |     |     | (11)  |
-| --- | --- | ------------------------------------ | --- | --- | --- | --- | --- | ----- |
 341
 Ascon-AEAD128.dec takes key 𝐾, nonce 𝑁, associated data 𝐴, ciphertext 𝐶, and authen-
 342
 tication tag 𝑇 as inputs and outputs 𝑃 if the tag is valid:
 343
-|     |                                  |     |     |     | 𝑃   | if the tag 𝑇 is valid  |     |      |
+|  |  |  |  |  | 𝑃 | if the tag 𝑇 is valid |
 | --- | -------------------------------- | --- | --- | --- | --- | ---------------------- | --- | ---- |
-|     | Ascon-AEAD128.dec(𝐾,𝑁,𝐴,𝐶,𝑇) = { |     |     |     |     |                        |     | (12) |
+|  | Ascon-AEAD128.dec(𝐾,𝑁,𝐴,𝐶,𝑇) = { |  |  |  |  |  |  | (12) |
 344
-|     |     |     |     |     | fail  | otherwise  |     |     |
-| --- | --- | --- | --- | --- | ----- | ---------- | --- | --- |
 4.1.1. Encryption
 345
 This section outlines the encryption algorithm of Ascon-AEAD128, which comprises four
@@ -1084,21 +1022,17 @@ phases: initialization, associated data processing, plaintext processing, and fi
 347
 Fig. 5).
 348
-|     |     |     |     |     |             | P(cid:101)n C(cid:101)n |     |     |
-| --- | --- | --- | --- | --- | ----------- | ----------------------- | --- | --- |
-|     |     | A A |     | P C | P n−1 C n−1 |                         |     | T   |
-|     |     | 0 m |     | 0 0 |             | ℓ= |P(cid:101)n|        |     |     |
+|  |  |  |  |  |  | P(cid:101)n C(cid:101)n |
+| --- | --- | --- | --- | --- | ----------- | ----------------------- |
+|  |  | A A |  | P C | P n−1 C n−1 |  |  | T |
+|  |  | 0 m |  | 0 0 |  | ℓ= | P(cid:101)n |
 ⧸
-|     | 128 |     | 128 |     |     | 128 | 128 |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|     | ⧸   |     | ⧸   |     |     | ⧸   | ⧸   |     |
 ]21[p-nocsA ]8[p-nocsA ]8[p-nocsA ]8[p-nocsA ]8[p-nocsA 128-ℓ ⧸ ]21[p-nocsA ⧸128
 1∥0127−ℓ
-|                | 192   | 192            |        | 192 | 192       | 192 |              | 128 |
-| -------------- | ----- | -------------- | ------ | --- | --------- | --- | ------------ | --- |
-|                | ⧸     | ⧸              |        | ⧸   | ⧸         | ⧸   |              | ⧸   |
-| IV∥K∥N         | 064∥K |                | 0191∥1 |     |           |     | K∥064        | K   |
-| Initialization |       | AssociatedData |        |     | Plaintext |     | Finalization |     |
+|  | 192 | 192 |  | 192 | 192 | 192 |  | 128 |
+| -------------- | ----- | -------------- | ------ | --- | --------- | --- | ------------ |
+| IV∥K∥N | 064∥K |  | 0191∥1 |  |  |  | K∥064 | K |
+| Initialization |  | AssociatedData |  |  | Plaintext |  | Finalization |
 Figure 5. Ascon-AEAD128 encryption
 The pseudocode of Ascon-AEAD128.enc is provided in Algorithm 3.
 349
@@ -1106,8 +1040,6 @@ The pseudocode of Ascon-AEAD128.enc is provided in Algorithm 3.
 350
 S is initialized as
 351
-|     |     |     |     | S  ←  | 𝐼𝑉 ∥𝐾 ∥𝑁  |     |     | (13)  |
-| --- | --- | --- | --- | ----- | --------- | --- | --- | ----- |
 352
 12
 
@@ -1116,56 +1048,38 @@ November 2024
 Algorithm 3 Ascon-AEAD128.enc(𝐾,𝑁,𝐴,𝑃 )
 Input: 128-bit key 𝐾; 128-bit nonce 𝑁; Associated data 𝐴; Plaintext 𝑃
 Output: Ciphertext 𝐶; 128-bit tag 𝑇
-| 𝐼𝑉 ← 0x00001000808c0001  |     |     |     | ▷ Initialization  |
-| ------------------------ | --- | --- | --- | ----------------- |
 S ←𝐼𝑉 ‖𝐾‖𝑁
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
 S ← S ⊕(0192 ‖𝐾)
-| if |𝐴| > 0 then  |     |     | ▷ Processing Associated Data  |     |
-| ---------------- | --- | --- | ----------------------------- | --- |
 ̃
-| 𝐴 ,…,𝐴 | ,𝐴     | ← parse(𝐴,128)  |     |     |
-| ------ | ------ | --------------- | --- | --- |
-| 0      | 𝑚−1 𝑚  |                 |     |     |
+| 𝐴 ,…,𝐴 | ,𝐴 | ← parse(𝐴,128) |
+| ------ | ------ | --------------- |
+| 0 | 𝑚−1 𝑚 |
 ̃
-| 𝐴   | ←pad(𝐴 ,128)  |     |     |     |
-| --- | ------------- | --- | --- | --- |
-| 𝑚   | 𝑚             |     |     |     |
+| 𝐴 | ←pad(𝐴 ,128) |
+| --- | ------------- |
 for 𝑖 = 0 to 𝑚 do
-| S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8]((S |     | ⊕𝐴 )‖S               | )   |     |
-| ----------------- | --- | -------------------- | --- | --- |
-|                   |     | [0∶127]  𝑖 [128∶319] |     |     |
 end for
 end if
 S ← S ⊕(0319 ‖1)
 ,𝑃̃
-| 𝑃 ,…,𝑃 | ← parse(𝑃,128)  |     |     | ▷ Processing Plaintext  |
+| 𝑃 ,…,𝑃 | ← parse(𝑃,128) |  |  | ▷ Processing Plaintext |
 | ------ | --------------- | --- | --- | ----------------------- |
-| 0      | 𝑛−1 𝑛           |     |     |                         |
+| 0 | 𝑛−1 𝑛 |
 ℓ ← |𝑃̃|
 𝑛
 for 𝑖 = 0 to 𝑛 − 1 do
-| S        | ← S ⊕ 𝑃  |     |     |     |
-| -------- | -------- | --- | --- | --- |
-| [0∶127]  | [0∶127]  | 𝑖   |     |     |
 𝐶 ← S
-| 𝑖   | [0∶127]  |     |     |     |
-| --- | -------- | --- | --- | --- |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S)
 end for
-| S ← S    | ⊕pad(𝑃̃,128)  |     |     |     |
-| -------- | ------------- | --- | --- | --- |
-| [0∶127]  | [0∶127]       | 𝑛   |     |     |
+| S ← S | ⊕pad(𝑃̃,128) |
+| -------- | ------------- |
+| [0∶127] | [0∶127] | 𝑛 |
 ̃
 𝐶 ← S
 𝑛  [0,ℓ−1]
 ̃
-| 𝐶 ←𝐶 | ‖…‖𝐶 ‖𝐶 |     |     |     |
-| ---- | ------- | --- | --- | --- |
-| 0    | 𝑛−1     | 𝑛   |     |     |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S ⊕(0128 ‖𝐾 ‖064))  ▷ Finalization
-| 𝑇 ← S | ⊕ 𝐾  |     |     |     |
-| ----- | ---- | --- | --- | --- |
 [192∶319]
 return 𝐶,𝑇
 13
@@ -1178,8 +1092,6 @@ pendix B for the details of determining the IV). Next, S is updated using the pe
 354
 tion 𝐴𝑠𝑐𝑜𝑛-𝑝[12] as
 355
-|     |     | S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)  |     |     |     |     |     | (14)  |
-| --- | --- | ------------------- | --- | --- | --- | --- | --- | ----- |
 356
 and followed by XORing the secret key 𝐾 into the last 128 bits of internal state:
 357
@@ -1195,20 +1107,17 @@ state.
 When associated data 𝐴 is non-empty (i.e., |𝐴| > 0), it is parsed into blocks, as
 362
 ̃
-|      | 𝐴 , 𝐴 | , …, 𝐴 |     | , 𝐴 | ← parse(𝐴,128),  |     |     | (16)  |
+|  | 𝐴 , 𝐴 | , …, 𝐴 |  | , 𝐴 | ← parse(𝐴,128), |  |  | (16) |
 | ---- | ----- | ------ | --- | --- | ---------------- | --- | --- | ----- |
-| 363  | 0     | 1      | 𝑚−1 | 𝑚   |                  |     |     |       |
+| 363 | 0 | 1 | 𝑚−1 | 𝑚 |
 ̃
 where 𝑚 = ⌊|𝐴|/128⌋ and |𝐴 | = 128 bits for 0 ≤ 𝑖 ≤ 𝑚−1, and 0 ≤ |𝐴 | < 128,
-| 364  |     | 𝑖   |     |     |     |     | 𝑚   |     |
-| ---- | --- | --- | --- | --- | --- | --- | --- | --- |
-|      |     |     |     | ̃   |     |     | ̃   |     |
 as explained in Algorithm 1. The last block 𝐴 can be empty. Next, 𝐴 is padded as
-| 365  |           |     |           |     | 𝑚                |      | 𝑚   |       |
+| 365 |  |  |  |  | 𝑚 |  | 𝑚 |
 | ---- | --------- | --- | --------- | --- | ---------------- | ---- | --- | ----- |
-|      |           |     | ̃         |     | ̃ ||1 ∥ 0127−|𝐴̃ |      |     |       |
-|      | 𝐴 ← pad(𝐴 |     | ,128) = 𝐴 |     |                  | 𝑚 |  |     | (17)  |
-| 366  | 𝑚         |     | 𝑚         |     | 𝑚                |      |     |       |
+|  |  |  | ̃ |  | ̃ |  | 1 ∥ 0127− | 𝐴̃ |
+|  | 𝐴 ← pad(𝐴 |  | ,128) = 𝐴 |  |  | 𝑚 |  |  | (17) |
+| 366 | 𝑚 |  | 𝑚 |  | 𝑚 |
 so that |𝐴 | = 128, as explained in Algorithm 2.
 367  𝑚
 Each associated data block 𝐴 (0 ≤ 𝑖 ≤ 𝑚), is absorbed into the first 128 bits of state
@@ -1216,18 +1125,11 @@ Each associated data block 𝐴 (0 ≤ 𝑖 ≤ 𝑚), is absorbed into the firs
 𝑖
 as
 369
-|      |     | S   | ← S      |          | ⊕ 𝐴 ,  |     |     | (18) |
-| ---- | --- | --- | -------- | -------- | ------ | --- | --- | ---- |
-| 370  |     |     | [0∶127]  | [0∶127]  | 𝑖      |     |     |      |
 and the permutation 𝐴𝑠𝑐𝑜𝑛-𝑝[8] is applied to the state as
 371
-|     |     | S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S).  |     |     |     |     |     | (19)  |
-| --- | --- | ------------------- | --- | --- | --- | --- | --- | ----- |
 372
 The final step of processing associated data is to update the state with a constant
 373
-|     |     |     | S ← S ⊕(0319 ∥1) |     |     |     |     | (20)  |
-| --- | --- | --- | ---------------- | --- | --- | --- | --- | ----- |
 374
 that provides domain separation. For empty associated data, only the final step
 375
@@ -1235,17 +1137,13 @@ described in (20) is applied.
 376
 3. Processing plaintext. Plaintext 𝑃 (including empty plaintext) is parsed into blocks as
 377
-|      | 𝑃 , 𝑃 | , …, 𝑃 |     | ,𝑃̃ | ← parse(𝑃 ,128),  |     |     | (21)  |
+|  | 𝑃 , 𝑃 | , …, 𝑃 |  | ,𝑃̃ | ← parse(𝑃 ,128), |  |  | (21) |
 | ---- | ----- | ------ | --- | --- | ----------------- | --- | --- | ----- |
-| 378  | 0     | 1      | 𝑛−1 | 𝑛   |                   |     |     |       |
+| 378 | 0 | 1 | 𝑛−1 | 𝑛 |
 | = 128 for 0 ≤ 𝑖 ≤ 𝑛−1, and |𝑃̃| = ℓ, 0 ≤ ℓ < 128
 where 𝑛 = ⌊|𝑃 |/128⌋ and |𝑃
-| 379  |     | 𝑖   |     |     |     | 𝑛   |     |     |
-| ---- | --- | --- | --- | --- | --- | --- | --- | --- |
 using Algorithm 1. When |𝑃 | mod 128 = 0, the last block 𝑃̃
 is empty.
-| 380  |     |     |     |     |     | 𝑛   |     |     |
-| ---- | --- | --- | --- | --- | --- | --- | --- | --- |
 14
 
 NIST SP 800-232 ipd (Initial Public Draft)
@@ -1253,58 +1151,29 @@ November 2024
 For each 𝑃 , 0 ≤ 𝑖 ≤ 𝑛−1, the state S is updated as follows:
 381
 𝑖
-|     |     | S   | ← S |     | ⊕ 𝑃 ,  | (22) |
-| --- | --- | --- | --- | --- | ------ | ---- |
 382
-|     |     | [0∶127]  | [0∶127]  |     | 𝑖   |     |
-| --- | --- | -------- | -------- | --- | --- | --- |
 followed by generating the corresponding ciphertext block 𝐶 as
 383  𝑖
-|      |     | 𝐶   | ← S        | ,   |     | (23) |
-| ---- | --- | --- | ---------- | --- | --- | ---- |
-| 384  |     |     | 𝑖  [0∶127] |     |     |      |
 and the permutation 𝐴𝑠𝑐𝑜𝑛-𝑝[8] is applied to update the state as:
 385
-|     |     | S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S).  |     |     |     | (24)  |
-| --- | --- | ------------------- | --- | --- | --- | ----- |
 386
 For the last block 𝑃̃, the state is updated as
-| 387  𝑛 |     |     |     |     |     |     |
-| ------ | --- | --- | --- | --- | --- | --- |
 ⊕ pad(𝑃̃,128),
-|      | S        | ← S |          |     |     | (25)  |
-| ---- | -------- | --- | -------- | --- | --- | ----- |
-| 388  | [0∶127]  |     | [0∶127]  |     | 𝑛   |       |
 and the last ciphertext block 𝐶 ̃ is obtained as
-| 389  |     | 𝑛   |     |     |     |     |
-| ---- | --- | --- | --- | --- | --- | --- |
 ̃ ← S
-|      |     | 𝐶   |            | .   |     | (26) |
-| ---- | --- | --- | ---------- | --- | --- | ---- |
-| 390  |     |     | 𝑛  [0∶ℓ−1] |     |     |      |
 The ciphertext 𝐶 is constructed by concatenating the ciphertext blocks as
 391
 ̃
-|      |     | 𝐶 ←𝐶 | ∥…∥𝐶 |     | ∥𝐶 .  | (27)  |
-| ---- | --- | ---- | ---- | --- | ----- | ----- |
-| 392  |     |      | 0    | 𝑛−1 | 𝑛     |       |
 4. Finalization and tag generation. During finalization, the key is first loaded to the
 393
 state S, as
 394
-|     |     | S ← S ⊕(0128∥𝐾 ∥064),  |     |     |     | (28)  |
-| --- | --- | ---------------------- | --- | --- | --- | ----- |
 395
 and the state S is then updated using the permutation 𝐴𝑠𝑐𝑜𝑛-𝑝[12], as
 396
-|     |     | S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S).  |     |     |     | (29)  |
-| --- | --- | -------------------- | --- | --- | --- | ----- |
 397
 Finally, the tag 𝑇 is generated by XORing the key with the last 128 bits of the state:
 398
-|      |     | 𝑇 ←𝑆 |           | ⊕𝐾.  |     | (30) |
-| ---- | --- | ---- | --------- | ---- | --- | ---- |
-| 399  |     |      | [192∶319] |      |     |      |
 The encryption algorithm returns the ciphertext 𝐶 and the tag 𝑇.
 400
 4.1.2. Decryption
@@ -1330,53 +1199,31 @@ Output: Plaintext 𝑃 or fail
 S ←𝐼𝑉 ‖𝐾‖𝑁
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
 S ← S ⊕(0192 ‖𝐾)
-| if |𝐴| > 0 then  | ▷ Processing Associated Data  |     |
-| ---------------- | ----------------------------- | --- |
 ̃
-| 𝐴 ,…,𝐴   | ,𝐴 ← parse(𝐴,128)  |     |
-| -------- | ------------------ | --- |
-| 0        | 𝑚−1 𝑚              |     |
-| 𝐴 ←pad(𝐴 | ̃ ,128)            |     |
-| 𝑚        | 𝑚                  |     |
+| 𝐴 ,…,𝐴 | ,𝐴 ← parse(𝐴,128) |
+| -------- | ------------------ |
+| 0 | 𝑚−1 𝑚 |
+| 𝐴 ←pad(𝐴 | ̃ ,128) |
 for 𝑖 = 0 to 𝑚 do
-| S   | ← S ⊕ 𝐴 |     |
-| --- | ------- | --- |
 [0∶127]  [0∶127]  𝑖
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S)
 end for
 end if
 S ← S ⊕(0319 ‖1)
-| 𝐶 ,…,𝐶 | ,𝐶 ̃ ← parse(𝐶,128)  | ▷ Processing Ciphertext  |
+| 𝐶 ,…,𝐶 | ,𝐶 ̃ ← parse(𝐶,128) | ▷ Processing Ciphertext |
 | ------ | -------------------- | ------------------------ |
-| 0      | 𝑛−1 𝑛                |                          |
+| 0 | 𝑛−1 𝑛 |
 for 𝑖 = 0 to 𝑛 − 1 do
-| 𝑃 ← S    | ⊕ 𝐶         |     |
-| -------- | ----------- | --- |
-| 𝑖        | [0∶127]  𝑖  |     |
-| S        | ← 𝐶         |     |
-| [0∶127]  | 𝑖           |     |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S)
 end for
 ̃
 ℓ = |𝐶 |
 𝑛
-| 𝑃̃          | ̃              |     |
-| ----------- | -------------- | --- |
-| ← S         | ⊕ 𝐶            |     |
-| 𝑛  [0∶ℓ−1]  | 𝑛              |     |
-| S ← S       | ⊕ (1||0127−ℓ)  |     |
-| [ℓ,127]     | [ℓ,127]        |     |
 ̃
 S ← 𝐶
-| [0,ℓ−1]  | 𝑛   |     |
-| -------- | --- | --- |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S ⊕(0128 ‖𝐾 ‖064))  ▷ Finalization
-| 𝑇′ ← S | ⊕ 𝐾  |     |
-| ------ | ---- | --- |
 [192∶319]
 if 𝑇′ ==𝑇 then
-| 𝑃 ←𝑃 | ‖…‖𝑃 ‖𝑃̃ |     |
-| ---- | -------- | --- |
 0 𝑛−1 𝑛
 return 𝑃
 else
@@ -1411,7 +1258,6 @@ P C n−1 n−1
 P(cid:101)n C(cid:101)n
 ℓ=
 ⧸
-|C(cid:101)n|
 128 128
 ⧸ ⧸
 128-ℓ ⧸
@@ -1477,13 +1323,9 @@ NIST SP 800-232 ipd (Initial Public Draft)
 November 2024
 and the permutation 𝐴𝑠𝑐𝑜𝑛-𝑝[8] is applied to the state as
 427
-|     |     | S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S).  |     |     |     |     | (37)  |
-| --- | --- | ------------------- | --- | --- | --- | --- | ----- |
 428
 The final step of processing associated data is to update the state to:
 429
-|     |     |     | S ← S ⊕(0319 ∥1) |     |     |     | (38)  |
-| --- | --- | --- | ---------------- | --- | --- | --- | ----- |
 430
 for domain separation. For empty associated data, only the final step described in
 431
@@ -1493,60 +1335,29 @@ This step is exactly the same as Step 2 of the encryption function in Sec. 4.1.1
 433
 3. Processing the ciphertext. Ciphertext 𝐶 is parsed into blocks as
 434
-|     | 𝐶 , 𝐶 | , …,𝐶 |     | , 𝐶 ̃ ← parse(𝐶,128),  |     |     | (39)  |
-| --- | ----- | ----- | --- | ---------------------- | --- | --- | ----- |
 435
-|     | 0   | 1   | 𝑛−1 | 𝑛   |     |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- |
 ̃
 where 𝑛 = ⌊|𝐶|/128⌋, |𝐶 | = 128 for 0 ≤ 𝑖 ≤ 𝑛−1, |𝐶 | = ℓ, 0 ≤ ℓ < 128 using
-| 436  |     | 𝑖   |     |     |     | 𝑛   |     |
-| ---- | --- | --- | --- | --- | --- | --- | --- |
 Algorithm 1. Ciphertext 𝐶 or the last block of ciphertext 𝐶 ̃ can be empty.
 437
 𝑛
 For each 𝐶 , 0 ≤ 𝑖 ≤ 𝑛−1, the following steps are applied:
 438  𝑖
-|      |     | 𝑃   | ← S | ⊕ 𝐶      |     |     | (40) |
-| ---- | --- | --- | --- | -------- | --- | --- | ---- |
-| 439  |     |     | 𝑖   | [0∶127]  | 𝑖   |     |      |
-|      |     |     | S   | ← 𝐶      |     |     | (41) |
 440
-|     |     |                    |     | [0∶127]  | 𝑖   |     |       |
-| --- | --- | ------------------ | --- | -------- | --- | --- | ----- |
-|     |     | S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S)  |     |          |     |     | (42)  |
 441
 ̃
 For the last block of the ciphertext 𝐶 (with length ℓ), the following steps are applied:
-| 442  |     |     | 𝑛   |          |     |     |       |
-| ---- | --- | --- | --- | -------- | --- | --- | ----- |
-|      |     |     | 𝑃̃  | ← S      | ⊕ 𝐶 | ̃   | (43)  |
-| 443  |     |     | 𝑛   | [0,ℓ−1]  |     | 𝑛   |       |
-|      |     |     |     | S        | ← 𝐶 | ̃   | (44)  |
 444
-|      |          |     |          | [0,ℓ−1]        |     | 𝑛   |       |
-| ---- | -------- | --- | -------- | -------------- | --- | --- | ----- |
-|      | S        | ← S |          | ⊕ (1||0127−ℓ)  |     |     | (45)  |
-| 445  | [ℓ,127]  |     | [ℓ,127]  |                |     |     |       |
 The plaintext 𝑃 is constructed by concatenating the plaintext blocks as
 446
-|      |     | 𝑃 ←𝑃 |     | ∥…∥𝑃 | ∥𝑃̃.  |     | (46)  |
-| ---- | --- | ---- | --- | ---- | ----- | --- | ----- |
-| 447  |     |      | 0   |      | 𝑛−1   | 𝑛   |       |
 4. Finalization. During finalization, the key is loaded to the state S as
 448
-|     |     | S ← S ⊕(0128∥𝐾 ∥064),  |     |     |     |     | (47)  |
-| --- | --- | ---------------------- | --- | --- | --- | --- | ----- |
 449
 and the state S is then updated using the permutation Ascon-p[12], as
 450
-|     |     | S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S).  |     |     |     |     | (48)  |
-| --- | --- | -------------------- | --- | --- | --- | --- | ----- |
 451
 Finally, the tag is generated by XORing the key with the last 128 bits of the state:
 452
-|     |     | 𝑇′ ←(𝑆 |     |     | )⊕𝐾.  |     | (49) |
-| --- | --- | ------ | --- | --- | ----- | --- | ---- |
 453
 [192∶319]
 As the last step, the computed 𝑇 ′ is compared with the input 𝑇. If the two match,
@@ -1841,63 +1652,36 @@ November 2024
 data processing of Ascon-AEAD128. The message is partitioned into 64-bit blocks as
 566
 ,𝑀̃
-|      |     | 𝑀   | ,…,𝑀 |     | ← parse(𝑀,64).  |     |     | (53)  |
+|  |  | 𝑀 | ,…,𝑀 |  | ← parse(𝑀,64). |  |  | (53) |
 | ---- | --- | --- | ---- | --- | --------------- | --- | --- | ----- |
-| 567  |     |     | 0    | 𝑛−1 | 𝑛               |     |     |       |
+| 567 |  |  | 0 | 𝑛−1 | 𝑛 |
 Partial block 𝑀̃
-|      | is then padded to a full block 𝑀 |     |     |                |     | :   |     |       |
+|  | is then padded to a full block 𝑀 |
 | ---- | -------------------------------- | --- | --- | -------------- | --- | --- | --- | ----- |
-| 568  | 𝑛                                |     |     |                |     | 𝑛   |     |       |
-|      |                                  |     | 𝑀   | ← pad(𝑀̃,64).  |     |     |     | (54)  |
-| 569  |                                  |     | 𝑛   |                |     | 𝑛   |     |       |
+| 568 | 𝑛 |  |  |  |  | 𝑛 |
+|  |  |  | 𝑀 | ← pad(𝑀̃,64). |  |  |  | (54) |
+| 569 |  |  | 𝑛 |  |  | 𝑛 |
 Each message block 𝑀 is XORed with the state as
-| 570  |     | 𝑖   |         |     |         |        |     |      |
-| ---- | --- | --- | ------- | --- | ------- | ------ | --- | ---- |
-|      |     |     | S       | ← S |         | ⊕ 𝑀 .  |     | (55) |
-| 571  |     |     | [0∶63]  |     | [0∶63]  | 𝑖      |     |      |
 For all message blocks except the final block 𝑀 ,the XOR operation is immediately
-| 572  |     |     |     |     |     | 𝑛   |     |     |
-| ---- | --- | --- | --- | --- | --- | --- | --- | --- |
 followed by applying 𝐴𝑠𝑐𝑜𝑛-𝑝[12] to the state.
 573
-|     |     |     | S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)  |     |     |     |     | (56)  |
-| --- | --- | --- | ------------------- | --- | --- | --- | --- | ----- |
 574
 3. Squeezing the hash.  The squeezing phase begins after 𝑀 is absorbed with an
-| 575  |     |     |     |     |     |     | 𝑛   |     |
-| ---- | --- | --- | --- | --- | --- | --- | --- | --- |
 application of 𝐴𝑠𝑐𝑜𝑛-𝑝[12] to the state.
 576
-|     |     |     | S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)  |     |     |     |     | (57)  |
-| --- | --- | --- | ------------------- | --- | --- | --- | --- | ----- |
 577
 The value of S is then taken as hash block 𝐻 , and the state is again updated by
-| 578  | [0∶63]  |     |     |     |     | 𝑖   |     |     |
-| ---- | ------- | --- | --- | --- | --- | --- | --- | --- |
 𝐴𝑠𝑐𝑜𝑛-𝑝[12].
 579
-|      |     |     |     | 𝐻 ← S |         |     |     | (58) |
-| ---- | --- | --- | --- | ----- | ------- | --- | --- | ---- |
-| 580  |     |     |     | 𝑖     | [0∶63]  |     |     |      |
 581
-|     |     |     | S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)  |     |     |     |     | (59) |
-| --- | --- | --- | ------------------- | --- | --- | --- | --- | ---- |
 582
 Steps (58) and (59) are repeated alternately until hash blocks 𝐻 ,𝐻 , and 𝐻 have
-| 583  |     |     |     |     |     |     | 0 1 | 2   |
-| ---- | --- | --- | --- | --- | --- | --- | --- | --- |
 been extracted. The final hash block is then extracted but is not followed by the
 584
 permutation.
 585
-|      |     |     |     | 𝐻 ← S |         |     |     | (60) |
-| ---- | --- | --- | --- | ----- | ------- | --- | --- | ---- |
-| 586  |     |     |     | 3     | [0∶63]  |     |     |      |
 The resulting 256-bit digest is the concatenation of hash blocks as
 587
-|      |     |     | 𝐻 ←𝐻 | ∥𝐻  | ∥𝐻  | ∥𝐻 .  |     | (61)  |
-| ---- | --- | --- | ---- | --- | --- | ----- | --- | ----- |
-| 588  |     |     |      | 0   | 1   | 2 3   |     |       |
 23
 
 NIST SP 800-232 ipd (Initial Public Draft)
@@ -1905,37 +1689,25 @@ November 2024
 Algorithm 5 Ascon-Hash256(𝑀)
 Input: Bitstring 𝑀 ∈ {0,1}∗
 Output: Digest 𝐻 ∈ {0,1}256
-| 𝐼𝑉 ←0x0000080100cc0002  |     | ▷ Initialization  |
-| ----------------------- | --- | ----------------- |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](𝐼𝑉 ‖0256)
 ,𝑀̃
-| 𝑀 ,…,𝑀 | ← parse(𝑀,64)  | ▷ Absorbing  |
+| 𝑀 ,…,𝑀 | ← parse(𝑀,64) | ▷ Absorbing |
 | ------ | -------------- | ------------ |
-| 0 𝑛−1  | 𝑛              |              |
+| 0 𝑛−1 | 𝑛 |
 𝑀 ← pad(𝑀̃,64)
-| 𝑛  𝑛 |     |     |
-| ---- | --- | --- |
 for 𝑖 = 0 to 𝑛 − 1 do
-| S ← S           | ⊕ 𝑀 |     |
-| --------------- | --- | --- |
-| [0∶63]  [0∶63]  | 𝑖   |     |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
 end for
-| S ← S              | ⊕ 𝑀 |              |
+| S ← S | ⊕ 𝑀 |
 | ------------------ | --- | ------------ |
-| [0∶63]  [0∶63]     | 𝑛   |              |
-| S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S) |     | ▷ Squeezing  |
+| [0∶63]  [0∶63] | 𝑛 |
+| S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S) |  | ▷ Squeezing |
 for 𝑖 = 0 to 2 do
 𝐻 ← S
-| 𝑖  [0∶63]  |     |     |
-| ---------- | --- | --- |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
 end for
 𝐻 ← S
 3  [0∶63]
-| 𝐻 ←𝐻 ‖𝐻 ‖𝐻 | ‖𝐻   |     |
-| ---------- | ---- | --- |
-| 0 1        | 2 3  |     |
 return 𝐻
 24
 
@@ -2011,8 +1783,6 @@ S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)  (69)
 620
 Steps (68) and (69) are repeated alternately until output blocks 𝐻 have
 ,…,𝐻
-| 621  |     | 0 ℎ−1  |
-| ---- | --- | ------ |
 been squeezed. The final block is then squeezed without an additional permutation.
 622
 𝐻 ← S (70)
@@ -2030,37 +1800,25 @@ Finally, the output blocks are concatenated, and the first 𝐿 bits are returne
 Algorithm 6 Ascon-XOF128(𝑀, 𝐿)
 Input: Bitstring 𝑀 ∈ {0,1}∗ ; Output length 𝐿 > 0
 Output: Digest 𝐻 ∈ {0,1}𝐿
-| 𝐼𝑉 ← 0x0000080000cc0003  |     | ▷ Initialization  |
-| ------------------------ | --- | ----------------- |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](𝐼𝑉 ‖0256)
-| 𝑀 ,…,𝑀 | ,𝑀̃ ← parse(𝑀,64)  | ▷ Absorbing  |
+| 𝑀 ,…,𝑀 | ,𝑀̃ ← parse(𝑀,64) | ▷ Absorbing |
 | ------ | ------------------ | ------------ |
-| 0      | 𝑛−1 𝑛              |              |
+| 0 | 𝑛−1 𝑛 |
 ← pad(𝑀̃,64)
 𝑀
-| 𝑛   | 𝑛   |     |
-| --- | --- | --- |
 for 𝑖 = 0 to 𝑛 − 1 do
-| S       | ← S ⊕ 𝑀    |     |
-| ------- | ---------- | --- |
-| [0∶63]  | [0∶63]  𝑖  |     |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
 end for
-| S ← S              | ⊕ 𝑀        |              |
+| S ← S | ⊕ 𝑀 |
 | ------------------ | ---------- | ------------ |
-| [0∶63]             | [0∶63]  𝑛  |              |
-| S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S) |            | ▷ Squeezing  |
+| [0∶63] | [0∶63]  𝑛 |
+| S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S) |  | ▷ Squeezing |
 ℎ ← ⌈𝐿/64⌉ − 1
 for 𝑖 = 0 to ℎ−1 do
 𝐻 ← S
-| 𝑖   | [0∶63]  |     |
-| --- | ------- | --- |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
 end for
 𝐻 ← S
-| ℎ  [0∶63]  |      |     |
-| ---------- | ---- | --- |
-| 𝐻′ ←𝐻      | ‖…‖𝐻 |     |
 0 ℎ
 𝐻 ←𝐻′
 [0∶𝐿−1]
@@ -2155,49 +1913,30 @@ Algorithm 7 Ascon-CXOF128(𝑀, 𝐿, 𝑍)
 Input: Bitstring 𝑀 ∈{0,1}∗ ; Output length 𝐿 >0; customization string 𝑍 ∈ {0,1}∗, where
 |𝑍| ≤ 2048
 Output: Digest 𝐻 ∈ {0,1}𝐿
-| 𝐼𝑉 ← 0x0000080000cc0004  |     | ▷ Initialization  |
-| ------------------------ | --- | ----------------- |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](𝐼𝑉 ‖0256)
-| 𝑍 ← int64(|𝑍|)  |     | ▷ Customization  |
-| --------------- | --- | ---------------- |
 0
 ,𝑍̃
-| 𝑍 …,𝑍    | ← parse(𝑍,64)  |     |
-| -------- | -------------- | --- |
-| 1 𝑚−1 𝑚  |                |     |
+| 𝑍 …,𝑍 | ← parse(𝑍,64) |
+| -------- | -------------- |
+| 1 𝑚−1 𝑚 |
 ← pad(𝑍̃,64)
 𝑍
-| 𝑚  𝑚 |     |     |
-| ---- | --- | --- |
 for 𝑖 = 0 to 𝑚 do
-| S ← S           | ⊕ 𝑍 |     |
-| --------------- | --- | --- |
-| [0∶63]  [0∶63]  | 𝑖   |     |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
 end for
 ,𝑀̃
-| 𝑀 ,…,𝑀 | ← parse(𝑀,64)  | ▷ Absorbing message  |
+| 𝑀 ,…,𝑀 | ← parse(𝑀,64) | ▷ Absorbing message |
 | ------ | -------------- | -------------------- |
-| 0 𝑛−1  | 𝑛              |                      |
+| 0 𝑛−1 | 𝑛 |
 ← pad(𝑀̃,64)
 𝑀
-| 𝑛  𝑛 |     |     |
-| ---- | --- | --- |
 for 𝑖 = 0 to 𝑛 − 1 do
-| S ← S           | ⊕ 𝑀 |     |
-| --------------- | --- | --- |
-| [0∶63]  [0∶63]  | 𝑖   |     |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
 end for
-| S ← S           | ⊕ 𝑀 |     |
-| --------------- | --- | --- |
-| [0∶63]  [0∶63]  | 𝑛   |     |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S) ▷ Squeezing
 ℎ ← ⌈𝐿/64⌉ − 1
 for 𝑖 = 0 to ℎ−1 do
 𝐻 ← S
-| 𝑖  [0∶63]  |     |     |
-| ---------- | --- | --- |
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
 end for
 𝐻 ← S
@@ -2372,32 +2111,15 @@ state using byte sequences or bitstrings (least significant byte and bit first).
 functions between printing byte sequences and printing integers are specified in Sec. A.1.
 719
 The least significant bit of 𝑆 is 𝑠 (or S ) and the most significant bit of 𝑆 is 𝑠
-| 720  |     |     |     | 0   | (0,0)  | [0∶0]  |     |     |     |     | 4  (4,63)  |
-| ---- | --- | --- | --- | --- | ------ | ------ | --- | --- | --- | --- | ---------- |
 (or S ). Similarly, the least significant byte of 𝑆 is the first byte of state (S ) and
-| 721  | [319∶319]  |     |     |     |     |     |     | 0   |     |     | [0∶7]  |
-| ---- | ---------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------ |
 the most significant byte of 𝑆 is the last byte of the state (S ). This relationship
-| 722  |     |     |     |     | 4   |     |     |     |     | [312∶319]  |     |
-| ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---------- | --- |
 between state words, bytes, and state bits is shown in Fig. 9, where 𝑆 [𝑗] denotes the 𝑗𝑡ℎ
-| 723  |                      |     |                               |     |     |     |     |     |     | 𝑖   |     |
-| ---- | -------------------- | --- | ----------------------------- | --- | --- | --- | --- | --- | --- | --- | --- |
-|      | byte of state word 𝑆 |     | for 0 ≤ 𝑖 ≤ 4 and 0 ≤ 𝑗 ≤ 7.  |     |     |     |     |     |     |     |     |
-| 724  |                      |     | 𝑖                             |     |     |     |     |     |     |     |     |
+| 723 |  |  |  |  |  |  |  |  |  | 𝑖 |
+| ---- | -------------------- | --- | ----------------------------- |
+|  | byte of state word 𝑆 |  | for 0 ≤ 𝑖 ≤ 4 and 0 ≤ 𝑗 ≤ 7. |
+| 724 |  |  | 𝑖 |
 …
-|     |     |     | 𝑆   |     |     |     |     |     |     | 𝑆   |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|     |     |     | 0   |     |     |     |     |     |     | 4   |     |
 𝑆 [0] 𝑆 [1] 𝑆 [2] 𝑆 [3] 𝑆 [4] 𝑆 [5] 𝑆 [6] 𝑆 [7]  𝑆 [0] 𝑆 [1] 𝑆 [2] 𝑆 [3] 𝑆 [4] 𝑆 [5] 𝑆 [6] 𝑆 [7]
-|     | 0   | 0  0    | 0  0  | 0     | 0      | 0   | 4      | 4   | 4     | 4  4  4     | 4  4      |
-| --- | --- | ------- | ----- | ----- | ------ | --- | ------ | --- | ----- | ----------- | --------- |
-|     |     | 3]      | 1]    | 9]    | 7]  5] | 3]  | 3]     | 1]  | 9]    | 7]  5]      | 3] 1] 9]  |
-|     | 7]  | 5] 2    | 3     | 3 4   | 5      | 6   | 6      | 7   | 7     | 8 9         | 0 1 1     |
-|     | 0∶  | 8∶ 1 6∶ | 4∶    | 2∶ 0∶ | 8∶     | 6∶  | 2      | 2   | 2     | 2 2         | 3 3 3     |
-|     | S[  | S[ 1    | 2 3   | 4     | 4      | 5   | 6∶     | 4∶  | 2∶    | 0∶ 8∶ 6∶    | 4∶ 2∶     |
-|     |     |  S[  S[ |  S[   |  S[   | S[  S[ |     | 2 5    | 2 6 | 2 7   | 2 8 2 8 2 9 | 3 0 3 1   |
-|     |     |         |       |       |        |     | S[  S[ |     | S[ S[ | S[  S[      |  S[  S[   |
 Figure 9. Mapping between state words, bytes, and bits
 A.1. Conversion Functions
 725
@@ -2493,52 +2215,52 @@ Domain Separation Bit. The hexadecimal integer form of the domain separation bit
 
 NIST SP 800-232 ipd (Initial Public Draft)
 November 2024
-| State      | State  |     | Word value (64-bit unsigned integers)  |                     |     |     |     |     |     |
-| ---------- | ------ | --- | -------------------------------------- | ------------------- | --- | --- | --- | --- | --- |
-| bits       | word   |     |                                        |                     |     |     |     |     |     |
-| S          | 𝑆      |     |                                        | 0x0706050403020100  |     |     |     |     |     |
-| [0∶63]     | 0      |     |                                        |                     |     |     |     |     |     |
-| S          | 𝑆      |     |                                        | 0x0F0E0D0C0B0A0908  |     |     |     |     |     |
-| [64∶127]   | 1      |     |                                        |                     |     |     |     |     |     |
-| S          | 𝑆      |     |                                        | 0x1716151413121110  |     |     |     |     |     |
-| [128∶191]  | 2      |     |                                        |                     |     |     |     |     |     |
-| S          | 𝑆      |     |                                        | 0x1F1E1D1C1B1A1918  |     |     |     |     |     |
-| [192∶255]  | 3      |     |                                        |                     |     |     |     |     |     |
-| S          | 𝑆      |     |                                        | 0x2726252423222120  |     |     |     |     |     |
-| [256∶319]  | 4      |     |                                        |                     |     |     |     |     |     |
+| State | State |  | Word value (64-bit unsigned integers) |
+| ---------- | ------ | --- | -------------------------------------- | ------------------- |
+| bits | word |
+| S | 𝑆 |  |  | 0x0706050403020100 |
+| [0∶63] | 0 |
+| S | 𝑆 |  |  | 0x0F0E0D0C0B0A0908 |
+| [64∶127] | 1 |
+| S | 𝑆 |  |  | 0x1716151413121110 |
+| [128∶191] | 2 |
+| S | 𝑆 |  |  | 0x1F1E1D1C1B1A1918 |
+| [192∶255] | 3 |
+| S | 𝑆 |  |  | 0x2726252423222120 |
+| [256∶319] | 4 |
 ↕
-| State      | State  |       |       | Word value (byte sequence)  |       |       |       |       |       |
+| State | State |  |  | Word value (byte sequence) |
 | ---------- | ------ | ----- | ----- | --------------------------- | ----- | ----- | ----- | ----- | ----- |
-| bits       | word   |       |       |                             |       |       |       |       |       |
-| S          | 𝑆      | 0x00  | 0x01  | 0x02                        | 0x03  | 0x04  | 0x05  | 0x06  | 0x07  |
-| [0∶63]     | 0      |       |       |                             |       |       |       |       |       |
-| S          | 𝑆      | 0x08  | 0x09  | 0x0A                        | 0x0B  | 0x0C  | 0x0D  | 0x0E  | 0x0F  |
-| [64∶127]   | 1      |       |       |                             |       |       |       |       |       |
-| S          | 𝑆      | 0x10  | 0x11  | 0x12                        | 0x13  | 0x14  | 0x15  | 0x16  | 0x17  |
-| [128∶191]  | 2      |       |       |                             |       |       |       |       |       |
-| S          | 𝑆      | 0x18  | 0x19  | 0x1A                        | 0x1B  | 0x1C  | 0x1D  | 0x1E  | 0x1F  |
-| [192∶255]  | 3      |       |       |                             |       |       |       |       |       |
-| S          | 𝑆      | 0x20  | 0x21  | 0x22                        | 0x23  | 0x24  | 0x25  | 0x26  | 0x27  |
-| [256∶319]  | 4      |       |       |                             |       |       |       |       |       |
+| bits | word |
+| S | 𝑆 | 0x00 | 0x01 | 0x02 | 0x03 | 0x04 | 0x05 | 0x06 | 0x07 |
+| [0∶63] | 0 |
+| S | 𝑆 | 0x08 | 0x09 | 0x0A | 0x0B | 0x0C | 0x0D | 0x0E | 0x0F |
+| [64∶127] | 1 |
+| S | 𝑆 | 0x10 | 0x11 | 0x12 | 0x13 | 0x14 | 0x15 | 0x16 | 0x17 |
+| [128∶191] | 2 |
+| S | 𝑆 | 0x18 | 0x19 | 0x1A | 0x1B | 0x1C | 0x1D | 0x1E | 0x1F |
+| [192∶255] | 3 |
+| S | 𝑆 | 0x20 | 0x21 | 0x22 | 0x23 | 0x24 | 0x25 | 0x26 | 0x27 |
+| [256∶319] | 4 |
 ↕
-| State      | State  |       |           | Word value (bitstring)  |       |       |       |       |       |
+| State | State |  |  | Word value (bitstring) |
 | ---------- | ------ | ----- | --------- | ----------------------- | ----- | ----- | ----- | ----- | ----- |
-| bits       | word   |       |           |                         |       |       |       |       |       |
-| S          | 𝑆      | 0000  | 0000      | 1000                    | 0000  | 0100  | 0000  | 1100  | 0000  |
-| [0∶63]     | 0      |       |           |                         |       |       |       |       |       |
-|            |        | 0010  | 0000      | 1010                    | 0000  | 0110  | 0000  | 1110  | 0000  |
-| S          | 𝑆      | 0001  | 0000      | 1001                    | 0000  | 0101  | 0000  | 1101  | 0000  |
-| [64∶127]   | 1      |       |           |                         |       |       |       |       |       |
-|            |        | 0011  | 0000      | 1011                    | 0000  | 0111  | 0000  | 1111  | 0000  |
-| S          | 𝑆      | 0000  | 1000      | 1000                    | 1000  | 0100  | 1000  | 1100  | 1000  |
-| [128∶191]  | 2      |       |           |                         |       |       |       |       |       |
-|            |        | 0010  | 1000      | 1010                    | 1000  | 0110  | 1000  | 1110  | 1000  |
-| S          | 𝑆      | 0001  | 1000      | 1001                    | 1000  | 0101  | 1000  | 1101  | 1000  |
-| [192∶255]  | 3      |       |           |                         |       |       |       |       |       |
-|            |        | 0011  | 10001011  |                         | 1000  | 0111  | 1000  | 1111  | 1000  |
-| S          | 𝑆      | 0000  | 0100      | 1000                    | 0100  | 0100  | 0100  | 1100  | 0100  |
-| [256∶319]  | 4      |       |           |                         |       |       |       |       |       |
-|            |        | 0010  | 0100      | 1010                    | 0100  | 0110  | 0100  | 1110  | 0100  |
+| bits | word |
+| S | 𝑆 | 0000 | 0000 | 1000 | 0000 | 0100 | 0000 | 1100 | 0000 |
+| [0∶63] | 0 |
+|  |  | 0010 | 0000 | 1010 | 0000 | 0110 | 0000 | 1110 | 0000 |
+| S | 𝑆 | 0001 | 0000 | 1001 | 0000 | 0101 | 0000 | 1101 | 0000 |
+| [64∶127] | 1 |
+|  |  | 0011 | 0000 | 1011 | 0000 | 0111 | 0000 | 1111 | 0000 |
+| S | 𝑆 | 0000 | 1000 | 1000 | 1000 | 0100 | 1000 | 1100 | 1000 |
+| [128∶191] | 2 |
+|  |  | 0010 | 1000 | 1010 | 1000 | 0110 | 1000 | 1110 | 1000 |
+| S | 𝑆 | 0001 | 1000 | 1001 | 1000 | 0101 | 1000 | 1101 | 1000 |
+| [192∶255] | 3 |
+|  |  | 0011 | 10001011 |  | 1000 | 0111 | 1000 | 1111 | 1000 |
+| S | 𝑆 | 0000 | 0100 | 1000 | 0100 | 0100 | 0100 | 1100 | 0100 |
+| [256∶319] | 4 |
+|  |  | 0010 | 0100 | 1010 | 0100 | 0110 | 0100 | 1110 | 0100 |
 Figure 10. Representation of the Ascon state as 64-bit unsigned integers, byte sequences,
 and bitstrings, where 64-bit unsigned integers are used to define the permutation, data
 stored in memory is represented as byte sequences, and bitstrings are used to specify the
@@ -2551,16 +2273,16 @@ November 2024
 Table 11. Examples of padding an unsigned integer 𝑥 to a 64-bit block, where 𝑥 encodes a
 sequence of bytes each having value 0xFF in little-endian byte order.
 Length of 𝑥  # Padding  Unsigned integer 𝑥  Padded 64-bit block
-| (in bytes)  | Bytes                  |                     |
+| (in bytes) | Bytes |
 | ----------- | ---------------------- | ------------------- |
-| 0           | 8  0x0000000000000000  | 0x0000000000000001  |
-| 1           | 7  0x00000000000000FF  | 0x00000000000001FF  |
-| 2           | 6  0x000000000000FFFF  | 0x000000000001FFFF  |
-| 3           | 5  0x0000000000FFFFFF  | 0x0000000001FFFFFF  |
-| 4           | 4  0x00000000FFFFFFFF  | 0x00000001FFFFFFFF  |
-| 5           | 3  0x000000FFFFFFFFFF  | 0x000001FFFFFFFFFF  |
-| 6           | 2  0x0000FFFFFFFFFFFF  | 0x0001FFFFFFFFFFFF  |
-| 7           | 1  0x00FFFFFFFFFFFFFF  | 0x01FFFFFFFFFFFFFF  |
+| 0 | 8  0x0000000000000000 | 0x0000000000000001 |
+| 1 | 7  0x00000000000000FF | 0x00000000000001FF |
+| 2 | 6  0x000000000000FFFF | 0x000000000001FFFF |
+| 3 | 5  0x0000000000FFFFFF | 0x0000000001FFFFFF |
+| 4 | 4  0x00000000FFFFFFFF | 0x00000001FFFFFFFF |
+| 5 | 3  0x000000FFFFFFFFFF | 0x000001FFFFFFFFFF |
+| 6 | 2  0x0000FFFFFFFFFFFF | 0x0001FFFFFFFFFFFF |
+| 7 | 1  0x00FFFFFFFFFFFFFF | 0x01FFFFFFFFFFFFFF |
 mented as:
 𝑆 ←𝑆 ⊕ 0x8000000000000000.
 4  4

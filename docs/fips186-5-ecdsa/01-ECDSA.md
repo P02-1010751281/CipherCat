@@ -18,8 +18,6 @@ Gina M. Raimondo, Secretary
 National Institute of Standards and Technology
 Laurie E. Locascio, NIST Director and Under Secretary of Commerce for Standards and Technology
 
-|     |     |     |
-| --- | --- | --- |
 
 FOREWORD
 The Federal Information Processing Standards Publication (FIPS) series of the National Institute of
@@ -29,12 +27,10 @@ U.S.C. 11331.
 Comments concerning FIPS publications are welcomed and should be addressed to the Director,
 Information Technology Laboratory, National Institute of Standards and Technology, 100 Bureau
 Drive, Stop 8900, Gaithersburg, MD 20899-8900.
-|     | Charles H. Romine, Director        |     |
-| --- | ---------------------------------- | --- |
-|     | Information Technology Laboratory  |     |
+|  | Charles H. Romine, Director |
+| --- | ---------------------------------- |
+|  | Information Technology Laboratory |
 
-|     |     |     |
-| --- | --- | --- |
 
 Abstract
 This standard specifies a suite of algorithms that can be used to generate a digital signature.
@@ -314,7 +310,6 @@ Assurance of public Confidence that the public key is arithmetically correct.
 key validity
 Bias With respect to the uniform distribution on [0, n–1], the bias is
 defined to be the maximum value of taken
-|𝑆𝑆|
 over all subsets S of [0, n–1]. This measures the maximum
 �𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝(𝑆𝑆)−�𝑛𝑛��
 advantage that an adversary has in predicting any event.
@@ -1447,45 +1442,35 @@ where p , p , q and q are called auxiliary primes of p and q.
 Using this method, one of the following cases shall apply:
 33
 
-| FIPS 186-5  |     |     |     |     |     | DIGITAL SIGNATURE STANDARD (DSS)  |     |     |     |
-| ----------- | --- | --- | --- | --- | --- | --------------------------------- | --- | --- | --- |
 
 1.  The primes p , p , q , q , p, and q shall all be provable primes (see Appendix
-|     |     | 1   | 2 1 2 |     |     |     |     |     |     |
-| --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- |
 A.1.4);
 2.  The primes p 1 , p 2 , q 1 , and q 2  shall be provable primes, and the primes p and q
 shall be probable primes (see Appendix A.1.5); or
 3  The primes p , p , q , q , p, and q shall all be probable primes (see Appendix
-|     |     | 1   | 2 1 2 |     |     |     |     |     |     |
-| --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- |
 A.1.6).
 The minimum lengths for each of the auxiliary primes p , p , q , and q  are dependent on
-|     |     |     |     |     |     | 1   | 2 1 | 2   |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 nlen, where nlen is the length of the modulus n in bits. Note that nlen is also called the
 key size. The lengths of the auxiliary primes may be fixed or randomly chosen, subject to
 the restrictions in Table A.1. The maximum length is determined by nlen (the sum of the
 length of each auxiliary prime pair) and whether the primes p and q are probable primes
 or provable primes (e.g., for the auxiliary prime pair p  and p , len(p ) + len(p ) shall be
-|     |     |     |     |     |     | 1   | 2   | 1   | 2   |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 less than a value determined by nlen whether p 1  and p 2  are generated to be probable or
 provable primes).9
-|     | Table A.1. Minimum and maximum lengths of p |                   |             |     |                |       | , p , q                | , and q |           |
+|  | Table A.1. Minimum and maximum lengths of p |  |  |  |  |  | , p , q | , and q |
 | --- | ------------------------------------------- | ----------------- | ----------- | --- | -------------- | ----- | ---------------------- | ------- | --------- |
-|     |                                             |                   |             |     |                |       | 1 2                    | 1       | 2         |
-|     |                                             |                   |             |     | Max. of len(p  |       | ) + len(p              |         |           |
-|     |                                             | Min. length of    |             |     |                |       | 1                      |         | 2 ) and   |
-|     |                                             | auxiliary primes  |             |     |                | len(q | ) + len(q              | )       |           |
-|     | nlen                                        |                   |             |     |                |       | 1                      | 2       |           |
-|     |                                             | p , p             | , q , and q |     |                |       |                        |         |           |
-|     |                                             | 1                 | 2 1         | 2   | p, q Probable  |       |  p, q Provable primes  |         |           |
+|  |  |  |  |  |  |  | 1 2 | 1 | 2 |
+|  |  |  |  |  | Max. of len(p |  | ) + len(p |
+|  |  | Min. length of |  |  |  |  | 1 |  | 2 ) and |
+|  |  | auxiliary primes |  |  |  | len(q | ) + len(q | ) |
+|  | nlen |  |  |  |  |  | 1 | 2 |
+|  |  | p , p | , q , and q |
+|  |  | 1 | 2 1 | 2 | p, q Probable |  | p, q Provable primes |
 primes10
-| 2048 ≤ nlen ≤ 3071  |     |     | > 140 bits  |     | ≤ 1007 bits  |     |     | ≤ 494 bits   |     |
-| ------------------- | --- | --- | ----------- | --- | ------------ | --- | --- | ------------ | --- |
-| 3072 ≤ nlen ≤ 4095  |     |     | > 170 bits  |     | ≤ 1518 bits  |     |     | ≤ 750 bits   |     |
-| 4096 ≤ nlen         |     |     | > 200 bits  |     | ≤ 2030 bits  |     |     | ≤ 1005 bits  |     |
+| 2048 ≤ nlen ≤ 3071 |  |  | > 140 bits |  | ≤ 1007 bits |  |  | ≤ 494 bits |
+| ------------------- | --- | --- | ----------- | --- | ------------ | --- | --- | ------------ |
+| 3072 ≤ nlen ≤ 4095 |  |  | > 170 bits |  | ≤ 1518 bits |  |  | ≤ 750 bits |
+| 4096 ≤ nlen |  |  | > 200 bits |  | ≤ 2030 bits |  |  | ≤ 1005 bits |
 
 For different values of nlen (i.e., different key sizes), random primes or primes with conditions
 are methods allowed for the generation of p and q.
@@ -1496,8 +1481,6 @@ FIPS 186-5:
 primes, p and q, and the private signature exponent d.
 
 9 For the probable primes p and q, len(p ) + len(p ) < len(p) – log (len(p)) – 6, and similarly for len(q ) + len(q ) and
-|     |     |     | 1   | 2   | 2   |     |     |     | 1 2 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 len(q). For the provable primes p and q, len(p 1 ) + len(p 2 ) < len(p)/2 – log 2 (len(p)) – 7, and similarly for len(q 1 ) +
 len(q ) and len(q). In each case, len(p) = len(q) = nlen/2.
 2
@@ -2236,18 +2219,10 @@ FIPS 186-5  DIGITAL SIGNATURE STANDARD (DSS)
 Process:
 Set N = 2l, where l is the length of the bit string X.
 1.
-| 2.  If  | , or  | , then output INVALID.  |
-| ------- | ----- | ----------------------- |
 3.  Convert the bit string X to the integer x using the procedure of Appendix B.2.1.
-| 𝑛𝑛  | ≤ 1 𝑛𝑛 ≥ | 𝑁𝑁  |
-| --- | -------- | --- |
 4.  If x is not an integer in the interval [0, ], output INVALID.
-| 5.  Set  | .   |     |
-| -------- | --- | --- |
  𝑛𝑛−2
 6.  Output x.
-| 𝑥𝑥  | = 𝑥𝑥 +1 |     |
-| --- | ------- | --- |
 52
 
 FIPS 186-5 DIGITAL SIGNATURE STANDARD (DSS)
@@ -2292,58 +2267,41 @@ indication.
 7. If (j > 0), then go to step 3.
 53
 
-| FIPS 186-5  |     |     |     |     |     |     |     | DIGITAL SIGNATURE STANDARD (DSS)  |     |
-| ----------- | --- | --- | --- | --- | --- | --- | --- | --------------------------------- | --- |
 
 8.  If (i ≠ 1), then return an ERROR indication.
-| 9.  Return SUCCESS and z-1 = y |     |     |     |     |  mod a.  |     |     |     |     |
-| ------------------------------ | --- | --- | --- | --- | -------- | --- | --- | --- | --- |
 2
 B.2  Conversion between Bit Strings, Integers, and Octet Strings
 B.2.1  Conversion of a Bit String to an Integer
  …
 An n-long sequence of bits { x , , xn } is converted to an integer by the rule
 1
-|     |     |  …  |             |     | n–1         |     | n–2       | …                   |     |
-| --- | --- | --- | ----------- | --- | ----------- | --- | --------- | ------------------- | --- |
-|     | { x | ,   | , x  } → (x |     |  × 2 ) + (x |     |  × 2 ) +  |  + (x n-1  × 2) + x |  .  |
-|     |     | 1   | n           | 1   |             | 2   |           |                     | n   |
 Note that the first bit of a sequence corresponds to the most significant bit of the corresponding
 integer, and the last bit corresponds to the least significant bit.
 Input:
 …
-| 1.  b | , b ,  | , b |  The bit string to be converted.  |     |     |     |     |     |     |
-| ----- | ------ | --- | --------------------------------- | --- | --- | --- | --- | --- | --- |
-|       | 1 2    | n   |                                   |     |     |     |     |     |     |
+| 1.  b | , b , | , b | The bit string to be converted. |
+| ----- | ------ | --- | --------------------------------- |
+|  | 1 2 | n |
 Output:
 1.  C  The requested integer representation of the bit string.
 Process:
 …
-| 1.  Let (b |     | 1 , b 2 ,  | , b n ) be the bits of b from leftmost to rightmost.  |     |     |     |     |     |     |
-| ---------- | --- | ---------- | ----------------------------------------------------- | --- | --- | --- | --- | --- | --- |
-| 2.         |     |            |                                                       |     |     |     |     |     |     |
+| 1.  Let (b |  | 1 , b 2 , | , b n ) be the bits of b from leftmost to rightmost. |
+| ---------- | --- | ---------- | ----------------------------------------------------- |
 𝑛𝑛
-| 3.  R | e tur n |   =C1 .  (𝑛𝑛−𝑖𝑖) |      |     |     |     |     |     |     |
-| ----- | ------- | ---------------- | ---- | --- | --- | --- | --- | --- | --- |
-| 𝐶𝐶    | = ∑     | 𝑖𝑖 2             | 𝑝𝑝𝑖𝑖 |     |     |     |     |     |     |
+| 3.  R | e tur n | =C1 .  (𝑛𝑛−𝑖𝑖) |
+| ----- | ------- | ---------------- | ---- |
+| 𝐶𝐶 | = ∑ | 𝑖𝑖 2 | 𝑝𝑝𝑖𝑖 |
 In this standard, the binary length of an integer C is defined as the smallest integer n satisfying C
 < 2n.
 B.2.2  Conversion of an Integer to a Bit String
 An integer x in the range 0 ≤ x < 2n may be converted to an n-long sequence of bits by using its
 binary expansion as shown below:
-|     |        |               |     |             |     | …     |           |          | …       |
-| --- | ------ | ------------- | --- | ----------- | --- | ----- | --------- | -------- | ------- |
-|     | x = (x |  × 2n–1) + (x |     |  × 2n–2) +  |     |  + (x |  × 2) + x |  → {x ,  |  , x }  |
-|     |        | 1             |     | 2           |     |       | n–1       | n 1      | n       |
 Note that the first bit of a sequence corresponds to the most significant bit of the corresponding
 integer, and the last bit corresponds to the least significant bit.
 Input:
-| 1.  C  |     |     | The non-negative integer to be converted.  |     |     |     |     |     |     |
-| ------ | --- | --- | ------------------------------------------ | --- | --- | --- | --- | --- | --- |
 Output:
 …
-| 1.  b1 | , b2 ,  | , b   | The bit string representation of the integer C.  |     |     |     |     |     |     |
-| ------ | ------- | ----- | ------------------------------------------------ | --- | --- | --- | --- | --- | --- |
 n
 Process:
 54
@@ -2458,36 +2416,30 @@ values for primality when generating RSA primes. See Appendix C for further info
 
 Table B.1.  Minimum number of rounds of M-R testing when generating primes for use in
 RSA Digital Signatures (see Appendix C)
-| Parameters  |     | M-R Tests Only  |     | M-R Tests Only  |     |
-| ----------- | --- | --------------- | --- | --------------- | --- |
 p , p , q  and q  > 140 bits  Error probability = 2-100  Error probability = 2-112
 1 2 1 2
 p and q: 1024 bits  For p , p , q  and q : 32  For p , p , q  and q : 38
-|     |     | 1 2 1           | 2   | 1 2 1            | 2   |
-| --- | --- | --------------- | --- | ---------------- | --- |
-|     |     | For p and q: 4  |     | For p and q: 5   |     |
+|  |  | 1 2 1 | 2 | 1 2 1 | 2 |
+| --- | --- | --------------- | --- | ---------------- |
+|  |  | For p and q: 4 |  | For p and q: 5 |
 p , p , q  and q  > 170 bits  Error probability = 2-100  Error probability = 2 –128
 1 2 1 2
 p and q: 1536 bits  For p , p , q  and q : 27  For p , p , q  and q : 41
-|     |     | 1 2 1           | 2   | 1 2 1           | 2   |
-| --- | --- | --------------- | --- | --------------- | --- |
-|     |     | For p and q: 3  |     | For p and q: 4  |     |
+|  |  | 1 2 1 | 2 | 1 2 1 | 2 |
+| --- | --- | --------------- | --- | --------------- |
+|  |  | For p and q: 3 |  | For p and q: 4 |
 p , p , q  and q  > 200 bits  Error probability = 2-100  Error probability = 2 –144
 1 2 1 2
 p and q: 2048 bits  For p , p , q  and q : 22  For p , p , q  and q : 44
-|     |     | 1 2 1           | 2   | 1 2 1           | 2   |
-| --- | --- | --------------- | --- | --------------- | --- |
-|     |     | For p and q: 2  |     | For p and q: 4  |     |
+|  |  | 1 2 1 | 2 | 1 2 1 | 2 |
+| --- | --- | --------------- | --- | --------------- |
+|  |  | For p and q: 2 |  | For p and q: 4 |
 
 B.3.1  Miller-Rabin Probabilistic Primality Test
 Let DRBG be an approved deterministic random bit generator.
 Input:
 1.  w  The odd integer to be tested for primality. This will be either p or
-|     | q, or one of the auxiliary primes p |     | 1 , p 2 , q | 1 , or q 2 .  |     |
-| --- | ----------------------------------- | --- | ----------- | ------------- | --- |
 2.  iterations  The number of iterations of the test to be performed; the value
-|     | shall be consistent with Table B.1.  |     |     |     |     |
-| --- | ------------------------------------ | --- | --- | --- | --- |
 Output:
 1.  status  The status returned from the validation procedure where status is
 either PROBABLY PRIME or COMPOSITE.
@@ -2565,53 +2517,42 @@ Output:
 status Where status is either PROBABLY PRIME or COMPOSITE.
 59
 
-| FIPS 186-5  |     |     |     |     | DIGITAL SIGNATURE STANDARD (DSS)  |
-| ----------- | --- | --- | --- | --- | --------------------------------- |
 
 Process:
 1.  Test whether C is a perfect square (see Appendix B.4). If so, return (COMPOSITE).
 …
 2.  Find the first D in the sequence {5, –7, 9, –11, 13, –15, 17,  } for which the Jacobi
-| symbol  |     |   and  |      | . See Appendix B.5 for an approved method  |     |
-| ------- | --- | ------ | ---- | ------------------------------------------ | --- |
-|         | 𝐷𝐷  |        | 1−𝐷𝐷 |                                            |     |
+| symbol |  | and |  | . See Appendix B.5 for an approved method |
+| ------- | --- | ------ | ---- | ------------------------------------------ |
+|  | 𝐷𝐷 |  | 1−𝐷𝐷 |
 to compute the Jacobi Symbol. If   for any D in the sequence, return
-|     | �𝐶𝐶� = | −1 𝐆𝐆𝐆𝐆𝐆𝐆�𝐶𝐶, | 4 � | = 1 |     |
-| --- | ------ | ------------- | --- | --- | --- |
 𝐷𝐷
 (COMPOSITE).
 �𝐶𝐶� = 0
 3.  K = C + 1.
 …
-| 4.  Let K | K         | K  be the binary expansion of K, with K |     |     | = 1.  |
+| 4.  Let K | K | K  be the binary expansion of K, with K |  |  | = 1. |
 | --------- | --------- | --------------------------------------- | --- | --- | ----- |
-|           | r  r – 1  | 0                                       |     |     | r     |
+|  | r  r – 1 | 0 |  |  | r |
 5.  Set U = 1 and V = 1.
-|     | r   | r   |     |     |     |
-| --- | --- | --- | --- | --- | --- |
 6.  For i = r – 1 to 0, do
-| 6.1  | U = U  | V  mod C.  |     |     |     |
-| ---- | ------ | ---------- | --- | --- | --- |
-|      | temp   | i+1  i+1   |     |     |     |
-| 6.2  | V =    |  mod C.    |     |     |     |
+| 6.1 | U = U | V  mod C. |
+| ---- | ------ | ---------- |
+|  | temp | i+1  i+1 |
+| 6.2 | V = | mod C. |
 temp
-|     | 2   | 2   |     |     |     |
-| --- | --- | --- | --- | --- | --- |
 𝑉𝑉𝑖𝑖+1+𝐷𝐷𝑈𝑈𝑖𝑖+1
-| 6.3  | If (K  = 1),  | then   |           |     |     |
-| ---- | ------------- | ------ | --------- | --- | --- |
-|      | i             | 2      |           |     |     |
-|      | 6.3.1         | U = i  |   mod C.  |     |     |
+| 6.3 | If (K  = 1), | then |
+| ---- | ------------- | ------ | --------- |
+|  | 6.3.1 | U = i | mod C. |
 𝑈𝑈𝑡𝑡𝑡𝑡𝑡𝑡𝑡𝑡+𝑉𝑉𝑡𝑡𝑡𝑡𝑡𝑡𝑡𝑡
-|     | 6.3.2  | V = 2 |  mod C.  |     |     |
-| --- | ------ | ----- | -------- | --- | --- |
 i
 𝑉𝑉𝑡𝑡𝑡𝑡𝑡𝑡𝑡𝑡+𝐷𝐷𝑈𝑈𝑡𝑡𝑡𝑡𝑡𝑡𝑡𝑡
 Else
 2
-|     | 6.3.3  | U = U i temp .  |     |     |     |
-| --- | ------ | --------------- | --- | --- | --- |
-|     | 6.3.4  | V = V i temp .  |     |     |     |
+|  | 6.3.3 | U = U i temp . |
+| --- | ------ | --------------- |
+|  | 6.3.4 | V = V i temp . |
 7.  If (U 0  = 0), then return (PROBABLY PRIME). Otherwise, return (COMPOSITE).
 Steps 6.2, 6.3.1, and 6.3.2 contain expressions of the form A/2 mod C, where A is an integer, and
 C is an odd integer. If A/2 is not an integer (i.e., A is odd), then A/2 mod C may be calculated as
@@ -2627,66 +2568,42 @@ Output:
 status  Where status is either PERFECT SQUARE or NOT A PERFECT SQUARE.
 60
 
-| FIPS 186-5  |     |     |     |     |     |     | DIGITAL SIGNATURE STANDARD (DSS)  |     |
-| ----------- | --- | --- | --- | --- | --- | --- | --------------------------------- | --- |
 
 Process:
 1.  Set n, such that 2n > C ≥ 2(n−1).
 2.  m =  n/2.
 3.  i = 0.
-| 4.  | Select X |  such that 2m > X |     |  ≥ 2(m−1).  |     |     |     |     |
-| --- | -------- | ----------------- | --- | ----------- | --- | --- | --- | --- |
-|     |          | 0,                |     | 0           |     |     |     |     |
+| 4. | Select X | such that 2m > X |  | ≥ 2(m−1). |
+| --- | -------- | ----------------- | --- | ----------- |
 5.  Repeat
 5.1  i = i + 1.
-|     | 5.2  | X = ((X |     | )2+ C)/(2X | ).  |     |     |     |
-| --- | ---- | ------- | --- | ---------- | --- | --- | --- | --- |
-|     |      | i       | i–1 |            | i–1 |     |     |     |
 Until (X)2 < 2m + C.
 i
 6.  If C =  X  2, then
 i
-|     |   status = PERFECT SQUARE.  |     |     |     |     |     |     |     |
-| --- | --------------------------- | --- | --- | --- | --- | --- | --- | --- |
   Else
-|     |   status = NOT A PERFECT SQUARE.  |     |     |     |     |     |     |     |
-| --- | --------------------------------- | --- | --- | --- | --- | --- | --- | --- |
 7.  Return status.
 Notes:
 1.  By starting with X  > (1/2) Sqrt(C),  X  − Sqrt(C)is guaranteed to be less than X . This
-|     |     |     |     | 0   |     | 0   |     | 0   |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 inequality is maintained in step 5; i.e., X − Sqrt(C)< X for all i.
-|     |                                 |     |     |     |                    | i   | i           |     |
-| --- | ------------------------------- | --- | --- | --- | ------------------ | --- | ----------- | --- |
-| 2.  | For i ≥ 1, 0 ≤ X − Sqrt(C) = (X |     |     |     | − Sqrt(C))2 / (2 X |     | ) < X /2i.  |     |
-|     |                                 |     | i   |     | i–1                |     | i–1 0       |     |
+| --- | ------------------------------- | --- | --- | --- | ------------------ | --- | ----------- |
+| 2. | For i ≥ 1, 0 ≤ X − Sqrt(C) = (X |  |  |  | − Sqrt(C))2 / (2 X |  | ) < X /2i. |
+|  |  |  | i |  | i–1 |  | i–1 0 |
 In particular, 0 ≤ X  − Sqrt(C) < 1. If Sqrt(C) were an integer, then it would
 m
-|     | be equal to the floor of X |     |     | .   |     |     |     |     |
-| --- | -------------------------- | --- | --- | --- | --- | --- | --- | --- |
 m
 3.  In general, the inequality X − Sqrt(C) < 1 will occur for values of i that are much less
 i
 than m. To detect this, the fact that 2(m−1) ≤ Sqrt(C) < X for all i ≥ 1 can be used,
 i
-|        |   X − Sqrt(C) = ((X)2− C)/( X + Sqrt(C))   |     |         |                     |     |     |     |     |
-| ------ | ------------------------------------------ | --- | ------- | ------------------- | --- | --- | --- | --- |
-|        | i                                          |     |         | i                   | i   |     |     |     |
-|        |                                            |     | )2      | − C)/( 2 Sqrt(C))   |     |     |     |     |
-|        |                                            |     | ≤ ((X i |                     |     |     |     |     |
+|  | X − Sqrt(C) = ((X)2− C)/( X + Sqrt(C)) |
+| ------ | ------------------------------------------ | --- | ------- | ------------------- |
+|  |  |  | )2 | − C)/( 2 Sqrt(C)) |
+|  |  |  | ≤ ((X i |
 ≤  ((X)2− C)/(2m)
-|      |     |     | i   |     |     |     |     |     |
-| ---- | --- | --- | --- | --- | --- | --- | --- | --- |
 Thus, the condition (X)2 < 2m + C implies that X − Sqrt(C) < 1.
-|     |     |     |     | i   |     |     | i   |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 B.5  Jacobi Symbol Algorithm
-| This routine computes the Jacobi symbol  |     |     |     |     |     | .   |     |     |
-| ---------------------------------------- | --- | --- | --- | --- | --- | --- | --- | --- |
 𝑎𝑎
-| Jacobi( ):  |     |     |     |     | �𝑛𝑛� |     |     |     |
-| ----------- | --- | --- | --- | --- | ---- | --- | --- | --- |
 Input:
 a  Any integer. For this standard, the initial value is in the sequence {5, –7, 9, –11,
 61
@@ -2856,17 +2773,15 @@ of L is arbitrary and may be determined by computer limitations. A good, typical
 would be anywhere from 103 to 105.
 65
 
-| FIPS 186-5  |     |     |     | DIGITAL SIGNATURE STANDARD (DSS)  |     |     |
-| ----------- | --- | --- | --- | --------------------------------- | --- | --- |
 
-| 1.  Compute S =Y | mod p | for all p in the factor base.   |     |     |     |     |
-| ---------------- | ----- | ------------------------------- | --- | --- | --- | --- |
-|                  | j 0   | j                               | j   |     |     |     |
+| 1.  Compute S =Y | mod p | for all p in the factor base. |
+| ---------------- | ----- | ------------------------------- |
+|  | j 0 | j | j |
 2.  Initialize an array of length J + 1 to zero.
 3.  Starting at Y – S + p , let every pth element of the array be set to 1 (including the first
-|                                                                                                 | 0  j | j   | j   |     |     |     |
-| ----------------------------------------------------------------------------------------------- | ---- | --- | --- | --- | --- | --- |
-| element of the array if S = 0). Do this for the entire length of the array and for every j.     |      | j   |     |     |     |     |
+|  | 0  j | j | j |
+| ----------------------------------------------------------------------------------------------- | ---- |
+| element of the array if S = 0). Do this for the entire length of the array and for every j. |  | j |
 4.  When finished, if the index i of the array is set to 1, then  is divisible by some
 small prime and is therefore composite.
 𝑌𝑌0
@@ -2880,23 +2795,14 @@ the sieve interval. This is a very efficient procedure for removing composite ca
 primality testing. If L = 105, the sieve will remove about 96 % of all composites.
 In some cases, rather than having a set of consecutive integers to sieve, the set of integers to be
 tested consists of integers lying in an arithmetic progression Y , Y  + h, Y  + 2h, …, Y  + Jh,
-|     |     |     |     | 0 0 | 0   | 0   |
-| --- | --- | --- | --- | --- | --- | --- |
 where h is large and not divisible by any primes in the factor base.
 1.  Select a factor base and initialize an array of length J + 1 to 0.
-| 2.  Compute S =Y | j 0  mod p | j  for all p in the factor base.   | j   |     |     |     |
-| ---------------- | ---------- | ---------------------------------- | --- | --- | --- | --- |
 Compute T = h mod p and r = – S T – 1 mod p.
-| 3.  | j   | j   | j j | j   |     |     |
-| --- | --- | --- | --- | --- | --- | --- |
 4.  Starting at Y  + r, let every pth element of the array be set to 1 (including the first element
-|     | 0   | j   |     |     |     |     |
-| --- | --- | --- | --- | --- | --- | --- |
 of the array if S = 0). Do this for the entire length of the array and for every j. Note that
 j
-| the position Y |  + r in the array actually denotes the number Y |     |     |     |  + rh.  |     |
-| -------------- | ----------------------------------------------- | --- | --- | --- | ------- | --- |
-|                | 0                                               |     |     |     | 0       |     |
+| the position Y | + r in the array actually denotes the number Y |  |  |  | + rh. |
+| -------------- | ----------------------------------------------- | --- | --- | --- | ------- |
 5.  When finished, if the index i of the array is set to 1, then  is divisible by
 some small prime and is therefore composite.
 𝑌𝑌0 +(𝑝𝑝 −1)ℎ
@@ -2908,24 +2814,19 @@ B.9  Compute a Probable Prime Factor Based on Auxiliary Primes
 This routine constructs a probable prime (a candidate for p or q) using two auxiliary prime
 numbers and the Chinese Remainder Theorem (CRT).
 Input:
-| r 1  and r | 2   | Two odd prime numbers satisfying   |                      |                  |     |     |
-| ---------- | --- | ---------------------------------- | -------------------- | ---------------- | --- | --- |
-|            |     | len(r 1 )+len(r                    | 2 ) ≤ (nlen/2) – log | 2 (nlen/2) – 7.  |     |     |
+| r 1  and r | 2 | Two odd prime numbers satisfying |
+| ---------- | --- | ---------------------------------- | -------------------- | ---------------- |
+|  |  | len(r 1 )+len(r | 2 ) ≤ (nlen/2) – log | 2 (nlen/2) – 7. |
   If the constructed probable prime must satisfy the additional c mod
-|     |     | 8 requirement (see below), then the size restriction on r |     |     |     |  and r |
-| --- | --- | --------------------------------------------------------- | --- | --- | --- | ------ |
 1 2
-|     |     | becomes len(r | )+len(r | ) ≤ (nlen/2) – log | (nlen/2) – 10.    |     |
-| --- | --- | ------------- | ------- | ------------------ | ----------------- | --- |
-|     |     |               | 1       | 2                  | 2                 |     |
+|  |  | becomes len(r | )+len(r | ) ≤ (nlen/2) – log | (nlen/2) – 10. |
+| --- | --- | ------------- | ------- | ------------------ | ----------------- |
 66
 
-| FIPS 186-5  |     |     |     | DIGITAL SIGNATURE STANDARD (DSS)  |     |     |
-| ----------- | --- | --- | --- | --------------------------------- | --- | --- |
 
-| nlen  |     | The desired length of n, the RSA modulus.  |     |     |     |     |
-| ----- | --- | ------------------------------------------ | --- | --- | --- | --- |
-| e     |     | The public verification exponent.          |     |     |     |     |
+| nlen |  | The desired length of n, the RSA modulus. |
+| ----- | --- | ------------------------------------------ |
+| e |  | The public verification exponent. |
 security_strength  The minimum security strength required for random number
 generation.
 c  (An optional parameter) A number from the set {1, 3, 5, 7} that
@@ -2936,34 +2837,27 @@ status  The status returned from the generation procedure, where status is
 either SUCCESS or FAILURE. If FAILURE is returned, then
 zeros are returned as the other output values.
 private_prime_factor The prime factor of n.
-| X   |     | The random number used during the generation of the  |     |     |     |     |
-| --- | --- | ---------------------------------------------------- | --- | --- | --- | --- |
 private_prime_factor.
 Process:
-| 1.  If GCD(2r | , r | ) ≠ 1, then return (FAILURE, 0, 0).  |     |     |     |     |
-| ------------- | --- | ------------------------------------ | --- | --- | --- | --- |
 1 2
-| 2.  R = ((r | –1 mod 2r | ) × r ) – (((2r | )–1 mod r | ) × 2r ).  |     |     |
-| ----------- | --------- | --------------- | --------- | ---------- | --- | --- |
-|             | 2         | 1 2             | 1 2       | 1          |     |     |
+| 2.  R = ((r | –1 mod 2r | ) × r ) – (((2r | )–1 mod r | ) × 2r ). |
+| ----------- | --------- | --------------- | --------- | ---------- |
+|  | 2 | 1 2 | 1 2 | 1 |
 Comment: Apply the CRT so that R ≡ 1 mod
-|     |     |     | 2   |  and R ≡ –1 mod  | .   |     |
-| --- | --- | --- | --- | ---------------- | --- | --- |
 3.  Generate a random number X using an approved random bit generator that supports
-|                                    |     |           |                                                        | 𝑝𝑝1                              | 𝑝𝑝2 |     |
-| ---------------------------------- | --- | --------- | ------------------------------------------------------ | -------------------------------- | --- | --- |
-| the security_ strength, such that  |     |           |                                                        |                                  | .   |     |
-|                                    |     |           | 𝑛𝑛𝑙𝑙𝑛𝑛𝑛𝑛/2−1 Comment: Y is the first odd integer ≥ X,  | 𝑛𝑛𝑙𝑙𝑛𝑛𝑛𝑛/2                       |     |     |
-| 4.  Y = X + ((R – X) mod 2r        |     | 1 r 2 ).  |                                                        |                                  |     |     |
-|                                    |     |           | √2�2                                                   | � ≤ 𝑋𝑋 ≤ �2                      | −1� |     |
-|                                    |     |           | such that r                                            |  is a prime factor of Y–1, and r |     |     |
-|                                    |     |           |                                                        | 1                                |     | 2   |
+|  |  |  |  | 𝑝𝑝1 | 𝑝𝑝2 |
+| ---------------------------------- | --- | --------- | ------------------------------------------------------ | -------------------------------- |
+| the security_ strength, such that |  |  |  |  | . |
+|  |  |  | 𝑛𝑛𝑙𝑙𝑛𝑛𝑛𝑛/2−1 Comment: Y is the first odd integer ≥ X, | 𝑛𝑛𝑙𝑙𝑛𝑛𝑛𝑛/2 |
+| 4.  Y = X + ((R – X) mod 2r |  | 1 r 2 ). |
+|  |  |  | √2�2 | � ≤ 𝑋𝑋 ≤ �2 | −1� |
+|  |  |  | such that r | is a prime factor of Y–1, and r |
 is a prime factor of Y+1.
   4.1 If there is an additional requirement that the computed prime is equal to c mod 8,
 then set Y to the only element of the following values {Y, Y + 2r r , Y + 4r r , Y +
-|     |                                    |     |     |     | 1 2 1 2 |     |
-| --- | ---------------------------------- | --- | --- | --- | ------- | --- |
-| 6r  | 1 r 2 } that is equal to c mod 8.  |     |     |     |         |     |
+|  |  |  |  |  | 1 2 1 2 |
+| --- | ---------------------------------- | --- | --- | --- | ------- |
+| 6r | 1 r 2 } that is equal to c mod 8. |
 Comment: The next steps determine the
 requested prime number by constructing
 candidates from a sequence and performing
@@ -3087,41 +2981,29 @@ the interval [( 2 )(2L−1), 2L −1].
 0 1 2
 69
 
-| FIPS 186-5  |     |     |     |     |     | DIGITAL SIGNATURE STANDARD (DSS)  |     |
-| ----------- | --- | --- | --- | --- | --- | --------------------------------- | --- |
 
 8.  iterations = L / hashlen −1.
 9.  pgen_counter = 0.
 Comment: Generate pseudo-random x in the
-|     |     |     |     |     | interval [( | 2 )(2L−1) − 1, 2L − 1].   |     |
-| --- | --- | --- | --- | --- | ----------- | ------------------------- | --- |
 10. x = 0.
 11. For i = 0 to iterations do
   x = x + (Hash(pseed + i))× 2 i × hashlen.
 12. pseed = pseed + iterations + 1.
-| 13. x = ( |     | 2 )(2L−1) + ( x mod (2L − ( )(2L−1) ) ).  |     |     |     |     |     |
-| ---------- | --- | -------------------------------------------- | --- | --- | --- | --- | --- |
 Comment: Generate a candidate for the
 prime p.
 14. Compute y in the interval [1, p ] such that ( y p  p – 1) = 0 mod p  (the inverse
-|     |     |     |     | 2   |     | 0 1     | 2   |
-| --- | --- | --- | --- | --- | --- | ------- | --- |
 algorithm of B.1 may be used).
-| 15. t = ((2 y p |               |  p ) + x)/(2 p |  p                       |  p ).   |           |       |     |
-| ---------------- | ------------- | -------------- | ------------------------ | -------- | --------- | ----- | --- |
-|                  |               | 0 1            | 0                        | 1 2      |           |       |     |
-| 16. If ((2(t p   |               | − y) p         | 0 p  + 1) > 2L), then    |          |           |       |     |
-|                  |               | 2              | 1                        |          |           |       |     |
-|                  | t = ( (2 y p |                | ) + ( )(2L−1) ) / (2 p |          |           | ).   |     |
-|                  |               |                | 0  p 1                   |          | 0  p 1  p | 2     |     |
+| 15. t = ((2 y p |  | p ) + x)/(2 p | p | p ). |
+| ---------------- | ------------- | -------------- | ------------------------ | -------- | --------- | ----- |
+|  |  | 0 1 | 0 | 1 2 |
+| 16. If ((2(t p |  | − y) p | 0 p  + 1) > 2L), then |
+|  | t = ( (2 y p |  | ) + ( )(2L−1) ) / (2 p |  |  | ). |
+|  |  |  | 0  p 1 |  | 0  p 1  p | 2 |
 Comment: p satisfies
-|     |     |     |     |     |     | 0 = ( p–1)   mod (2p | 0  p 1 ) and    |
+|  |  |  |  |  |  | 0 = ( p–1)   mod (2p | 0  p 1 ) and |
 | --- | --- | --- | --- | --- | --- | -------------------- | --------------- |
-|     |     |     |     |     |     | 0 = ( p+1) mod p     | .               |
-|     |     |     |     |     |     |                      | 2               |
+|  |  |  |  |  |  | 0 = ( p+1) mod p | . |
 − y) p
-| 17. p = 2(t p |     | 2   | 0  p 1  + 1.  |     |     |     |     |
-| ------------- | --- | --- | ------------- | --- | --- | --- | --- |
 18. pgen_counter = pgen_counter + 1.
 19. If (GCD(p – 1, e) = 1), then
 Comment: Choose an integer a in the
@@ -3132,8 +3014,6 @@ a = a + (Hash(pseed + i))× 2 i × hashlen.
 19.3 pseed = pseed + iterations + 1.
 19.4 a = 2 + (a mod (p – 3)).
 Comment: Test p for primality:
-|     | 19.5  z = a2(t p | 2   |  − y) p 1  mod p.  |     |     |     |     |
-| --- | ---------------- | --- | ------------------ | --- | --- | --- | --- |
 19.6 If 1 = GCD(z – 1, p) and 1 = z  p 0  mod p, then return (SUCCESS, p, p , p ,
 1 2
 pseed).

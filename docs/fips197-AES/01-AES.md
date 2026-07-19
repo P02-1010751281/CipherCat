@@ -301,17 +301,15 @@ of the input byte is multiplied by x, modulo m(x), to produce the
 polynomial representation of the output byte.
 3
 
-| FIPS 197  |     | ADVANCED ENCRYPTION STANDARD (AES)  |
-| --------- | --- | ----------------------------------- |
 2.3  Algorithm Parameters and Symbols
-| b−1  | The multiplicative inverse of the element b in GF(28).   |     |
-| ---- | -------------------------------------------------------- | --- |
-| b˜   | The input to the affne transformation in the AES S-box.  |     |
+| b−1 | The multiplicative inverse of the element b in GF(28). |
+| ---- | -------------------------------------------------------- |
+| b˜ | The input to the affne transformation in the AES S-box. |
 dw  Word array for the key schedule that is input to the equivalent
 inverse cipher.
-| GF(2)   | Finite feld with two elements.  |     |
-| ------- | ------------------------------- | --- |
-| GF(28)  | Finite feld with 256 elements.  |     |
+| GF(2) | Finite feld with two elements. |
+| ------- | ------------------------------- |
+| GF(28) | Finite feld with 256 elements. |
 in
 The data input to CIPHER() or INVCIPHER(), represented as an
 array of 16 bytes indexed from 0 to 15.
@@ -329,24 +327,16 @@ Nr  The number of rounds. Nr is assigned to 10, 12, and 14 for AES-
 out
 The data output of CIPHER() or INVCIPHER(), represented as an
 array of 16 bytes indexed from 0 to 15.
-| Rcon  | Word array for the round constant.  |     |
-| ----- | ----------------------------------- | --- |
 state  The state, represented as a two-dimensional array of 16 bytes, with
 rows and columns indexed from 0 to 3.
 u[i]  For a one-dimensional array u of words or bytes, the element in the
 array that is indexed by a non-negative integer i.
 u[i..i + 3]  For an array u of words, the sequence u[i],u[i + 1],u[i + 2],u[i + 3].
-| w   | Word array for the key schedule.  |     |
-| --- | --------------------------------- | --- |
 ⊕  Either the exclusive-OR operation on bits, the bitwise exclusive-OR
 operation on bytes, or the bitwise exclusive-OR operation on words.
 � 
-| •   | Multiplication in GF |  28  .  |
-| --- | -------------------- | ------- |
 ∗
 Integer multiplication.
-| ←   | Assignment of a variable in pseudocode.  |     |
-| --- | ---------------------------------------- | --- |
 {}  Delimiters for a byte in hexadecimal or binary notation.
 4
 
@@ -361,143 +351,87 @@ and 256 bits, respectively.
 3.2  Bytes
 The basic processing unit in the AES algorithms is the byte — a sequence of eight bits.
 
-|     |     |     |     |     |     | �   |    |
-| --- | --- | --- | --- | --- | --- | --- | --- |
 A byte value is denoted by the concatenation of the eight bits between braces  e.g., {10100011} .
 When the bits of a byte are denoted by an indexed variable, the convention in this Standard is for
 
-|     |     |     | �   |     |     |    |     |
-| --- | --- | --- | --- | --- | --- | --- | --- |
 the indices to decrease from left to right  i.e., {b b b b b b b b } .
-|     |     |     |     | 7   | 6  5  4  3  2  1  | 0   |     |
-| --- | --- | --- | --- | --- | ----------------- | --- | --- |
 It is also convenient to denote byte values using hexadecimal notation.  The 16 hexadecimal
 characters represent sequences of four bits, as listed in Table 1. A byte is represented by an
 ordered pair of hexadecimal characters, where the left character in the pair represents the four
 left-most bits(i.e., b ,b ,b ,b ), and the right character in the pair represents the four right-most
-|     | 7 6 | 5 4 |     |     |     |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- |
 bits (i.e., b ,b ,b ,b ). For example, the hexadecimal form of the byte {10100011} is {a3}.
-| 3 2 | 1 0 |     |     |     |     |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- |
 Table 1. Hexadecimal representation of 4-bit sequences
-| Sequence   | 0000  | 0001  | 0010  | 0011  | 0100  0101  | 0110  0111  |     |
-| ---------- | ----- | ----- | ----- | ----- | ----------- | ----------- | --- |
-| Character  | 0     | 1     | 2     | 3     | 4  5        | 6  7        |     |
-| Sequence   | 1000  | 1001  | 1010  | 1011  | 1100  1101  | 1110  1111  |     |
-| Character  | 8     | 9     | a     | b     | c  d        | e  f        |     |
+| Sequence | 0000 | 0001 | 0010 | 0011 | 0100  0101 | 0110  0111 |
+| ---------- | ----- | ----- | ----- | ----- | ----------- | ----------- |
+| Character | 0 | 1 | 2 | 3 | 4  5 | 6  7 |
+| Sequence | 1000 | 1001 | 1010 | 1011 | 1100  1101 | 1110  1111 |
+| Character | 8 | 9 | a | b | c  d | e  f |
 3.3  Indexing of Byte Sequences
 In order to unambiguously represent the data and key inputs as sequences of bytes, the following
 indexing convention is adopted in this Standard. Given a sequence of 8k bits,
-|     |     | r 0  r 1  | r 2  ... r | r       | r       |     | (3.1)  |
-| --- | --- | --------- | ---------- | ------- | ------- | --- | ------ |
-|     |     |           | (8k−3)     | (8k−2)  | (8k−1)  |     |        |
 (for some positive integer k), the bytes a j  for 0 ≤ j ≤ k − 1 are defned as follows:
-|     |     | a = {r | r             | ... r | }.      |     | (3.2)  |
-| --- | --- | ------ | ------------- | ----- | ------- | --- | ------ |
-|     |     | j      | 8 j  (8 j+1)  |       | (8 j+7) |     |        |
 Thus, for example, the data block
-|     |     | r   | r r ... r | r         | r    |     |        |
-| --- | --- | --- | --------- | --------- | ---- | --- | ------ |
-|     |     |     | 0  1  2   | 125  126  | 127  |     | (3.3)  |
 5
 
-| FIPS 197  |     |     | ADVANCED ENCRYPTION STANDARD (AES)  |     |     |     |
-| --------- | --- | --- | ----------------------------------- | --- | --- | --- |
 is represented by the byte sequence
-|     |     | a a a | ... a a    | a ,  |     | (3.4)  |
-| --- | --- | ----- | ---------- | ---- | --- | ------ |
-|     |     | 0  1  | 2  13  14  | 15   |     |        |
 where
-|     |     | a 0  ={r | 0  r 1  ... r 7 | };  |     |     |
-| --- | --- | -------- | --------------- | --- | --- | --- |
-|     |     | a ={r    | r ... r         | };  |     |     |
-|     |     | 1        | 8  9  15        |     |     |     |
 (3.5)
 .
 .
 .
-|     |     | a ={r | r ... r   | }.  |     |     |
-| --- | --- | ----- | --------- | --- | --- | --- |
-|     |     | 15    | 120  121  | 127 |     |     |
 As described in Section 3.2, the bits within any individual byte are indexed in decreasing order
 from left to right. This ordering is more natural for the fnite feld arithmetic on bytes that is
 described in Section 4. The two types of bit indices for byte sequences are illustrated in Table 2.
 Table 2. Indices for bytes and bits
 Bit index in sequence  0  1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  . . .
-| Byte index  |     | 0   |     |     | 1   | . . .  |
-| ----------- | --- | --- | --- | --- | --- | ------ |
 Bit index in byte  7  6  5  4  3  2  1  0  7  6  5  4  3  2  1  0  . . .
 3.4  The State
 Internally, the algorithms for the AES block ciphers are performed on a two-dimensional (four-
 by-four) array of bytes called the state. In the state array, denoted by s, each individual byte has
 two indices: a row index r in the range 0 ≤ r < 4 and a column index c in the range 0 ≤ c < 4.
-| An individual byte of the state is denoted by either s |     |     |     | or s[r,c].  |     |     |
-| ------------------------------------------------------ | --- | --- | --- | ----------- | --- | --- |
 r,c
 In the specifcations for the AES block cipher algorithms in Section 5, the frst step is to copy the
-| input array of bytes in | , in , ..., in      | to the state array s as follows:  |                               |     |     |        |
+| input array of bytes in | , in , ..., in | to the state array s as follows: |
 | ----------------------- | ------------------- | --------------------------------- | ----------------------------- | --- | --- | ------ |
-|                         | 0 1                 | 15                                |                               |     |     |        |
-|                         | s[r,c]= in[r + 4c]  |                                   | for 0 ≤ r < 4 and 0 ≤ c < 4.  |     |     | (3.6)  |
+|  | 0 1 | 15 |
+|  | s[r,c]= in[r + 4c] |  | for 0 ≤ r < 4 and 0 ≤ c < 4. |  |  | (3.6) |
 A sequence of transformations is then applied to the state array, after which its fnal value is
-| copied to the output array of bytes out |                      | , out | , ..., out                    | as follows:  |     |        |
+| copied to the output array of bytes out |  | , out | , ..., out | as follows: |
 | --------------------------------------- | -------------------- | ----- | ----------------------------- | ------------ | --- | ------ |
-|                                         |                      | 0     | 1                             | 15           |     |        |
-|                                         | out[r + 4c]= s[r,c]  |       | for 0 ≤ r < 4 and 0 ≤ c < 4.  |              |     | (3.7)  |
+|  | out[r + 4c]= s[r,c] |  | for 0 ≤ r < 4 and 0 ≤ c < 4. |  |  | (3.7) |
 The correspondence between the indices of the input and output with the indices of the state array
 is illustrated in Fig. 1.
 6
 
-| FIPS 197     |     |     |     |              |     | ADVANCED ENCRYPTION STANDARD (AES)  |     |               |     |
-| ------------ | --- | --- | --- | ------------ | --- | ----------------------------------- | --- | ------------- | --- |
-| input bytes  |     |     |     | state array  |     |                                     |     | output bytes  |     |
+| FIPS 197 |  |  |  |  |  | ADVANCED ENCRYPTION STANDARD (AES) |
+| ------------ | --- | --- | --- | ------------ | --- | ----------------------------------- | --- | ------------- |
+| input bytes |  |  |  | state array |  |  |  | output bytes |
 in 0  in 4  in 8  in 12  s 0,0  s 0,1  s 0,2  s 0,3  out 0  out 4  out 8  out 12
-| in in | in     | in →  | s    | s    | s    | s →  | out | out | out out    |
+| in in | in | in → | s | s | s | s → | out | out | out out |
 | ----- | ------ | ----- | ---- | ---- | ---- | ---- | --- | --- | ---------- |
-| 1     | 5  9   | 13    | 1,0  | 1,1  | 1,2  | 1,3  |     | 1   | 5  9  13   |
-| in in | in     | in    | s    | s    | s    | s    | out | out | out out    |
-| 2     | 6  10  | 14    | 2,0  | 2,1  | 2,2  | 2,3  |     | 2   | 6  10  14  |
-| in in | in     | in    | s    | s    | s    | s    | out | out | out out    |
-| 3     | 7  11  | 15    | 3,0  | 3,1  | 3,2  | 3,3  |     | 3   | 7  11  15  |
+| 1 | 5  9 | 13 | 1,0 | 1,1 | 1,2 | 1,3 |  | 1 | 5  9  13 |
+| in in | in | in | s | s | s | s | out | out | out out |
+| 2 | 6  10 | 14 | 2,0 | 2,1 | 2,2 | 2,3 |  | 2 | 6  10  14 |
+| in in | in | in | s | s | s | s | out | out | out out |
+| 3 | 7  11 | 15 | 3,0 | 3,1 | 3,2 | 3,3 |  | 3 | 7  11  15 |
 Figure 1. State array input and output
 3.5  Arrays of Words
 A word is a sequence of four bytes; a block consists of four words. The four columns of state
 array s are interpreted as an array v of four words as follows, in the notation of Fig. 1:
 
-|     |     | ⎛ ⎞   |     | ⎛    | ⎞   | ⎛ ⎞   |     | ⎛ ⎞   |     |
-| --- | --- | ----- | --- | ---- | --- | ----- | --- | ----- | --- |
-|     |     | s     |     | s    |     | s     |     | s     |     |
-|     |     | 0,0   |     | 0,1  |     | 0,2   |     | 0,3   |     |
-|     |     | ⎜ s ⎟ |     | ⎜ s  | ⎟   | ⎜ s ⎟ |     | ⎜ s ⎟ |     |
 v =  1 , 0   ,  v =  1 , 1   ,  v =  1 , 2   ,  v =  1 , 3   .  (3.8)
-|     |     | 0  ⎜   ⎟ | 1   | ⎜    | ⎟   | 2  ⎜ ⎟  | 3   | ⎜   ⎟   |     |
-| --- | --- | -------- | --- | ---- | --- | ------- | --- | ------- | --- |
-|     |     | ⎝ s , ⎠  |     | ⎝ s  | , ⎠ | ⎝ s , ⎠ |     | ⎝ s , ⎠ |     |
-|     |     | 2 0      |     | 2    | 1   | 2 2     |     | 2 3     |     |
-|     |     | s        |     | s    |     | s       |     | s       |     |
-|     |     | 3,0      |     | 3,1  |     | 3,2     |     | 3,3     |     |
 Thus, the column index c of s becomes the index for v, and the row index r of s becomes the
 index for the four bytes in each word.
 Given a one-dimensional array u of words, u[i] denotes the word that is indexed by i, and the
 sequence of four words u[i],u[i + 1],u[i + 2],u[i + 3] is denoted by u[i..i + 3].
 7
 
-| FIPS 197  |     |     |     | ADVANCED ENCRYPTION STANDARD (AES)  |     |     |
-| --------- | --- | --- | --- | ----------------------------------- | --- | --- |
 4.  Mathematical Preliminaries
 For some transformations of the AES algorithms specifed in Sec. 5, each byte in the state array
 is interpreted as one of the 256 elements of a fnite feld, also known as a Galois Field, denoted
 by GF(28). 1
 In order to defne addition and multiplication in GF(28), each byte {b
-|     |     |     |     |     | b b b       | b b b b } is  |
-| --- | --- | --- | --- | --- | ----------- | ------------- |
-|     |     |     |     |     | 7  6  5  4  | 3  2  1  0    |
 interpreted as a polynomial, denoted by b(x), as follows:
-|     |         | x 7+ b x 6+ b | x 5+ b x 4+ b | x 3+ b x 2+ b |          |        |
-| --- | ------- | ------------- | ------------- | ------------- | -------- | ------ |
-|     | b(x)= b |               |               |               | x + b .  | (4.1)  |
-|     | 7       | 6             | 5  4          | 3  2          | 1  0     |        |
 For example, {01100011} is represented by the polynomial x6 + x5 + x + 1.
 4.1  Addition in GF(28)
 In order to add two elements in the fnite feld GF(28), the coeffcients of the polynomials that
@@ -505,18 +439,14 @@ represent the elements are added modulo 2 (i.e., with the exclusive-OR operation
 so that 1⊕ 1 = 0, 1⊕ 0 = 1, and 0 ⊕ 0 = 0.
 Equivalently, two bytes can be added by applying the exclusive-OR operation to each pair of corre-
 sponding bits in the bytes. Thus, the sum of {a a a a a a a a } and {b b b b b b b b }
-|     |     |     | 7  6  5  | 4  3  2  1  0 | 7  6  5  | 4  3  2  1  0 |
-| --- | --- | --- | -------- | ------------- | -------- | ------------- |
 is {a ⊕ b a ⊕ b a ⊕ b a ⊕ b a ⊕ b a ⊕ b a ⊕ b a ⊕ b }. (In Section 5.1.4, this
-| 7  7  | 6  6  5  | 5  4  4  | 3  3  2  | 2  1  1  0  | 0   |     |
-| ----- | -------- | -------- | -------- | ----------- | --- | --- |
 defnition is extended to words.)
 For example, the following three representations of addition are equivalent:
 (x 6+ x 4+ x 2 + x + 1)+(x 7 + x + 1)= x 7+ x 6+ x 4+ x 2 (polynomial)
 {01010111}⊕{10000011} = {11010100}
-|                   |     |     |     |     | (binary)        | (4.2)  |
+|  |  |  |  |  | (binary) | (4.2) |
 | ----------------- | --- | --- | --- | --- | --------------- | ------ |
-| {57}⊕{83} = {d4}  |     |     |     |     | (hexadecimal).  |        |
+| {57}⊕{83} = {d4} |  |  |  |  | (hexadecimal). |
 Because the coeffcients of the polynomials are reduced modulo 2, the coeffcient 1 is equivalent
 to the coeffcient –1, so addition is equivalent to subtraction. For example, x4 + x2 represents the
 same fnite feld element as x 4 − x2, −x 4 + x 2, and −x 4 − x2. Similarly, the sum of any element
@@ -524,13 +454,11 @@ with itself is the zero element.
 Multiplication in GF(28)
 4.2
 
-| The symbol • denotes multiplication in GF 28  |     |     | �                                              |     |     |     |
-| --------------------------------------------- | --- | --- | ----------------------------------------------- | --- | --- | --- |
-|                                               |     |     | .  Conceptually, this multiplication is defned  |     |     |     |
+| The symbol • denotes multiplication in GF 28 |  |  | �  |
+| --------------------------------------------- | --- | --- | ----------------------------------------------- |
+|  |  |  | .  Conceptually, this multiplication is defned |
 on two bytes in two steps: 1) the two polynomials that represent the bytes are multiplied as
 polynomials, and 2) the resulting polynomial is reduced modulo the following fxed polynomial:
-|     |     | m(x)= x 8+ x 4+ x 3+ x + 1.  |     |     |     | (4.3)  |
-| --- | --- | ---------------------------- | --- | --- | --- | ------ |
 Within both steps, the individual coeffcients of the polynomials are reduced modulo 2.
 1Information about the properties of fnite felds can be found in textbooks, such as Michael Artin’s Algebra [4].
 8
@@ -576,39 +504,16 @@ determined by fnite feld arithmetic as follows:
 9
 
 FIPS 197  ADVANCED ENCRYPTION STANDARD (AES)
-| d   | =(a | • b ) ⊕ (a | • b ) ⊕ (a | • b | ) ⊕ (a | • b )   |       |
-| --- | --- | ---------- | ---------- | --- | ------ | ------- | ----- |
-| 0   | 0   | 0          | 3  1       | 2   | 2 1    | 3       |       |
-| d   | =(a | • b ) ⊕ (a | • b ) ⊕ (a | • b | ) ⊕ (a | • b )   |       |
-| 1   | 1   | 0          | 0  1       | 3   | 2 2    | 3       | (4.8) |
-| d   | =(a | • b ) ⊕ (a | • b ) ⊕ (a | • b | ) ⊕ (a | • b )   |       |
-| 2   | 2   | 0          | 1  1       | 0   | 2 3    | 3       |       |
-| d   | =(a | • b ) ⊕ (a | • b ) ⊕ (a | • b | ) ⊕ (a | • b ).  |       |
-| 3   | 3   | 0          | 2  1       | 1   | 2 0    | 3       |       |
 The matrix form of Eq. (4.8) is
 
-|     | ⎡   | ⎤   | ⎡           |            | ⎤⎡ ⎤    |     |        |
-| --- | --- | --- | ----------- | ---------- | ------- | --- | ------ |
-|     | d   |     | a a         | a a        | b       |     |        |
-|     |     | 0   | 0  3        | 2  1       | 0       |     |        |
-|     | ⎢ d | 1 ⎥ | ⎢ a 1  a 0  | a 3  a 2 ⎥ | ⎢ b 1 ⎥ |     |        |
-|     | ⎢   | ⎥=  | ⎢           |            | ⎥ ⎢ ⎥.  |     | (4.9)  |
-|     | ⎣d  |     | ⎣a  a       | a a        |   ⎣b    |     |        |
-|     |     | 2 ⎦ | 2  1        | 0  3 ⎦     | 2 ⎦     |     |        |
-|     | d   |     | a a         | a a        | b       |     |        |
-|     |     | 3   | 3  2        | 1  0       | 3       |     |        |
 4.4  Multiplicative Inverses in GF(28)
 For a byte b 6= {00}, its multiplicative inverse is the unique byte, denoted by b−1, such that
-|     |     |     | b • b−1 = {01}.  |     |     |     | (4.10)  |
-| --- | --- | --- | ---------------- | --- | --- | --- | ------- |
 The defnition of the SUBBYTES() transformation in the specifcations of the AES block cipher
 involves multiplicative inverses in GF(28), which can be calculated as follows:
 b−1 = b254 .
 (4.11)
 Alternatively, let b(x) be the polynomial that represents b. The extended Euclidean algorithm [5]
 can be applied to b(x) and m(x) to fnd polynomials a(x) and c(x) such that
-|     |     | b(x)a(x)+ m(x)c(x)= 1.  |     |     |     |     | (4.12)  |
-| --- | --- | ----------------------- | --- | --- | --- | --- | ------- |
 It follows that a(x) is the polynomial that represents b−1.
 10
 
@@ -698,45 +603,13 @@ Let b denote an input byte to SBOX(), and let c denote the constant byte {011000
 output byte b = SBOX(b) is constructed by composing the following two transformations:
 1. Defne an intermediate value b˜, as follows, where b−1 is the multiplicative inverse of b, as
 described in Section 4.4:
-|     |     |     | (     |     |             |     |     |     |     |
-| --- | --- | --- | ----- | --- | ----------- | --- | --- | --- | --- |
-|     |     |     | {00}  |     | if b = {00} |     |     |     |     |
 b˜ =
 (5.2)
-|     |     |     | b−1  |     | if b =6 | {00}.  |     |     |     |
-| --- | --- | --- | ---- | --- | ------- | ------ | --- | --- | --- |
 2. Apply the following affne transformation of the bits of b˜ to produce the bits of b 0
 :
-| b0 = b˜ | ⊕ b˜  |     | ⊕ b˜  |     | ⊕ b˜  |     | ⊕ b˜  |     |     |
-| ------- | ----- | --- | ----- | --- | ----- | --- | ----- | --- | --- |
 ⊕ c.  (5.3)
-| i   | i  (i+4) mod 8  |     | (i+5) mod 8  |     | (i+6) mod 8  |     | (i+7) mod 8  | i   |     |
-| --- | --------------- | --- | ------------ | --- | ------------ | --- | ------------ | --- | --- |
 The matrix form of Eq. (5.3) is given by Eq. (5.4) below:
-|     | ⎡b0 ⎤ | ⎡1  |       |       | 1⎤  | ⎡ b˜ ⎤ | ⎡1⎤  |     |     |
-| --- | ----- | --- | ----- | ----- | --- | ------ | ---- | --- | --- |
-|     |       | 0   | 0  0  | 1  1  | 1   | 0      |      |     |     |
 0
-|     | b 0        |           |         |         |       | b ˜          |             |     |       |
-| --- | ---------- | --------- | ------- | ------- | ----- | ------------ | ----------- | --- | ----- |
-|     | ⎢ ⎥        | ⎢ 1   1   | 0   0   | 0   1   | 1   1 | ⎥   ⎢ 1   ⎥  | ⎢ 1 ⎥       |     |       |
-|     | 1          |           |         |         |       | ⎢ ⎥          |             |     |       |
-|     | ⎢ b 0   ⎥  | ⎢ 1   1   | 1   0   | 0   0   | 1   1 | ⎥   b ˜      | ⎢ 0 ⎥       |     |       |
-|     | ⎢ ⎥        | ⎢         |         |         |       | ⎥ ⎢ 2   ⎥    | ⎢ ⎥         |     |       |
-|     | 2          |           |         |         |       | ⎢ ⎥          |             |     |       |
-|     | ⎢ b 0   ⎥  | ⎢ 1   1   | 1   1   | 0   0   | 0   1 | ⎥   ⎢ b ˜ ⎥  | ⎢ 0 ⎥       |     |       |
-|     | ⎢ 3   ⎥    | ⎢         |         |         |       | ⎥ 3          | ⎢ ⎥         |     |       |
-|     | 0 =        |           |         |         |       | ⎢ ˜ ⎥        | +  .        |     | (5.4) |
-|     | ⎢ b   ⎥    | ⎢ 1   1   | 1   1   | 1   0   | 0   0 | ⎥   ⎢ b ⎥    | ⎢ 0 ⎥       |     |       |
-|     | ⎢ 4   ⎥    | ⎢         |         |         |       | ⎥ 4          | ⎢ ⎥         |     |       |
-|     | ⎢b0 ⎥      | ⎢0        |         |         | 0⎥    | ⎢ ⎢b˜ ⎥      | ⎢1⎥         |     |       |
-|     |            | 1         | 1  1    | 1  1    | 0     | ⎥            |             |     |       |
-|     | ⎢  5   ⎥   | ⎢         |         |         |       | ⎥ 5          | ⎢ ⎥         |     |       |
-|     | ⎣b 0   ⎦   | ⎣0        |         |         |       | ⎦   ⎢ ⎣b ˜ ⎥ |   ⎣1   ⎦    |     |       |
-|     |            |   0       | 1  1    | 1  1    | 1  0  | ⎦            |             |     |       |
-|     | 6          |           |         |         |       | 6            |             |     |       |
-|     | b0         | 0 0       | 0 1     | 1 1     | 1 1   | b˜           | 0           |     |       |
-|     | 7          |           |         |         |       | 7            |             |     |       |
 Figure 2 illustrates how SUBBYTES() transforms the state.
 Figure 2. Illustration of SUBBYTES()
 The AES S-box is presented in hexadecimal form in Table 4. For example, if s = {53}, then
@@ -783,38 +656,20 @@ Figure 3. Illustration of SHIFTROWS()
 MIXCOLUMNS() is a transformation of the state that multiplies each of the four columns of the
 state by a single fxed matrix, as described in Section 4.3, with its entries taken from the following
 word:
-|     | [a  | ,a ,a | ,a ]=[{02},{01},{01},{03}].  |     |     |     |     | (5.6)  |
-| --- | --- | ----- | ---------------------------- | --- | --- | --- | --- | ------ |
-|     |     | 0 1   | 2 3                          |     |     |     |     |        |
 Thus,
-| ⎡   | 0  ⎤ | ⎡   |     |         | ⎤⎡ ⎤ |     |     |     |
-| --- | ---- | --- | --- | ------- | ---- | --- | --- | --- |
-|     | s    | 02  | 03  | 01  01  | s    |     |     |     |
-|     | 0,c  |     |     |         | 0,c  |     |     |     |
 0
-| ⎢   | s ⎥        | ⎢ 0 1  |   0 2   | 0 3   0 | 1 ⎥   ⎢ s ⎥   |                 |     |       |
+| ⎢ | s ⎥ | ⎢ 0 1 | 0 2 | 0 3   0 | 1 ⎥   ⎢ s ⎥ |
 | --- | ---------- | ------ | ------- | ------- | ------------- | --------------- | --- | ----- |
-| ⎢   | 1 , c   ⎥  |        |         |         | 1 , c         |                 |     |       |
-|     |            | =  ⎢   |         |         | ⎥ ⎢ ⎥         | for 0 ≤ c < 4,  |     | (5.7) |
-| ⎢   | s  0   ⎥   | ⎣ 0  1 |   0 1   | 0 2   0 | 3   ⎦   ⎣s  ⎦ |                 |     |       |
-| ⎣   | 2 , c   ⎦  |        |         |         | 2 , c         |                 |     |       |
-|     | 0          | 03     | 01      | 01  02  | s             |                 |     |       |
-|     | s          |        |         |         | 3,c           |                 |     |       |
+| ⎢ | 1 , c   ⎥ |  |  |  | 1 , c |
+|  |  | =  ⎢ |  |  | ⎥ ⎢ ⎥ | for 0 ≤ c < 4, |  | (5.7) |
+| ⎢ | s  0   ⎥ | ⎣ 0  1 | 0 1 | 0 2   0 | 3   ⎦   ⎣s  ⎦ |
+| ⎣ | 2 , c   ⎦ |  |  |  | 2 , c |
+|  | 0 | 03 | 01 | 01  02 | s |
+|  | s |  |  |  | 3,c |
 3,c
 so that the individual output bytes are defned as follows:
 s 0
-|     |       | =({02}• s |                | ) ⊕ ({03}• s |              | ) ⊕ s | ⊕ s   |       |
-| --- | ----- | --------- | -------------- | ------------ | ------------ | ----- | ----- | ----- |
-|     | 0,c   |           | 0,c            |              | 1,c          | 2,c   | 3,c   |       |
-|     | s 0   | = s       | ⊕ ({02}• s     |              | ) ⊕ ({03}• s |       | ) ⊕ s |       |
-|     |       | 0,c       |                | 1,c          |              | 2,c   | 3,c   |       |
-|     | 1,c   |           |                |              |              |       |       | (5.8) |
-|     | s  0  | = s       | ⊕ s ⊕ ({02}• s |              | ) ⊕ ({03}• s |       | )     |       |
-|     | 2 ,c  | 0,c       | 1,c            |              | 2,c          |       | 3,c   |       |
 s 0
-|     |      | =({03}• s |     | ) ⊕ s | ⊕ s ⊕ ({02}• s |     | ).  |     |
-| --- | ---- | --------- | --- | ----- | -------------- | --- | --- | --- |
-|     | 3,c  |           | 0,c | 1,c   | 2,c            |     | 3,c |     |
 Figure 4 illustrates MIXCOLUMNS().
 15
 
@@ -848,26 +703,21 @@ of each of the 10 round keys. For AES-192 and AES-256, the key expansion routine
 frst eight and seven of these same constants, respectively. The values of Rcon[ j] are given in
 hexadecimal notation in Table 5:
 Table 5. Round constants
-| j  Rcon[ j]       | j   | Rcon[ j]       |     |     |
-| ----------------- | --- | -------------- | --- | --- |
-| 1  [01,00,00,00]  | 6   | [20,00,00,00]  |     |     |
-| 2  [02,00,00,00]  | 7   | [40,00,00,00]  |     |     |
-| [04,00,00,00]     |     | [80,00,00,00]  |     |     |
-| 3                 | 8   |                |     |     |
-| 4  [08,00,00,00]  | 9   | [1b,00,00,00]  |     |     |
-| 5  [10,00,00,00]  | 10  | [36,00,00,00]  |     |     |
+| j  Rcon[ j] | j | Rcon[ j] |
+| ----------------- | --- | -------------- |
+| 1  [01,00,00,00] | 6 | [20,00,00,00] |
+| 2  [02,00,00,00] | 7 | [40,00,00,00] |
+| [04,00,00,00] |  | [80,00,00,00] |
+| 4  [08,00,00,00] | 9 | [1b,00,00,00] |
+| 5  [10,00,00,00] | 10 | [36,00,00,00] |
 The value of the left-most byte of Rcon[ j] in polynomial form is x j−1. Note that for j > 0, these
 bytes may be generated by successively applying XTIMES() to the byte represented by xj−1 (see
 Eq. 4.5).
 Two transformations on words are called within KEYEXPANSION(): ROTWORD() and SUB-
 WORD(). Given an input word represented as a sequence [a ,a ,a ,a ] of four bytes,
-|     |     | 0 1 | 2 3 |     |
-| --- | --- | --- | --- | --- |
 ROTWORD([a 0 ,a 1 ,a 2 ,a 3 ]) = [a 1 ,a 2 ,a 3 ,a 0 ],  (5.10)
 and
 SUBWORD([a ,...,a ]) = [SBOX(a ), SBOX(a ), SBOX(a ), SBOX(a )].  (5.11)
-| 0 3 | 0   | 1   | 2   | 3   |
-| --- | --- | --- | --- | --- |
 The expansion of the key proceeds according to the pseudocode in Alg. 2. The frst Nk words of
 the expanded key are the key itself. Every subsequent word w[i] is generated recursively from the
 preceding word, w[i − 1], and the word Nk positions earlier, w[i − Nk], as follows:
@@ -981,39 +831,24 @@ FIPS 197  ADVANCED ENCRYPTION STANDARD (AES)
 INVMIXCOLUMNS() is the inverse of MIXCOLUMNS().  In particular, INVMIXCOLUMNS()
 multiplies each of the four columns of the state by a single fxed matrix, as described in Section 4.3,
 with its entries taken from the following word:
-|     | [a  | ,a ,a | ,a ]=[{0e},{09},{0d},{0b}].  |     |     |     |     | (5.13)  |
-| --- | --- | ----- | ---------------------------- | --- | --- | --- | --- | ------- |
-|     |     | 0 1   | 2 3                          |     |     |     |     |         |
 Thus,
-|     |           |     |        |          |         |                 |     |        |
 | --- | --------- | --- | ------ | -------- | ------- | --------------- | --- | ------ |
-|     | ⎡s0  ⎤    | ⎡   |        |          | ⎤ ⎡ ⎤   |                 |     |        |
-|     |           | 0e  | 0b     | 0d  09   |   s     |                 |     |        |
-|     | 0,c       |     |        |          | 0,c     |                 |     |        |
-|     | s0        | 09  | 0e     | 0b  0d ⎥ | s       |                 |     |        |
-|     | ⎢ 1 ,c  ⎥ | ⎢   |        |          | ⎢ 1,c ⎥ |                 |     |        |
-|     | ⎢ ⎥=      | ⎢   |        |          | ⎥ ⎢ ⎥   | for 0 ≤ c < 4.  |     | (5.14) |
-|     | ⎣s 0      | ⎣0  | d  09  | 0e  0b ⎦ |   ⎣s    |                 |     |        |
-|     | 2 ,c  ⎦   |     |        |          | 2,c ⎦   |                 |     |        |
-|     | s0        | 0b  | 0d     | 09  0e   | s       |                 |     |        |
-|     | 3,c       |     |        |          | 3,c     |                 |     |        |
+|  | ⎡s0  ⎤ | ⎡ |  |  | ⎤ ⎡ ⎤ |
+|  |  | 0e | 0b | 0d  09 | s |
+|  | 0,c |  |  |  | 0,c |
+|  | s0 | 09 | 0e | 0b  0d ⎥ | s |
+|  | ⎢ 1 ,c  ⎥ | ⎢ |  |  | ⎢ 1,c ⎥ |
+|  | ⎢ ⎥= | ⎢ |  |  | ⎥ ⎢ ⎥ | for 0 ≤ c < 4. |  | (5.14) |
+|  | ⎣s 0 | ⎣0 | d  09 | 0e  0b ⎦ | ⎣s |
+|  | 2 ,c  ⎦ |  |  |  | 2,c ⎦ |
+|  | s0 | 0b | 0d | 09  0e | s |
+|  | 3,c |  |  |  | 3,c |
 As a result of this matrix multiplication, the four bytes in a column are replaced by the following:
 s 0
-|     | =({0e}• s | 0,c | ) ⊕ ({0b}• s | 1,c ) ⊕ ({0d}• s |     | 2,c ) ⊕ ({09}• s | 3,c ) |     |
-| --- | --------- | --- | ------------ | ---------------- | --- | ---------------- | ----- | --- |
 0,c
-| s 0  | =({09}• s |     | ) ⊕ ({0e}• s | ) ⊕ ({0b}• s |     | ) ⊕ ({0d}• s | )   |     |
-| ---- | --------- | --- | ------------ | ------------ | --- | ------------ | --- | --- |
-| 1,c  |           | 0,c |              | 1,c          |     | 2,c          | 3,c |     |
 (5.15)
 s 0
-|      | =({0d}• s |     | ) ⊕ ({09}• s | ) ⊕ ({0e}• s |     | ) ⊕ ({0b}• s | )   |     |
-| ---- | --------- | --- | ------------ | ------------ | --- | ------------ | --- | --- |
-| 2,c  |           | 0,c |              | 1,c          |     | 2,c          | 3,c |     |
 s 0
-|      | =({0b}• s |     | ) ⊕ ({0d}• s | ) ⊕ ({09}• s |     | ) ⊕ ({0e}• s | ).  |     |
-| ---- | --------- | --- | ------------ | ------------ | --- | ------------ | --- | --- |
-| 3,c  |           | 0,c |              | 1,c          |     | 2,c          | 3,c |     |
 5.3.4  Inverse of ADDROUNDKEY()
 ADDROUNDKEY(), described in Section 5.1.4, is its own inverse.
 5.3.5  EQINVCIPHER()
@@ -1151,8 +986,6 @@ Standards and Technology, Gaithersburg, MD), NIST Interagency Report (IR) 8319. 
 //doi.org/10.6028/NIST.IR.8319.
 28
 
-| FIPS 197  |     |     |     | ADVANCED ENCRYPTION STANDARD (AES)  |     |     |     |
-| --------- | --- | --- | --- | ----------------------------------- | --- | --- | --- |
 Appendix A — Key Expansion Examples
 This appendix shows the development of the key schedule for each key size. Note that multi-byte
 values are presented using the notation described in Sec. 3. The intermediate values produced
@@ -1162,250 +995,217 @@ A.1  Expansion of a 128-bit Key
 This section contains the key expansion of the following key:
 Key  =  2b  7e  15  16  28  ae  d2  a6  ab  f7  15  88  09  cf  4f  3c
 for Nk = 4, which results in
-| w =  | 2b7e1516  | w =  | 28aed2a6  | w =  | abf71588  | w =  | 09cf4f3c  |
+| w = | 2b7e1516 | w = | 28aed2a6 | w = | abf71588 | w = | 09cf4f3c |
 | ---- | --------- | ---- | --------- | ---- | --------- | ---- | --------- |
-| 0    |           | 1    |           | 2    |           | 3    |           |
 w[i]  =
-| i      |       | After      | After      |             | After  XOR |            |        |
+| i |  | After | After |  | After  XOR |
 | ------ | ----- | ---------- | ---------- | ----------- | ---------- | ---------- | ------ |
-|        | temp  |            |            | Rcon[i/Nk]  |            | w[i − Nk]  | temp ⊕ |
-| (dec)  |       | ROTWORD()  | SUBWORD()  |             | with       |            |        |
+|  | temp |  |  | Rcon[i/Nk] |  | w[i − Nk] | temp ⊕ |
+| (dec) |  | ROTWORD() | SUBWORD() |  | with |
 Rcon
 w[i − Nk]
 4  09cf4f3c  cf4f3c09  8a84eb01  01000000  8b84eb01  2b7e1516  a0fafe17
-| 5   | a0fafe17  |     |     |     |     | 28aed2a6  | 88542cb1  |
+| 5 | a0fafe17 |  |  |  |  | 28aed2a6 | 88542cb1 |
 | --- | --------- | --- | --- | --- | --- | --------- | --------- |
-| 6   | 88542cb1  |     |     |     |     | abf71588  | 23a33939  |
-| 7   | 23a33939  |     |     |     |     | 09cf4f3c  | 2a6c7605  |
+| 6 | 88542cb1 |  |  |  |  | abf71588 | 23a33939 |
+| 7 | 23a33939 |  |  |  |  | 09cf4f3c | 2a6c7605 |
 8  2a6c7605  6c76052a  50386be5  02000000  52386be5  a0fafe17  f2c295f2
-| 9   | f2c295f2  |     |     |     |     | 88542cb1  | 7a96b943  |
-| --- | --------- | --- | --- | --- | --- | --------- | --------- |
-| 10  | 7a96b943  |     |     |     |     | 23a33939  | 5935807a  |
-| 11  | 5935807a  |     |     |     |     | 2a6c7605  | 7359f67f  |
 12  7359f67f  59f67f73  cb42d28f  04000000  cf42d28f  f2c295f2  3d80477d
-| 13  | 3d80477d  |     |     |     |     | 7a96b943  | 4716fe3e  |
-| --- | --------- | --- | --- | --- | --- | --------- | --------- |
-| 14  | 4716fe3e  |     |     |     |     | 5935807a  | 1e237e44  |
-| 15  | 1e237e44  |     |     |     |     | 7359f67f  | 6d7a883b  |
 16  6d7a883b  7a883b6d  dac4e23c  08000000  d2c4e23c  3d80477d  ef44a541
-| 17  | ef44a541  |     |     |     |     | 4716fe3e  | a8525b7f  |
+| 17 | ef44a541 |  |  |  |  | 4716fe3e | a8525b7f |
 | --- | --------- | --- | --- | --- | --- | --------- | --------- |
-| 18  | a8525b7f  |     |     |     |     | 1e237e44  | b671253b  |
-| 19  | b671253b  |     |     |     |     | 6d7a883b  | db0bad00  |
+| 18 | a8525b7f |  |  |  |  | 1e237e44 | b671253b |
+| 19 | b671253b |  |  |  |  | 6d7a883b | db0bad00 |
 20  db0bad00  0bad00db  2b9563b9  10000000  3b9563b9  ef44a541  d4d1c6f8
-| 21  | d4d1c6f8  |     |     |     |     | a8525b7f  | 7c839d87  |
+| 21 | d4d1c6f8 |  |  |  |  | a8525b7f | 7c839d87 |
 | --- | --------- | --- | --- | --- | --- | --------- | --------- |
-| 22  | 7c839d87  |     |     |     |     | b671253b  | caf2b8bc  |
-| 23  | caf2b8bc  |     |     |     |     | db0bad00  | 11f915bc  |
+| 22 | 7c839d87 |  |  |  |  | b671253b | caf2b8bc |
+| 23 | caf2b8bc |  |  |  |  | db0bad00 | 11f915bc |
 29
 
-| FIPS 197  |     |     |     |     |     | ADVANCED ENCRYPTION STANDARD (AES)  |     |     |     |     |
-| --------- | --- | --- | --- | --- | --- | ----------------------------------- | --- | --- | --- | --- |
 24  11f915bc  f915bc11  99596582  20000000  b9596582  d4d1c6f8  6d88a37a
-| 25  | 6d88a37a  |     |     |     |     |     |     |     | 7c839d87  | 110b3efd  |
+| 25 | 6d88a37a |  |  |  |  |  |  |  | 7c839d87 | 110b3efd |
 | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --------- |
-| 26  | 110b3efd  |     |     |     |     |     |     |     | caf2b8bc  | dbf98641  |
-| 27  | dbf98641  |     |     |     |     |     |     |     | 11f915bc  | ca0093fd  |
+| 26 | 110b3efd |  |  |  |  |  |  |  | caf2b8bc | dbf98641 |
+| 27 | dbf98641 |  |  |  |  |  |  |  | 11f915bc | ca0093fd |
 28  ca0093fd  0093fdca  63dc5474  40000000  23dc5474  6d88a37a  4e54f70e
-| 29  | 4e54f70e  |     |     |     |     |     |     |     | 110b3efd  | 5f5fc9f3  |
+| 29 | 4e54f70e |  |  |  |  |  |  |  | 110b3efd | 5f5fc9f3 |
 | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --------- |
-| 30  | 5f5fc9f3  |     |     |     |     |     |     |     | dbf98641  | 84a64fb2  |
-| 31  | 84a64fb2  |     |     |     |     |     |     |     | ca0093fd  | 4ea6dc4f  |
+| 30 | 5f5fc9f3 |  |  |  |  |  |  |  | dbf98641 | 84a64fb2 |
+| 31 | 84a64fb2 |  |  |  |  |  |  |  | ca0093fd | 4ea6dc4f |
 32  4ea6dc4f  a6dc4f4e  2486842f  80000000  a486842f  4e54f70e  ead27321
-| 33  | ead27321  |     |     |     |     |     |     |     | 5f5fc9f3  | b58dbad2  |
+| 33 | ead27321 |  |  |  |  |  |  |  | 5f5fc9f3 | b58dbad2 |
 | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --------- |
-| 34  | b58dbad2  |     |     |     |     |     |     |     | 84a64fb2  | 312bf560  |
-| 35  | 312bf560  |     |     |     |     |     |     |     | 4ea6dc4f  | 7f8d292f  |
+| 34 | b58dbad2 |  |  |  |  |  |  |  | 84a64fb2 | 312bf560 |
+| 35 | 312bf560 |  |  |  |  |  |  |  | 4ea6dc4f | 7f8d292f |
 36  7f8d292f  8d292f7f  5da515d2  1b000000  46a515d2  ead27321  ac7766f3
-| 37  | ac7766f3  |     |     |     |     |     |     |     | b58dbad2  | 19fadc21  |
+| 37 | ac7766f3 |  |  |  |  |  |  |  | b58dbad2 | 19fadc21 |
 | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --------- |
-| 38  | 19fadc21  |     |     |     |     |     |     |     | 312bf560  | 28d12941  |
-| 39  | 28d12941  |     |     |     |     |     |     |     | 7f8d292f  | 575c006e  |
+| 38 | 19fadc21 |  |  |  |  |  |  |  | 312bf560 | 28d12941 |
+| 39 | 28d12941 |  |  |  |  |  |  |  | 7f8d292f | 575c006e |
 40  575c006e  5c006e57  4a639f5b  36000000  7c639f5b  ac7766f3  d014f9a8
-| 41  | d014f9a8  |     |     |     |     |     |     |     | 19fadc21  | c9ee2589  |
+| 41 | d014f9a8 |  |  |  |  |  |  |  | 19fadc21 | c9ee2589 |
 | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --------- |
-| 42  | c9ee2589  |     |     |     |     |     |     |     | 28d12941  | e13f0cc8  |
-| 43  | e13f0cc8  |     |     |     |     |     |     |     | 575c006e  | b6630ca6  |
+| 42 | c9ee2589 |  |  |  |  |  |  |  | 28d12941 | e13f0cc8 |
+| 43 | e13f0cc8 |  |  |  |  |  |  |  | 575c006e | b6630ca6 |
 A.2  Expansion of a 192-bit Key
 This section contains the key expansion of the following key:
-|     | Key  | =  8e  | 73  | b0  f7  | da  0e  | 64  | 52  c8  | 10  | f3  2b  |     |
-| --- | ---- | ------ | --- | ------- | ------- | --- | ------- | --- | ------- | --- |
-|     |      | 80     | 90  | 79  e5  | 62  f8  | ea  | d2  52  | 2c  | 6b  7b  |     |
+|  | Key | =  8e | 73 | b0  f7 | da  0e | 64 | 52  c8 | 10 | f3  2b |
+| --- | ---- | ------ | --- | ------- | ------- | --- | ------- | --- | ------- |
+|  |  | 80 | 90 | 79  e5 | 62  f8 | ea | d2  52 | 2c | 6b  7b |
 for Nk = 6, which results in
-|     | w   | =  8e73b0f7  |     | w   | =  da0e6452  |     | w   | =   | c810f32b  |     |
-| --- | --- | ------------ | --- | --- | ------------ | --- | --- | --- | --------- | --- |
-|     | 0   |              |     | 1   |              |     |     | 2   |           |     |
-|     | w   | =  809079e5  |     | w   | =  62f8ead2  |     | w   | =   | 522c6b7b  |     |
-|     | 3   |              |     | 4   |              |     |     | 5   |           |     |
+|  | w | =  8e73b0f7 |  | w | =  da0e6452 |  | w | = | c810f32b |
+| --- | --- | ------------ | --- | --- | ------------ | --- | --- | --- | --------- |
+|  | w | =  809079e5 |  | w | =  62f8ead2 |  | w | = | 522c6b7b |
 w[i]  =
-| i      |       | After      |     | After      |             |     | After  | XOR   |            |        |
+| i |  | After |  | After |  |  | After | XOR |
 | ------ | ----- | ---------- | --- | ---------- | ----------- | --- | ------ | ----- | ---------- | ------ |
-|        | temp  |            |     |            | Rcon[i/Nk]  |     |        |       | w[i − Nk]  | temp ⊕ |
-| (dec)  |       | ROTWORD()  |     | SUBWORD()  |             |     | with   | Rcon  |            |        |
+|  | temp |  |  |  | Rcon[i/Nk] |  |  |  | w[i − Nk] | temp ⊕ |
+| (dec) |  | ROTWORD() |  | SUBWORD() |  |  | with | Rcon |
 w[i − Nk]
 6  522c6b7b  2c6b7b52  717f2100  01000000  707f2100  8e73b0f7  fe0c91f7
-| 7   | fe0c91f7  |     |     |     |     |     |     |     | da0e6452  | 2402f5a5  |
-| --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --------- |
-| 8   | 2402f5a5  |     |     |     |     |     |     |     | c810f32b  | ec12068e  |
 30
 
 FIPS 197  ADVANCED ENCRYPTION STANDARD (AES)
-| 9 ec12068e   | 809079e5  | 6c827f6b  |
+| 9 ec12068e | 809079e5 | 6c827f6b |
 | ------------ | --------- | --------- |
-| 10 6c827f6b  | 62f8ead2  | 0e7a95b9  |
-| 11 0e7a95b9  | 522c6b7b  | 5c56fec2  |
+| 10 6c827f6b | 62f8ead2 | 0e7a95b9 |
+| 11 0e7a95b9 | 522c6b7b | 5c56fec2 |
 12 5c56fec2  56fec25c  b1bb254a  02000000  b3bb254a  fe0c91f7  4db7b4bd
-| 13 4db7b4bd  | 2402f5a5  | 69b54118  |
+| 13 4db7b4bd | 2402f5a5 | 69b54118 |
 | ------------ | --------- | --------- |
-| 14 69b54118  | ec12068e  | 85a74796  |
-| 15 85a74796  | 6c827f6b  | e92538fd  |
-| 16 e92538fd  | 0e7a95b9  | e75fad44  |
-| 17 e75fad44  | 5c56fec2  | bb095386  |
+| 14 69b54118 | ec12068e | 85a74796 |
+| 15 85a74796 | 6c827f6b | e92538fd |
+| 16 e92538fd | 0e7a95b9 | e75fad44 |
+| 17 e75fad44 | 5c56fec2 | bb095386 |
 18 bb095386  095386bb  01ed44ea  04000000  05ed44ea  4db7b4bd  485af057
-| 19 485af057  | 69b54118  | 21efb14f  |
+| 19 485af057 | 69b54118 | 21efb14f |
 | ------------ | --------- | --------- |
-| 20 21efb14f  | 85a74796  | a448f6d9  |
-| 21 a448f6d9  | e92538fd  | 4d6dce24  |
-| 22 4d6dce24  | e75fad44  | aa326360  |
-| aa326360     | bb095386  | 113b30e6  |
+| 20 21efb14f | 85a74796 | a448f6d9 |
+| 21 a448f6d9 | e92538fd | 4d6dce24 |
+| 22 4d6dce24 | e75fad44 | aa326360 |
+| aa326360 | bb095386 | 113b30e6 |
 23
 24 113b30e6  3b30e611  e2048e82  08000000  ea048e82  485af057  a25e7ed5
 83b1cf9a
-| 25 a25e7ed5  | 21efb14f  |           |
+| 25 a25e7ed5 | 21efb14f |
 | ------------ | --------- | --------- |
-| 26 83b1cf9a  | a448f6d9  | 27f93943  |
-| 27 27f93943  | 4d6dce24  | 6a94f767  |
-| 28 6a94f767  | aa326360  | c0a69407  |
-| 29 c0a69407  | 113b30e6  | d19da4e1  |
+| 26 83b1cf9a | a448f6d9 | 27f93943 |
+| 27 27f93943 | 4d6dce24 | 6a94f767 |
+| 28 6a94f767 | aa326360 | c0a69407 |
+| 29 c0a69407 | 113b30e6 | d19da4e1 |
 30 d19da4e1  9da4e1d1  5e49f83e  10000000  4e49f83e  a25e7ed5  ec1786eb
-| 31 ec1786eb  | 83b1cf9a  | 6fa64971  |
-| ------------ | --------- | --------- |
-| 32 6fa64971  | 27f93943  | 485f7032  |
-| 33 485f7032  | 6a94f767  | 22cb8755  |
-| 34 22cb8755  | c0a69407  | e26d1352  |
-| 35 e26d1352  | d19da4e1  | 33f0b7b3  |
 36 33f0b7b3  f0b7b333  8ca96dc3  20000000  aca96dc3  ec1786eb  40beeb28
-| 37 40beeb28  | 6fa64971  | 2f18a259  |
+| 37 40beeb28 | 6fa64971 | 2f18a259 |
 | ------------ | --------- | --------- |
-| 38 2f18a259  | 485f7032  | 6747d26b  |
-| 39 6747d26b  | 22cb8755  | 458c553e  |
-| 40 458c553e  | e26d1352  | a7e1466c  |
-| 41 a7e1466c  | 33f0b7b3  | 9411f1df  |
+| 38 2f18a259 | 485f7032 | 6747d26b |
+| 39 6747d26b | 22cb8755 | 458c553e |
+| 40 458c553e | e26d1352 | a7e1466c |
+| 41 a7e1466c | 33f0b7b3 | 9411f1df |
 42 9411f1df  11f1df94  82a19e22  40000000  c2a19e22  40beeb28  821f750a
-| 43 821f750a  | 2f18a259  | ad07d753  |
-| ------------ | --------- | --------- |
 31
 
-| FIPS 197  |           |     |     | ADVANCED ENCRYPTION STANDARD (AES)  |     |           |           |
+| FIPS 197 |  |  |  | ADVANCED ENCRYPTION STANDARD (AES) |
 | --------- | --------- | --- | --- | ----------------------------------- | --- | --------- | --------- |
-| 44        | ad07d753  |     |     |                                     |     | 6747d26b  | ca400538  |
-| 45        | ca400538  |     |     |                                     |     | 458c553e  | 8fcc5006  |
-| 46        | 8fcc5006  |     |     |                                     |     | a7e1466c  | 282d166a  |
-| 47        | 282d166a  |     |     |                                     |     | 9411f1df  | bc3ce7b5  |
+| 44 | ad07d753 |  |  |  |  | 6747d26b | ca400538 |
+| 45 | ca400538 |  |  |  |  | 458c553e | 8fcc5006 |
+| 46 | 8fcc5006 |  |  |  |  | a7e1466c | 282d166a |
+| 47 | 282d166a |  |  |  |  | 9411f1df | bc3ce7b5 |
 48  bc3ce7b5  3ce7b5bc  eb94d565  80000000  6b94d565  821f750a  e98ba06f
-| 49  | e98ba06f  |     |     |     |     | ad07d753  | 448c773c  |
+| 49 | e98ba06f |  |  |  |  | ad07d753 | 448c773c |
 | --- | --------- | --- | --- | --- | --- | --------- | --------- |
-| 50  | 448c773c  |     |     |     |     | ca400538  | 8ecc7204  |
-| 51  | 8ecc7204  |     |     |     |     | 8fcc5006  | 01002202  |
+| 50 | 448c773c |  |  |  |  | ca400538 | 8ecc7204 |
+| 51 | 8ecc7204 |  |  |  |  | 8fcc5006 | 01002202 |
 A.3  Expansion of a 256-bit Key
 This section contains the key expansion of the following key:
 Key  =  60  3d  eb  10  15  ca  71  be  2b  73  ae  f0  85  7d  77  81
 1f  35  2c  07  3b  61  08  d7  2d  98  10  a3  09  14  df  f4
 for Nk = 8, which results in
-| w =  | 603deb10  | w =  | 15ca71be  | w =  | 2b73aef0  | w =  | 857d7781  |
+| w = | 603deb10 | w = | 15ca71be | w = | 2b73aef0 | w = | 857d7781 |
 | ---- | --------- | ---- | --------- | ---- | --------- | ---- | --------- |
-| 0    |           | 1    |           | 2    |           | 3    |           |
-| w =  | 1f352c07  | w =  | 3b6108d7  | w =  | 2d9810a3  | w =  | 0914dff4  |
-| 4    |           | 5    |           | 6    |           | 7    |           |
+| w = | 1f352c07 | w = | 3b6108d7 | w = | 2d9810a3 | w = | 0914dff4 |
 w[i]  =
-| i      |       | After         | After         |             | After  XOR  |            |         |
+| i |  | After | After |  | After  XOR |
 | ------ | ----- | ------------- | ------------- | ----------- | ----------- | ---------- | ------- |
-|        | temp  |               |               | Rcon[i/Nk]  |             | w[i − Nk]  | temp ⊕  |
-| (dec)  |       | RO TWO R D()  | SU BWO R D()  |             | with  Rcon  |            |         |
+|  | temp |  |  | Rcon[i/Nk] |  | w[i − Nk] | temp ⊕ |
+| (dec) |  | RO TWO R D() | SU BWO R D() |  | with  Rcon |
 w[i − Nk]
 8  0914dff4  14dff409  fa9ebf01  01000000  fb9ebf01  603deb10  9ba35411
-| 9   | 9ba35411  |     |           |     |     | 15ca71be  | 8e6925af  |
+| 9 | 9ba35411 |  |  |  |  | 15ca71be | 8e6925af |
 | --- | --------- | --- | --------- | --- | --- | --------- | --------- |
-| 10  | 8e6925af  |     |           |     |     | 2b73aef0  | a51a8b5f  |
-| 11  | a51a8b5f  |     |           |     |     | 857d7781  | 2067fcde  |
-| 12  | 2067fcde  |     | b785b01d  |     |     | 1f352c07  | a8b09c1a  |
-| 13  | a8b09c1a  |     |           |     |     | 3b6108d7  | 93d194cd  |
-| 14  | 93d194cd  |     |           |     |     | 2d9810a3  | be49846e  |
-| 15  | be49846e  |     |           |     |     | 0914dff4  | b75d5b9a  |
+| 10 | 8e6925af |  |  |  |  | 2b73aef0 | a51a8b5f |
+| 11 | a51a8b5f |  |  |  |  | 857d7781 | 2067fcde |
+| 12 | 2067fcde |  | b785b01d |  |  | 1f352c07 | a8b09c1a |
+| 13 | a8b09c1a |  |  |  |  | 3b6108d7 | 93d194cd |
+| 14 | 93d194cd |  |  |  |  | 2d9810a3 | be49846e |
+| 15 | be49846e |  |  |  |  | 0914dff4 | b75d5b9a |
 16  b75d5b9a  5d5b9ab7  4c39b8a9  02000000  4e39b8a9  9ba35411  d59aecb8
-| 17  | d59aecb8  |     |           |     |     | 8e6925af  | 5bf3c917  |
+| 17 | d59aecb8 |  |  |  |  | 8e6925af | 5bf3c917 |
 | --- | --------- | --- | --------- | --- | --- | --------- | --------- |
-| 18  | 5bf3c917  |     |           |     |     | a51a8b5f  | fee94248  |
-| 19  | fee94248  |     |           |     |     | 2067fcde  | de8ebe96  |
-| 20  | de8ebe96  |     | 1d19ae90  |     |     | a8b09c1a  | b5a9328a  |
-| 21  | b5a9328a  |     |           |     |     | 93d194cd  | 2678a647  |
-| 22  | 2678a647  |     |           |     |     | be49846e  | 98312229  |
+| 18 | 5bf3c917 |  |  |  |  | a51a8b5f | fee94248 |
+| 19 | fee94248 |  |  |  |  | 2067fcde | de8ebe96 |
+| 20 | de8ebe96 |  | 1d19ae90 |  |  | a8b09c1a | b5a9328a |
+| 21 | b5a9328a |  |  |  |  | 93d194cd | 2678a647 |
+| 22 | 2678a647 |  |  |  |  | be49846e | 98312229 |
 32
 
 FIPS 197  ADVANCED ENCRYPTION STANDARD (AES)
-| 23 98312229  |     | b75d5b9a  | 2f6c79b3  |
-| ------------ | --- | --------- | --------- |
 24 2f6c79b3  6c79b32f  50b66d15  04000000  54b66d15  d59aecb8  812c81ad
-| 25 812c81ad  |           | 5bf3c917  | dadf48ba  |
+| 25 812c81ad |  | 5bf3c917 | dadf48ba |
 | ------------ | --------- | --------- | --------- |
-| 26 dadf48ba  |           | fee94248  | 24360af2  |
-| 27 24360af2  |           | de8ebe96  | fab8b464  |
-| 28 fab8b464  | 2d6c8d43  | b5a9328a  | 98c5bfc9  |
-| 29 98c5bfc9  |           | 2678a647  | bebd198e  |
-| 30 bebd198e  |           | 98312229  | 268c3ba7  |
-| 31 268c3ba7  |           | 2f6c79b3  | 09e04214  |
+| 26 dadf48ba |  | fee94248 | 24360af2 |
+| 27 24360af2 |  | de8ebe96 | fab8b464 |
+| 28 fab8b464 | 2d6c8d43 | b5a9328a | 98c5bfc9 |
+| 29 98c5bfc9 |  | 2678a647 | bebd198e |
+| 30 bebd198e |  | 98312229 | 268c3ba7 |
+| 31 268c3ba7 |  | 2f6c79b3 | 09e04214 |
 32 09e04214  e0421409  e12cfa01  08000000  e92cfa01  812c81ad  68007bac
-| 33 68007bac  |           | dadf48ba  | b2df3316  |
+| 33 68007bac |  | dadf48ba | b2df3316 |
 | ------------ | --------- | --------- | --------- |
-| 34 b2df3316  |           | 24360af2  | 96e939e4  |
-| 35 96e939e4  |           | fab8b464  | 6c518d80  |
-| 36 6c518d80  | 50d15dcd  | 98c5bfc9  | c814e204  |
-| 37 c814e204  |           | bebd198e  | 76a9fb8a  |
-| 38 76a9fb8a  |           | 268c3ba7  | 5025c02d  |
-| 39 5025c02d  |           | 09e04214  | 59c58239  |
+| 34 b2df3316 |  | 24360af2 | 96e939e4 |
+| 35 96e939e4 |  | fab8b464 | 6c518d80 |
+| 36 6c518d80 | 50d15dcd | 98c5bfc9 | c814e204 |
+| 37 c814e204 |  | bebd198e | 76a9fb8a |
+| 38 76a9fb8a |  | 268c3ba7 | 5025c02d |
+| 39 5025c02d |  | 09e04214 | 59c58239 |
 40 59c58239  c5823959  a61312cb  10000000  b61312cb  68007bac  de136967
-| 41 de136967  |           | b2df3316  | 6ccc5a71  |
+| 41 de136967 |  | b2df3316 | 6ccc5a71 |
 | ------------ | --------- | --------- | --------- |
-| 42 6ccc5a71  |           | 96e939e4  | fa256395  |
-| 43 fa256395  |           | 6c518d80  | 9674ee15  |
-| 44 9674ee15  | 90922859  | c814e204  | 5886ca5d  |
-| 45 5886ca5d  |           | 76a9fb8a  | 2e2f31d7  |
-| 46 2e2f31d7  |           | 5025c02d  | 7e0af1fa  |
-| 47 7e0af1fa  |           | 59c58239  | 27cf73c3  |
+| 42 6ccc5a71 |  | 96e939e4 | fa256395 |
+| 43 fa256395 |  | 6c518d80 | 9674ee15 |
+| 44 9674ee15 | 90922859 | c814e204 | 5886ca5d |
+| 45 5886ca5d |  | 76a9fb8a | 2e2f31d7 |
+| 46 2e2f31d7 |  | 5025c02d | 7e0af1fa |
+| 47 7e0af1fa |  | 59c58239 | 27cf73c3 |
 48 27cf73c3  cf73c327  8a8f2ecc  20000000  aa8f2ecc  de136967  749c47ab
-| 49 749c47ab  |           | 6ccc5a71  | 18501dda  |
+| 49 749c47ab |  | 6ccc5a71 | 18501dda |
 | ------------ | --------- | --------- | --------- |
-| 50 18501dda  |           | fa256395  | e2757e4f  |
-| 51 e2757e4f  |           | 9674ee15  | 7401905a  |
-| 52 7401905a  | 927c60be  | 5886ca5d  | cafaaae3  |
-| 53 cafaaae3  |           | 2e2f31d7  | e4d59b34  |
-| 54 e4d59b34  |           | 7e0af1fa  | 9adf6ace  |
-| 55 9adf6ace  |           | 27cf73c3  | bd10190d  |
+| 50 18501dda |  | fa256395 | e2757e4f |
+| 51 e2757e4f |  | 9674ee15 | 7401905a |
+| 52 7401905a | 927c60be | 5886ca5d | cafaaae3 |
+| 53 cafaaae3 |  | 2e2f31d7 | e4d59b34 |
+| 54 e4d59b34 |  | 7e0af1fa | 9adf6ace |
+| 55 9adf6ace |  | 27cf73c3 | bd10190d |
 56 bd10190d  10190dbd  cad4d77a  40000000  8ad4d77a  749c47ab  fe4890d1
-| 57 fe4890d1  |     | 18501dda  | e6188d0b  |
+| 57 fe4890d1 |  | 18501dda | e6188d0b |
 | ------------ | --- | --------- | --------- |
-| 58 e6188d0b  |     | e2757e4f  | 046df344  |
-| 59 046df344  |     | 7401905a  | 706c631e  |
+| 58 e6188d0b |  | e2757e4f | 046df344 |
+| 59 046df344 |  | 7401905a | 706c631e |
 33
 
-| FIPS 197  |     |     |     |     | ADVANCED ENCRYPTION STANDARD (AES)  |     |     |     |     |     |
-| --------- | --- | --- | --- | --- | ----------------------------------- | --- | --- | --- | --- | --- |
 Appendix B — Cipher Example
 The following diagram shows the values in the state array as the cipher progresses for a block
 length and a key length of 16 bytes each (i.e., Nb = 4 and Nk = 4).
-|     | Input  |     | = 32 43 | f6 a8 88 5a | 30 8d 31 | 31  | 98 a2 | e0  | 37 07 | 34  |
-| --- | ------ | --- | ------- | ----------- | -------- | --- | ----- | --- | ----- | --- |
-|     | Key    |     | = 2b 7e | 15 16 28 ae | d2 a6 ab | f7  | 15 88 | 09  | cf 4f | 3c  |
+|  | Input |  | = 32 43 | f6 a8 88 5a | 30 8d 31 | 31 | 98 a2 | e0 | 37 07 | 34 |
+| --- | ------ | --- | ------- | ----------- | -------- | --- | ----- | --- | ----- |
+|  | Key |  | = 2b 7e | 15 16 28 ae | d2 a6 ab | f7 | 15 88 | 09 | cf 4f | 3c |
 The Round Key values are taken from the Key Expansion example in Appendix A.1.
-| Round   |     | Start   | of      | After     | After      |     | After       |     | Round  | Key         |
+| Round |  | Start | of | After | After |  | After |  | Round | Key |
 | ------- | --- | ------- | ------- | --------- | ---------- | --- | ----------- | --- | ------ | ----------- |
-| Number  |     | Round   |         | SubBytes  | ShiftRows  |     | MixColumns  |     |        | Value       |
-|         |     | 32  88  | 31  e0  |           |            |     |             |     | 2b     | 28  ab  09  |
-|         |     | 43  5a  | 31  37  |           |            |     |             |     | 7e     | ae  f7  cf  |
+| Number |  | Round |  | SubBytes | ShiftRows |  | MixColumns |  |  | Value |
+|  |  | 32  88 | 31  e0 |  |  |  |  |  | 2b | 28  ab  09 |
+|  |  | 43  5a | 31  37 |  |  |  |  |  | 7e | ae  f7  cf |
 input
-|     |     | f6  30  | 98  07  |     |     |     |     |     | 15  | d2  15  4f  |
-| --- | --- | ------- | ------- | --- | --- | --- | --- | --- | --- | ----------- |
-|     |     | a8  8d  | a2  34  |     |     |     |     |     | 16  | a6  88  3c  |
 19  a0  9a  e9  d4  e0  b8  1e  d4  e0  b8  1e  04  e0  48  28  a0  88  23  2a
 3d  f4  c6  f8  27  bf  b4  41  bf  b4  41  27  66  cb  f8  06  fa  54  a3  6c
 1

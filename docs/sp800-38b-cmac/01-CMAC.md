@@ -481,8 +481,6 @@ respectively, within the Galois field that is determined by the irreducible poly
 b
 is discussed in Sec. 5.3.
 
-| NIST SP 800-38B  |     |     |     |     | BLOCK CIPHER MODES:  |     |
-| ---------------- | --- | --- | --- | --- | -------------------- | --- |
 CMAC MODE FOR AUTHENTICATION
 
 Input:
@@ -493,30 +491,22 @@ MAC T of bit length Tlen.
 
 Suggested Notation:
 CMAC(K, M, Tlen) or, if Tlen is understood from the context, CMAC(K, M).
-|     |     |     |     |     |     |     |
-| --- | --- | --- | --- | --- | --- | --- |
 Steps:
 This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-38B    1.  Apply the subkey generation process in Sec. 6.1 to K to produce K1 and K2.
-| 2.  | If Mlen = 0, let n = 1; else, let n = Mlen/b.  |     |     |     |     |     |
-| --- | ------------------------------------------------ | --- | --- | --- | --- | --- |
 3.  Let M , M , ... , M , M * denote the unique sequence of bit strings such that M =
-|     | 1 2                          | n-1 n       |                 |                         |              |                 |
+|  | 1 2 | n-1 n |
 | --- | ---------------------------- | ----------- | --------------- | ----------------------- | ------------ | --------------- |
-|     |                              | *, where M  |                 | are complete blocks.2   |              |                 |
-|     | M 1  || M 2  || ... || M     | n-1  || M n | 1 , M 2 ,..., M | n-1                     |              |                 |
-|     | * is a complete block, let M |             |                 | *; else, let M          |              | *||10j), where  |
-| 4.  | If M n                       |             | n  = K1 ⊕ M     | n                       | n  = K2 ⊕ (M | n               |
+|  |  | *, where M |  | are complete blocks.2 |
+|  | M 1 |  | M 2 |  | ... |  | M | n-1 |  | M n | 1 , M 2 ,..., M | n-1 |
+|  | * is a complete block, let M |  |  | *; else, let M |  | * |  | 10j), where |
+| 4. | If M n |  | n  = K1 ⊕ M | n | n  = K2 ⊕ (M | n |
 j = nb-Mlen-1.
-| 5.  | Let C = 0b.   |     |     |     |     |     |
-| --- | ------------- | --- | --- | --- | --- | --- |
 0
-|   6.  | For i = 1 to n, let C | = CIPH | (C ⊕ M).  |     |     |     |
-| ----- | --------------------- | ------ | --------- | --- | --- | --- |
-|       |                       | i  K   | i-1  i    |     |     |     |
-| 7.    | Let T = MSB           | (C ).  |           |     |     |     |
+| 6. | For i = 1 to n, let C | = CIPH | (C ⊕ M). |
+| ----- | --------------------- | ------ | --------- |
+|  |  | i  K | i-1  i |
+| 7. | Let T = MSB | (C ). |
 Tlen n
-| 8.  | Return T.  |     |     |     |     |     |
-| --- | ---------- | --- | --- | --- | --- | --- |
 
 In Step 1, the subkeys are generated from the key.  In Steps 2–4, the input message is formatted
 into a sequence of complete blocks in which the final block has been masked by a subkey.  There
@@ -541,14 +531,8 @@ initialization vector, is applied to the formatted message.  In Steps 7 and 8, t
 block is truncated according to the MAC length parameter that is associated with the key, and the
 result is returned as the MAC.
 
-| 2 Consequently, if Mlen ≤ b, then M = M |     | *.  |     |     |     |     |
-| --------------------------------------- | --- | --- | --- | --- | --- | --- |
 1
-|     |     |     | 8   |     |     |     |
-| --- | --- | --- | --- | --- | --- | --- |
 
-| NIST SP 800-38B  |     |     |     |     |     |     |     | BLOCK CIPHER MODES:  |
-| ---------------- | --- | --- | --- | --- | --- | --- | --- | -------------------- |
 CMAC MODE FOR AUTHENTICATION
 Equivalent sets of steps, i.e., procedures that yield the correct output from the same input, are
 permitted.  For example, it is not necessary to complete the formatting of the entire message (Steps
@@ -563,20 +547,13 @@ the final string in the partition.
 Similarly, the subkeys need not be computed anew for each invocation of CMAC with a given
 This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-38B  key; instead, they may be precomputed and stored along with the key as algorithm inputs.
 
-|     |     | ……  | **  |     |     |     | ……  | **          |
-| --- | --- | --- | --- | --- | --- | --- | --- | ----------- |
-|     | MM  | MM  | MM  |     |     | MM  | MM  | MM 1100……00 |
-|     | 11  | 22  | nn  |     |     | 11  | 22  | nn          |
 ⊕⊕
-|     |          | ⊕⊕       |          | KK11 |     |          | ⊕⊕       | ⊕⊕ KK22  |
+|  |  | ⊕⊕ |  | KK11 |  |  | ⊕⊕ | ⊕⊕ KK22 |
 | --- | -------- | -------- | -------- | ---- | --- | -------- | -------- | -------- |
-|     | CCIIPPHH | CCIIPPHH | CCIIPPHH |      |     | CCIIPPHH | CCIIPPHH | CCIIPPHH |
-|     | KK       | KK       |          | KK   |     | KK       | KK       | KK       |
-|     |          |          | MMSSBB   |      |     |          |          | MMSSBB   |
-|     |          |          | TTlleenn |      |     |          |          | TTlleenn |
+|  | CCIIPPHH | CCIIPPHH | CCIIPPHH |  |  | CCIIPPHH | CCIIPPHH | CCIIPPHH |
+|  |  |  | MMSSBB |  |  |  |  | MMSSBB |
+|  |  |  | TTlleenn |  |  |  |  | TTlleenn |
 
-|     |     |     | TT  |     |     |     |     | TT  |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 Figure 1:  Illustration of the two cases of MAC Generation.
 
 The two cases of MAC Generation are illustrated in Figure 1 above.  On the left is the case
@@ -595,8 +572,6 @@ MAC length Tlen.
 
 Input:
   message M of bit length Mlen;
-|     |     |     |     |     | 9   |     |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 NIST SP 800-38B BLOCK CIPHER MODES:
 CMAC MODE FOR AUTHENTICATION

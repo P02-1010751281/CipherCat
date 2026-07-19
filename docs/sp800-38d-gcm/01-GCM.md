@@ -112,11 +112,11 @@ v
 NIST Special Publication 800-38D
 List of Figures
 Figure 1:  GHASH  (X  || X || ... || X ) = Y .................................................................................13
-|                 | H 1      | 2  m               | m                  |                                                           |
+|  | H 1 | 2  m | m |
 | --------------- | -------- | ------------------ | ------------------ | --------------------------------------------------------- |
-|                 |          | *) = Y             |                    | *.....................................................14  |
-| Figure 2:  GCTR |  (ICB, X |  || X  || ... || X |  || Y  || ... || Y |                                                           |
-|                 | K 1      | 2 n                | 1 2                | n                                                         |
+|  |  | *) = Y |  | *.....................................................14 |
+| Figure 2:  GCTR | (ICB, X |  |  | X |  | ... |  | X |  |  | Y |  | ... |  | Y |
+|  | K 1 | 2 n | 1 2 | n |
 Figure 3:  GCM-AE  (IV, P, A) = (C, T)......................................................................................16
 K
 Figure 4:  GCM-AD  (IV, C, A, T) = P or FAIL...........................................................................18
@@ -531,17 +531,13 @@ NIST Special Publication 800-38D
 ⎧ Z                          if x =0;
 i i
 Z = ⎨
-|     | i+1 ⎩ Z ⊕V                  if x | =1. |     |     |
-| --- | -------------------------------- | --- | --- | --- |
 i i i
 
 ⎧ V >>1                  if LSB (V)=0;
-|     | V = ⎨  i | 1 i                          |     |     |
-| --- | -------- | ---------------------------- | --- | --- |
-|     | i+1 (V   | >>1 ) ⊕R       if LSB (V)=1. |     |     |
+|  | V = ⎨  i | 1 i |
+| --- | -------- | ---------------------------- |
+|  | i+1 (V | >>1 ) ⊕R       if LSB (V)=1. |
 ⎩  i 1 i
-| 4.  Return Z | 128 .  |     |     |     |
-| ------------ | ------ | --- | --- | --- |
 
 The • operation on (pairs of) the 2128 possible blocks corresponds to the multiplication operation
 2128
@@ -549,8 +545,6 @@ for  the  binary  Galois  (finite)  field  of  elements.    The  fixed  block,  
 representation of this field as the modular multiplication of binary polynomials of degree less
 than 128.  The convention for interpreting strings as polynomials is “little endian”:  i.e., if u is
 the variable of the polynomial, then the block x x ...x  corresponds to the polynomial x  + x u +
-|     |     | 0 1 127 |     | 0 1  |
-| --- | --- | ------- | --- | ---- |
 u2 + ... + x u127.  The XOR operation is used to add coefficients of “like” terms during the
 x
 2  127
@@ -573,56 +567,40 @@ Input:
 bit string X such that len(X) = 128m for some positive integer m.
 
 Output:
-| block GHASH |  (X).  |     |     |     |
-| ----------- | ------ | --- | --- | --- |
 H
 
 Steps:
 1.  Let X 1 , X  2 , ... , X  m-1 , X  m  denote the unique sequence of blocks such that X = X  1  || X  2  ||
 ... || X || X .
  m-1   m
-| 2.  Let Y  be the “zero block,” 0 |     | 128.   |     |     |
-| --------------------------------- | --- | ------ | --- | --- |
 0
-| 3.  For i = 1, ..., m, let Y = (Y |     | ⊕ X) • H.  |     |     |
-| --------------------------------- | --- | ---------- | --- | --- |
 i i-1  i
-| 4.  Return Y | .   |     |     |     |
-| ------------ | --- | --- | --- | --- |
 m
 
-|                                            |     | •Hm ⊕ X •Hm-1 ⊕ ... ⊕ X | •H2 ⊕ X |                |
+|  |  | •Hm ⊕ X •Hm-1 ⊕ ... ⊕ X | •H2 ⊕ X |
 | ------------------------------------------ | --- | ----------------------- | ------- | -------------- |
-| In effect, the GHASH function calculates X |     |                         |         | •H.  Ref. [6]  |
-|                                            |     | 1 2                     | m-1     | m              |
+| In effect, the GHASH function calculates X |  |  |  | •H.  Ref. [6] |
+|  |  | 1 2 | m-1 | m |
 describes methods for optimizing implementations of GHASH in both hardware and software.
 
 The  GHASH  function  is  illustrated  in  Figure  1  below,  without  the  zero  block,  Y ,  whose
 0
-| exclusive-OR with X |  does not change X | .   |     |     |
-| ------------------- | ------------------ | --- | --- | --- |
-|                     | 1                  | 1   |     |     |
+| exclusive-OR with X | does not change X | . |
+| ------------------- | ------------------ |
  12
 
 NIST Special Publication 800-38D
 
 ...
-|     |     |     | X                |     |     | X                     | X        |
 | --- | --- | --- | ---------------- | --- | --- | --------------------- | -------- |
-|     |     |     | 1                |     |     | 2                     | m        |
-|     |     |     |                  |     |     | ⊕                     | ⊕        |
-|     |     |     | • H              |     |     | •H                    | •H       |
-|     |     |     | Y                |     |     | Y                     | Y        |
-|     |     |     | 1                |     |     | 2                     | m        |
-|     |     |     | Figure 1:  GHASH |     |     |  (X  || X || ... || X | ) = Y .  |
-|     |     |     |                  |     |     | H 1 2                 | m m      |
+|  |  |  | • H |  |  | •H | •H |
+|  |  |  | Figure 1:  GHASH |  |  | (X |  | X |  | ... |  | X | ) = Y . |
+|  |  |  |  |  |  | H 1 2 | m m |
 6.5  GCTR Function
 
 Algorithm 3 below specifies the GCTR function.  The suggested notation does not indicate the
 choice of the underlying block cipher.
 
-| Algorithm 3:  GCTR |     |     |  (ICB, X)  |     |     |     |     |
-| ------------------ | --- | --- | ---------- | --- | --- | --- | --- |
 K
 
 Prerequisites:
@@ -638,39 +616,32 @@ bit string Y of bit length len(X).
 
 Steps:
 1.  If X is the empty string, then return the empty string as Y.
-|           |     | (      | )      |     |     |     |     |
-| --------- | --- | ------ | ------ | --- | --- | --- | --- |
-| 2.  Let n | =   | ⎡len X | 128⎤.  |     |     |     |     |
+| --------- | --- | ------ | ------ |
+| 2.  Let n | = | ⎡len X | 128⎤. |
 3.  Let X , X , ... , X , X * denote the unique sequence of bit strings such that
-|     | 1   | 2   | n-1    | n         |     |          |     |
-| --- | --- | --- | ------ | --------- | --- | -------- | --- |
-|     |     | X   | = X || | X ||...|| | X   | || X∗ ;  |     |
-|     |     |     | 1      | 2         | n−1 | n        |     |
 are complete blocks.2
-|            |     | X , X   | ,..., X |      |     |     |     |
-| ---------- | --- | ------- | ------- | ---- | --- | --- | --- |
-|            |     | 1       | 2       | n-1  |     |     |     |
-| 4.  Let CB |     | = ICB.  |         |      |     |     |     |
+|  |  | X , X | ,..., X |
+| ---------- | --- | ------- | ------- | ---- |
+|  |  | 1 | 2 | n-1 |
+| 4.  Let CB |  | = ICB. |
 1
-| 5.  For i = 2 to n, let CB |                  |      |     | = inc      | (CB | ).       |     |
-| -------------------------- | ---------------- | ---- | --- | ---------- | --- | -------- | --- |
-|                            |                  |      |     | i  32      | i-1 |          |     |
-|                            |                  |      |     |            |     | ( )      |     |
-| 6.  For i                  | =1 to n−1, let Y |      |     | = X ⊕CIPH  |     | CB .     |     |
-|                            |                  |      |     | i i        |     | K i      |     |
-| Let Y∗                     |                  | X∗   |     | (CIPH      |     | (CB )).  |     |
-| 7.                         | =                | ⊕MSB |     |            |     |          |     |
-|                            | n                |      |     | len ( X ∗) | K   | n        |     |
-|                            |                  | n    |     | n          |     |          |     |
+| 5.  For i = 2 to n, let CB |  |  |  | = inc | (CB | ). |
+| -------------------------- | ---------------- | ---- | --- | ---------- | --- | -------- |
+|  |  |  |  | i  32 | i-1 |
+|  |  |  |  |  |  | ( ) |
+| 6.  For i | =1 to n−1, let Y |  |  | = X ⊕CIPH |  | CB . |
+|  |  |  |  | i i |  | K i |
+| Let Y∗ |  | X∗ |  | (CIPH |  | (CB )). |
+| 7. | = | ⊕MSB |
+|  | n |  |  | len ( X ∗) | K | n |
 
 2 Consequently, X * is either a complete block or a nonempty partial block, and if 1 ≤ len(X) ≤128, then X = X *.
 n 1
  13
 
 NIST Special Publication 800-38D
-| 8.  | Let Y | =Y ||Y | ||...||Y∗.  |     |     |     |     |     |     |     |     |
-| --- | ----- | ------ | ----------- | --- | --- | --- | --- | --- | --- | --- | --- |
-|     |       | 1      | 2           | n   |     |     |     |     |     |     |     |
+| 8. | Let Y | =Y |  | Y |  |  | ... |  | Y∗. |
+| --- | ----- | ------ | ----------- |
 9.  Return Y.
 
 In Steps 1 and 2, the input string of arbitrary length is partitioned into a sequence of blocks to the
@@ -683,19 +654,17 @@ sequence of results is concatenated to form the output.
 
 Figure 2 below illustrates the GCTR function.
 
-|     | ICB  |     | inc |     | CB   | …   |      | CB  | inc | CB   |     |
-| --- | ---- | --- | --- | --- | ---- | --- | ---- | --- | --- | ---- | --- |
-|     |      |     |     |     | 2    |     |      | n-1 |     |      | n   |
-|     | CIPH |     |     |     | CIPH |     | CIPH |     |     | CIPH |     |
-|     |      | K   |     |     | K    |     |      | K   |     |      | K   |
-| X   |      | ⊕   |     | X   | ⊕    | X   |      | ⊕   | X   | *    | ⊕   |
-| 1   |      |     |     | 2   |      | n-1 |      |     | n   |      |     |
-|     |      | Y   |     |     | Y    | …   |      | Y   |     |      | Y * |
-|     |      | 1   |     |     | 2    |     |      | n-1 |     |      | n   |
+|  | ICB |  | inc |  | CB | … |  | CB | inc | CB |
+| --- | ---- | --- | --- | --- | ---- | --- | ---- | --- | --- | ---- |
+|  |  |  |  |  | 2 |  |  | n-1 |  |  | n |
+|  | CIPH |  |  |  | CIPH |  | CIPH |  |  | CIPH |
+| 1 |  |  |  | 2 |  | n-1 |  |  | n |
+|  |  | Y |  |  | Y | … |  | Y |  |  | Y * |
+|  |  | 1 |  |  | 2 |  |  | n-1 |  |  | n |
 
-|     |     | Figure 2:  GCTR |     |     |  (ICB, X |  || X  || ... || X | *) = Y |  || Y  || ... || Y | *.  |     |     |
-| --- | --- | --------------- | --- | --- | -------- | ------------------ | ------ | ------------------ | --- | --- | --- |
-|     |     |                 |     |     | K 1      | 2                  | n      | 1 2                | n   |     |     |
+|  |  | Figure 2:  GCTR |  |  | (ICB, X |  |  | X |  | ... |  | X | *) = Y |  |  | Y |  | ... |  | Y | *. |
+| --- | --- | --------------- | --- | --- | -------- | ------------------ | ------ | ------------------ |
+|  |  |  |  |  | K 1 | 2 | n | 1 2 | n |
 
 7  GCM Specification
 
@@ -717,8 +686,6 @@ Algorithm 4 below specifies the authenticated encryption function:
  14
 
 NIST Special Publication 800-38D
-| Algorithm 4:  GCM-AE |     |     |  (IV, P, A)  |     |     |     |     |
-| -------------------- | --- | --- | ------------ | --- | --- | --- | --- |
 K
 
 Prerequisites:
@@ -737,33 +704,22 @@ ciphertext C;
 authentication tag T.
 
   Steps:
-| 1.  Let H = CIPH |     | (0 128).  |     |     |     |     |     |
-| ---------------- | --- | --------- | --- | --- | --- | --- | --- |
 K
-| 2.  Define a block, J |     | , as follows:  |     |     |     |     |     |
-| --------------------- | --- | -------------- | --- | --- | --- | --- | --- |
 0
-| If len(IV)=96, then let J |     |     |  = IV || 031 ||1.  |     |     |     |     |
-| ------------------------- | --- | --- | ------------------ | --- | --- | --- | --- |
 0
 If len(IV) ≠ 96, then let s = 128 ⎡len(IV)/128⎤-len(IV), and let
 (IV||0s+64||[len(IV)]
-|                | J =GHASH |      |            | ).  |     |     |     |
-| -------------- | -------- | ---- | ---------- | --- | --- | --- | --- |
-|                | 0        | H    |            | 64  |     |     |     |
-| 3.  Let C=GCTR |          | (inc | (J ), P).  |     |     |     |     |
+|  | J =GHASH |  |  | ). |
+| -------------- | -------- | ---- | ---------- |
+| 3.  Let C=GCTR |  | (inc | (J ), P). |
 K 32 0
-|     |     | ( ) |     | ( ) | ( ) |     | ( ) |
-| --- | --- | --- | --- | --- | --- | --- | --- |
 4.  Let u =128⋅⎡len C 128⎤−len C  and let v =128⋅⎡len A 128⎤−len A .
 5.  Define a block, S, as follows:
 v || C || 0 u || [len(A)]
-|           |      | S = GHASH | (A || 0 |     |  || [len(C)] | ).  |     |
-| --------- | ---- | --------- | ------- | --- | ------------ | --- | --- |
-|           |      |           | H       |     | 64           | 64  |     |
-|           |      | (         | (       | ))  |              |     |     |
-| 6.  Let T | =MSB | GCTR      | J ,S    | .   |              |     |     |
-|           |      | t         | K 0     |     |              |     |     |
+|  |  | S = GHASH | (A |  | 0 |  |  |  | [len(C)] | ). |
+| --------- | ---- | --------- | ------- | --- | ------------ |
+| 6.  Let T | =MSB | GCTR | J ,S | . |
+|  |  | t | K 0 |
 7.  Return (C, T).
 
 In Step 1, the hash subkey for the GHASH function is generated by applying the block cipher to
@@ -789,27 +745,16 @@ with the pre-counter block that was generated in Step 2, and the result is trunc
 specified tag length to form the authentication tag.  The ciphertext and the tag are returned as the
 output in Step 7.
 
-| IV  |     | P   |     |     |     |
-| --- | --- | --- | --- | --- | --- |
 
-| J   | inc  | GCTR  |              |            |     |
-| --- | ---- | ----- | ------------ | ---------- | --- |
-| 0   | 32   | K     |              |            |     |
-| A   | 0 v  | C     | 0 u [len(A)] |   [len(C)] |     |
-|     |      |       |              | 64         | 64  |
-|     |      | GHASH |              | 0 128      |     |
+| J | inc | GCTR |
+| --- | ---- | ----- | ------------ | ---------- |
+| A | 0 v | C | 0 u [len(A)] | [len(C)] |
+|  |  | GHASH |  | 0 128 |
 H
-|     |     | GCTR |     | CIPH |     |
-| --- | --- | ---- | --- | ---- | --- |
 K
 K
-|     |     | MSB |     | H   |     |
-| --- | --- | --- | --- | --- | --- |
-|     |     | t   |     |     |     |
 T
 
-|     | Figure 3:  GCM-AE |  (IV, P, A) = (C, T).  |     |     |     |
-| --- | ----------------- | ---------------------- | --- | --- | --- |
 K
 
 The authenticated encryption function is illustrated in Figure 3 above.  The determination of J 0
@@ -819,8 +764,6 @@ Algorithm for the Authenticated Decryption Function
 
 Algorithm 5 below specifies the authenticated decryption function:
 
-| Algorithm 5:  GCM-AD |  (IV, C, A, T)  |     |     |     |     |
-| -------------------- | --------------- | --- | --- | --- | --- |
 K
 
 Prerequisites:
@@ -844,30 +787,25 @@ plaintext P or indication of inauthenticity FAIL.
   Steps:
 1.  If the bit lengths of IV, A or C are not supported, or if len(T) ≠ t, then return FAIL.
 128).
-| 2.  | Let H = CIPH |     | (0  |     |     |     |     |     |     |
-| --- | ------------ | --- | --- | --- | --- | --- | --- | --- | --- |
 K
-| 3.  | Define a block, J     |     | 0 , as follows:  |                    |     |     |     |     |     |
-| --- | --------------------- | --- | ---------------- | ------------------ | --- | --- | --- | --- | --- |
-|     | If len(IV)=96, then J |     |                  |  = IV || 031 ||1.  |     |     |     |     |     |
+| 3. | Define a block, J |  | 0 , as follows: |
+| --- | --------------------- | --- | ---------------- | ------------------ |
+|  | If len(IV)=96, then J |  |  | = IV |  | 031 |  | 1. |
 0
 If len(IV) ≠ 96, then let s = 128 ⎡len(IV)/128⎤-len(IV), and
-|     | J =GHASH   |     | (IV||0s+64||[len(IV)] |           |     | ).  |     |     |     |
-| --- | ---------- | --- | --------------------- | --------- | --- | --- | --- | --- | --- |
-|     | 0          |     | H                     |           |     | 64  |     |     |     |
-| 4.  | Let P=GCTR |     | (inc                  | (J ),C).  |     |     |     |     |     |
-|     |            |     | K 32                  | 0         |     |     |     |     |     |
-|     |            |     | ( )                   |           | (   | )   | ( ) |     | ( ) |
+|  | J =GHASH |  | (IV |  | 0s+64 |  | [len(IV)] |  |  | ). |
+| --- | ---------- | --- | --------------------- | --------- |
+| 4. | Let P=GCTR |  | (inc | (J ),C). |
+|  |  |  | K 32 | 0 |
+|  |  |  | ( ) |  | ( | ) | ( ) |  | ( ) |
 5.  Let u =128⋅⎡len C 128⎤−len C  and let v =128⋅⎡len A 128⎤−len A .
 6.  Define a block, S, as follows:
-|     |                                             |           |      |         | v || C || 0 | u || [len(A)] |              |     |     |
-| --- | ------------------------------------------- | --------- | ---- | ------- | ----------- | ------------- | ------------ | --- | --- |
-|     |                                             | S = GHASH |      | (A || 0 |             |               |  || [len(C)] | )   |     |
-|     |                                             |           |      | H       |             |               | 64           | 64  |     |
-|     |                                             |           | (    | (       | ))          |               |              |     |     |
-| 7.  | Let T′=MSB                                  |           | GCTR | J       | ,S .        |               |              |     |     |
-|     |                                             |           | t    | K 0     |             |               |              |     |     |
-| 8.  | If T =T′, then return P; else return FAIL.  |           |      |         |             |               |              |     |     |
+|  |  |  |  |  | v |  | C |  | 0 | u |  | [len(A)] |
+| --- | ------------------------------------------- | --------- | ---- | ------- | ----------- | ------------- | ------------ |
+|  |  | S = GHASH |  | (A |  | 0 |  |  |  |  | [len(C)] | ) |
+| 7. | Let T′=MSB |  | GCTR | J | ,S . |
+|  |  |  | t | K 0 |
+| 8. | If T =T′, then return P; else return FAIL. |
 
 In Step 1, the implementation’s support for the lengths of the IV, the ciphertext, the AAD, and
 the authentication tag is verified.  In Step 2, the hash subkey for the GHASH function is
@@ -898,32 +836,20 @@ from IV (Step 3) is not depicted.
  17
 
 NIST Special Publication 800-38D
-| IV  |     |     |     |     | P   |     |     |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
-| J   |     | inc |     | GCTR |     |            |     |          |     |
-| --- | --- | --- | --- | ---- | --- | ---------- | --- | -------- | --- |
-| 0   |     | 32  |     |      | K   |            |     |          |     |
-|     |     |     | v   |      |     | u          |     |          |     |
-| A   |     | 0   |     | C    |     | 0 [len(A)] |     | [len(C)] |     |
-|     |     |     |     |      |     |            | 64  |          | 64  |
+| J |  | inc |  | GCTR |
+| --- | --- | --- | --- | ---- | --- | ---------- | --- | -------- |
+| A |  | 0 |  | C |  | 0 [len(A)] |  | [len(C)] |
 128
-|     |     |     |     | GHASH |     |     |     | 0   |     |
-| --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- |
 H
-|     |     |     |     | GCTR |     |     |     | CIPH |     |
-| --- | --- | --- | --- | ---- | --- | --- | --- | ---- | --- |
 K
 K
-|     |     |     |      | MSB |     |     |     | H   |     |
-| --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- |
-|     |     |     |      |     | t   |     |     |     |     |
-|     | T   |     | if ≠ |     | T′  |     |     |     |     |
+|  |  |  |  | MSB |  |  |  | H |
+| --- | --- | --- | ---- |
+|  | T |  | if ≠ |  | T′ |
 
 FAIL
 
-|     | Figure 4:  GCM-AD |     |     |  (IV, C, A, T) = P or FAIL.  |     |     |     |     |     |
-| --- | ----------------- | --- | --- | ---------------------------- | --- | --- | --- | --- | --- |
 K
 
 8  Uniqueness Requirement on IVs and Keys

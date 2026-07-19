@@ -260,37 +260,31 @@ with any approved hash function as the PRF. The digest size of the hash function
 is denoted as hLen.
 The details of the PBKDF algorithm are given below.
 
-| Input:   | P   Password        |     |
-| -------- | ------------------- | --- |
-|    S     | Salt                |     |
-|    C     |   Iteration count   |     |
+| Input: | P   Password |
+| -------- | ------------------- |
+| S | Salt |
+| C | Iteration count |
 Length of MK in bits; at most (232-1)  hLen
    kLen
 Parameter:    PRF     HMAC with an approved hash function
                         hlen     Digest size of the hash function
-| Output:  | mk  Master key  |     |
-| -------- | --------------- | --- |
 Algorithm:
 If (kLen > (232-1)  hLen)
             Return an error indicator and stop ;
 len = kLen / hLen ;
 r = kLen – (len – 1)   hLen ;
 For i = 1 to len
-|     T |  = 0;    |     |
-| ----- | -------- | --- |
 i
-|         U | = S || Int(i);    |     |
-| --------- | ----------------- | --- |
 0
      For j = 1 to C
-|     | U = HMAC(P, U | )   |
-| --- | ------------- | --- |
-|     | j             | j-1 |
+|  | U = HMAC(P, U | ) |
+| --- | ------------- |
+|  | j | j-1 |
 T = T   U
-|                         | i  i j           |          |
+|  | i  i j |
 | ----------------------- | ---------------- | -------- |
-|        Return    mk = T |  || T  || … || T | <0…r-1>  |
-|                         | 1 2              | len      |
+| Return    mk = T |  |  | T |  | … |  | T | <0…r-1> |
+|  | 1 2 | len |
 
   7
 

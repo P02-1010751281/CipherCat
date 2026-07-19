@@ -550,8 +550,6 @@ The  leading  octet  of  the  first  block  of  the  formatting,  B ,  contains 
 B
 information: two single bits, called Reserved and Adata, and two strings of three bits, to encode
 the values t and q.  The encoding of t is [(t-2)/2] , and the encoding of q is [q-1] .  Thus, for
-|     |     |     |     | 3   |     | 3   |     |
-| --- | --- | --- | --- | --- | --- | --- | --- |
 example, if the MAC length is 8 octets, then t is encoded as 011.  Note that the encoding 000 in
 both cases does not correspond to a permitted value of t or q.  The Reserved bit is reserved to
 enable future extensions of the formatting; it shall be set to ‘0’.  The Adata bit is ‘0’ if a=0 and
@@ -559,30 +557,25 @@ enable future extensions of the formatting; it shall be set to ‘0’.  The Ada
 Table 1: Formatting of the Flags Octet in B
 0
 B
-| Bit number  | 7         | 6      | 5         | 4  3  | 2   | 1     | 0   |
-| ----------- | --------- | ------ | --------- | ----- | --- | ----- | --- |
-| Contents    | Reserved  | Adata  | [(t-2)/2] |       |     | [q-1] |     |
-|             |           |        |           | 3     |     | 3     |     |
+| Bit number | 7 | 6 | 5 | 4  3 | 2 | 1 | 0 |
+| ----------- | --------- | ------ | --------- | ----- | --- | ----- |
+| Contents | Reserved | Adata | [(t-2)/2] |  |  | [q-1] |
 The remaining 15 octets of the first block of the formatting are devoted to the nonce and the
 binary representation of the message length in q octets, as given in Table 2.
 Table 2: Formatting of B
 B 0
-|                   | Octet number  |     | 0     | 1 ... 15-q  | 16-q ... 15 |     |     |
-| ----------------- | ------------- | --- | ----- | ----------- | ----------- | --- | --- |
-|                   | Contents      |     | Flags | N           | Q           |     |     |
-| For example, if B | 0  is         |     |       |             |             |     |     |
+|  | Octet number |  | 0 | 1 ... 15-q | 16-q ... 15 |
+| ----------------- | ------------- | --- | ----- | ----------- | ----------- |
+|  | Contents |  | Flags | N | Q |
+| For example, if B | 0  is |
 B
 01101110 00010011 11010100 10100011 01011101 01110001 10100101 00000000
 00000000 00000000 00000000 00000000 00000000 00000000 01000100 00000001:
 • The associated data will not be empty (because Adata=1).
-| • The MAC will consist of 12 octets (because [(t-2)/2] |     |     |     | =101). |     |     |     |
-| ------------------------------------------------------ | --- | --- | --- | ------ | --- | --- | --- |
 3
 • The octet length of Q is 7 (because [q-1] =110), so Q is 00000000 000000000 00000000
 3
 00000000 00000000 01000100 00000001.
-| • The payload will consist of 17,409 octets (because Q=[17409] |     |     |     |     | ).  |     |     |
-| -------------------------------------------------------------- | --- | --- | --- | --- | --- | --- | --- |
 56
 • The  octet  length  of  N  is  8  (because  n=15-q  and  q=7),  so  N=00010011  11010100
 10100011 01011101 01110001 10100101 00000000 00000000.
@@ -593,24 +586,15 @@ the associated data in the formatted data.  If a>0, then a is encoded as describ
 encoding of a is concatenated with the associated data A, followed by the minimum number of
 ‘0’ bits, possibly none, such that the resulting string can be partitioned into 16-octet blocks.
 These blocks are denoted in the formatted data as B , B , … B  for some positive integer u that
-|     |     |     |     | 1 2 u |     |     |     |
-| --- | --- | --- | --- | ----- | --- | --- | --- |
-|     |     |     |     | B B B |     |     |     |
 depends on a.
 The value a is encoded according to the following three cases:
 13
 
 If 0 < a < 216-28, then a is encoded as [a]
-| •   |     |     |     |     |     | , i.e., two octets. |     |     |     |
-| --- | --- | --- | --- | --- | --- | ------------------- | --- | --- | --- |
 16
 If 216-28 ≤ a < 232, then a is encoded as 0xff || 0xfe || [a]
-| •   |     |     |     |     |     |     |     | , i.e., six octets. |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | ------------------- | --- |
 32
 If 232 ≤ a < 264, then a is encoded as 0xff || 0xff || [a]
-| •   |     |     |     |     |     |     | 64,  i.e., ten octets. |     |     |
-| --- | --- | --- | --- | --- | --- | --- | ---------------------- | --- | --- |
 For example, if a=216, the encoding of a is 11111111 11111110 00000000 00000001 00000000
 00000000.
 The formatting of distinct sets of associated data will not overlap, because for distinct values of
@@ -618,39 +602,34 @@ a, the leading bits of the encodings of a are distinct: in the first case, the f
 0xff as it will for the second and third cases; the second and third cases can be distinguished by
 the second octet.  Encodings that are not specified in these three cases are reserved, e.g., when
 the first two octets are 0x0000, 0xff00, 0xff01, etc.
-| A.2.3 | Formatting of the Payload  |     |     |     |     |     |     |     |     |
-| ----- | -------------------------- | --- | --- | --- | --- | --- | --- | --- | --- |
 The associated data blocks, if any, are followed in the sequence of formatted blocks by the
 payload blocks.  The payload is concatenated with the minimum number of ‘0’ bits, possibly
 none, such that the result can be partitioned into 16-octet blocks. These blocks are denoted in the
-| formatted data as B |     | , B |  … B | , where r=u+⎡p |     | 16⎤.  |     |     |     |
-| ------------------- | --- | --- | ---- | -------------- | --- | ----- | --- | --- | --- |
-|                     |     | u+1 | u+2  | r              |     |       |     |     |     |
-|                     |     | B   | B    | B              |     |       |     |     |     |
+| formatted data as B |  | , B | … B | , where r=u+⎡p |  | 16⎤. |
+| ------------------- | --- | --- | ---- | -------------- | --- | ----- |
+|  |  | u+1 | u+2 | r |
 A.3  Formatting of the Counter Blocks
 The counter generation function in this section is equivalent to a formatting of the counter index i
 into a complete data block.  The counter blocks Ctr are formatted as shown in Table 3 below.
 i
 Table 3: Formatting of Ctr
 i
-|     | Octet number:  |     |     | 0      |     |     | 1 ... 15-q  | 16-q ... 15 |     |
-| --- | -------------- | --- | --- | ------ | --- | --- | ----------- | ----------- | --- |
-|     | Contents:      |     |     | Flags  |     |     | N           | [i]         |     |
+|  | Octet number: |  |  | 0 |  |  | 1 ... 15-q | 16-q ... 15 |
+| --- | -------------- | --- | --- | ------ | --- | --- | ----------- | ----------- |
+|  | Contents: |  |  | Flags |  |  | N | [i] |
 8q
 Within each block Ctr, the Flags field is formatted as shown in Table 4 below.
 i
 Table 4: Formatting of the Flags Field in Ctr
 i
-| Bit number  |     |     | 7         |     | 6         |     | 5  4  | 3  2  | 1  0  |
+| Bit number |  |  | 7 |  | 6 |  | 5  4 | 3  2 | 1  0 |
 | ----------- | --- | --- | --------- | --- | --------- | --- | ----- | ----- | ----- |
-| Contents    |     |     | Reserved  |     | Reserved  |     | 0  0  | 0     | [q-1] |
+| Contents |  |  | Reserved |  | Reserved |  | 0  0 | 0 | [q-1] |
 3
 The Reserved bits are reserved for future expansions and shall be set to 0. Bits 3, 4, and 5 shall
 also be set to 0, to ensure that all the counter blocks are distinct from B  (as specified in A.2.1
 0
 B
-| above). Bits 0, 1, and 2 contain the same encoding of q as in B |     |     |     |     |     |     | .   |     |     |
-| --------------------------------------------------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 0
 B
 14

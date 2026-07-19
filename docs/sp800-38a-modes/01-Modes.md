@@ -9,8 +9,6 @@ Methods and Techniques
 Morris Dworkin
 C O M P U T E R S E C U R I T Y
 
-|     |     |     |
-| --- | --- | --- |
 ii
 
 C O M P U T E R S E C U R I T Y
@@ -192,18 +190,12 @@ revision of the requirements for these modes; and 3) the specification of an add
 confidentiality mode, the CTR mode, for use with any FIPS-approved block cipher.
 2
 
-|     |     |     |     |     |
-| --- | --- | --- | --- | --- |
 4  Definitions, Abbreviations, and Symbols
 4.1  Definitions and Abbreviations
 
-| Bit  | A binary digit: 0 or 1.  |     |     |     |
-| ---- | ------------------------ | --- | --- | --- |
 
 Bit Error  The substitution of a  ‘0’ bit for a ‘1’ bit, or vice versa.
 
-| Bit String  | An ordered sequence of 0’s and 1’s.  |     |     |     |
-| ----------- | ------------------------------------ | --- | --- | --- |
 
 Block Cipher  A family of functions and their inverse functions that is parameterized
 by cryptographic keys; the functions map bit strings of a fixed length to
@@ -211,21 +203,13 @@ bit strings of the same length.
 
 Block Size  The number of bits in an input (or output) block of the block cipher.
 
-| CBC  | Cipher Block Chaining.  |     |     |     |
-| ---- | ----------------------- | --- | --- | --- |
 
-| CFB  | Cipher Feedback.  |     |     |     |
-| ---- | ----------------- | --- | --- | --- |
 
-| Ciphertext  | Encrypted data.  |     |     |     |
-| ----------- | ---------------- | --- | --- | --- |
 
 Confidentiality Mode   A mode that is used to encipher plaintext and decipher ciphertext. The
 confidentiality modes in this recommendation are the ECB, CBC, CFB,
 OFB, and CTR modes.
 
-| CTR  | Counter.  |     |     |     |
-| ---- | --------- | --- | --- | --- |
 
 Cryptographic Key  A parameter used in the block cipher algorithm that determines the
 forward cipher operation and the inverse cipher operation.
@@ -233,20 +217,13 @@ forward cipher operation and the inverse cipher operation.
 Data Block (Block)  A sequence of bits whose length is the block size of the block cipher.
 
 Data Segment  In the CFB mode, a sequence of bits whose length is a parameter that
-| (Segment)  | does not exceed the block size.   |     |     |     |
-| ---------- | --------------------------------- | --- | --- | --- |
 
 Decryption  The process of a confidentiality mode that transforms encrypted  data
-| (Deciphering)  | into the original usable data.  |     |     |     |
-| -------------- | ------------------------------- | --- | --- | --- |
 
-| ECB  | Electronic Codebook.  |     |     |     |
-| ---- | --------------------- | --- | --- | --- |
 
 Encryption  The process of a confidentiality mode that transforms usable data into
-| (Enciphering)  | an unreadable form.  |     |     |     |
-| -------------- | -------------------- | --- | --- | --- |
-|                |                      |     |     |     |
+| (Enciphering) | an unreadable form. |
+| -------------- | -------------------- |
 3
 
 Exclusive-OR The bitwise addition, modulo 2, of two bit strings of equal length.
@@ -399,8 +376,6 @@ representation of x in m bits is denoted [x] . For example, [45] = 00101101.
 m 8
 8
 
-|     |     |     |     |     |
-| --- | --- | --- | --- | --- |
 6  Block Cipher Modes of Operation
 The mathematical specifications of the five modes are given in Sections 6.1-6.5, along with
 descriptions, illustrations, and comments on the potential for parallel processing.
@@ -410,13 +385,11 @@ The Electronic Codebook (ECB) mode is a confidentiality mode that features, for 
 the assignment of a fixed ciphertext block to each plaintext block, analogous to the assignment of
 code words in a codebook. The Electronic Codebook (ECB) mode is defined as follows:
 
-| ECB Encryption:  |   C = CIPH | (P)  |   for j = 1 …  n.        |     |
-| ---------------- | ---------- | ---- | ------------------------ | --- |
 j K j
 
-|                  | P = CIPH -1 (C)  |     | for j = 1 …  n.  |     |
-| ---------------- | ---------------- | --- | ---------------- | --- |
-| ECB Decryption:  |                  |     |                  |     |
+|  | P = CIPH -1 (C) |  | for j = 1 …  n. |
+| ---------------- | ---------------- | --- | ---------------- |
+| ECB Decryption: |
 j K j
 
 In ECB encryption, the forward cipher function is applied directly and independently to each
@@ -425,14 +398,13 @@ block of the plaintext. The resulting sequence of output blocks is the ciphertex
 In ECB decryption, the inverse cipher function is applied directly and independently to each
 block of the ciphertext. The resulting sequence of output blocks is the plaintext.
 
-| ECB Encryption  |               | ECB Decryption  |               |     |
-| --------------- | ------------- | --------------- | ------------- | --- |
-|                 | PLAINTEXT     |                 | CIPHERTEXT    |     |
-|                 | INPUT BLOCK   |                 | INPUT BLOCK   |     |
-|                 | CIPH          |                 | CIPH-1        |     |
-|                 | K             |                 | K             |     |
-|                 | OUTPUT BLOCK  |                 | OUTPUT BLOCK  |     |
-|                 | CIPHERTEXT    |                 | PLAINTEXT     |     |
+| ECB Encryption |  | ECB Decryption |
+| --------------- | ------------- | --------------- | ------------- |
+|  | PLAINTEXT |  | CIPHERTEXT |
+|  | INPUT BLOCK |  | INPUT BLOCK |
+|  | CIPH |  | CIPH-1 |
+|  | OUTPUT BLOCK |  | OUTPUT BLOCK |
+|  | CIPHERTEXT |  | PLAINTEXT |
 
 Figure 1: The ECB Mode
 
@@ -442,8 +414,6 @@ functions can be computed in parallel.
 In the ECB mode, under a given key, any given plaintext block always gets encrypted to the
 9
 
-|     |     |     |     |     |     |     |     |     |     |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 same ciphertext block.  If this property is undesirable in a particular application, the ECB mode
 should not be used.
 
@@ -458,48 +428,33 @@ Also, the integrity of the IV should be protected, as discussed in Appendix D.  
 defined as follows:
 
 |     | CBC Encryption:  	 |     |     |     | C =   CIPH |     | (P      | ⊕  IV);
- |                         |     |     |
-| --- | ------------------ | --- | --- | --- | ---------- | --- | ------- | --------- | ----------------------- | --- | --- |
-|     |                    |     |     |     | 1          |     | K 1     |           |                         |     |     |
 |     |                    |     |     |     | C = CIPH   |     | (P ⊕  C | )         | for j = 2 …  n.
-        |     |     |
-|     |                    |     |     |     | j          |     | K j     | j-1       |                         |     |     |
 
-|     |                    |     |     |     | P =  CIPH -1 (C      |     |     | ) ⊕  IV;  |                 |     |     |
-| --- | ------------------ | --- | --- | --- | -------------------- | --- | --- | --------- | --------------- | --- | --- |
-|     | CBC Decryption:  	 |     |     |     |                      |     |     |           |                 |     |     |
-|     |                    |     |     |     | 1                    |     | K   | 1         |                 |     |     |
-|     |                    |     |     |     | P = CIPH -1 (C) ⊕  C |     |     |           | for j = 2 …  n. |     |     |
-|     |                    |     |     |     | j                    |     | K j | j-1	      |                 |     |     |
+|  |  |  |  |  | P =  CIPH -1 (C |  |  | ) ⊕  IV; |
+| --- | ------------------ | --- | --- | --- | -------------------- | --- | --- | --------- | --------------- |
+|  | CBC Decryption: |
+|  |  |  |  |  | P = CIPH -1 (C) ⊕  C |  |  |  | for j = 2 …  n. |
+|  |  |  |  |  | j |  | K j | j-1 |
 
-|     |     |     | INITIALIZATION  |     |              |     |              |     | PLAINTEXT  n  |     |     |
-| --- | --- | --- | --------------- | --- | ------------ | --- | ------------ | --- | ------------- | --- | --- |
-|     |     |     |                 |     | PLAINTEXT 1  |     | PLAINTEXT 2  |     |               |     |     |
+|  |  |  | INITIALIZATION |  |  |  |  |  | PLAINTEXT  n |
+| --- | --- | --- | --------------- | --- | ------------ | --- | ------------ | --- | ------------- |
+|  |  |  |  |  | PLAINTEXT 1 |  | PLAINTEXT 2 |
     VECTOR
 ⊕
-|     |     |     |     |     | ⊕   |     |     |     |     | ⊕   |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 TPYRCNE
-|     |     |     |     |     | INPUT BLOCK 1   |     | INPUT BLOCK 2   |     | INPUT BLOCK n   |     |     |
-| --- | --- | --- | --- | --- | --------------- | --- | --------------- | --- | --------------- | --- | --- |
-|     |     |     |     |     | CIPH            |     | CIPH            |     | CIPH            |     |     |
-|     |     |     |     |     | K               |     |                 | K   |                 | K   |     |
-|     |     |     |     |     | OUTPUT BLOCK 1  |     | OUTPUT BLOCK 2  |     | OUTPUT BLOCK n  |     |     |
-|     |     |     |     |     | CIPHERTEXT 1    |     | CIPHERTEXT 2    |     | CIPHERTEXT n    |     |     |
-|     |     |     |     |     | CIPHERTEXT 1    |     | CIPHERTEXT 2    |     | CIPHERTEXT n    |     |     |
+|  |  |  |  |  | INPUT BLOCK 1 |  | INPUT BLOCK 2 |  | INPUT BLOCK n |
+| --- | --- | --- | --- | --- | --------------- | --- | --------------- | --- | --------------- |
+|  |  |  |  |  | CIPH |  | CIPH |  | CIPH |
+|  |  |  |  |  | OUTPUT BLOCK 1 |  | OUTPUT BLOCK 2 |  | OUTPUT BLOCK n |
+|  |  |  |  |  | CIPHERTEXT 1 |  | CIPHERTEXT 2 |  | CIPHERTEXT n |
+|  |  |  |  |  | CIPHERTEXT 1 |  | CIPHERTEXT 2 |  | CIPHERTEXT n |
  TPYRCED
-|     |     |     |     |     | INPUT BLOCK 1   |     | INPUT BLOCK 2   |     | INPUT BLOCK n   |     |     |
-| --- | --- | --- | --- | --- | --------------- | --- | --------------- | --- | --------------- | --- | --- |
-|     |     |     |     |     | CIPH-1          |     | CIPH-1          |     | CIPH-1          |     |     |
-|     |     |     |     |     |                 | K   |                 | K   |                 | K   |     |
-|     |     |     |     |     | OUTPUT BLOCK 1  |     | OUTPUT BLOCK 2  |     | OUTPUT BLOCK n  |     |     |
-|     |     |     |     |     | ⊕               |     |                 | ⊕   |                 |  ⊕  |     |
+|  |  |  |  |  | INPUT BLOCK 1 |  | INPUT BLOCK 2 |  | INPUT BLOCK n |
+| --- | --- | --- | --- | --- | --------------- | --- | --------------- | --- | --------------- |
+|  |  |  |  |  | CIPH-1 |  | CIPH-1 |  | CIPH-1 |
+|  |  |  |  |  | OUTPUT BLOCK 1 |  | OUTPUT BLOCK 2 |  | OUTPUT BLOCK n |
 INITIALIZATION
-|     |     |     |      VECTOR  |     | PLAINTEXT 1  |     | PLAINTEXT 2  |     | PLAINTEXT n  |     |     |
-| --- | --- | --- | ------------ | --- | ------------ | --- | ------------ | --- | ------------ | --- | --- |
 
-|     |     |     |     |     | Figure 2: The CBC Mode  |     |     |     |     |     |     |
-| --- | --- | --- | --- | --- | ----------------------- | --- | --- | --- | --- | --- | --- |
 
 In CBC encryption, the first input block is formed by exclusive-ORing the first block of the
 plaintext with the IV. The forward cipher function is applied to the first input block, and the
@@ -551,14 +506,12 @@ I = LSB (I )| C# for j = 2 … n;
 j b-s j -1 j -1
 11
 
-|     |     |     |     |     |          |     |      |     |                     |     |     |     |
-| --- | --- | --- | --- | --- | -------- | --- | ---- | --- | ------------------- | --- | --- | --- |
-|     |     |     |     |     | O = CIPH |     | (I)  |     | for j = 1, 2 …  n;  |     |     |     |
-|     |     |     |     |     | j        |     | K j  |     |                     |     |     |     |
+| --- | --- | --- | --- | --- | -------- | --- | ---- | --- | ------------------- |
+|  |  |  |  |  | O = CIPH |  | (I) |  | for j = 1, 2 …  n; |
+|  |  |  |  |  | j |  | K j |
 P# =  C# ⊕  MSB(O)
-|     |     |     |     |     |     |     |     |     | for j = 1, 2 …  n. |     |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | ------------------ | --- | --- | --- |
-|     |     |     |     |     | j   | j   | s   | j   |                    |     |     |     |
+|  |  |  |  |  |  |  |  |  | for j = 1, 2 …  n. |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | ------------------ |
 
 In CFB encryption, the first input block is the IV, and the forward cipher operation is applied to
 the IV to produce the first output block.  The first ciphertext segment is produced by exclusive-
@@ -576,51 +529,39 @@ corresponding plaintext segment to form a ciphertext segment.  Each ciphertext s
 the last one) is “fed back” into the previous input block, as described above, to form a new input
 block. The feedback can be described in terms of the individual bits in the strings as follows: if
 i i …i  is the  jth input block, and cc…c is the  jth ciphertext segment, then the (j+1)th input block
-| 1 2 b   |           |     |     |     | 1 2 s |     |     |     |     |     |     |     |
-| ------- | --------- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- |
-| is i i  | …i  cc…c. |     |     |     |       |     |     |     |     |     |     |     |
-| s+1 s+2 | b 1       | 2 s |     |     |       |     |     |     |     |     |     |     |
 
 INITIALIZATION
 VECTOR
-|     |     |     |     |     |     | INPUT BLOCK 2  |     |     | INPUT BLOCK n  |     |     |     |
-| --- | --- | --- | --- | --- | --- | -------------- | --- | --- | -------------- | --- | --- | --- |
 INPUT BLOCK 1
-|     |         |              |                 |             |              | (b-s) Bits s Bits  |                 |              | (b-s) Bits s Bits  |                 |     |     |
-| --- | ------- | ------------ | --------------- | ----------- | ------------ | ------------------ | --------------- | ------------ | ------------------ | --------------- | --- | --- |
-|     | TPYRCNE |              | CIPH            |             |              | CIPH               |                 |              | CIPH               |                 |     |     |
-|     |         |              |                 | K           |              |                    | K               |              |                    | K               |     |     |
-|     |         |              | OUTPUT BLOCK 1  |             |              | OUTPUT BLOCK 2     |                 |              | OUTPUT BLOCK n     |                 |     |     |
-|     |         |              | Select          | Discard     |              | Select             |    Discard      |              | Select             |    Discard      |     |     |
-|     |         |              | s Bits          | (b-s) Bits  |              | s Bits             |     (b-s) Bits  |              | s Bits             |     (b-s) Bits  |     |     |
-|     |         | PLAINTEXT 1  |                 | ⊕           | PLAINTEXT 2  | ⊕                  |                 | PLAINTEXT n  |   ⊕                |                 |     |     |
-|     |         | s Bits       |                 |             | s Bits       |                    |                 | s Bits       |                    |                 |     |     |
-|     |         |              | CIPHERTEXT 1    |             |              | CIPHERTEXT 2       |                 |              | CIPHERTEXT n       |                 |     |     |
-|     |         |              | s Bits          |             |              | s Bits             |                 |              | s Bits             |                 |     |     |
+|  |  |  |  |  |  | (b-s) Bits s Bits |  |  | (b-s) Bits s Bits |
+| --- | ------- | ------------ | --------------- | ----------- | ------------ | ------------------ | --------------- | ------------ | ------------------ | --------------- |
+|  | TPYRCNE |  | CIPH |  |  | CIPH |  |  | CIPH |
+|  |  |  | OUTPUT BLOCK 1 |  |  | OUTPUT BLOCK 2 |  |  | OUTPUT BLOCK n |
+|  |  |  | Select | Discard |  | Select | Discard |  | Select | Discard |
+|  |  |  | s Bits | (b-s) Bits |  | s Bits | (b-s) Bits |  | s Bits | (b-s) Bits |
+|  |  | PLAINTEXT 1 |  | ⊕ | PLAINTEXT 2 | ⊕ |  | PLAINTEXT n | ⊕ |
+|  |  | s Bits |  |  | s Bits |  |  | s Bits |
+|  |  |  | CIPHERTEXT 1 |  |  | CIPHERTEXT 2 |  |  | CIPHERTEXT n |
+|  |  |  | s Bits |  |  | s Bits |  |  | s Bits |
 INITIALIZATION
 VECTOR
-|     |         |     |               |                 |             |               | INPUT BLOCK 2      |                 |               | INPUT BLOCK n      |                 |     |
-| --- | ------- | --- | ------------- | --------------- | ----------- | ------------- | ------------------ | --------------- | ------------- | ------------------ | --------------- | --- |
-|     |         |     |               | INPUT BLOCK 1   |             |               | (b-s) Bits s Bits  |                 |               | (b-s) Bits s Bits  |                 |     |
-|     | TPYRCED |     |               | CIPH            |             |               | CIPH               |                 |               | CIPH               |                 |     |
-|     |         |     |               |                 | K           |               |                    | K               |               |                    | K               |     |
-|     |         |     |               | OUTPUT BLOCK 1  |             |               | OUTPUT BLOCK 2     |                 |               | OUTPUT BLOCK n     |                 |     |
-|     |         |     |               | Select          | Discard     |               | Select             |    Discard      |               | Select             |    Discard      |     |
-|     |         |     |               | s Bits          | (b-s) Bits  |               | s Bits             |     (b-s) Bits  |               | s Bits             |     (b-s) Bits  |     |
-|     |         |     | CIPHERTEXT 1  | ⊕               |             | CIPHERTEXT 2  | ⊕                  |                 | CIPHERTEXT n  |   ⊕                |                 |     |
-|     |         |     | s Bits        |                 |             | s Bits        |                    |                 | s Bits        |                    |                 |     |
-|     |         |     |               | PLAINTEXT 1     |             |               | PLAINTEXT 2        |                 |               | PLAINTEXT n        |                 |     |
-|     |         |     |               | s Bits          |             |               | s Bits             |                 |               | s Bits             |                 |     |
+|  |  |  |  |  |  |  | INPUT BLOCK 2 |  |  | INPUT BLOCK n |
+| --- | ------- | --- | ------------- | --------------- | ----------- | ------------- | ------------------ | --------------- | ------------- | ------------------ | --------------- |
+|  |  |  |  | INPUT BLOCK 1 |  |  | (b-s) Bits s Bits |  |  | (b-s) Bits s Bits |
+|  | TPYRCED |  |  | CIPH |  |  | CIPH |  |  | CIPH |
+|  |  |  |  | OUTPUT BLOCK 1 |  |  | OUTPUT BLOCK 2 |  |  | OUTPUT BLOCK n |
+|  |  |  |  | Select | Discard |  | Select | Discard |  | Select | Discard |
+|  |  |  |  | s Bits | (b-s) Bits |  | s Bits | (b-s) Bits |  | s Bits | (b-s) Bits |
+|  |  |  | CIPHERTEXT 1 | ⊕ |  | CIPHERTEXT 2 | ⊕ |  | CIPHERTEXT n | ⊕ |
+|  |  |  | s Bits |  |  | s Bits |  |  | s Bits |
+|  |  |  |  | PLAINTEXT 1 |  |  | PLAINTEXT 2 |  |  | PLAINTEXT n |
+|  |  |  |  | s Bits |  |  | s Bits |  |  | s Bits |
 
 Figure 3: The CFB Mode
 
 In CFB decryption, the IV is the first input block, and each successive input block is formed as in
-| CFB encryption, by concatenating the b-s least significant bits of the previous input block with  |     |     |     |     |     |     |     |     |     |     |     |     |
-| ------------------------------------------------------------------------------------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 12
 
-|     |     |     |     |     |     |
-| --- | --- | --- | --- | --- | --- |
 the  s  most significant bits of the previous ciphertext.  The forward cipher function is applied to
 each input block to produce the output blocks.  The s most significant bits of the output blocks
 are  exclusive-ORed  with  the  corresponding  ciphertext  segments  to  recover  the  plaintext
@@ -641,37 +582,25 @@ the plaintext to produce the ciphertext, and vice versa.  The OFB mode requires 
 nonce, i.e., the IV must be unique for each execution of the mode under the given key; the
 generation of such IVs is discussed in Appendix C. The OFB mode is defined as follows:
 
-| OFB Encryption:  |     |   I =  IV;   |     |     |     |
-| ---------------- | --- | ------------ | --- | --- | --- |
 1
-|     |     | I = O      |      | for j = 2 …  n;       |     |
-| --- | --- | ---------- | ---- | --------------------- | --- |
-|     |     |            |      |                       |     |
-|     |     | j          | j -1 |                       |     |
-|     |     |   O = CIPH | (I)  |   for j = 1, 2 …  n;  |     |
+|  |  | I = O |  | for j = 2 …  n; |
+| --- | --- | ---------- | ---- | --------------------- |
+|  |  | j | j -1 |
+|  |  | O = CIPH | (I) | for j = 1, 2 …  n; |
 j K j
-|     |     |   C = P ⊕  O  |     |   for j = 1, 2 …  n-1;  |     |
-| --- | --- | ------------- | --- | ----------------------- | --- |
 j   j  j
 C* = P*  ⊕  MSB(O).
-|     |     |     |      |     |     |
-| --- | --- | --- | ---- | --- | --- |
-|     |     | n   | n  u | n   |     |
 
-| OFB Decryption:  |     |   I = IV;   |     |     |     |
-| ---------------- | --- | ----------- | --- | --- | --- |
 1
-|     |     |   I = O    |      |   for j = 2 …  n;     |     |
-| --- | --- | ---------- | ---- | --------------------- | --- |
-|     |     | j          | j -1 |                       |     |
-|     |     |   O = CIPH | (I)  |   for j = 1, 2 …  n;  |     |
+|  |  | I = O |  | for j = 2 …  n; |
+| --- | --- | ---------- | ---- | --------------------- |
+|  |  | j | j -1 |
+|  |  | O = CIPH | (I) | for j = 1, 2 …  n; |
 j K j
-|     |     | P =  C ⊕  O   |     |   for j = 1, 2 …  n-1;  |     |
-| --- | --- | ------------- | --- | ----------------------- | --- |
 j  j  j
-|     |     | P*  = C* ⊕  MSB(O).  |      |     |     |
-| --- | --- | -------------------- | ---- | --- | --- |
-|     |     | n                    | n  u | n   |     |
+|  |  | P*  = C* ⊕  MSB(O). |
+| --- | --- | -------------------- | ---- |
+|  |  | n | n  u | n |
 
 In OFB encryption, the IV is transformed by the forward cipher function to produce the first
 output block.  The first output block is exclusive-ORed with the first plaintext block to produce
@@ -688,8 +617,6 @@ remaining b-u bits of the last output block are discarded.
 In OFB decryption, the IV is transformed by the forward cipher function to produce the first
 13
 
-|     |     |     |     |     |     |     |     |     |     |     |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 output block.  The first output block is exclusive-ORed with the first ciphertext block to recover
 the first plaintext block.  The first output block is then transformed by the forward cipher
 function to produce the second output block.  The second output block is exclusive-ORed with
@@ -703,27 +630,23 @@ remaining b-u bits of the last output block are discarded.
 
 INITIALIZATION
 VECTOR
-|     |     | INPUT BLOCK 1  |     |     | INPUT BLOCK 2  |     |     |     | INPUT BLOCK n  |     |     |     |
-| --- | --- | -------------- | --- | --- | -------------- | --- | --- | --- | -------------- | --- | --- | --- |
 TPYRCNE
-|     |              | CIPH            |     |              | CIPH            |     |     |              | CIPH            |     |     |     |
-| --- | ------------ | --------------- | --- | ------------ | --------------- | --- | --- | ------------ | --------------- | --- | --- | --- |
-|     |              |                 | K   |              |                 | K   |     |              |                 | K   |     |     |
-|     |              | OUTPUT BLOCK 1  |     |              | OUTPUT BLOCK 2  |     |     |              | OUTPUT BLOCK n  |     |     |     |
-|     |              |                 | ⊕   |              |                 | ⊕   |     |              |                 | ⊕   |     |     |
-|     | PLAINTEXT 1  |                 |     | PLAINTEXT 2  |                 |     |     | PLAINTEXT n  |                 |     |     |     |
-|     |              | CIPHERTEXT 1    |     |              | CIPHERTEXT 2    |     |     |              | CIPHERTEXT n    |     |     |     |
+|  |  | CIPH |  |  | CIPH |  |  |  | CIPH |
+| --- | ------------ | --------------- | --- | ------------ | --------------- | --- | --- | ------------ | --------------- |
+|  |  | OUTPUT BLOCK 1 |  |  | OUTPUT BLOCK 2 |  |  |  | OUTPUT BLOCK n |
+|  | PLAINTEXT 1 |  |  | PLAINTEXT 2 |  |  |  | PLAINTEXT n |
+|  |  | CIPHERTEXT 1 |  |  | CIPHERTEXT 2 |  |  |  | CIPHERTEXT n |
 INITIALIZATION
 VECTOR
-|     |         |     | INPUT BLOCK 1   |     |     |     | INPUT BLOCK 2   |     |     |     | INPUT BLOCK n   |     |
-| --- | ------- | --- | --------------- | --- | --- | --- | --------------- | --- | --- | --- | --------------- | --- |
-|     |         |     | CIPH            |     |     |     | CIPH            |     |     |     | CIPH            |     |
-|     | TPYRCED |     |                 | K   |     |     |                 | K   |     |     | K               |     |
-|     |         |     | OUTPUT BLOCK 1  |     |     |     | OUTPUT BLOCK 2  |     |     |     | OUTPUT BLOCK n  |     |
+|  |  |  | INPUT BLOCK 1 |  |  |  | INPUT BLOCK 2 |  |  |  | INPUT BLOCK n |
+| --- | ------- | --- | --------------- | --- | --- | --- | --------------- | --- | --- | --- | --------------- |
+|  |  |  | CIPH |  |  |  | CIPH |  |  |  | CIPH |
+|  | TPYRCED |  |  | K |  |  |  | K |  |  | K |
+|  |  |  | OUTPUT BLOCK 1 |  |  |  | OUTPUT BLOCK 2 |  |  |  | OUTPUT BLOCK n |
 ⊕
-|     |     | CIPHERTEXT 1  |              |     | CIPHERTEXT 2  |     | ⊕            |     | CIPHERTEXT n  |     | ⊕              |     |
-| --- | --- | ------------- | ------------ | --- | ------------- | --- | ------------ | --- | ------------- | --- | -------------- | --- |
-|     |     |               | PLAINTEXT 1  |     |               |     | PLAINTEXT 2  |     |               |     | PLAINTEXT n    |     |
+|  |  | CIPHERTEXT 1 |  |  | CIPHERTEXT 2 |  | ⊕ |  | CIPHERTEXT n |  | ⊕ |
+| --- | --- | ------------- | ------------ | --- | ------------- | --- | ------------ | --- | ------------- | --- | -------------- |
+|  |  |  | PLAINTEXT 1 |  |  |  | PLAINTEXT 2 |  |  |  | PLAINTEXT n |
 
 Figure 4: The OFB Mode
 
@@ -737,8 +660,6 @@ key.  If, contrary to this requirement, the same IV is used for the encryption o
 message, then the confidentiality of those messages may be compromised.  In particular, if a
 plaintext block of any of these messages is known, say, the jth plaintext block, then the jth output
 of the forward cipher function can be determined easily from the jth ciphertext block of the
-| message.  This information allows the jth plaintext block of any other message that is encrypted  |     |     |     |     |     |     |     |     |     |     |     |     |
-| ------------------------------------------------------------------------------------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 14
 
 using the same IV to be easily recovered from the jth ciphertext block of that message.
@@ -787,24 +708,21 @@ be determined. Moreover, the forward cipher functions can be applied to the coun
 availability of the plaintext or ciphertext data.
 15
 
-|     |              |                 |                 |              |                 |                 |          |              |                 |                 |     |
-| --- | ------------ | --------------- | --------------- | ------------ | --------------- | --------------- | -------- | ------------ | --------------- | --------------- | --- |
-|     |              | COUNTER 1       |                 |              | COUNTER 2       |                 |          |              | COUNTER n       |                 |     |
-|     |              | INPUT BLOCK 1   |                 |              | INPUT BLOCK 2   |                 |          |              | INPUT BLOCK n   |                 |     |
-|     | TPYRCNE      |                 |                 |              |                 |                 | .  .  .  |    .  .      |                 |                 |     |
-|     |              | CIPH            |                 |              | CIPH            |                 |          |              | CIPH            |                 |     |
-|     |              |                 | K               |              |                 | K               |          |              |                 | K               |     |
-|     |              | OUTPUT BLOCK 1  |                 |              | OUTPUT BLOCK 2  |                 |          |              | OUTPUT BLOCK n  |                 |     |
-|     |              |                 | ⊕               |              |                 | ⊕               |          |              |                 | ⊕               |     |
-|     | PLAINTEXT 1  |                 |                 | PLAINTEXT 2  |                 |                 |          | PLAINTEXT n  |                 |                 |     |
-|     |              | CIPHERTEXT 1    |                 |              | CIPHERTEXT 2    |                 |          |              | CIPHERTEXT n    |                 |     |
-|     |              |                 |                 | COUNTER 1    |                 | COUNTER 2       |          |              |                 | COUNTER n       |     |
-|     |              |                 | INPUT BLOCK 1   |              |                 | INPUT BLOCK 2   |          |              |                 | INPUT BLOCK n   |     |
-|     |  TPYRCED     |                 |                 | CIPH         |                 | CIPH            |          | .  .         | .     .  .      |                 |     |
-|     |              |                 |                 | K            |                 |                 | K        |              |                 | CIPH K          |     |
-|     |              |                 | OUTPUT BLOCK 1  |              |                 | OUTPUT BLOCK 2  |          |              |                 | OUTPUT BLOCK n  |     |
-|     |              | CIPHERTEXT 1    |                 | ⊕            | CIPHERTEXT 2    |                 | ⊕        |              | CIPHERTEXT n    |   ⊕             |     |
-|     |              |                 |                 | PLAINTEXT 1  |                 | PLAINTEXT 2     |          |              |                 | PLAINTEXT n     |     |
+| --- | ------------ | --------------- | --------------- | ------------ | --------------- | --------------- | -------- | ------------ | --------------- | --------------- |
+|  |  | COUNTER 1 |  |  | COUNTER 2 |  |  |  | COUNTER n |
+|  |  | INPUT BLOCK 1 |  |  | INPUT BLOCK 2 |  |  |  | INPUT BLOCK n |
+|  | TPYRCNE |  |  |  |  |  | .  .  . | .  . |
+|  |  | CIPH |  |  | CIPH |  |  |  | CIPH |
+|  |  | OUTPUT BLOCK 1 |  |  | OUTPUT BLOCK 2 |  |  |  | OUTPUT BLOCK n |
+|  | PLAINTEXT 1 |  |  | PLAINTEXT 2 |  |  |  | PLAINTEXT n |
+|  |  | CIPHERTEXT 1 |  |  | CIPHERTEXT 2 |  |  |  | CIPHERTEXT n |
+|  |  |  |  | COUNTER 1 |  | COUNTER 2 |  |  |  | COUNTER n |
+|  |  |  | INPUT BLOCK 1 |  |  | INPUT BLOCK 2 |  |  |  | INPUT BLOCK n |
+|  | TPYRCED |  |  | CIPH |  | CIPH |  | .  . | .     .  . |
+|  |  |  |  | K |  |  | K |  |  | CIPH K |
+|  |  |  | OUTPUT BLOCK 1 |  |  | OUTPUT BLOCK 2 |  |  |  | OUTPUT BLOCK n |
+|  |  | CIPHERTEXT 1 |  | ⊕ | CIPHERTEXT 2 |  | ⊕ |  | CIPHERTEXT n | ⊕ |
+|  |  |  |  | PLAINTEXT 1 |  | PLAINTEXT 2 |  |  |  | PLAINTEXT n |
 
 Figure 5: The CTR Mode
 
@@ -1043,8 +961,6 @@ modes in this recommendation. One of the resulting modes of Triple DES is new, i
 specified in ANSI X9.52: the CTR mode of the TDEA.
 23
 
-|     |     |     |     |     |
-| --- | --- | --- | --- | --- |
 Appendix F:  Example Vectors for Modes of Operation of the AES
 
 In this  appendix, three examples are provided for each of the modes in this recommendation with
@@ -1065,646 +981,371 @@ f69f2445df4f9b17ad2b417be66c3710.
 For the example of 1-bit CFB, the plaintext is the first 16 bits in the above string; for the example
 of 8-bit CFB, the plaintext is the first 18 octets in the above string.  All strings are presented in
 hexadecimal notation, except in the example of 1-bit CFB, where the plaintext and ciphertext
-| segments are single bits.  |     |     |     |     |
-| -------------------------- | --- | --- | --- | --- |
 F.1  ECB Example Vectors
 
 F.1.1  ECB-AES128.Encrypt
-| Key  | 2b7e151628aed2a6abf7158809cf4f3c  |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- |
+| Key | 2b7e151628aed2a6abf7158809cf4f3c |
+| ---- | --------------------------------- |
 Block #1
 
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Input Block   | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
 | Output Block  | 3ad77bb40d7a3660a89ecaf32466ef97
- |     |     |     |
-| Ciphertext    | 3ad77bb40d7a3660a89ecaf32466ef97   |     |
-   |     |
 Block #2
 
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Input Block   | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
 | Output Block  | f5d3d58503b9699de785895a96fdbaaf
- |     |     |     |
-| Ciphertext    | f5d3d58503b9699de785895a96fdbaaf   |     |
-   |     |
 Block #3
 
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Input Block   | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
 | Output Block  | 43b1cd7f598ece23881b00e3ed030688
- |     |     |     |
-| Ciphertext    | 43b1cd7f598ece23881b00e3ed030688   |     |
-   |     |
 Block #4
 
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Input Block   | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
 | Output Block  | 7b0c785e27e8ad3f8223207104725dd4
- |     |     |     |
-| Ciphertext    | 7b0c785e27e8ad3f8223207104725dd4   |     |
-   |     |
 
 F.1.2  ECB-AES128.Decrypt
-| Key  | 2b7e151628aed2a6abf7158809cf4f3c  |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- |
+| Key | 2b7e151628aed2a6abf7158809cf4f3c |
+| ---- | --------------------------------- |
 Block #1
 
-| Ciphertext   | 3ad77bb40d7a3660a89ecaf32466ef97   |     |
-   |     |
-| ------------ | ---------------------------------- | --- | --- | --- |
+| Ciphertext | 3ad77bb40d7a3660a89ecaf32466ef97 |
+| ------------ | ---------------------------------- |
 | Input Block  | 3ad77bb40d7a3660a89ecaf32466ef97
- |     |     |     |
 24
 
-|               |                                    |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
 Block #2
 
-| Ciphertext    | f5d3d58503b9699de785895a96fdbaaf   |     |
-   |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
+| Ciphertext | f5d3d58503b9699de785895a96fdbaaf |
+| ------------- | ---------------------------------- |
 | Input Block   | f5d3d58503b9699de785895a96fdbaaf
- |     |     |     |     |
 | Output Block  | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
 Block #3
 
-| Ciphertext    | 43b1cd7f598ece23881b00e3ed030688   |     |
-   |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
+| Ciphertext | 43b1cd7f598ece23881b00e3ed030688 |
+| ------------- | ---------------------------------- |
 | Input Block   | 43b1cd7f598ece23881b00e3ed030688
- |     |     |     |     |
 | Output Block  | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
 Block #4
 
-| Ciphertext    | 7b0c785e27e8ad3f8223207104725dd4   |     |
-   |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
+| Ciphertext | 7b0c785e27e8ad3f8223207104725dd4 |
+| ------------- | ---------------------------------- |
 | Input Block   | 7b0c785e27e8ad3f8223207104725dd4
- |     |     |     |     |
 | Output Block  | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
 
 F.1.3  ECB-AES192.Encrypt
-| Key  | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |
-   |
-| ---- | ------------------------------------------------- | --- | --- | --- | --- |
+| Key | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| ---- | ------------------------------------------------- |
 Block #1
 
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Input Block   | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
 | Output Block  | bd334f1d6e45f25ff712a214571fa5cc
- |     |     |     |     |
-| Ciphertext    | bd334f1d6e45f25ff712a214571fa5cc   |     |
-   |     |     |
 Block #2
 
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Input Block   | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
 | Output Block  | 974104846d0ad3ad7734ecb3ecee4eef
- |     |     |     |     |
-| Ciphertext    | 974104846d0ad3ad7734ecb3ecee4eef   |     |
-   |     |     |
 Block #3
 
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Input Block   | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
 | Output Block  | ef7afd2270e2e60adce0ba2face6444e
- |     |     |     |     |
-| Ciphertext    | ef7afd2270e2e60adce0ba2face6444e   |     |
-   |     |     |
 Block #4
 
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Input Block   | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
 | Output Block  | 9a4b41ba738d6c72fb16691603c18e0e
- |     |     |     |     |
-| Ciphertext    | 9a4b41ba738d6c72fb16691603c18e0e   |     |
-   |     |     |
 
 F.1.4  ECB-AES192.Decrypt
-| Key  | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |
-   |
-| ---- | ------------------------------------------------- | --- | --- | --- | --- |
+| Key | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| ---- | ------------------------------------------------- |
 Block #1
 
-| Ciphertext    | bd334f1d6e45f25ff712a214571fa5cc   |     |
-   |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
+| Ciphertext | bd334f1d6e45f25ff712a214571fa5cc |
+| ------------- | ---------------------------------- |
 | Input Block   | bd334f1d6e45f25ff712a214571fa5cc
- |     |     |     |     |
 | Output Block  | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
 Block #2
 
-| Ciphertext    | 974104846d0ad3ad7734ecb3ecee4eef   |     |
-   |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
+| Ciphertext | 974104846d0ad3ad7734ecb3ecee4eef |
+| ------------- | ---------------------------------- |
 | Input Block   | 974104846d0ad3ad7734ecb3ecee4eef
- |     |     |     |     |
 | Output Block  | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
 25
 
-|     |     |     |     |     |
-| --- | --- | --- | --- | --- |
 Block #3
 
-| Ciphertext    | ef7afd2270e2e60adce0ba2face6444e   |     |
-   |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
+| Ciphertext | ef7afd2270e2e60adce0ba2face6444e |
+| ------------- | ---------------------------------- |
 | Input Block   | ef7afd2270e2e60adce0ba2face6444e
- |     |     |     |
 | Output Block  | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
 Block #4
 
-| Ciphertext    | 9a4b41ba738d6c72fb16691603c18e0e   |     |
-   |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
+| Ciphertext | 9a4b41ba738d6c72fb16691603c18e0e |
+| ------------- | ---------------------------------- |
 | Input Block   | 9a4b41ba738d6c72fb16691603c18e0e
- |     |     |     |
 | Output Block  | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
 
 F.1.5  ECB-AES256.Encrypt
-| Key  | 603deb1015ca71be2b73aef0857d7781  |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- |
+| Key | 603deb1015ca71be2b73aef0857d7781 |
+| ---- | --------------------------------- |
 1f352c073b6108d72d9810a30914dff4
 
 Block #1
 
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Input Block   | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
 | Output Block  | f3eed1bdb5d2a03c064b5a7e3db181f8
- |     |     |     |
-| Ciphertext    | f3eed1bdb5d2a03c064b5a7e3db181f8   |     |
-   |     |
 Block #2
 
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Input Block   | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
 | Output Block  | 591ccb10d410ed26dc5ba74a31362870
- |     |     |     |
-| Ciphertext    | 591ccb10d410ed26dc5ba74a31362870   |     |
-   |     |
 Block #3
 
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Input Block   | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
 | Output Block  | b6ed21b99ca6f4f9f153e7b1beafed1d
- |     |     |     |
-| Ciphertext    | b6ed21b99ca6f4f9f153e7b1beafed1d   |     |
-   |     |
 Block #4
 
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Input Block   | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
 | Output Block  | 23304b7a39f9f3ff067d8d8f9e24ecc7
- |     |     |     |
-| Ciphertext    | 23304b7a39f9f3ff067d8d8f9e24ecc7   |     |
-   |     |
 
 F.1.6  ECB-AES256.Decrypt
-| Key  | 603deb1015ca71be2b73aef0857d7781  |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- |
-|      | 1f352c073b6108d72d9810a30914dff4  |     |
-   |     |
+| Key | 603deb1015ca71be2b73aef0857d7781 |
+| ---- | --------------------------------- |
+|  | 1f352c073b6108d72d9810a30914dff4 |
 Block #1
 
-| Ciphertext    | f3eed1bdb5d2a03c064b5a7e3db181f8   |     |
-   |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
+| Ciphertext | f3eed1bdb5d2a03c064b5a7e3db181f8 |
+| ------------- | ---------------------------------- |
 | Input Block   | f3eed1bdb5d2a03c064b5a7e3db181f8
- |     |     |     |
 | Output Block  | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
 Block #2
 
-| Ciphertext    | 591ccb10d410ed26dc5ba74a31362870   |     |
-   |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
+| Ciphertext | 591ccb10d410ed26dc5ba74a31362870 |
+| ------------- | ---------------------------------- |
 | Input Block   | 591ccb10d410ed26dc5ba74a31362870
- |     |     |     |
 | Output Block  | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
 Block #3
 
-| Ciphertext    | b6ed21b99ca6f4f9f153e7b1beafed1d   |     |
-   |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
+| Ciphertext | b6ed21b99ca6f4f9f153e7b1beafed1d |
+| ------------- | ---------------------------------- |
 | Input Block   | b6ed21b99ca6f4f9f153e7b1beafed1d
- |     |     |     |
 | Output Block  | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
 26
 
-|     |     |     |     |     |
-| --- | --- | --- | --- | --- |
 Block #4
 
-| Ciphertext    | 23304b7a39f9f3ff067d8d8f9e24ecc7   |     |
-   |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
+| Ciphertext | 23304b7a39f9f3ff067d8d8f9e24ecc7 |
+| ------------- | ---------------------------------- |
 | Input Block   | 23304b7a39f9f3ff067d8d8f9e24ecc7
- |     |     |     |
 | Output Block  | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
 F.2   CBC Example Vectors
 
 F.2.1  CBC-AES128.Encrypt
-| Key  | 2b7e151628aed2a6abf7158809cf4f3c  |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |
+| Key | 2b7e151628aed2a6abf7158809cf4f3c |
+| ---- | --------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Block #1
 
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Input Block   | 6bc0bce12a459991e134741a7f9e1925
- |     |     |     |
 | Output Block  | 7649abac8119b246cee98e9b12e9197d
- |     |     |     |
-| Ciphertext    | 7649abac8119b246cee98e9b12e9197d   |     |
-   |     |
 Block #2
 
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Input Block   | d86421fb9f1a1eda505ee1375746972c
- |     |     |     |
 | Output Block  | 5086cb9b507219ee95db113a917678b2
- |     |     |     |
-| Ciphertext    | 5086cb9b507219ee95db113a917678b2   |     |
-   |     |
 Block #3
 
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Input Block   | 604ed7ddf32efdff7020d0238b7c2a5d
- |     |     |     |
 | Output Block  | 73bed6b8e3c1743b7116e69e22229516
- |     |     |     |
-| Ciphertext    | 73bed6b8e3c1743b7116e69e22229516   |     |
-   |     |
 Block #4
 
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Input Block   | 8521f2fd3c8eef2cdc3da7e5c44ea206
- |     |     |     |
 | Output Block  | 3ff1caa1681fac09120eca307586e1a7
- |     |     |     |
-| Ciphertext    | 3ff1caa1681fac09120eca307586e1a7   |     |
-   |     |
 
 F.2.2  CBC-AES128.Decrypt
-| Key  | 2b7e151628aed2a6abf7158809cf4f3c  |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |
+| Key | 2b7e151628aed2a6abf7158809cf4f3c |
+| ---- | --------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Block #1
 
-| Ciphertext    | 7649abac8119b246cee98e9b12e9197d   |     |
-   |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
+| Ciphertext | 7649abac8119b246cee98e9b12e9197d |
+| ------------- | ---------------------------------- |
 | Input Block   | 7649abac8119b246cee98e9b12e9197d
- |     |     |     |
 | Output Block  | 6bc0bce12a459991e134741a7f9e1925
- |     |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
 Block #2
 
-| Ciphertext    | 5086cb9b507219ee95db113a917678b2   |     |
-   |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
+| Ciphertext | 5086cb9b507219ee95db113a917678b2 |
+| ------------- | ---------------------------------- |
 | Input Block   | 5086cb9b507219ee95db113a917678b2
- |     |     |     |
 | Output Block  | d86421fb9f1a1eda505ee1375746972c
- |     |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
 Block #3
 
-| Ciphertext    | 73bed6b8e3c1743b7116e69e22229516   |     |
-   |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
+| Ciphertext | 73bed6b8e3c1743b7116e69e22229516 |
+| ------------- | ---------------------------------- |
 | Input Block   | 73bed6b8e3c1743b7116e69e22229516
- |     |     |     |
 | Output Block  | 604ed7ddf32efdff7020d0238b7c2a5d
- |     |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
 Block #4
 
-| Ciphertext   | 3ff1caa1681fac09120eca307586e1a7   |     |
-   |     |
-| ------------ | ---------------------------------- | --- | --- | --- |
+| Ciphertext | 3ff1caa1681fac09120eca307586e1a7 |
+| ------------ | ---------------------------------- |
 | Input Block  | 3ff1caa1681fac09120eca307586e1a7
- |     |     |     |
 27
 
-|               |                                    |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 8521f2fd3c8eef2cdc3da7e5c44ea206
- |     |     |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
 
 F.2.3  CBC-AES192.Encrypt
-| Key  | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |
-   |
-| ---- | ------------------------------------------------- | --- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f                  |     |
-   |     |     |
+| Key | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| ---- | ------------------------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Block #1
 
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Input Block   | 6bc0bce12a459991e134741a7f9e1925
- |     |     |     |     |
 | Output Block  | 4f021db243bc633d7178183a9fa071e8
- |     |     |     |     |
-| Ciphertext    | 4f021db243bc633d7178183a9fa071e8   |     |
-   |     |     |
 Block #2
 
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Input Block   | e12f97e55dbfcfa1efcf7796da0fffb9
- |     |     |     |     |
 | Output Block  | b4d9ada9ad7dedf4e5e738763f69145a
- |     |     |     |     |
-| Ciphertext    | b4d9ada9ad7dedf4e5e738763f69145a   |     |
-   |     |     |
 Block #3
 
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Input Block   | 8411b1ef0e2109e5001cf96f256346b5
- |     |     |     |     |
 | Output Block  | 571b242012fb7ae07fa9baac3df102e0
- |     |     |     |     |
-| Ciphertext    | 571b242012fb7ae07fa9baac3df102e0   |     |
-   |     |     |
 Block #4
 
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Input Block   | a1840065cdb4e1f7d282fbd7db9d35f0
- |     |     |     |     |
 | Output Block  | 08b0e27988598881d920a9e64f5615cd
- |     |     |     |     |
-| Ciphertext    | 08b0e27988598881d920a9e64f5615cd   |     |
-   |     |     |
 
 F.2.4  CBC-AES192.Decrypt
-| Key  | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |
-   |
-| ---- | ------------------------------------------------- | --- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f                  |     |
-   |     |     |
+| Key | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| ---- | ------------------------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Block #1
 
-| Ciphertext    | 4f021db243bc633d7178183a9fa071e8   |     |
-   |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
+| Ciphertext | 4f021db243bc633d7178183a9fa071e8 |
+| ------------- | ---------------------------------- |
 | Input Block   | 4f021db243bc633d7178183a9fa071e8
- |     |     |     |     |
 | Output Block  | 6bc0bce12a459991e134741a7f9e1925
- |     |     |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
 Block #2
 
-| Ciphertext    | b4d9ada9ad7dedf4e5e738763f69145a   |     |
-   |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
+| Ciphertext | b4d9ada9ad7dedf4e5e738763f69145a |
+| ------------- | ---------------------------------- |
 | Input Block   | b4d9ada9ad7dedf4e5e738763f69145a
- |     |     |     |     |
 | Output Block  | e12f97e55dbfcfa1efcf7796da0fffb9
- |     |     |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
 Block #3
 
-| Ciphertext    | 571b242012fb7ae07fa9baac3df102e0   |     |
-   |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
+| Ciphertext | 571b242012fb7ae07fa9baac3df102e0 |
+| ------------- | ---------------------------------- |
 | Input Block   | 571b242012fb7ae07fa9baac3df102e0
- |     |     |     |     |
 | Output Block  | 8411b1ef0e2109e5001cf96f256346b5
- |     |     |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
 Block #4
 
-| Ciphertext    | 08b0e27988598881d920a9e64f5615cd   |     |
-   |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
+| Ciphertext | 08b0e27988598881d920a9e64f5615cd |
+| ------------- | ---------------------------------- |
 | Input Block   | 08b0e27988598881d920a9e64f5615cd
- |     |     |     |     |
 | Output Block  | a1840065cdb4e1f7d282fbd7db9d35f0
- |     |     |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
 
 F.2.5  CBC-AES256.Encrypt
-| Key  | 603deb1015ca71be2b73aef0857d7781  |     |
-   |     |     |
-| ---- | --------------------------------- | --- | --- | --- | --- |
+| Key | 603deb1015ca71be2b73aef0857d7781 |
+| ---- | --------------------------------- |
 28
 
-|     |     |                                   |     |     |     |
-| --- | --- | --------------------------------- | --- | --- | --- |
-|     |     | 1f352c073b6108d72d9810a30914dff4  |     |
-   |     |
-| IV  |     | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |
+| --- | --- | --------------------------------- |
+|  |  | 1f352c073b6108d72d9810a30914dff4 |
+| IV |  | 000102030405060708090a0b0c0d0e0f |
 Block #1
 
 | Plaintext     |     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Input Block   |     | 6bc0bce12a459991e134741a7f9e1925
- |     |     |     |
 | Output Block  |     | f58c4c04d6e5f1ba779eabfb5f7bfbd6
- |     |     |     |
-| Ciphertext    |     | f58c4c04d6e5f1ba779eabfb5f7bfbd6   |     |
-   |     |
 Block #2
 
 | Plaintext     |     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Input Block   |     | 5ba1c653c8e65d26e929c4571ad47587
- |     |     |     |
 | Output Block  |     | 9cfc4e967edb808d679f777bc6702c7d
- |     |     |     |
-| Ciphertext    |     | 9cfc4e967edb808d679f777bc6702c7d   |     |
-   |     |
 Block #3
 
 | Plaintext     |     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Input Block   |     | ac3452d0dd87649c8264b662dc7a7e92
- |     |     |     |
 | Output Block  |     | 39f23369a9d9bacfa530e26304231461
- |     |     |     |
-| Ciphertext    |     | 39f23369a9d9bacfa530e26304231461   |     |
-   |     |
 Block #4
 
 | Plaintext     |     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Input Block   |     | cf6d172c769621d8081ba318e24f2371
- |     |     |     |
 | Output Block  |     | b2eb05e2c39be9fcda6c19078c6a9d1b
- |     |     |     |
-| Ciphertext    |     | b2eb05e2c39be9fcda6c19078c6a9d1b   |     |
-   |     |
 
-| F.2.6  | CBC-AES256.Decrypt  |                                   |     |     |     |
-| ------ | ------------------- | --------------------------------- | --- | --- | --- |
-| Key    | 	                   | 603deb1015ca71be2b73aef0857d7781  |     |
-   |     |
-|        |                     | 1f352c073b6108d72d9810a30914dff4  |     |
-   |     |
-| IV     |                     | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |
+| F.2.6 | CBC-AES256.Decrypt |
+| ------ | ------------------- | --------------------------------- |
+| Key |  | 603deb1015ca71be2b73aef0857d7781 |
+|  |  | 1f352c073b6108d72d9810a30914dff4 |
+| IV |  | 000102030405060708090a0b0c0d0e0f |
 Block #1
 
-| Ciphertext    |     | f58c4c04d6e5f1ba779eabfb5f7bfbd6   |     |
-   |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
+| Ciphertext |  | f58c4c04d6e5f1ba779eabfb5f7bfbd6 |
+| ------------- | --- | ---------------------------------- |
 | Input Block   |     | f58c4c04d6e5f1ba779eabfb5f7bfbd6
- |     |     |     |
 | Output Block  |     | 6bc0bce12a459991e134741a7f9e1925
- |     |     |     |
 | Plaintext     |     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
 Block #2
 
-| Ciphertext    |     | 9cfc4e967edb808d679f777bc6702c7d   |     |
-   |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
+| Ciphertext |  | 9cfc4e967edb808d679f777bc6702c7d |
+| ------------- | --- | ---------------------------------- |
 | Input Block   |     | 9cfc4e967edb808d679f777bc6702c7d
- |     |     |     |
 | Output Block  |     | 5ba1c653c8e65d26e929c4571ad47587
- |     |     |     |
 | Plaintext     |     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
 Block #3
 
-| Ciphertext    |     | 39f23369a9d9bacfa530e26304231461   |     |
-   |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
+| Ciphertext |  | 39f23369a9d9bacfa530e26304231461 |
+| ------------- | --- | ---------------------------------- |
 | Input Block   |     | 39f23369a9d9bacfa530e26304231461
- |     |     |     |
 | Output Block  |     | ac3452d0dd87649c8264b662dc7a7e92
- |     |     |     |
 | Plaintext     |     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
 Block #4
 
-| Ciphertext                |     | b2eb05e2c39be9fcda6c19078c6a9d1b   |     |
-   |     |
-| ------------------------- | --- | ---------------------------------- | --- | --- | --- |
+| Ciphertext |  | b2eb05e2c39be9fcda6c19078c6a9d1b |
+| ------------------------- | --- | ---------------------------------- |
 | Input Block               |     | b2eb05e2c39be9fcda6c19078c6a9d1b
- |     |     |     |
 | Output Block              |     | cf6d172c769621d8081ba318e24f2371
- |     |     |     |
 | Plaintext                 |     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
-| F.3  CFB Example Vectors  |     |                                    |     |     |     |
 
-| F.3.1  | CFB1-AES128.Encrypt  |                                   |     |     |     |
-| ------ | -------------------- | --------------------------------- | --- | --- | --- |
-| Key    | 	                    | 2b7e151628aed2a6abf7158809cf4f3c  |     |
-   |     |
-| IV     |                      | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |
+| F.3.1 | CFB1-AES128.Encrypt |
+| ------ | -------------------- | --------------------------------- |
+| Key |  | 2b7e151628aed2a6abf7158809cf4f3c |
+| IV |  | 000102030405060708090a0b0c0d0e0f |
 29
 
 Segment #1
@@ -1763,123 +1404,70 @@ Output Block d018cfb81d0580edbff955ed74d382db
 Plaintext 0
 30
 
-|             |      |     |     |     |
-| ----------- | ---- | --- | --- | --- |
 | Ciphertext  | 1
- |     |     |     |
 Segment #12
 
 | Input Block   | 08101820283038404850586068707b45
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 81272ab351e08e0b695b94b8164d86f4
- |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |
 Segment #13
 
 | Input Block   | 102030405060708090a0b0c0d0e0f68b
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 094d33f856483d3fa01ba94f7e5ab3e7
- |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |
 Segment #14
 
 | Input Block   | 20406080a0c0e10121416181a1c1ed16
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 609900ad61923c8c102cd8d0d7947a2c
- |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |
 Segment #15
 
 | Input Block   | 4080c1014181c2024282c3034383da2c
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 9e5a154de966ab4db9c88b22a398134e
- |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |
 Segment #16
 
 | Input Block   | 8101820283038404850586068707b459
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 7fe16252b338bc4de3725c4156dfed20
- |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |
 
 F.3.2  CFB1-AES128.Decrypt
-| Key  | 2b7e151628aed2a6abf7158809cf4f3c  |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |
+| Key | 2b7e151628aed2a6abf7158809cf4f3c |
+| ---- | --------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 50fe67cc996d32b6da0937e99bafec60
- |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |
 Segment #2
 
 | Input Block   | 00020406080a0c0e10121416181a1c1e
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 19cf576c7596e702f298b35666955c79
- |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |
 Segment #3
 
 | Input Block   | 0004080c1014181c2024282c3034383d
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 59e17759acd02b801fa321ea059e331f
- |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |
 Segment #4
 
 | Input Block   | 0008101820283038404850586068707b
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 71f415b0cc109e8b0faa14ab740c22f4
- |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |
 Segment #5
 
 | Input Block   | 00102030405060708090a0b0c0d0e0f6
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 3fb76d3d1048179964597a0f64d5adad
- |     |     |     |
 31
 
 Ciphertext 1
@@ -1938,240 +1526,135 @@ Segment #16
 Input Block 8101820283038404850586068707b459
 32
 
-|               |                                    |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 7fe16252b338bc4de3725c4156dfed20
- |     |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |     |
 
 F.3.3  CFB1-AES192.Encrypt
-| Key  | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |
-   |
-| ---- | ------------------------------------------------- | --- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f                  |     |
-   |     |     |
+| Key | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| ---- | ------------------------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a609b38df3b1133dddff2718ba09565e
- |     |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |     |
 Segment #2
 
 | Input Block   | 00020406080a0c0e10121416181a1c1f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a0e2bee6eb1734379bd4908be6a991a0
- |     |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |     |
 Segment #3
 
 | Input Block   | 0004080c1014181c2024282c3034383e
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b1a1766bedec7ee3ba9cd3f34fbed4c6
- |     |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |     |
 Segment #4
 
 | Input Block   | 0008101820283038404850586068707c
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b294ae5f393ae0179e6d3d8c45a7a4b9
- |     |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |     |
 Segment #5
 
 | Input Block   | 00102030405060708090a0b0c0d0e0f9
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | f0f703ff5d0634aa8aee7f1e26aafca3
- |     |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |     |
 Segment #6
 
 | Input Block   | 0020406080a0c0e10121416181a1c1f2
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 4d67df426abdb8c89e7de9fb3069d8be
- |     |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |     |
 Segment #7
 
 | Input Block   | 004080c1014181c2024282c3034383e4
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 30bc892338dfa10664118b9f4ba348d2
- |     |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |     |
 Segment #8
 
 | Input Block   | 008101820283038404850586068707c9
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 763ad8c63ed78d66452bb44c8bb7a8c8
- |     |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |     |
 Segment #9
 
 | Input Block   | 0102030405060708090a0b0c0d0e0f93
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | bfc36f5cfbc1306859b48f8fa62a43df
- |     |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |     |
 Segment #10
 
 33
 
-|               |                                    |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Input Block   | 020406080a0c0e10121416181a1c1f26
- |     |     |     |     |
 | Output Block  | 16e27adac112a0bf6a69c95cbdf584a3
- |     |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |     |
 Segment #11
 
 | Input Block   | 04080c1014181c2024282c3034383e4d
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 1e9d21c3da3de9186251160045756ce0
- |     |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |     |
 Segment #12
 
 | Input Block   | 08101820283038404850586068707c9a
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b836e0f661b51d8bd38c448e0e5a11bb
- |     |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |     |
 Segment #13
 
 | Input Block   | 102030405060708090a0b0c0d0e0f935
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | c5efcdd09dbb92d1faada8f6c9bab052
- |     |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |     |
 Segment #14
 
 | Input Block   | 20406080a0c0e10121416181a1c1f26b
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 7c99710018d88e40bd4ac8f1b2bf4dbb
- |     |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |     |
 Segment #15
 
 | Input Block   | 4080c1014181c2024282c3034383e4d6
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 173bcd8b4dad60ae6646813fdcb81f5b
- |     |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |     |
 Segment #16
 
 | Input Block   | 8101820283038404850586068707c9ac
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 09844c6d2272d148d5af1c7bf01bb439
- |     |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |     |
 
 F.3.4  CFB1-AES192.Decrypt
-| Key  | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |
-   |
-| ---- | ------------------------------------------------- | --- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f                  |     |
-   |     |     |
+| Key | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| ---- | ------------------------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a609b38df3b1133dddff2718ba09565e
- |     |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |     |
 Segment #2
 
 | Input Block   | 00020406080a0c0e10121416181a1c1f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a0e2bee6eb1734379bd4908be6a991a0
- |     |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |     |
 Segment #3
 
 | Input Block   | 0004080c1014181c2024282c3034383e
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b1a1766bedec7ee3ba9cd3f34fbed4c6
- |     |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |     |
 34
 
 Segment #4
@@ -2230,243 +1713,135 @@ Output Block 7c99710018d88e40bd4ac8f1b2bf4dbb
 Ciphertext 0
 35
 
-|            |     |     |     |     |
-| ---------- | --- | --- | --- | --- |
 | Plaintext  | 0
- |     |     |     |
 Segment #15
 
 | Input Block   | 4080c1014181c2024282c3034383e4d6
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 173bcd8b4dad60ae6646813fdcb81f5b
- |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |
 Segment #16
 
 | Input Block   | 8101820283038404850586068707c9ac
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 09844c6d2272d148d5af1c7bf01bb439
- |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |
 
 F.3.5  CFB1-AES256.Encrypt
-| Key  | 603deb1015ca71be2b73aef0857d7781  |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- |
+| Key | 603deb1015ca71be2b73aef0857d7781 |
+| ---- | --------------------------------- |
 1f352c073b6108d72d9810a30914dff4
 
-| IV  | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |
-| --- | --------------------------------- | --- | --- | --- |
 Segment #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | b7bf3a5df43989dd97f0fa97ebce2f4a
- |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |
 Segment #2
 
 | Input Block   | 00020406080a0c0e10121416181a1c1f
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | ee93d380e0f01117fffd78017599514a
- |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |
 Segment #3
 
 | Input Block   | 0004080c1014181c2024282c3034383e
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 857749898b3602aad91e699911de89b0
- |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |
 Segment #4
 
 | Input Block   | 0008101820283038404850586068707c
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | dce81c80810e2ba343a6bb402716b7a8
- |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |
 | Ciphertext    | 1
-                               |     |     |     |
 Segment #5
 
 | Input Block   | 00102030405060708090a0b0c0d0e0f9
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | e5517bfcdccea00501350a601f754823
- |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |
 Segment #6
 
 | Input Block   | 0020406080a0c0e10121416181a1c1f2
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 15799c7f4081a78cc41f29955349c5a0
- |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |
 Segment #7
 
 | Input Block   | 004080c1014181c2024282c3034383e4
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 84d246bdb391f6a7979ff5ccb8467262
- |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |
 | Ciphertext    | 0
-                               |     |     |     |
 Segment #8
 
 | Input Block  | 008101820283038404850586068707c8
- |     |     |     |
-| ------------ | ---------------------------------- | --- | --- | --- |
 36
 
-|               |     |                                    |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Output Block  |     | bb9e05db9855a9e7e3837a648dd4c3b0
- |     |     |     |
 | Plaintext     |     | 1
-                                |     |     |     |
 | Ciphertext    |     | 0
-                               |     |     |     |
 Segment #9
 
 | Input Block   |     | 0102030405060708090a0b0c0d0e0f90
- |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Output Block  |     | a413c5714f70287dfcd943004bf7ac8e
- |     |     |     |
 | Plaintext     |     | 1
-                                |     |     |     |
 | Ciphertext    |     | 0
-                               |     |     |     |
 Segment #10
 
 | Input Block   |     | 020406080a0c0e10121416181a1c1f20
- |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Output Block  |     | a7310abf87610d66edf6c892a84460d5
- |     |     |     |
 | Plaintext     |     | 1
-                                |     |     |     |
 | Ciphertext    |     | 0
-                               |     |     |     |
 Segment #11
 
 | Input Block   |     | 04080c1014181c2024282c3034383e40
- |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Output Block  |     | 8aec6712d89bd147c83b51d787b11399
- |     |     |     |
 | Plaintext     |     | 0
-                                |     |     |     |
 | Ciphertext    |     | 1
-                               |     |     |     |
 Segment #12
 
 | Input Block   |     | 08101820283038404850586068707c81
- |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Output Block  |     | 2ff05b620f68134f4ba92deffbfc93b2
- |     |     |     |
 | Plaintext     |     | 0
-                                |     |     |     |
 | Ciphertext    |     | 0
-                               |     |     |     |
 Segment #13
 
 | Input Block   |     | 102030405060708090a0b0c0d0e0f902
- |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Output Block  |     | 819208afd5284316065a76bead028ad3
- |     |     |     |
 | Plaintext     |     | 0
-                                |     |     |     |
 | Ciphertext    |     | 1
-                               |     |     |     |
 Segment #14
 
 | Input Block   |     | 20406080a0c0e10121416181a1c1f205
- |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Output Block  |     | 1914ed64b2115167ce2ca4c813da5245
- |     |     |     |
 | Plaintext     |     | 0
-                                |     |     |     |
 | Ciphertext    |     | 0
-                               |     |     |     |
 Segment #15
 
 | Input Block   |     | 4080c1014181c2024282c3034383e40a
- |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Output Block  |     | 638abae8724a954ae9e1e2e119deb6e1
- |     |     |     |
 | Plaintext     |     | 0
-                                |     |     |     |
 | Ciphertext    |     | 0
-                               |     |     |     |
 Segment #16
 
 | Input Block   |     | 8101820283038404850586068707c814
- |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Output Block  |     | 2b4f488a3f958c52a3f1db2da938360e
- |     |     |     |
 | Plaintext     |     | 1
-                                |     |     |     |
 | Ciphertext    |     | 1
-                               |     |     |     |
 
-| F.3.6  | CFB1-AES256.Decrypt  |                                   |     |     |     |
-| ------ | -------------------- | --------------------------------- | --- | --- | --- |
-| Key    | 	                    | 603deb1015ca71be2b73aef0857d7781  |     |
-   |     |
+| F.3.6 | CFB1-AES256.Decrypt |
+| ------ | -------------------- | --------------------------------- |
+| Key |  | 603deb1015ca71be2b73aef0857d7781 |
 1f352c073b6108d72d9810a30914dff4
 
-| IV  |     | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |
-| --- | --- | --------------------------------- | --- | --- | --- |
 Segment #1
 
 | Input Block   |     | 000102030405060708090a0b0c0d0e0f
- |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- |
 | Output Block  |     | b7bf3a5df43989dd97f0fa97ebce2f4a
- |     |     |     |
 | Ciphertext    |     | 1
-                               |     |     |     |
 | Plaintext     |     | 0
-                                |     |     |     |
 37
 
 Segment #2
@@ -2525,2506 +1900,1312 @@ Output Block 2ff05b620f68134f4ba92deffbfc93b2
 Ciphertext 0
 38
 
-|            |     |     |     |     |     |
-| ---------- | --- | --- | --- | --- | --- |
 | Plaintext  | 0
- |     |     |     |     |
 Segment #13
 
 | Input Block   | 102030405060708090a0b0c0d0e0f902
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 819208afd5284316065a76bead028ad3
- |     |     |     |     |
-| Ciphertext    | 1                                  |
-   |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |     |
 Segment #14
 
 | Input Block   | 20406080a0c0e10121416181a1c1f205
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 1914ed64b2115167ce2ca4c813da5245
- |     |     |     |     |
-| Ciphertext    | 0                                  |
-   |     |     |     |
 Plaintext 0
 
 Segment #15
 
 | Input Block   | 4080c1014181c2024282c3034383e40a
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 638abae8724a954ae9e1e2e119deb6e1
- |     |     |     |     |
-| Ciphertext    | 0                                  |
-   |     |     |     |
 | Plaintext     | 0
-                                |     |     |     |     |
 Segment #16
 
 | Input Block   | 8101820283038404850586068707c814
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 2b4f488a3f958c52a3f1db2da938360e
- |     |     |     |     |
-| Ciphertext    | 1                                  |
-   |     |     |     |
 | Plaintext     | 1
-                                |     |     |     |     |
 
 F.3.7  CFB8-AES128.Encrypt
-| Key  | 2b7e151628aed2a6abf7158809cf4f3c  |     |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f  |     |     |
-   |     |
+| Key | 2b7e151628aed2a6abf7158809cf4f3c |
+| ---- | --------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 50fe67cc996d32b6da0937e99bafec60
- |     |     |     |     |
 | Plaintext     | 6b
-                               |     |     |     |     |
-| Ciphertext    | 3b                                 |
-   |     |     |     |
 Segment #2
 
 | Input Block   | 0102030405060708090a0b0c0d0e0f3b
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b8eb865a2b026381abb1d6560ed20f68
- |     |     |     |     |
 | Plaintext     | c1
-                               |     |     |     |     |
-| Ciphertext    | 79                                 |
-   |     |     |     |
 Segment #3
 
 | Input Block   | 02030405060708090a0b0c0d0e0f3b79
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | fce6033b4edce64cbaed3f61ff5b927c
- |     |     |     |     |
 | Plaintext     | be
-                               |     |     |     |     |
-| Ciphertext    | 42                                 |
-   |     |     |     |
 Segment #4
 
 | Input Block   | 030405060708090a0b0c0d0e0f3b7942
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | ae4e5e7ffe805f7a4395b180004f8ca8
- |     |     |     |     |
 | Plaintext     | e2
-                               |     |     |     |     |
-| Ciphertext    | 4c                                 |
-   |     |     |     |
 Segment #5
 
 | Input Block   | 0405060708090a0b0c0d0e0f3b79424c
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b205eb89445b62116f1deb988a81e6dd
- |     |     |     |     |
 | Plaintext     | 2e
-                               |     |     |     |     |
-| Ciphertext    | 9c                                 |
-   |     |     |     |
 Segment #6
 
 | Input Block   | 05060708090a0b0c0d0e0f3b79424c9c
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 4d21d456a5e239064fff4be0c0f85488
- |     |     |     |     |
 39
 
-|             |      |     |     |     |
-| ----------- | ---- | --- | --- | --- |
 | Plaintext
  | 40
- |     |     |     |
-| Ciphertext  |
 0d  |
-   |     |     |
 Segment #7
 
 | Input Block
   | 060708090a0b0c0d0e0f3b79424c9c0d
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 4b2f5c3895b9efdc85ee0c5178c7fd33
- |     |     |     |
 | Plaintext
     | 9f
-                               |     |     |     |
-| Ciphertext     |
 d4                                |
-   |     |     |
 Segment #8
 
 | Input Block
   | 0708090a0b0c0d0e0f3b79424c9c0dd4
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | a0976d856da260a34104d1a80953db4c
- |     |     |     |
 | Plaintext
     | 96
-                               |     |     |     |
-| Ciphertext     |
 36                                |
-   |     |     |
 Segment #9
 
 | Input Block
   | 08090a0b0c0d0e0f3b79424c9c0dd436
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 53674e5890a2c71b0f6a27a094e5808c
- |     |     |     |
 | Plaintext
     | e9
-                               |     |     |     |
-| Ciphertext     |
 ba                                |
-   |     |     |
 Segment #10
 
 | Input Block
   | 090a0b0c0d0e0f3b79424c9c0dd436ba
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | f34cd32ffed495f8bc8adba194eccb7a
- |     |     |     |
 | Plaintext
     | 3d
-                               |     |     |     |
-| Ciphertext     |
 ce                                |
-   |     |     |
 Segment #11
 
 | Input Block
   | 0a0b0c0d0e0f3b79424c9c0dd436bace
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | e08cf2407d7ed676c9049586f1d48ba6
- |     |     |     |
 | Plaintext
     | 7e
-                               |     |     |     |
-| Ciphertext     |
 9e                                |
-   |     |     |
 Segment #12
 
 | Input Block
   | 0b0c0d0e0f3b79424c9c0dd436bace9e
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 1f5c88a19b6ca28e99c9aeb8982a6dd8
- |     |     |     |
 | Plaintext
     | 11
-                               |     |     |     |
-| Ciphertext     |
 0e                                |
-   |     |     |
 Segment #13
 
 | Input Block
   | 0c0d0e0f3b79424c9c0dd436bace9e0e
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | a70e63df781cf395a208bd2365c8779b
- |     |     |     |
 | Plaintext
     | 73
-                               |     |     |     |
-| Ciphertext     |
 d4                                |
-   |     |     |
 Segment #14
 
 | Input Block
   | 0d0e0f3b79424c9c0dd436bace9e0ed4
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | cbcfe8b3bcf9ac202ce18420013319ab
- |     |     |     |
 | Plaintext
     | 93
-                               |     |     |     |
-| Ciphertext     |
 58                                |
-   |     |     |
 Segment #15
 
 | Input Block
   | 0e0f3b79424c9c0dd436bace9e0ed458
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 7d9fac6604b3c8c5b1f8c5a00956cf56
- |     |     |     |
 | Plaintext
     | 17
-                               |     |     |     |
-| Ciphertext     |
 6a                                |
-   |     |     |
 Segment #16
 
 | Input Block
   | 0f3b79424c9c0dd436bace9e0ed4586a
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 65c3fa64bf0343986825c636f4a1efd2
- |     |     |     |
 | Plaintext
     | 2a
-                               |     |     |     |
-| Ciphertext     |
 4f                                |
-   |     |     |
 Segment #17
 
 | Input Block
  | 3b79424c9c0dd436bace9e0ed4586a4f
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 40
 
-|               |                                    |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 9cff5e5ff4f554d56c924b9d6a6de21d
- |     |     |     |     |
 | Plaintext     | ae
-                               |     |     |     |     |
-| Ciphertext    | 32                                 |
-   |     |     |     |
 Segment #18
 
 | Input Block   | 79424c9c0dd436bace9e0ed4586a4f32
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 946c3dc1584cc18400ecd8c6052c44b1
- |     |     |     |     |
 | Plaintext     | 2d
-                               |     |     |     |     |
-| Ciphertext    | b9                                 |
-   |     |     |     |
 
 F.3.8  CFB8-AES128.Decrypt
-| Key  | 2b7e151628aed2a6abf7158809cf4f3c  |     |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f  |     |     |
-   |     |
+| Key | 2b7e151628aed2a6abf7158809cf4f3c |
+| ---- | --------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 50fe67cc996d32b6da0937e99bafec60
- |     |     |     |     |
-| Ciphertext    | 3b                                 |
-   |     |     |     |
 | Plaintext     | 6b
-                               |     |     |     |     |
 Segment #2
 
 | Input Block   | 0102030405060708090a0b0c0d0e0f3b
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b8eb865a2b026381abb1d6560ed20f68
- |     |     |     |     |
-| Ciphertext    | 79                                 |
-   |     |     |     |
 | Plaintext     | c1
-                               |     |     |     |     |
 Segment #3
 
 | Input Block   | 02030405060708090a0b0c0d0e0f3b79
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | fce6033b4edce64cbaed3f61ff5b927c
- |     |     |     |     |
-| Ciphertext    | 42                                 |
-   |     |     |     |
 | Plaintext     | be
-                               |     |     |     |     |
 Segment #4
 
 | Input Block   | 030405060708090a0b0c0d0e0f3b7942
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | ae4e5e7ffe805f7a4395b180004f8ca8
- |     |     |     |     |
-| Ciphertext    | 4c                                 |
-   |     |     |     |
 | Plaintext     | e2
-                               |     |     |     |     |
 Segment #5
 
 | Input Block   | 0405060708090a0b0c0d0e0f3b79424c
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b205eb89445b62116f1deb988a81e6dd
- |     |     |     |     |
-| Ciphertext    | 9c                                 |
-   |     |     |     |
 | Plaintext     | 2e
-                               |     |     |     |     |
 Segment #6
 
 | Input Block   | 05060708090a0b0c0d0e0f3b79424c9c
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 4d21d456a5e239064fff4be0c0f85488
- |     |     |     |     |
-| Ciphertext    | 0d                                 |
-   |     |     |     |
 | Plaintext     | 40
-                               |     |     |     |     |
 Segment #7
 
 | Input Block   | 060708090a0b0c0d0e0f3b79424c9c0d
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 4b2f5c3895b9efdc85ee0c5178c7fd33
- |     |     |     |     |
-| Ciphertext    | d4                                 |
-   |     |     |     |
 | Plaintext     | 9f
-                               |     |     |     |     |
 Segment #8
 
 | Input Block   | 0708090a0b0c0d0e0f3b79424c9c0dd4
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a0976d856da260a34104d1a80953db4c
- |     |     |     |     |
-| Ciphertext    | 36                                 |
-   |     |     |     |
 | Plaintext     | 96
-                               |     |     |     |     |
 Segment #9
 
 41
 
-|               |                                    |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Input Block   | 08090a0b0c0d0e0f3b79424c9c0dd436
- |     |     |     |     |
 | Output Block  | 53674e5890a2c71b0f6a27a094e5808c
- |     |     |     |     |
-| Ciphertext    | ba                                 |
-   |     |     |     |
 | Plaintext     | e9
-                               |     |     |     |     |
 Segment #10
 
 | Input Block   | 090a0b0c0d0e0f3b79424c9c0dd436ba
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | f34cd32ffed495f8bc8adba194eccb7a
- |     |     |     |     |
-| Ciphertext    | ce                                 |
-   |     |     |     |
 | Plaintext     | 3d
-                               |     |     |     |     |
 Segment #11
 
 | Input Block   | 0a0b0c0d0e0f3b79424c9c0dd436bace
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | e08cf2407d7ed676c9049586f1d48ba6
- |     |     |     |     |
-| Ciphertext    | 9e                                 |
-   |     |     |     |
 | Plaintext     | 7e
-                               |     |     |     |     |
 Segment #12
 
 | Input Block   | 0b0c0d0e0f3b79424c9c0dd436bace9e
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 1f5c88a19b6ca28e99c9aeb8982a6dd8
- |     |     |     |     |
-| Ciphertext    | 0e                                 |
-   |     |     |     |
 | Plaintext     | 11
-                               |     |     |     |     |
 Segment #13
 
 | Input Block   | 0c0d0e0f3b79424c9c0dd436bace9e0e
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a70e63df781cf395a208bd2365c8779b
- |     |     |     |     |
-| Ciphertext    | d4                                 |
-   |     |     |     |
 | Plaintext     | 73
-                               |     |     |     |     |
 Segment #14
 
 | Input Block   | 0d0e0f3b79424c9c0dd436bace9e0ed4
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | cbcfe8b3bcf9ac202ce18420013319ab
- |     |     |     |     |
-| Ciphertext    | 58                                 |
-   |     |     |     |
 | Plaintext     | 93
-                               |     |     |     |     |
 Segment #15
 
 | Input Block   | 0e0f3b79424c9c0dd436bace9e0ed458
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 7d9fac6604b3c8c5b1f8c5a00956cf56
- |     |     |     |     |
-| Ciphertext    | 6a                                 |
-   |     |     |     |
 | Plaintext     | 17
-                               |     |     |     |     |
 Segment #16
 
 | Input Block   | 0f3b79424c9c0dd436bace9e0ed4586a
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 65c3fa64bf0343986825c636f4a1efd2
- |     |     |     |     |
-| Ciphertext    | 4f                                 |
-   |     |     |     |
 | Plaintext     | 2a
-                               |     |     |     |     |
 Segment #17
 
 | Input Block   | 3b79424c9c0dd436bace9e0ed4586a4f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 9cff5e5ff4f554d56c924b9d6a6de21d
- |     |     |     |     |
-| Ciphertext    | 32                                 |
-   |     |     |     |
 | Plaintext     | ae
-                               |     |     |     |     |
 Segment #18
 
 | Input Block   | 79424c9c0dd436bace9e0ed4586a4f32
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 946c3dc1584cc18400ecd8c6052c44b1
- |     |     |     |     |
-| Ciphertext    | b9                                 |
-   |     |     |     |
 | Plaintext     | 2d
-                               |     |     |     |     |
 
 F.3.9  CFB8-AES192.Encrypt
-| Key  | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |
-   |
-| ---- | ------------------------------------------------- | --- | --- | --- | --- |
+| Key | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| ---- | ------------------------------------------------- |
 42
 
-|     |                                     |     |     |     |     |
-| --- | ----------------------------------- | --- | --- | --- | --- |
-| IV  |   000102030405060708090a0b0c0d0e0f  |     |     |
-   |     |
 Segment #1
 
 | Input Block
   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block
  | a609b38df3b1133dddff2718ba09565e
- |     |     |     |     |
 | Plaintext
     | 6b
-                               |     |     |     |     |
-| Ciphertext     |
 cd                                |
-   |     |     |     |
 Segment #2
 
 | Input Block
   | 0102030405060708090a0b0c0d0e0fcd
- |     |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block
  | 63c82e99e7289617c49e6851e082142a
- |     |     |     |     |
 | Plaintext
     | c1
-                               |     |     |     |     |
-| Ciphertext     |
 a2                                |
-   |     |     |     |
 Segment #3
 
 | Input Block
   | 02030405060708090a0b0c0d0e0fcda2
- |     |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block
  | ec40a5497264bfb4d6820aaae73f75af
- |     |     |     |     |
 | Plaintext
     | be
-                               |     |     |     |     |
-| Ciphertext     |
 52                                |
-   |     |     |     |
 Segment #4
 
 | Input Block
   | 030405060708090a0b0c0d0e0fcda252
- |     |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block
  | fc011a96afe968c32bae6495173a9154
- |     |     |     |     |
 | Plaintext
     | e2
-                               |     |     |     |     |
-| Ciphertext     |
 1e                                |
-   |     |     |     |
 Segment #5
 
 | Input Block
   | 0405060708090a0b0c0d0e0fcda2521e
- |     |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block
  | de019e09ac995ba46a42916ef77d8fe5
- |     |     |     |     |
 | Plaintext
     | 2e
-                               |     |     |     |     |
-| Ciphertext     |
 f0                                |
-   |     |     |     |
 Segment #6
 
 | Input Block
   | 05060708090a0b0c0d0e0fcda2521ef0
- |     |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block
  | e980477efb7f896e07c4a2d527e7b537
- |     |     |     |     |
 | Plaintext
     | 40
-                               |     |     |     |     |
-| Ciphertext     |
 a9                                |
-   |     |     |     |
 Segment #7
 
 | Input Block
   | 060708090a0b0c0d0e0fcda2521ef0a9
- |     |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block
  | 9a9a77b11709b36e08e9321ae8b1e539
- |     |     |     |     |
 | Plaintext
     | 9f
-                               |     |     |     |     |
-| Ciphertext     |
 05                                |
-   |     |     |     |
 Segment #8
 
 | Input Block
   | 0708090a0b0c0d0e0fcda2521ef0a905
- |     |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block
  | 5ca1d192a780fbca1471e10588593c7c
- |     |     |     |     |
 | Plaintext
     | 96
-                               |     |     |     |     |
-| Ciphertext     |
 ca                                |
-   |     |     |     |
 Segment #9
 
 | Input Block
   | 08090a0b0c0d0e0fcda2521ef0a905ca
- |     |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block
  | addb26efd21de4d002474c7748e0bc1d
- |     |     |     |     |
 | Plaintext
     | e9
-                               |     |     |     |     |
-| Ciphertext     |
 44                                |
-   |     |     |     |
 Segment #10
 
 | Input Block
   | 090a0b0c0d0e0fcda2521ef0a905ca44
- |     |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block
  | f0c410ad6512c5177a5ee40a60de01b8
- |     |     |     |     |
 | Plaintext
     | 3d
-                               |     |     |     |     |
-| Ciphertext     |
 cd                                |
-   |     |     |     |
 Segment #11
 
 | Input Block
   | 0a0b0c0d0e0fcda2521ef0a905ca44cd
- |     |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block
  | 7bbf71f2b4f5cf68f3c0c1b9235dbd53
- |     |     |     |     |
 43
 
-|             |      |     |     |     |     |     |
-| ----------- | ---- | --- | --- | --- | --- | --- |
 | Plaintext   | 7e
- |     |     |     |     |     |
-| Ciphertext  | 05   |
-   |     |     |     |     |
 Segment #12
 
 | Input Block   | 0b0c0d0e0fcda2521ef0a905ca44cd05
- |     |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- | --- |
 | Output Block  | 6dafb26e3c63b350811394b382e14d69
- |     |     |     |     |     |
 | Plaintext     | 11
-                               |     |     |     |     |     |
-| Ciphertext    | 7c                                 |
-   |     |     |     |     |
 Segment #13
 
 | Input Block   | 0c0d0e0fcda2521ef0a905ca44cd057c
- |     |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- | --- |
 | Output Block  | ccd6e25255a80e9bdbec9fbc26e5fad6
- |     |     |     |     |     |
 | Plaintext     | 73
-                               |     |     |     |     |     |
-| Ciphertext    | bf                                 |
-   |     |     |     |     |
 Segment #14
 
 | Input Block   | 0d0e0fcda2521ef0a905ca44cd057cbf
- |     |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- | --- |
 | Output Block  | 9e33550f6d47bda77f4f3108181ab21c
- |     |     |     |     |     |
 | Plaintext     | 93
-                               |     |     |     |     |     |
-| Ciphertext    | 0d                                 |
-   |     |     |     |     |
 Segment #15
 
 | Input Block   | 0e0fcda2521ef0a905ca44cd057cbf0d
- |     |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- | --- |
 | Output Block  | 50b3eae29a6623fbef6d726dbda675a8
- |     |     |     |     |     |
 | Plaintext     | 17
-                               |     |     |     |     |     |
-| Ciphertext    | 47                                 |
-   |     |     |     |     |
 Segment #16
 
 | Input Block   | 0fcda2521ef0a905ca44cd057cbf0d47
- |     |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- | --- |
 | Output Block  | 8a2a57d1b9158539ef7ff42b33bf0a4a
- |     |     |     |     |     |
 | Plaintext     | 2a
-                               |     |     |     |     |     |
-| Ciphertext    | a0                                 |
-   |     |     |     |     |
 Segment #17
 
 | Input Block   | cda2521ef0a905ca44cd057cbf0d47a0
- |     |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- | --- |
 | Output Block  | c94e9102ac731d2f127b657d810ef5a8
- |     |     |     |     |     |
 | Plaintext     | ae
-                               |     |     |     |     |     |
-| Ciphertext    | 67                                 |
-   |     |     |     |     |
 Segment #18
 
 | Input Block   | a2521ef0a905ca44cd057cbf0d47a067
- |     |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- | --- |
 | Output Block  | a765ed650568fbe386660def5f8d491d
- |     |     |     |     |     |
 | Plaintext     | 2d
-                               |     |     |     |     |     |
-| Ciphertext    | 8a                                 |
-   |     |     |     |     |
 
 F.3.10  CFB8-AES192.Decrypt
-| Key  | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |     |
-   |
-| ---- | ------------------------------------------------- | --- | --- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f                  |     |     |
-   |     |     |
+| Key | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| ---- | ------------------------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- | --- |
 | Output Block  | a609b38df3b1133dddff2718ba09565e
- |     |     |     |     |     |
-| Ciphertext    | cd                                 |
-   |     |     |     |     |
 | Plaintext     | 6b
-                               |     |     |     |     |     |
 Segment #2
 
 | Input Block   | 0102030405060708090a0b0c0d0e0fcd
- |     |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- | --- |
 | Output Block  | 63c82e99e7289617c49e6851e082142a
- |     |     |     |     |     |
-| Ciphertext    | a2                                 |
-   |     |     |     |     |
 | Plaintext     | c1
-                               |     |     |     |     |     |
 Segment #3
 
 | Input Block  | 02030405060708090a0b0c0d0e0fcda2
- |     |     |     |     |     |
-| ------------ | ---------------------------------- | --- | --- | --- | --- | --- |
 44
 
-|                |                                    |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | ec40a5497264bfb4d6820aaae73f75af
- |     |     |     |
-| Ciphertext     |
 52                                |
-   |     |     |
 | Plaintext
     | be
-                               |     |     |     |
 Segment #4
 
 | Input Block
   | 030405060708090a0b0c0d0e0fcda252
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | fc011a96afe968c32bae6495173a9154
- |     |     |     |
-| Ciphertext     |
 1e                                |
-   |     |     |
 | Plaintext
     | e2
-                               |     |     |     |
 Segment #5
 
 | Input Block
   | 0405060708090a0b0c0d0e0fcda2521e
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | de019e09ac995ba46a42916ef77d8fe5
- |     |     |     |
-| Ciphertext     |
 f0                                |
-   |     |     |
 | Plaintext
     | 2e
-                               |     |     |     |
 Segment #6
 
 | Input Block
   | 05060708090a0b0c0d0e0fcda2521ef0
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | e980477efb7f896e07c4a2d527e7b537
- |     |     |     |
-| Ciphertext     |
 a9                                |
-   |     |     |
 | Plaintext
     | 40
-                               |     |     |     |
 Segment #7
 
 | Input Block
   | 060708090a0b0c0d0e0fcda2521ef0a9
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 9a9a77b11709b36e08e9321ae8b1e539
- |     |     |     |
-| Ciphertext     |
 05                                |
-   |     |     |
 | Plaintext
     | 9f
-                               |     |     |     |
 Segment #8
 
 | Input Block
   | 0708090a0b0c0d0e0fcda2521ef0a905
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 5ca1d192a780fbca1471e10588593c7c
- |     |     |     |
-| Ciphertext     |
 ca                                |
-   |     |     |
 | Plaintext
     | 96
-                               |     |     |     |
 Segment #9
 
 | Input Block
   | 08090a0b0c0d0e0fcda2521ef0a905ca
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | addb26efd21de4d002474c7748e0bc1d
- |     |     |     |
-| Ciphertext     |
 44                                |
-   |     |     |
 | Plaintext
     | e9
-                               |     |     |     |
 Segment #10
 
 | Input Block
   | 090a0b0c0d0e0fcda2521ef0a905ca44
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | f0c410ad6512c5177a5ee40a60de01b8
- |     |     |     |
-| Ciphertext     |
 cd                                |
-   |     |     |
 | Plaintext
     | 3d
-                               |     |     |     |
 Segment #11
 
 | Input Block
   | 0a0b0c0d0e0fcda2521ef0a905ca44cd
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 7bbf71f2b4f5cf68f3c0c1b9235dbd53
- |     |     |     |
-| Ciphertext     |
 05                                |
-   |     |     |
 | Plaintext
     | 7e
-                               |     |     |     |
 Segment #12
 
 | Input Block
   | 0b0c0d0e0fcda2521ef0a905ca44cd05
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 6dafb26e3c63b350811394b382e14d69
- |     |     |     |
-| Ciphertext     |
 7c                                |
-   |     |     |
 | Plaintext
     | 11
-                               |     |     |     |
 Segment #13
 
 | Input Block
   | 0c0d0e0fcda2521ef0a905ca44cd057c
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | ccd6e25255a80e9bdbec9fbc26e5fad6
- |     |     |     |
-| Ciphertext     |
 bf                                |
-   |     |     |
 | Plaintext
     | 73
-                               |     |     |     |
 Segment #14
 
 45
 
-|               |                                    |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Input Block   | 0d0e0fcda2521ef0a905ca44cd057cbf
- |     |     |     |     |
 | Output Block  | 9e33550f6d47bda77f4f3108181ab21c
- |     |     |     |     |
-| Ciphertext    | 0d                                 |
-   |     |     |     |
 | Plaintext     | 93
-                               |     |     |     |     |
 Segment #15
 
 | Input Block   | 0e0fcda2521ef0a905ca44cd057cbf0d
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 50b3eae29a6623fbef6d726dbda675a8
- |     |     |     |     |
-| Ciphertext    | 47                                 |
-   |     |     |     |
 | Plaintext     | 17
-                               |     |     |     |     |
 Segment #16
 
 | Input Block   | 0fcda2521ef0a905ca44cd057cbf0d47
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 8a2a57d1b9158539ef7ff42b33bf0a4a
- |     |     |     |     |
-| Ciphertext    | a0                                 |
-   |     |     |     |
 | Plaintext     | 2a
-                               |     |     |     |     |
 Segment #17
 
 | Input Block   | cda2521ef0a905ca44cd057cbf0d47a0
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | c94e9102ac731d2f127b657d810ef5a8
- |     |     |     |     |
-| Ciphertext    | 67                                 |
-   |     |     |     |
 | Plaintext     | ae
-                               |     |     |     |     |
 Segment #18
 
 | Input Block   | a2521ef0a905ca44cd057cbf0d47a067
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a765ed650568fbe386660def5f8d491d
- |     |     |     |     |
-| Ciphertext    | 8a                                 |
-   |     |     |     |
 | Plaintext     | 2d
-                               |     |     |     |     |
 
 F.3.11  CFB8-AES256.Encrypt
-| Key  | 603deb1015ca71be2b73aef0857d7781  |     |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- | --- |
-|      | 1f352c073b6108d72d9810a30914dff4  |     |     |
-   |     |
-| IV   | 000102030405060708090a0b0c0d0e0f  |     |     |
-   |     |
+| Key | 603deb1015ca71be2b73aef0857d7781 |
+| ---- | --------------------------------- |
+|  | 1f352c073b6108d72d9810a30914dff4 |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b7bf3a5df43989dd97f0fa97ebce2f4a
- |     |     |     |     |
 | Plaintext     | 6b
-                               |     |     |     |     |
-| Ciphertext    | dc                                 |
-   |     |     |     |
 Segment #2
 
 | Input Block   | 0102030405060708090a0b0c0d0e0fdc
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | ded5faadb1068af80e774684b9f84870
- |     |     |     |     |
 | Plaintext     | c1
-                               |     |     |     |     |
-| Ciphertext    | 1f                                 |
-   |     |     |     |
 Segment #3
 
 | Input Block   | 02030405060708090a0b0c0d0e0fdc1f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a41e327e5273366ce9403cdbdb92c1cc
- |     |     |     |     |
 | Plaintext     | be
-                               |     |     |     |     |
-| Ciphertext    | 1a                                 |
-   |     |     |     |
 Segment #4
 
 | Input Block   | 030405060708090a0b0c0d0e0fdc1f1a
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 67938ae7d34df4ec2c0aec33eb98318f
- |     |     |     |     |
 | Plaintext     | e2
-                               |     |     |     |     |
-| Ciphertext    | 85                                 |
-   |     |     |     |
 Segment #5
 
 | Input Block   | 0405060708090a0b0c0d0e0fdc1f1a85
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 0e8f2e31efff615d3c93946609808c37
- |     |     |     |     |
 | Plaintext     | 2e
-                               |     |     |     |     |
 46
 
-|             |      |     |     |     |
-| ----------- | ---- | --- | --- | --- |
-| Ciphertext  |
+| ----------- | ---- |
+| Ciphertext |
 20  |
-   |     |     |
 Segment #6
 
 | Input Block
   | 05060708090a0b0c0d0e0fdc1f1a8520
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | e648bb37a95c94c72784162a79dfe306
- |     |     |     |
 | Plaintext
     | 40
-                               |     |     |     |
-| Ciphertext     |
 a6                                |
-   |     |     |
 Segment #7
 
 | Input Block
   | 060708090a0b0c0d0e0fdc1f1a8520a6
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | d278f3147290fc5dd0b7d2e82764a1fd
- |     |     |     |
 | Plaintext
     | 9f
-                               |     |     |     |
-| Ciphertext     |
 4d                                |
-   |     |     |
 Segment #8
 
 | Input Block
   | 0708090a0b0c0d0e0fdc1f1a8520a64d
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 2388d255a3e8a8059675e3a7de19dceb
- |     |     |     |
 | Plaintext
     | 96
-                               |     |     |     |
-| Ciphertext     |
 b5                                |
-   |     |     |
 Segment #9
 
 | Input Block
   | 08090a0b0c0d0e0fdc1f1a8520a64db5
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | b6b8008f6c6dc2d6144641ed2023f0f5
- |     |     |     |
 | Plaintext
     | e9
-                               |     |     |     |
-| Ciphertext     |
 5f                                |
-   |     |     |
 Segment #10
 
 | Input Block
   | 090a0b0c0d0e0fdc1f1a8520a64db55f
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | f18f88a7aa3e3a6167dd93fb1137713a
- |     |     |     |
 | Plaintext
     | 3d
-                               |     |     |     |
-| Ciphertext     |
 cc                                |
-   |     |     |
 Segment #11
 
 | Input Block
   | 0a0b0c0d0e0fdc1f1a8520a64db55fcc
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | f46c5e67bff7c070b26c0318c52d0ccd
- |     |     |     |
 | Plaintext
     | 7e
-                               |     |     |     |
-| Ciphertext     |
 8a                                |
-   |     |     |
 Segment #12
 
 | Input Block
   | 0b0c0d0e0fdc1f1a8520a64db55fcc8a
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | d4dceae622f8f21d27375d8c2c5f9fba
- |     |     |     |
 | Plaintext
     | 11
-                               |     |     |     |
-| Ciphertext     |
 c5                                |
-   |     |     |
 Segment #13
 
 | Input Block
   | 0c0d0e0fdc1f1a8520a64db55fcc8ac5
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 27e9e0d0a016709cd3ae0b5a9a242e31
- |     |     |     |
 | Plaintext
     | 73
-                               |     |     |     |
-| Ciphertext     |
 54                                |
-   |     |     |
 Segment #14
 
 | Input Block
   | 0d0e0fdc1f1a8520a64db55fcc8ac554
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 17f69d50ce64ba0d085de70b9030bbb2
- |     |     |     |
 | Plaintext
     | 93
-                               |     |     |     |
-| Ciphertext     |
 84                                |
-   |     |     |
 Segment #15
 
 | Input Block
   | 0e0fdc1f1a8520a64db55fcc8ac55484
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 59106ee400d18e104337669628c33cdd
- |     |     |     |
 | Plaintext
     | 17
-                               |     |     |     |
-| Ciphertext     |
 4e                                |
-   |     |     |
 Segment #16
 
 | Input Block
   | 0fdc1f1a8520a64db55fcc8ac554844e
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | a29c6ac87e2245ec0796772c1f5312a8
- |     |     |     |
 47
 
-|             |      |     |     |     |     |
-| ----------- | ---- | --- | --- | --- | --- |
 | Plaintext   | 2a
- |     |     |     |     |
-| Ciphertext  | 88   |
-   |     |     |     |
 Segment #17
 
 | Input Block   | dc1f1a8520a64db55fcc8ac554844e88
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 397b98fa2ec0ff8cc0cd821909551c9e
- |     |     |     |     |
 | Plaintext     | ae
-                               |     |     |     |     |
-| Ciphertext    | 97                                 |
-   |     |     |     |
 Segment #18
 
 | Input Block   | 1f1a8520a64db55fcc8ac554844e8897
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 2d2d6fe9aef72f7b914b623a9c7abd54
- |     |     |     |     |
 | Plaintext     | 2d
-                               |     |     |     |     |
-| Ciphertext    | 00                                 |
-   |     |     |     |
 
 F.3.12  CFB8-AES256.Decrypt
-| Key  | 603deb1015ca71be2b73aef0857d7781  |     |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- | --- |
-|      | 1f352c073b6108d72d9810a30914dff4  |     |     |
-   |     |
-| IV   | 000102030405060708090a0b0c0d0e0f  |     |     |
-   |     |
+| Key | 603deb1015ca71be2b73aef0857d7781 |
+| ---- | --------------------------------- |
+|  | 1f352c073b6108d72d9810a30914dff4 |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b7bf3a5df43989dd97f0fa97ebce2f4a
- |     |     |     |     |
-| Ciphertext    | dc                                 |
-   |     |     |     |
 | Plaintext     | 6b
-                               |     |     |     |     |
 Segment #2
 
 | Input Block   | 0102030405060708090a0b0c0d0e0fdc
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | ded5faadb1068af80e774684b9f84870
- |     |     |     |     |
-| Ciphertext    | 1f                                 |
-   |     |     |     |
 | Plaintext     | c1
-                               |     |     |     |     |
 Segment #3
 
 | Input Block   | 02030405060708090a0b0c0d0e0fdc1f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a41e327e5273366ce9403cdbdb92c1cc
- |     |     |     |     |
-| Ciphertext    | 1a                                 |
-   |     |     |     |
 | Plaintext     | be
-                               |     |     |     |     |
 Segment #4
 
 | Input Block   | 030405060708090a0b0c0d0e0fdc1f1a
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 67938ae7d34df4ec2c0aec33eb98318f
- |     |     |     |     |
-| Ciphertext    | 85                                 |
-   |     |     |     |
 | Plaintext     | e2
-                               |     |     |     |     |
 Segment #5
 
 | Input Block   | 0405060708090a0b0c0d0e0fdc1f1a85
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 0e8f2e31efff615d3c93946609808c37
- |     |     |     |     |
-| Ciphertext    | 20                                 |
-   |     |     |     |
 | Plaintext     | 2e
-                               |     |     |     |     |
 Segment #6
 
 | Input Block   | 05060708090a0b0c0d0e0fdc1f1a8520
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | e648bb37a95c94c72784162a79dfe306
- |     |     |     |     |
-| Ciphertext    | a6                                 |
-   |     |     |     |
 | Plaintext     | 40
-                               |     |     |     |     |
 Segment #7
 
 | Input Block   | 060708090a0b0c0d0e0fdc1f1a8520a6
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | d278f3147290fc5dd0b7d2e82764a1fd
- |     |     |     |     |
-| Ciphertext    | 4d                                 |
-   |     |     |     |
 | Plaintext     | 9f
-                               |     |     |     |     |
 Segment #8
 
 48
 
-|                |                                    |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Input Block
   | 0708090a0b0c0d0e0fdc1f1a8520a64d
- |     |     |     |
 | Output Block
  | 2388d255a3e8a8059675e3a7de19dceb
- |     |     |     |
-| Ciphertext     |
 b5                                |
-   |     |     |
 | Plaintext
     | 96
-                               |     |     |     |
 Segment #9
 
 | Input Block
   | 08090a0b0c0d0e0fdc1f1a8520a64db5
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | b6b8008f6c6dc2d6144641ed2023f0f5
- |     |     |     |
-| Ciphertext     |
 5f                                |
-   |     |     |
 | Plaintext
     | e9
-                               |     |     |     |
 Segment #10
 
 | Input Block
   | 090a0b0c0d0e0fdc1f1a8520a64db55f
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | f18f88a7aa3e3a6167dd93fb1137713a
- |     |     |     |
-| Ciphertext     |
 cc                                |
-   |     |     |
 | Plaintext
     | 3d
-                               |     |     |     |
 Segment #11
 
 | Input Block
   | 0a0b0c0d0e0fdc1f1a8520a64db55fcc
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | f46c5e67bff7c070b26c0318c52d0ccd
- |     |     |     |
-| Ciphertext     |
 8a                                |
-   |     |     |
 | Plaintext
     | 7e
-                               |     |     |     |
 Segment #12
 
 | Input Block
   | 0b0c0d0e0fdc1f1a8520a64db55fcc8a
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | d4dceae622f8f21d27375d8c2c5f9fba
- |     |     |     |
-| Ciphertext     |
 c5                                |
-   |     |     |
 | Plaintext
     | 11
-                               |     |     |     |
 Segment #13
 
 | Input Block
   | 0c0d0e0fdc1f1a8520a64db55fcc8ac5
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 27e9e0d0a016709cd3ae0b5a9a242e31
- |     |     |     |
-| Ciphertext     |
 54                                |
-   |     |     |
 | Plaintext
     | 73
-                               |     |     |     |
 Segment #14
 
 | Input Block
   | 0d0e0fdc1f1a8520a64db55fcc8ac554
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 17f69d50ce64ba0d085de70b9030bbb2
- |     |     |     |
-| Ciphertext     |
 84                                |
-   |     |     |
 | Plaintext
     | 93
-                               |     |     |     |
 Segment #15
 
 | Input Block
   | 0e0fdc1f1a8520a64db55fcc8ac55484
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 59106ee400d18e104337669628c33cdd
- |     |     |     |
-| Ciphertext     |
 4e                                |
-   |     |     |
 | Plaintext
     | 17
-                               |     |     |     |
 Segment #16
 
 | Input Block
   | 0fdc1f1a8520a64db55fcc8ac554844e
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | a29c6ac87e2245ec0796772c1f5312a8
- |     |     |     |
-| Ciphertext     |
 88                                |
-   |     |     |
 | Plaintext
     | 2a
-                               |     |     |     |
 Segment #17
 
 | Input Block
   | dc1f1a8520a64db55fcc8ac554844e88
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 397b98fa2ec0ff8cc0cd821909551c9e
- |     |     |     |
-| Ciphertext     |
 97                                |
-   |     |     |
 | Plaintext
     | ae
-                               |     |     |     |
 Segment #18
 
 | Input Block
   | 1f1a8520a64db55fcc8ac554844e8897
- |     |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
 | Output Block
  | 2d2d6fe9aef72f7b914b623a9c7abd54
- |     |     |     |
-| Ciphertext     |
 00                                |
-   |     |     |
 | Plaintext
     | 2d
-                               |     |     |     |
 49
 
-|     |     |     |     |     |     |     |
-| --- | --- | --- | --- | --- | --- | --- |
 
-| F.3.13  | CFB128-AES128.Encrypt  |                                   |     |     |     |     |
-| ------- | ---------------------- | --------------------------------- | --- | --- | --- | --- |
-| Key     |                        | 2b7e151628aed2a6abf7158809cf4f3c  |     |
-   |     |     |
-| IV      |                        | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |     |
+| F.3.13 | CFB128-AES128.Encrypt |
+| ------- | ---------------------- | --------------------------------- |
+| Key |  | 2b7e151628aed2a6abf7158809cf4f3c |
+| IV |  | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 | Input Block   |     | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  |     | 50fe67cc996d32b6da0937e99bafec60
- |     |     |     |     |
 | Plaintext     |     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
-| Ciphertext    |     | 3b3fd92eb72dad20333449f8e83cfb4a   |     |
-   |     |     |
 Segment #2
 
 | Input Block   |     | 3b3fd92eb72dad20333449f8e83cfb4a
- |     |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  |     | 668bcf60beb005a35354a201dab36bda
- |     |     |     |     |
 | Plaintext     |     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
-| Ciphertext    |     | c8a64537a0b3a93fcde3cdad9f1ce58b   |     |
-   |     |     |
 Segment #3
 
 | Input Block   |     | c8a64537a0b3a93fcde3cdad9f1ce58b
- |     |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  |     | 16bd032100975551547b4de89daea630
- |     |     |     |     |
 | Plaintext     |     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
-| Ciphertext    |     | 26751f67a3cbb140b1808cf187a4f4df   |     |
-   |     |     |
 Segment #4
 
 | Input Block   |     | 26751f67a3cbb140b1808cf187a4f4df
- |     |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  |     | 36d42170a312871947ef8714799bc5f6
- |     |     |     |     |
 | Plaintext     |     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
-| Ciphertext    |     | c04b05357c5d1c0eeac4c66f9ff7f2e6   |     |
-   |     |     |
 
-| F.3.14  | CFB128-AES128.Decrypt  |                                   |     |     |     |     |
-| ------- | ---------------------- | --------------------------------- | --- | --- | --- | --- |
-| Key     |                        | 2b7e151628aed2a6abf7158809cf4f3c  |     |
-   |     |     |
-| IV      |                        | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |     |
+| F.3.14 | CFB128-AES128.Decrypt |
+| ------- | ---------------------- | --------------------------------- |
+| Key |  | 2b7e151628aed2a6abf7158809cf4f3c |
+| IV |  | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 | Input Block   |     | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  |     | 50fe67cc996d32b6da0937e99bafec60
- |     |     |     |     |
-| Ciphertext    |     | 3b3fd92eb72dad20333449f8e83cfb4a   |     |
-   |     |     |
 | Plaintext     |     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
 Segment #2
 
 | Input Block   |     | 3b3fd92eb72dad20333449f8e83cfb4a
- |     |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  |     | 668bcf60beb005a35354a201dab36bda
- |     |     |     |     |
-| Ciphertext    |     | c8a64537a0b3a93fcde3cdad9f1ce58b   |     |
-   |     |     |
 | Plaintext     |     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
 Segment #3
 
 | Input Block   |     | c8a64537a0b3a93fcde3cdad9f1ce58b
- |     |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  |     | 16bd032100975551547b4de89daea630
- |     |     |     |     |
-| Ciphertext    |     | 26751f67a3cbb140b1808cf187a4f4df   |     |
-   |     |     |
 | Plaintext     |     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
 Segment #4
 
 | Input Block   |     | 26751f67a3cbb140b1808cf187a4f4df
- |     |     |     |     |
-| ------------- | --- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  |     | 36d42170a312871947ef8714799bc5f6
- |     |     |     |     |
-| Ciphertext    |     | c04b05357c5d1c0eeac4c66f9ff7f2e6   |     |
-   |     |     |
 | Plaintext     |     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
 
-| F.3.15  | CFB128-AES192.Encrypt  |                                                   |     |     |     |     |
-| ------- | ---------------------- | ------------------------------------------------- | --- | --- | --- | --- |
-| Key     | 	                      | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |
-   |
-| IV      |                        | 000102030405060708090a0b0c0d0e0f                  |     |
-   |     |     |
+| F.3.15 | CFB128-AES192.Encrypt |
+| ------- | ---------------------- | ------------------------------------------------- |
+| Key |  | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| IV |  | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 50
 
-|               |                                    |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
 | Output Block  | a609b38df3b1133dddff2718ba09565e
- |     |     |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
-| Ciphertext    | cdc80d6fddf18cab34c25909c99a4174   |     |
-   |     |     |
 Segment #2
 
 | Input Block   | cdc80d6fddf18cab34c25909c99a4174
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | c9e3f5289f149abd08ad44dc52b2b32b
- |     |     |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
-| Ciphertext    | 67ce7f7f81173621961a2b70171d3d7a   |     |
-   |     |     |
 Segment #3
 
 | Input Block   | 67ce7f7f81173621961a2b70171d3d7a
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 1ed6965b76c76ca02d1dcef404f09626
- |     |     |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
-| Ciphertext    | 2e1e8a1dd59b88b1c8e60fed1efac4c9   |     |
-   |     |     |
 Segment #4
 
 | Input Block   | 2e1e8a1dd59b88b1c8e60fed1efac4c9
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 36c0bbd976ccd4b7ef85cec1be273eef
- |     |     |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
-| Ciphertext    | c05f9f9ca9834fa042ae8fba584b09ff   |     |
-   |     |     |
 
 F.3.16  CFB128-AES192.Decrypt
-| Key  | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |
-   |
-| ---- | ------------------------------------------------- | --- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f                  |     |
-   |     |     |
+| Key | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| ---- | ------------------------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a609b38df3b1133dddff2718ba09565e
- |     |     |     |     |
-| Ciphertext    | cdc80d6fddf18cab34c25909c99a4174   |     |
-   |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
 Segment #2
 
 | Input Block   | cdc80d6fddf18cab34c25909c99a4174
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | c9e3f5289f149abd08ad44dc52b2b32b
- |     |     |     |     |
-| Ciphertext    | 67ce7f7f81173621961a2b70171d3d7a   |     |
-   |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
 Segment #3
 
 | Input Block   | 67ce7f7f81173621961a2b70171d3d7a
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 1ed6965b76c76ca02d1dcef404f09626
- |     |     |     |     |
-| Ciphertext    | 2e1e8a1dd59b88b1c8e60fed1efac4c9   |     |
-   |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
 Segment #4
 
 | Input Block   | 2e1e8a1dd59b88b1c8e60fed1efac4c9
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 36c0bbd976ccd4b7ef85cec1be273eef
- |     |     |     |     |
-| Ciphertext    | c05f9f9ca9834fa042ae8fba584b09ff   |     |
-   |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
 
 F.3.17  CFB128-AES256.Encrypt
-| Key  | 603deb1015ca71be2b73aef0857d7781  |     |
-   |     |     |
-| ---- | --------------------------------- | --- | --- | --- | --- |
-|      | 1f352c073b6108d72d9810a30914dff4  |     |
-   |     |     |
-| IV   | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |     |
+| Key | 603deb1015ca71be2b73aef0857d7781 |
+| ---- | --------------------------------- |
+|  | 1f352c073b6108d72d9810a30914dff4 |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b7bf3a5df43989dd97f0fa97ebce2f4a
- |     |     |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
-| Ciphertext    | dc7e84bfda79164b7ecd8486985d3860   |     |
-   |     |     |
 51
 
-|     |     |     |     |     |
-| --- | --- | --- | --- | --- |
 Segment #2
 
 | Input Block   | dc7e84bfda79164b7ecd8486985d3860
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 97d26743252b1d54aca653cf744ace2a
- |     |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
-| Ciphertext    | 39ffed143b28b1c832113c6331e5407b   |     |
-   |     |
 Segment #3
 
 | Input Block   | 39ffed143b28b1c832113c6331e5407b
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | efd80f62b6b9af8344c511b13c70b016
- |     |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
-| Ciphertext    | df10132415e54b92a13ed0a8267ae2f9   |     |
-   |     |
 Segment #4
 
 | Input Block   | df10132415e54b92a13ed0a8267ae2f9
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 833ca131c5f655ef8d1a2346b3ddd361
- |     |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
-| Ciphertext    | 75a385741ab9cef82031623d55b1e471   |     |
-   |     |
 
 F.3.18  CFB128-AES256.Decrypt
-| Key  | 603deb1015ca71be2b73aef0857d7781  |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- |
-|      | 1f352c073b6108d72d9810a30914dff4  |     |
-   |     |
-| IV   | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |
+| Key | 603deb1015ca71be2b73aef0857d7781 |
+| ---- | --------------------------------- |
+|  | 1f352c073b6108d72d9810a30914dff4 |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Segment #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | b7bf3a5df43989dd97f0fa97ebce2f4a
- |     |     |     |
-| Ciphertext    | dc7e84bfda79164b7ecd8486985d3860   |     |
-   |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
 Segment #2
 
 | Input Block   | dc7e84bfda79164b7ecd8486985d3860
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 97d26743252b1d54aca653cf744ace2a
- |     |     |     |
-| Ciphertext    | 39ffed143b28b1c832113c6331e5407b   |     |
-   |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
 Segment #3
 
 | Input Block   | 39ffed143b28b1c832113c6331e5407b
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | efd80f62b6b9af8344c511b13c70b016
- |     |     |     |
-| Ciphertext    | df10132415e54b92a13ed0a8267ae2f9   |     |
-   |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
 Segment #4
 
 | Input Block   | df10132415e54b92a13ed0a8267ae2f9
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 833ca131c5f655ef8d1a2346b3ddd361
- |     |     |     |
-| Ciphertext    | 75a385741ab9cef82031623d55b1e471   |     |
-   |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
 F.4  OFB Example Vectors
 
 F.4.1  OFB-AES128.Encrypt
-| Key  | 2b7e151628aed2a6abf7158809cf4f3c  |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |
+| Key | 2b7e151628aed2a6abf7158809cf4f3c |
+| ---- | --------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Block #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 50fe67cc996d32b6da0937e99bafec60
- |     |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
-| Ciphertext    | 3b3fd92eb72dad20333449f8e83cfb4a   |     |
-   |     |
 Block #2
 
 | Input Block  | 50fe67cc996d32b6da0937e99bafec60
- |     |     |     |
-| ------------ | ---------------------------------- | --- | --- | --- |
 52
 
-|               |                                    |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | d9a4dada0892239f6b8b3d7680e15674
- |     |     |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
-| Ciphertext    | 7789508d16918f03f53c52dac54ed825   |     |
-   |     |     |
 Block #3
 
 | Input Block   | d9a4dada0892239f6b8b3d7680e15674
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a78819583f0308e7a6bf36b1386abf23
- |     |     |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
-| Ciphertext    | 9740051e9c5fecf64344f7a82260edcc   |     |
-   |     |     |
 Block #4
 
 | Input Block   | a78819583f0308e7a6bf36b1386abf23
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | c6d3416d29165c6fcb8e51a227ba994e
- |     |     |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
-| Ciphertext    | 304c6528f659c77866a510d9c1d6ae5e   |     |
-   |     |     |
 
 F.4.2  OFB-AES128.Decrypt
-| Key  | 2b7e151628aed2a6abf7158809cf4f3c  |     |
-   |     |     |
-| ---- | --------------------------------- | --- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |     |
+| Key | 2b7e151628aed2a6abf7158809cf4f3c |
+| ---- | --------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Block #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 50fe67cc996d32b6da0937e99bafec60
- |     |     |     |     |
-| Ciphertext    | 3b3fd92eb72dad20333449f8e83cfb4a   |     |
-   |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
 Block #2
 
 | Input Block   | 50fe67cc996d32b6da0937e99bafec60
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | d9a4dada0892239f6b8b3d7680e15674
- |     |     |     |     |
-| Ciphertext    | 7789508d16918f03f53c52dac54ed825   |     |
-   |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
 Block #3
 
 | Input Block   | d9a4dada0892239f6b8b3d7680e15674
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a78819583f0308e7a6bf36b1386abf23
- |     |     |     |     |
-| Ciphertext    | 9740051e9c5fecf64344f7a82260edcc   |     |
-   |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
 Block #4
 
 | Input Block   | a78819583f0308e7a6bf36b1386abf23
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | c6d3416d29165c6fcb8e51a227ba994e
- |     |     |     |     |
-| Ciphertext    | 304c6528f659c77866a510d9c1d6ae5e   |     |
-   |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
 
 F.4.3  OFB-AES192.Encrypt
-| Key  | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |
-   |
-| ---- | ------------------------------------------------- | --- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f                  |     |
-   |     |     |
+| Key | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| ---- | ------------------------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Block #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a609b38df3b1133dddff2718ba09565e
- |     |     |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
-| Ciphertext    | cdc80d6fddf18cab34c25909c99a4174   |     |
-   |     |     |
 Block #2
 
 | Input Block   | a609b38df3b1133dddff2718ba09565e
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 52ef01da52602fe0975f78ac84bf8a50
- |     |     |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
-| Ciphertext    | fcc28b8d4c63837c09e81700c1100401   |     |
-   |     |     |
 Block #3
 
 | Input Block  | 52ef01da52602fe0975f78ac84bf8a50
- |     |     |     |     |
-| ------------ | ---------------------------------- | --- | --- | --- | --- |
 53
 
-|               |                                    |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | bd5286ac63aabd7eb067ac54b553f71d
- |     |     |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
-| Ciphertext    | 8d9a9aeac0f6596f559c6d4daf59a5f2   |     |
-   |     |     |
 Block #4
 
 | Input Block   | bd5286ac63aabd7eb067ac54b553f71d
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 9b00044d8885f729318713303fc0fe3a
- |     |     |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
-| Ciphertext    | 6d9f200857ca6c3e9cac524bd9acc92a   |     |
-   |     |     |
 
 F.4.4  OFB-AES192.Decrypt
-| Key  | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |
-   |
-| ---- | ------------------------------------------------- | --- | --- | --- | --- |
-| IV   | 000102030405060708090a0b0c0d0e0f                  |     |
-   |     |     |
+| Key | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| ---- | ------------------------------------------------- |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Block #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a609b38df3b1133dddff2718ba09565e
- |     |     |     |     |
-| Ciphertext    | cdc80d6fddf18cab34c25909c99a4174   |     |
-   |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
 Block #2
 
 | Input Block   | a609b38df3b1133dddff2718ba09565e
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 52ef01da52602fe0975f78ac84bf8a50
- |     |     |     |     |
-| Ciphertext    | fcc28b8d4c63837c09e81700c1100401   |     |
-   |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
 Block #3
 
 | Input Block   | 52ef01da52602fe0975f78ac84bf8a50
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | bd5286ac63aabd7eb067ac54b553f71d
- |     |     |     |     |
-| Ciphertext    | 8d9a9aeac0f6596f559c6d4daf59a5f2   |     |
-   |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
 Block #4
 
 | Input Block   | bd5286ac63aabd7eb067ac54b553f71d
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 9b00044d8885f729318713303fc0fe3a
- |     |     |     |     |
-| Ciphertext    | 6d9f200857ca6c3e9cac524bd9acc92a   |     |
-   |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
 
 F.4.5  OFB-AES256.Encrypt
-| Key  | 603deb1015ca71be2b73aef0857d7781  |     |
-   |     |     |
-| ---- | --------------------------------- | --- | --- | --- | --- |
-|      | 1f352c073b6108d72d9810a30914dff4  |     |
-   |     |     |
-| IV   | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |     |
+| Key | 603deb1015ca71be2b73aef0857d7781 |
+| ---- | --------------------------------- |
+|  | 1f352c073b6108d72d9810a30914dff4 |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Block #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b7bf3a5df43989dd97f0fa97ebce2f4a
- |     |     |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
-| Ciphertext    | dc7e84bfda79164b7ecd8486985d3860   |     |
-   |     |     |
 Block #2
 
 | Input Block   | b7bf3a5df43989dd97f0fa97ebce2f4a
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | e1c656305ed1a7a6563805746fe03edc
- |     |     |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
-| Ciphertext    | 4febdc6740d20b3ac88f6ad82a4fb08d   |     |
-   |     |     |
 Block #3
 
 | Input Block   | e1c656305ed1a7a6563805746fe03edc
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 41635be625b48afc1666dd42a09d96e7
- |     |     |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
-| Ciphertext    | 71ab47a086e86eedf39d1c5bba97c408   |     |
-   |     |     |
 Block #4
 
 54
 
-|               |                                    |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Input Block   | 41635be625b48afc1666dd42a09d96e7
- |     |     |     |
 | Output Block  | f7b93058b8bce0fffea41bf0012cd394
- |     |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
-| Ciphertext    | 0126141d67f37be8538f5a8be740e484   |     |
-   |     |
 
 F.4.6  OFB-AES256.Decrypt
-| Key  | 603deb1015ca71be2b73aef0857d7781  |     |
-   |     |
-| ---- | --------------------------------- | --- | --- | --- |
-|      | 1f352c073b6108d72d9810a30914dff4  |     |
-   |     |
-| IV   | 000102030405060708090a0b0c0d0e0f  |     |
-   |     |
+| Key | 603deb1015ca71be2b73aef0857d7781 |
+| ---- | --------------------------------- |
+|  | 1f352c073b6108d72d9810a30914dff4 |
+| IV | 000102030405060708090a0b0c0d0e0f |
 Block #1
 
 | Input Block   | 000102030405060708090a0b0c0d0e0f
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | b7bf3a5df43989dd97f0fa97ebce2f4a
- |     |     |     |
-| Ciphertext    | dc7e84bfda79164b7ecd8486985d3860   |     |
-   |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
 Block #2
 
 | Input Block   | b7bf3a5df43989dd97f0fa97ebce2f4a
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | e1c656305ed1a7a6563805746fe03edc
- |     |     |     |
-| Ciphertext    | 4febdc6740d20b3ac88f6ad82a4fb08d   |     |
-   |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
 Block #3
 
 | Input Block   | e1c656305ed1a7a6563805746fe03edc
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 41635be625b48afc1666dd42a09d96e7
- |     |     |     |
-| Ciphertext    | 71ab47a086e86eedf39d1c5bba97c408   |     |
-   |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
 Block #4
 
 | Input Block   | 41635be625b48afc1666dd42a09d96e7
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | f7b93058b8bce0fffea41bf0012cd394
- |     |     |     |
-| Ciphertext    | 0126141d67f37be8538f5a8be740e484   |     |
-   |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
 F.5  CTR Example Vectors
 
 F.5.1  CTR-AES128.Encrypt
-| Key            | 2b7e151628aed2a6abf7158809cf4f3c   |     |
-   |     |
-| -------------- | ---------------------------------- | --- | --- | --- |
+| Key | 2b7e151628aed2a6abf7158809cf4f3c |
+| -------------- | ---------------------------------- |
 | Init. Counter  | f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
- |     |     |     |
 Block #1
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | ec8cdf7398607cb0f2d21675ea9ea1e4
- |     |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
-| Ciphertext    | 874d6191b620e3261bef6864990db6ce   |     |
-   |     |
 Block #2
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff00
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 362b7c3c6773516318a077d7fc5073ae
- |     |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
-| Ciphertext    | 9806f66b7970fdff8617187bb9fffdff   |     |
-   |     |
 Block #3
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff01
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 6a2cc3787889374fbeb4c81b17ba6c44
- |     |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
-| Ciphertext    | 5ae4df3edbd5d35e5b4f09020db03eab   |     |
-   |     |
 Block #4
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff02
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | e89c399ff0f198c6d40a31db156cabfe
- |     |     |     |
 55
 
-|             |                                    |     |     |     |     |
-| ----------- | ---------------------------------- | --- | --- | --- | --- |
 | Plaintext   | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
-| Ciphertext  | 1e031dda2fbe03d1792170a0f3009cee   |     |
-   |     |     |
 
 F.5.2  CTR-AES128.Decrypt
-| Key            | 2b7e151628aed2a6abf7158809cf4f3c   |     |
-   |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
+| Key | 2b7e151628aed2a6abf7158809cf4f3c |
+| -------------- | ---------------------------------- |
 | Init. Counter  | f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
- |     |     |     |     |
 Block #1
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | ec8cdf7398607cb0f2d21675ea9ea1e4
- |     |     |     |     |
-| Ciphertext    | 874d6191b620e3261bef6864990db6ce   |     |
-   |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
 Block #2
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff00
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 362b7c3c6773516318a077d7fc5073ae
- |     |     |     |     |
-| Ciphertext    | 9806f66b7970fdff8617187bb9fffdff   |     |
-   |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
 Block #3
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff01
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 6a2cc3787889374fbeb4c81b17ba6c44
- |     |     |     |     |
-| Ciphertext    | 5ae4df3edbd5d35e5b4f09020db03eab   |     |
-   |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
 Block #4
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff02
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | e89c399ff0f198c6d40a31db156cabfe
- |     |     |     |     |
-| Ciphertext    | 1e031dda2fbe03d1792170a0f3009cee   |     |
-   |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
 
 F.5.3  CTR-AES192.Encrypt
-| Key            | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |
-   |
-| -------------- | ------------------------------------------------- | --- | --- | --- | --- |
+| Key | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| -------------- | ------------------------------------------------- |
 | Init. Counter  | f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
-                |     |     |     |     |
 Block #1
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 717d2dc639128334a6167a488ded7921
- |     |     |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
-| Ciphertext    | 1abc932417521ca24f2b0459fe7e6e0b   |     |
-   |     |     |
 Block #2
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff00
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a72eb3bb14a556734b7bad6ab16100c5
- |     |     |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
-| Ciphertext    | 090339ec0aa6faefd5ccc2c6f4ce8e94   |     |
-   |     |     |
 Block #3
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff01
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 2efeae2d72b722613446dc7f4c2af918
- |     |     |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
-| Ciphertext    | 1e36b26bd1ebc670d1bd1d665620abf7   |     |
-   |     |     |
 Block #4
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff02
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b9e783b30dd7924ff7bc9b97beaa8740
- |     |     |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
-| Ciphertext    | 4f78a7f6d29809585a97daec58c6b050   |     |
-   |     |     |
 
 56
 
-|     |     |     |     |     |     |
-| --- | --- | --- | --- | --- | --- |
 F.5.4  CTR-AES192.Decrypt
-| Key            | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b  |     |     |     |
-   |
-| -------------- | ------------------------------------------------- | --- | --- | --- | --- |
+| Key | 8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b |
+| -------------- | ------------------------------------------------- |
 | Init. Counter  | f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
-                |     |     |     |     |
 Block #1
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 717d2dc639128334a6167a488ded7921
- |     |     |     |     |
-| Ciphertext    | 1abc932417521ca24f2b0459fe7e6e0b   |     |
-   |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
 Block #2
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff00
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | a72eb3bb14a556734b7bad6ab16100c5
- |     |     |     |     |
-| Ciphertext    | 090339ec0aa6faefd5ccc2c6f4ce8e94   |     |
-   |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
 Block #3
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff01
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 2efeae2d72b722613446dc7f4c2af918
- |     |     |     |     |
-| Ciphertext    | 1e36b26bd1ebc670d1bd1d665620abf7   |     |
-   |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
 Block #4
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff02
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | b9e783b30dd7924ff7bc9b97beaa8740
- |     |     |     |     |
-| Ciphertext    | 4f78a7f6d29809585a97daec58c6b050   |     |
-   |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
 
 F.5.5  CTR-AES256.Encrypt
-| Key            | 603deb1015ca71be2b73aef0857d7781   |     |
-   |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
-|                | 1f352c073b6108d72d9810a30914dff4   |     |
-   |     |     |
+| Key | 603deb1015ca71be2b73aef0857d7781 |
+| -------------- | ---------------------------------- |
+|  | 1f352c073b6108d72d9810a30914dff4 |
 | Init. Counter  | f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
- |     |     |     |     |
 Block #1
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 0bdf7df1591716335e9a8b15c860c502
- |     |     |     |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |     |
-| Ciphertext    | 601ec313775789a5b7a7f504bbf3d228   |     |
-   |     |     |
 Block #2
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff00
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 5a6e699d536119065433863c8f657b94
- |     |     |     |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |     |
-| Ciphertext    | f443e3ca4d62b59aca84e990cacaf5c5   |     |
-   |     |     |
 Block #3
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff01
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 1bc12c9c01610d5d0d8bd6a3378eca62
- |     |     |     |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |     |
-| Ciphertext    | 2b0930daa23de94ce87017ba2d84988d   |     |
-   |     |     |
 Block #4
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff02
- |     |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- | --- |
 | Output Block  | 2956e1c8693536b1bee99c73a31576b6
- |     |     |     |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |     |
-| Ciphertext    | dfc9c58db67aada613c2dd08457941a6   |     |
-   |     |     |
 
 F.5.6  CTR-AES256.Decrypt
-| Key            | 603deb1015ca71be2b73aef0857d7781   |     |
-   |     |     |
-| -------------- | ---------------------------------- | --- | --- | --- | --- |
-|                | 1f352c073b6108d72d9810a30914dff4   |     |
-   |     |     |
+| Key | 603deb1015ca71be2b73aef0857d7781 |
+| -------------- | ---------------------------------- |
+|  | 1f352c073b6108d72d9810a30914dff4 |
 | Init. Counter  | f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
- |     |     |     |     |
 57
 
-|     |     |     |     |     |
-| --- | --- | --- | --- | --- |
 Block #1
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 0bdf7df1591716335e9a8b15c860c502
- |     |     |     |
-| Ciphertext    | 601ec313775789a5b7a7f504bbf3d228   |     |
-   |     |
 | Plaintext     | 6bc1bee22e409f96e93d7e117393172a
- |     |     |     |
 Block #2
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff00
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 5a6e699d536119065433863c8f657b94
- |     |     |     |
-| Ciphertext    | f443e3ca4d62b59aca84e990cacaf5c5   |     |
-   |     |
 | Plaintext     | ae2d8a571e03ac9c9eb76fac45af8e51
- |     |     |     |
 Block #3
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff01
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 1bc12c9c01610d5d0d8bd6a3378eca62
- |     |     |     |
-| Ciphertext    | 2b0930daa23de94ce87017ba2d84988d   |     |
-   |     |
 | Plaintext     | 30c81c46a35ce411e5fbc1191a0a52ef
- |     |     |     |
 Block #4
 
 | Input Block   | f0f1f2f3f4f5f6f7f8f9fafbfcfdff02
- |     |     |     |
-| ------------- | ---------------------------------- | --- | --- | --- |
 | Output Block  | 2956e1c8693536b1bee99c73a31576b6
- |     |     |     |
-| Ciphertext    | dfc9c58db67aada613c2dd08457941a6   |     |
-   |     |
 | Plaintext     | f69f2445df4f9b17ad2b417be66c3710
- |     |     |     |
 58
 
 Appendix G: References

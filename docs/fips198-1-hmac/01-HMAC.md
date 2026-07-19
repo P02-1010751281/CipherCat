@@ -245,24 +245,20 @@ H((K ⊕ opad )|| H((K ⊕ ipad) || text)).
 0 0
 4
 
-| Steps 1-3: | Determine K |     |
-| ---------- | ----------- | --- |
 0
-| Step 4: | K ⊕ipad |     |
-| ------- | ------- | --- |
 0
 (K ⊕ipad) || text
-| Step 5: |         | 0               |
+| Step 5: |  | 0 |
 | ------- | ------- | --------------- |
-|         | H((K    | ⊕ipad) || text) |
-| Step 6: |         | 0               |
-| Step 7: | K ⊕opad |                 |
+|  | H((K | ⊕ipad) |  | text) |
+| Step 6: |  | 0 |
+| Step 7: | K ⊕opad |
 0
-|          | (K ⊕opad) || H ((K | ⊕ipad) || text)  |
+|  | (K ⊕opad) |  | H ((K | ⊕ipad) |  | text) |
 | -------- | ------------------ | ---------------- |
-| Step 8:  | 0                  | 0                |
-| H((K     | ⊕opad) || H((K     | ⊕ipad) || text)) |
-| Step 9:  | 0                  | 0                |
+| Step 8: | 0 | 0 |
+| H((K | ⊕opad) |  | H((K | ⊕ipad) |  | text)) |
+| Step 9: | 0 | 0 |
 Figure 1: Illustration of the HMAC Construction
 
 5.       TRUNCATION

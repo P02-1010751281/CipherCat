@@ -11,3 +11,4 @@
 | Ascon-128 | AEAD 认证加密 | 未实现 |
 | Ascon-128a | AEAD (高速) | 未实现 |
 | Ascon-Hash | 哈希 | 未实现 |
+full.txt available (2065 lines)

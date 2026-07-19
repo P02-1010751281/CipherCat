@@ -6,3 +6,4 @@
 ## CipherCat 状态
 
 `mode_gcm` ✅ 已实现 (SP 800-38D)
+⚠️ PDF为扫描版(图片), pdftotext无法提取文字。需OCR处理。

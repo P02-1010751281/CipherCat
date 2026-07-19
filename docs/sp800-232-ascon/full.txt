@@ -1,0 +1,2066 @@
+                             Withdrawn Draft
+
+                                       Warning Notice
+
+The attached draft document has been withdrawn and is provided solely for historical purposes.
+It has been followed by the document identified below.
+
+                            Withdrawal Date August 13, 2025
+
+                        Original Release Date November 8, 2024
+
+
+
+
+                        The attached draft document is followed by:
+
+                  Status Final
+
+         Series/Number NIST SP 800-232
+
+                    Title Ascon-Based Lightweight Cryptography Standards for Constrained
+                          Devices: Authenticated Encryption, Hash, and Extendable Output
+                          Functions
+
+       Publication Date August 2025
+
+                    DOI https://doi.org/10.6028/NIST.SP.800-232
+
+            CSRC URL https://csrc.nist.gov/pubs/sp/800/232/final
+
+Additional Information
+ 1                        NIST Special Publication 800
+ 2                                NIST SP 800-232 ipd
+
+ 3   Ascon-Based Lightweight Cryptography
+ 4       Standards for Constrained Devices
+ 5    Authenticated Encryption, Hash, and Extendable Output
+ 6                                                Functions
+
+ 7                                               Initial Public Draft
+
+
+
+
+ 8                                              Meltem Sönmez Turan
+ 9                                                    Kerry A. McKay
+10                                                  Donghoon Chang
+11                                                      Jinkeon Kang
+12                                                        John Kelsey
+13                         This publication is available free of charge from:
+14                           https://doi.org/10.6028/NIST.SP.800-232.ipd
+
+
+
+
+15
+16                                       NIST Special Publication 800
+17                                               NIST SP 800-232 ipd
+
+18   Ascon-Based Lightweight Cryptography
+19       Standards for Constrained Devices
+20    Authenticated Encryption, Hash, and Extendable Output
+21                                                Functions
+
+22                                                                    Initial Public Draft
+23                                                                  Meltem Sönmez Turan
+                                                                          Kerry A. McKay
+                                                                            Jinkeon Kang
+                                                                              John Kelsey
+                                                          Computer Security Division
+                                                  Information Technology Laboratory
+
+                                                                            Donghoon Chang
+                                                                                        Strativia
+
+24                                          This publication is available free of charge from:
+25                                            https://doi.org/10.6028/NIST.SP.800-232.ipd
+26                                                                            November 2024
+
+
+
+
+27
+
+
+28                                                                    U.S. Department of Commerce
+29                                                                     Gina M. Raimondo, Secretary
+
+30                                                     National Institute of Standards and Technology
+31   Laurie E. Locascio, NIST Director and Under Secretary of Commerce for Standards and Technology
+     NIST SP 800-232 ipd (Initial Public Draft)
+     November 2024
+
+
+
+32   Certain equipment, instruments, software, or materials, commercial or non-commercial, are identified in this
+33   paper in order to specify the experimental procedure adequately. Such identification does not imply
+34   recommendation or endorsement of any product or service by NIST, nor does it imply that the materials or
+35   equipment identified are necessarily the best available for the purpose.
+36   There may be references in this publication to other publications currently under development by NIST in
+37   accordance with its assigned statutory responsibilities. The information in this publication, including
+38   concepts and methodologies, may be used by federal agencies even before the completion of such
+39   companion publications. Thus, until each publication is completed, current requirements, guidelines, and
+40   procedures, where they exist, remain operative. For planning and transition purposes, federal agencies may
+41   wish to closely follow the development of these new publications by NIST.
+42   Organizations are encouraged to review all draft publications during public comment periods and provide
+43   feedback to NIST. Many NIST cybersecurity publications, other than the ones noted above, are available at
+44   https://csrc.nist.gov/publications
+
+45   Authority
+46   This publication has been developed by NIST in accordance with its statutory responsibilities under the
+47   Federal Information Security Modernization Act (FISMA) of 2014, 44 U.S.C. § 3551 et seq., Public Law (P.L.)
+48   113-283. NIST is responsible for developing information security standards and guidelines, including
+49   minimum requirements for federal information systems, but such standards and guidelines shall not apply to
+50   national security systems without the express approval of appropriate federal officials exercising policy
+51   authority over such systems. This guideline is consistent with the requirements of the Office of Management
+52   and Budget (OMB) Circular A-130.
+53   Nothing in this publication should be taken to contradict the standards and guidelines made mandatory and
+54   binding on federal agencies by the Secretary of Commerce under statutory authority. Nor should these
+55   guidelines be interpreted as altering or superseding the existing authorities of the Secretary of Commerce,
+56   Director of the ORCID, or any other federal official. This publication may be used by nongovernmental
+57   organizations on a voluntary basis and is not subject to copyright in the United States. Attribution would,
+58   however, be appreciated by NIST.
+
+59   NIST Technical Series Policies
+60   Copyright, Use, and Licensing Statements
+61   NIST Technical Series Publication Identifier Syntax
+
+62   Publication History
+63   Approved by the NIST Editorial Review Board on YYYY-MM-DD [Will be added in the final publication.]
+
+64   How to cite this NIST Technical Series Publication: Meltem Sönmez Turan, Kerry A. McKay, Donghoon Chang,
+65   Jinkeon Kang, John Kelsey (2024) Ascon-Based Lightweight Cryptography Standards for Constrained
+66   Devices. (National Institute of Standards and Technology, Gaithersburg, MD),NIST Special Publication (SP)
+67   NIST SP 800-232 ipd. https://doi.org/10.6028/NIST.SP.800-232.ipd
+     NIST SP 800-232 ipd (Initial Public Draft)
+     November 2024
+
+
+
+68   Author ORCID iDs
+69   Meltem Sönmez Turan: 0000-0002-1950-7130
+70   Kerry A. McKay: 0000-0002-5956-587X
+71   Donghoon Chang: 0000-0003-1249-2869
+72   Jinkeon Kang: 0000-0003-2142-8236
+73   John Kelsey: 0000-0002-3427-1744
+
+
+74   Public Comment Period
+75   November 8, 2024 -– February 7, 2025
+
+
+76   Submit Comments
+77   SP800-232-comments@list.nist.gov
+
+
+78   National Institute of Standards and Technology
+79   Attn: Computer Security Division, Information Technology Laboratory
+80   100 Bureau Drive (Mail Stop 8930) Gaithersburg, MD 20899-8930
+
+
+81   Additional Information
+82   Additional information about this publication is available at https://csrc.nist.gov/pubs/sp/800/232/ipd,
+83   including related content, potential updates, and document history.
+
+
+84   All comments are subject to release under the Freedom of Information Act (FOIA).
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+ 85   Abstract
+ 86   In 2023, the National Institute of Standards and Technology (NIST) announced the selection
+ 87   of the Ascon family of algorithms designed by Dobraunig, Eichlseder, Mendel, and Schläffer
+ 88   to provide efficient cryptography solutions for resource-constrained devices. This decision
+ 89   emerged from a rigorous, multi-round lightweight cryptography standardization process.
+ 90   This standard introduces a new Ascon-based family of symmetric-key cryptographic primi-
+ 91   tives designed to deliver Authenticated Encryption with Associated Data (AEAD), hash, and
+ 92   Extendable Output Function (XOF) capabilities, namely Ascon-AEAD128, Ascon-Hash256,
+ 93   Ascon-XOF128, and Ascon-CXOF128. The Ascon family is characterized by lightweight
+ 94   permutation-based primitives and provides robust security, efficiency, and flexibility, mak-
+ 95   ing it ideal for resource-constrained environments, such as Internet of Things (IoT) devices,
+ 96   embedded systems, and low-power sensors. The family is developed to offer a viable
+ 97   alternative when the Advanced Encryption Standard (AES) may not perform optimally. This
+ 98   draft standard outlines the technical specifications of Ascon-AEAD128, Ascon-Hash256,
+ 99   Ascon-XOF128, and Ascon-CXOF128, and provides their security properties.
+
+100   Keywords
+101   Ascon; authenticated encryption; constrained devices; eXtendable Output Function (XOF);
+102   hash function; lightweight cryptography; permutation-based cryptography; standardization.
+
+103   Reports on Computer Systems Technology
+104   The Information Technology Laboratory (ITL) at the National Institute of Standards and
+105   Technology (NIST) promotes the U.S. economy and public welfare by providing technical lead-
+106   ership for the Nation’s measurement and standards infrastructure. ITL develops tests, test
+107   methods, reference data, proof of concept implementations, and technical analyses to ad-
+108   vance the development and productive use of information technology. ITL’s responsibilities
+109   include the development of management, administrative, technical, and physical standards
+110   and guidelines for the cost-effective security and privacy of other than national security-
+111   related information in federal information systems. The Special Publication 800-series
+112   reports on ITL’s research, guidelines, and outreach efforts in information system security,
+113   and its collaborative activities with industry, government, and academic organizations.
+
+
+
+
+                                                    i
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+114   Call for Patent Claims
+115   This public review includes a call for information on essential patent claims (claims whose
+116   use would be required for compliance with the guidance or requirements in this Information
+117   Technology Laboratory (ITL) draft publication). Such guidance and/or requirements may
+118   be directly stated in this ITL Publication or by reference to another publication. This call
+119   also includes disclosure, where known, of the existence of pending U.S. or foreign patent
+120   applications relating to this ITL draft publication and of any relevant unexpired U.S. or
+121   foreign patents.
+122   ITL may require from the patent holder, or a party authorized to make assurances on its
+123   behalf, in written or electronic form, either:
+124      1. assurance in the form of a general disclaimer to the effect that such party does not
+125         hold and does not currently intend holding any essential patent claim(s); or
+126      2. assurance that a license to such essential patent claim(s) will be made available
+127         to applicants desiring to utilize the license for the purpose of complying with the
+128         guidance or requirements in this ITL draft publication either:
+129            (a) under reasonable terms and conditions that are demonstrably free of any unfair
+130                discrimination; or
+131            (b) without compensation and under reasonable terms and conditions that are
+132                demonstrably free of any unfair discrimination.
+133   Such assurance shall indicate that the patent holder (or third party authorized to make
+134   assurances on its behalf) will include in any documents transferring ownership of patents
+135   subject to the assurance, provisions sufficient to ensure that the commitments in the assur-
+136   ance are binding on the transferee, and that the transferee will similarly include appropriate
+137   provisions in the event of future transfers with the goal of binding each successor-in-interest.
+138   The assurance shall also indicate that it is intended to be binding on successors-in-interest
+139   regardless of whether such provisions are included in the relevant transfer documents.
+140   Such statements should be addressed to: SP800-232-comments@list.nist.gov
+
+
+
+
+                                                     ii
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+141                                                               Table of Contents
+
+142   1. Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   1
+
+143   2. Preliminaries. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   4
+144       2.1. Auxiliary Functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .            8
+
+145   3. Ascon Permutations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .             9
+146       3.1. Internal State . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .       9
+147       3.2. Constant-Addition Layer 𝑝𝐶 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                       9
+148       3.3. Substitution Layer 𝑝𝑆 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+149       3.4. Linear Diffusion Layer 𝑝𝐿 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+
+150   4. Authenticated Encryption Scheme: Ascon-AEAD128 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+151       4.1. Specification of Ascon-AEAD128 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+152               4.1.1. Encryption . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+153               4.1.2. Decryption . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+154       4.2. Implementation Options . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+155               4.2.1. Truncation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+156               4.2.2. Nonce Masking . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+157       4.3. AEAD Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+158       4.4. Security Properties . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+159               4.4.1. Single-Key Setting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+160               4.4.2. Multi-Key Setting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+161               4.4.3. Nonce-Misuse Setting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+
+162   5. Hash and Extendable Output Functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+163       5.1. Specification of Ascon-Hash256 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+164       5.2. Specification of Ascon-XOF128 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+165       5.3. Specification of Ascon-CXOF128 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+166       5.4. Security Strengths . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+
+167   Appendix A. Implementation Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+168       A.1. Conversion Functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+
+
+                                                                                         iii
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+169      A.2. Implementing with Integers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+
+170   Appendix B. Determination of the Initial Values . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+
+
+
+
+                                                                           iv
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+171                                                                       List of Tables
+
+172   Table 1. Acronyms . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .           4
+173   Table 2. Terms and definitions. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                       4
+174   Table 3. Notations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .          6
+175   Table 4. Basic operations and functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                                 7
+176   Table 5. The constants const𝑖 to derive round constants of the Ascon permutations . 10
+177   Table 6. Lookup table representation of SBOX . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+178   Table 7. Security strength of Ascon-AEAD128 with 𝜆-bit tag in the 𝑢-key setting,
+179   where (𝑁, 𝐴) pair is unique for encryption. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+180   Table 8. Integrity security strength of Ascon-AEAD128 with 𝑢 keys in the nonce-
+181   misuse setting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+182   Table 9. Security strengths of Ascon-Hash256, Ascon-XOF128, and Ascon-CXOF128
+183   algorithms . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+184   Table 10. Address for each byte of Ascon state word 𝑆𝑖 in memory on little-endian
+185   and big-endian machines, where the word 𝑆𝑖 begins at memory address 𝑎. . . . . . . . . . . . 32
+186   Table 11. Examples of padding an unsigned integer 𝑥 to a 64-bit block . . . . . . . . . . . . . . . . 34
+187   Table 12. Parameters for initial value construction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+188   Table 13. Initial values as hexadecimal integers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+
+
+189                                                                     List of Figures
+
+190   Figure 1. Constant-Addition Layer 𝑝𝐶 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+191   Figure 2. Substitution layer 𝑝𝑆 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+192   Figure 3. 5-bit S-box SBOX . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+193   Figure 4. Linear diffusion layer 𝑝𝐿 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+194   Figure 5. Ascon-AEAD128 encryption . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+195   Figure 6. Ascon-AEAD128 decryption . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+196   Figure 7. Structure of Ascon-Hash256 and Ascon-XOF128 . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+197   Figure 8. Structure of Ascon-CXOF128 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+198   Figure 9. Mapping between state words, bytes, and bits . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+
+
+
+                                                                                           v
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+199   Figure 10. Representation of the Ascon state as 64-bit unsigned integers, byte se-
+200   quences, and bitstrings . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+
+
+
+
+                                                                                   vi
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+201   Acknowledgments
+202   The authors of the standard express their gratitude to the Ascon designers — Christoph
+203   Dobraunig, Maria Eichlseder, Florian Mendel, and Martin Schläffer — for their valuable
+204   comments and suggestions during the drafting process.
+205   The authors also acknowledge and appreciate contributions from their colleagues at NIST
+206   during the selection process, including Lawrence Bassham, Çağdaş Çalık, Deukjo Hong, and
+207   Noah Waller. The authors also thank Elaine Barker, Lily Chen, Andrew Regenscheid, Noah
+208   Ross and Sara Kerman, who provided technical and administrative support.
+
+
+
+
+                                                   vii
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+209   1. Introduction
+210   This draft standard specifies the Ascon family of algorithms to provide Authenticated Encryp-
+211   tion with Associated Data (AEAD), a hash function, and two eXtendable Output Functions
+212   (XOFs). The Ascon family is designed to be efficient in constrained environments. The
+213   algorithms specified in this standard are as follows:
+214      1. Ascon-AEAD128 is a nonce-based authenticated encryption with associated data
+215         that provides 128-bit security strength in the single-key setting.
+216      2. Ascon-Hash256 is a cryptographic hash function that produces a 256-bit hash of the
+217         input messages, offering a security strength of 128 bits.
+218      3. Ascon-XOF128 is an XOF, where the output size of the hash of the message can be
+219         selected by the user, and the supported security strength is up to 128 bits.
+220      4. Ascon-CXOF128 is a customized XOF that allows users to specify a customization
+221         string and choose the output size of the message hash. It supports a security strength
+222         of up to 128 bits.
+223   Development of the Ascon family. Ascon (version v1) [1] was first submitted to the CAESAR
+224   (Competition for Authenticated Encryption: Security, Applicability, and Robustness) 1 in
+225   2014. The submission included two AEAD algorithms: a primary recommendation, Ascon-
+226   128, with a 128-bit key and the secondary recommendation, Ascon-96, with a 96-bit key.
+227   Updated versions v1.1 [2] for Round 2 and v1.2 [3] for Round 3 included minor tweaks,
+228   such as reordering the round constants, and the secondary recommendation was updated
+229   to Ascon-128a. In 2019, Ascon-128 and Ascon-128a were selected as the first choice for
+230   the lightweight authenticated encryption use case in the final portfolio of the CAESAR
+231   competition.
+232   NIST Lightweight Cryptography Standardization Process. In 2015, the National Institute of
+233   Standards and Technology (NIST) initiated the lightweight cryptography standardization
+234   process to develop cryptographic standards suitable for constrained environments in which
+235   conventional cryptographic standards (e.g., AES-GCM [4, 5] and the SHA-2 [6] and the SHA-3
+236   [7] hash function families) may be resource-intensive. In February 2023, NIST announced
+237   the decision to standardize the Ascon family [8] for lightweight cryptography applications.
+238   (For more information, refer to NIST Internal Report (IR) 8268 [9], NIST IR 8369 [10], and
+239   NIST IR 8454 [11]).
+240   Differences from the Ascon submission v1.2. The technical differences between this draft
+241   standard and the Ascon submission [8] are provided below:
+
+      1 CAESAR is a competition organized by a group of international cryptologic researchers to identify a portfolio
+
+       of authenticated encryption schemes that offer advantages over AES-GCM and are suitable for widespread
+       adoption. The final portfolio of the competition was announced in February 2019. For more information,
+       see https://competitions.cr.yp.to/caesar.html.
+
+
+                                                            1
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+242      1. Permutations. The Ascon submission defined three Ascon permutations having 6,
+243         8, and 12 rounds. This standard specifies additional Ascon permutations by provid-
+244         ing round constants for up to 16 rounds to accommodate potential functionality
+245         extensions in the future.
+246      2. AEAD variants. The Ascon submission package defined AEAD variants ASCON-128,
+247         ASCON-128a, and ASCON-80pq. This standard specifies the Ascon-AEAD128 algorithm,
+248         which is based on ASCON-128a.
+249      3. Hash function variants. The Ascon submission defined ASCON-HASH and ASCON-HASHA.
+250         This standard specifies Ascon-Hash256, which is based on ASCON-HASH.
+251      4. XOF variants. The Ascon submission defined two extendable output functions, ASCON-
+252         XOF and ASCON-XOFA. This standard specifies Ascon-XOF128, which is based on
+253         ASCON-XOF, and a new customized XOF, Ascon-CXOF128.
+254      5. Initial values. The initial values of the algorithms are updated to support a new
+255         format that accommodates potential functionality extensions.
+256      6. Endianness. The endianness has been switched from big endian to little endian to
+257         improve performance on little-endian microcontrollers.
+258      7. Truncation and nonce-masking. The implementation options of Ascon-AEAD128
+259         with truncation and nonce-masking have been added.
+260   Main Features of Ascon. The main features of the Ascon family are:
+261       • Multiple functionalities. The same permutations are used to construct multiple func-
+262         tionalities, which allows an implementation of AEAD, hash, and XOF functionalities
+263         to share logic and, therefore, have a more compact implementation than functions
+264         that were developed independently.
+265       • Online and single pass. Ascon-AEAD128 is online, meaning that the 𝑖-th ciphertext
+266         block is determined by the key, nonce, associated data, and the first 𝑖 plaintext blocks.
+267         Ascon family members require only a single pass over the data.
+268       • Inverse-free. Since all of the Ascon family members only use the underlying permuta-
+269         tions in the forward direction, implementing the inverse permutations is not needed.
+270         This approach significantly reduces implementation costs compared to designs that
+271         require inverse operations for decryption.
+272   Organization. Section 2 provides preliminaries, including the notation, basic operations, and
+273   auxiliary functions. Section 3 specifies the Ascon permutations for up to 16 rounds. Section
+274   4 specifies the authenticated encryption scheme Ascon-AEAD128, provides some imple-
+275   mentation options for truncation and nonce masking, lists the requirements for validation,
+276   and provides security properties. Section 5 specifies the hash function Ascon-Hash256 ,
+277   the XOF function Ascon-XOF128, and the customized Ascon-CXOF128 and describes their
+278   security properties. Appendix A provides additional notes and conversion functions for
+
+                                                    2
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+279   implementations. Appendix B provides additional information regarding the construction
+280   of initial values.
+
+
+
+
+                                                   3
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+281   2. Preliminaries
+282   Table 1 lists the acronyms used in this standard.
+
+                                                   Table 1. Acronyms
+
+          Acronym          Definition
+          AD               Associated Data
+          AE               Authenticated Encryption
+          AEAD             Authenticated Encryption with Associated Data
+          AES              Advanced Encryption Standard
+          CAESAR           Competition for Authenticated Encryption: Security, Applicability, and
+                           Robustness
+          GCM              Galois/Counter Mode
+          NIST             National Institute of Standards and Technology
+          PRF              Pseudo-Random Function
+          SHA              Secure Hash Algorithm
+          SPN              Substitution–Permutation Network
+          SP               Special Publication
+          XOF              eXtendable-Output Function
+          XOR              eXclusive OR
+
+
+283   Table 2 defines the terms used in this standard.
+
+                                          Table 2. Terms and definitions
+
+          Term                     Definition
+          approved                 An algorithm or technique that is either specified or adopted in a
+                                   FIPS publication or NIST Special Publication in the Computer Se-
+                                   curity SP 800 series (i.e., FIPS-approved or NIST-recommended).
+          associated data          Input data that is authenticated, but not encrypted.
+          bit                      A binary digit, 0 or 1. In this standard bits are indicated in the
+                                   Courier New font.
+          bit string               A finite, ordered sequence of bits.
+
+
+                                                           4
+NIST SP 800-232 ipd (Initial Public Draft)
+November 2024
+
+
+
+                                     Table 2. Terms and definitions
+
+   Term                      Definition
+   capacity                  The width of the underlying permutation minus the rate.
+   digest                    Hash value.
+   eXtendable-               A function on bit strings in which the output can be extended
+   Output Function           to any desired length.
+   (XOF)
+   forgery                   A (ciphertext, tag) pair produced by an adversary who is not
+                             knowledgeable of the secret key and yet is accepted as valid by
+                             the verified decryption procedure.
+    hash function            A mathematical function that maps a string of arbitrary length
+                             to a fixed-length string.
+    message                  Input to the hash function.
+    nonce                    An input value to the authenticated encryption algorithm that
+                             is used only once for encryption performed under a given key.
+    nonce-misuse             A setting in which the nonce-uniqueness requirement is unin-
+                             tentionally or accidentally violated.
+    nonce-respecting         A setting that satisfies the nonce-uniqueness requirement.
+    rate                     The number of input bits processed or output bits generated
+                             per invocation of the underlying permutation.
+    secret key               A cryptographic key used by a secret-key (i.e., symmetric) cryp-
+                             tographic algorithm and that is not made public.
+    shall                    Term used to express a requirement that needs to be fulfilled to
+                             claim conformance to this standard.
+    tag                      A cryptographic checksum on data that is designed to reveal
+                             both accidental errors and the intentional modification of the
+                             data whose computation and verification require knowledge of
+                             a secret key.
+    truncation               A process that shortens an input bitstring, preserving only a
+                             sub-string of a specified length.
+    width                    The state size of the underlying permutation.
+
+
+
+
+                                                   5
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+284   Table 3 lists the notations used in this standard.
+
+                                                   Table 3. Notations
+
+          Notation         Definition
+          𝐾                128-bit secret key
+          𝑁                128-bit nonce
+          𝐴                Associated data
+          𝐴𝑖               𝑖th block of associated data 𝐴
+          𝑃                Plaintext
+          𝑃𝑖               𝑖th block of plaintext 𝑃
+          𝐶                Ciphertext
+          𝐶𝑖               𝑖th block of ciphertext 𝐶
+          𝑍                Customization string
+          𝑍𝑖               𝑖th block of customization string 𝑍
+          𝑇                128-bit authentication tag
+          𝐼𝑉               64-bit constant initial value
+          fail             Error message to indicate that the verification of authenticated cipher-
+                           text failed
+          𝑀                Message
+          𝑀𝑖               𝑖th block of message 𝑀
+          𝐻                Hash value 𝐻
+          𝐻𝑖               𝑖th block of hash value 𝐻
+          S                320-bit internal state of the underlying permutation
+          𝑆0 , … , 𝑆4      The five 64-bit words of the internal state S, where S =
+                           𝑆0 ‖ 𝑆1 ‖ … ‖ 𝑆4
+          𝑠(𝑖,𝑗)           𝑗th bit of 𝑆𝑖 , 0 ≤ 𝑖 ≤ 4, 0 ≤ 𝑗 ≤ 63
+          𝑆𝑖 [𝑗]           𝑗𝑡ℎ byte of state word 𝑆𝑖 for 0 ≤ 𝑖 ≤ 4, 0 ≤ 𝑗 ≤ 7
+          𝜆                Length of the truncated tag in bits
+          𝑟                The rate of an algorithm
+          𝑐𝑖               The constant value for round 𝑖 of Ascon permutation
+          𝑝 𝐶 , 𝑝 𝑆 , 𝑝𝐿   Constant-addition, substitution and linear layers of the round function 𝑝
+
+
+
+
+                                                           6
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+285   Table 4 lists the basic operations and functions used in this standard.
+
+                                     Table 4. Basic operations and functions
+
+          Functions                Definition
+
+          {0, 1}∗                  The set of all finite bit strings, including the empty string
+          {0, 1}𝑠                  The set of all bit strings of length 𝑠
+          0𝑠                       When 𝑠 ≥ 0, 0𝑠 is the bit string that consists of 𝑠 consecutive 0s.
+                                   When 𝑠 = 0, then 0𝑠 is the empty string.
+          |𝑋|                      Length of the bitstring 𝑋 in bits
+          𝑋 ‖𝑌                     Concatenation of bitstrings 𝑋 and 𝑌
+          𝑥×𝑦                      Multiplication of integers 𝑥 and 𝑦
+          𝑥+𝑦                      Addition of integers 𝑥 and 𝑦
+          𝑥−𝑦                      Subtraction of integers 𝑥 and 𝑦
+          𝑥/𝑦                      Division of integer 𝑥 and non-zero integer 𝑦
+          𝑥 mod 𝑦                  Remainder in integer division of 𝑥 by 𝑦
+          ⌈𝑥⌉                      For a real number 𝑥, the smallest integer greater than or equal
+                                   to 𝑥
+          ⌊𝑥⌋                      For a real number 𝑥, the largest integer less than or equal to 𝑥
+          𝑓 ∘𝑔                     Composition of functions 𝑓 and 𝑔. E.g., for functions 𝑓(𝑥) and
+                                   𝑔(𝑥), 𝑓 ∘ 𝑔 is evaluate as 𝑓(𝑔(𝑥)).
+          ⊙                        Bitwise AND operation
+          ⊕                        Bitwise XOR operation
+          𝑋⋙𝑖                      Right rotation (circular shift) by 𝑖 bits of 64-bit word 𝑋, where
+                                   the least significant bit is the rightmost bit
+          𝑋≪𝑖                      Left shift by 𝑖 bits
+          𝑋[𝑖∶𝑗]                   The subset of bitstring 𝑋 beginning at index 𝑖 and ending at
+                                   index 𝑗, inclusive. When 𝑖 > 𝑗, 𝑋[𝑖∶𝑗] is the empty string. When
+                                   𝑖 = 𝑗, 𝑋[𝑖∶𝑗] is a single bit.
+          𝑥 == 𝑦                   Boolean operator to perform equality comparison, i.e., true, if
+                                   𝑥 is equal to 𝑦, false otherwise.
+
+
+                                                          7
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+          0x                       Hexadecimal notation
+          int64(𝑥)                 64-bit representation of integer 𝑥.
+
+
+286   2.1. Auxiliary Functions
+287   Parse function. The parse(𝑋, 𝑟) function parses the input bitstring 𝑋 into a sequence
+288                           ̃ℓ , where ℓ ← ⌊|𝑋|/𝑟⌋ (i.e., 𝑋 ← 𝑋0 ‖ 𝑋1 ‖ … ‖ 𝑋
+      of blocks 𝑋0 , 𝑋1 , … , 𝑋                                               ̃ℓ ). The 𝑋𝑖 blocks
+289                                                                                         ̃ℓ is
+      for 0 ≤ 𝑖 ≤ ℓ − 1 each have a bit length 𝑟, whereas the bit length of the final block 𝑋
+290   between 0 and 𝑟 − 1 (see Algorithm 1).
+
+      Algorithm 1 parse(𝑋, 𝑟)
+        Input: bitstring 𝑋, rate 𝑟
+                                           ̃ℓ
+        Output: bitstrings 𝑋0 , … , 𝑋ℓ−1 , 𝑋
+
+         ℓ ← ⌊|𝑋|/𝑟⌋
+         for 𝑖 = 0 to ℓ − 1 do
+             𝑋𝑖 ← 𝑋[𝑖×𝑟∶(𝑖+1)×𝑟−1]
+         end for
+         ̃ℓ ← 𝑋[ℓ×𝑟∶|𝑋|−1]
+         𝑋
+                                ̃ℓ
+         return 𝑋0 , … , 𝑋ℓ−1 , 𝑋
+
+291   Padding rule. The function pad(𝑋, 𝑟) appends the bit 1 to the bitstring 𝑋, followed by the
+292   bitstring 0𝑗 , where 𝑗 is equal to (−|𝑋| − 1) mod 𝑟. The length of the output bitstring is a
+293   multiple of 𝑟 (see Algorithm 2).
+
+      Algorithm 2 pad(𝑋, 𝑟)
+        Input: bitstring 𝑋, rate 𝑟
+        Output: padded bitstring 𝑋 ′
+
+         𝑗 ← (−|𝑋| − 1) mod 𝑟
+         𝑋 ′ ← 𝑋 ∥ 1 ∥ 0𝑗
+         return 𝑋 ′
+
+
+
+
+                                                       8
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+294   3. Ascon Permutations
+295   This section specifies the 𝑟𝑛𝑑-round 𝐴𝑠𝑐𝑜𝑛-𝑝[𝑟𝑛𝑑] permutations, where 1 ≤ 𝑟𝑛𝑑 ≤ 16.
+296   The permutations follow the Substitution-Permutation-Network (SPN) structure and consist
+297   of iterations of the round function 𝑝 that is defined as the composition of three steps
+
+298                                                  𝑝 = 𝑝𝐿 ∘ 𝑝𝑆 ∘ 𝑝𝐶 ,                            (1)
+
+299   where 𝑝𝐶 is the constant-addition layer (see Sec. 3.2), 𝑝𝑆 is the substitution layer (see Sec.
+300   3.3), and 𝑝𝐿 is the linear diffusion layer (see Sec. 3.4).
+301   Note that 𝐴𝑠𝑐𝑜𝑛-𝑝[8] and 𝐴𝑠𝑐𝑜𝑛-𝑝[12] are the main building blocks of the Ascon family,
+302   and the permutation instantiated with other numbers of rounds may later be used to
+303   standardize other functionalities.
+
+304   3.1. Internal State
+305   The permutations operate on the 320-bit state S, which is represented as five 64-bit words
+306   denoted as 𝑆𝑖 for 0 ≤ 𝑖 ≤ 4:
+
+307                                         S = 𝑆0 ∥ 𝑆 1 ∥ 𝑆 2 ∥ 𝑆 3 ∥ 𝑆 4 .                       (2)
+
+308   Let 𝑠(𝑖,𝑗) represents the 𝑗th bit of 𝑆𝑖 , 0 ≤ 𝑗 < 64. In this specification of the Ascon permuta-
+309   tion, each state word represents a 64-bit unsigned integer, where the least significant bit is
+310   the rightmost bit. Details on other representations of the state can be found in Appendix A.
+
+311   3.2. Constant-Addition Layer 𝑝𝐶
+312   The constant 𝑐𝑖 of round 𝑖 of the Ascon permutation 𝐴𝑠𝑐𝑜𝑛-𝑝[𝑟𝑛𝑑] (instantiated with 𝑟𝑛𝑑
+313   rounds), for 𝑟𝑛𝑑 ≤ 16 and 0 ≤ 𝑖 ≤ 𝑟𝑛𝑑 − 1, is defined as
+
+314                                                𝑐𝑖 = const16−𝑟𝑛𝑑+𝑖 ,                            (3)
+
+315   where const0 , … , const15 are defined in Table 5. The constant-addition layer 𝑝𝐶 adds a
+316   64-bit round constant 𝑐𝑖 to 𝑆2 in round 𝑖, for 𝑖 ≥ 0,
+
+317                                                   𝑆 2 = 𝑆2 ⊕ 𝑐 𝑖 .                             (4)
+
+
+
+
+                                                             9
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+         Table 5. The constants const𝑖 to derive round constants of the Ascon permutations
+
+                            𝑖         const𝑖                     𝑖           const𝑖
+                            0   0x000000000000003c              8      0x00000000000000b4
+                            1   0x000000000000002d              9      0x00000000000000a5
+                            2   0x000000000000001e              10     0x0000000000000096
+                            3   0x000000000000000f              11     0x0000000000000087
+                            4   0x00000000000000f0              12     0x0000000000000078
+                            5   0x00000000000000e1              13     0x0000000000000069
+                            6   0x00000000000000d2              14     0x000000000000005a
+                            7   0x00000000000000c3              15     0x000000000000004b
+
+
+318   Since the first 56 bits of the constants are zero, in practice, this is equivalent to applying
+319   the constant to only the least significant eight bits of 𝑆2 , as shown in Fig. 1.
+
+                                                                                                          𝑆0
+                                                                                                          𝑆1
+                                                                                                          𝑆2
+                                                                                                          𝑆3
+                                                                                                          𝑆4
+
+                                       Figure 1. Constant-Addition Layer 𝑝𝐶
+
+
+320   3.3. Substitution Layer 𝑝𝑆
+321   The substitution layer 𝑝𝑆 updates the state S with 64 parallel applications of the 5-bit
+322   substitution box SBOX, as
+
+323                          (𝑠(0,𝑗) , 𝑠(1,𝑗) , … , 𝑠(4,𝑗) ) = SBOX(𝑠(0,𝑗) , 𝑠(1,𝑗) , … , 𝑠(4,𝑗) )         (5)
+
+324   for 0 ≤ 𝑗 < 64, as shown in Fig. 2.
+
+                                                                                                     𝑆0
+                                                                                                     𝑆1
+                                                                                                     𝑆2
+                                                                                                     𝑆3
+                                                                                                     𝑆4
+
+                                           Figure 2. Substitution layer 𝑝𝑆
+
+325   The 5-bit SBOX has a 5-bit input 𝑥 = (𝑥0 , 𝑥1 , … , 𝑥4 ) and computes the 5-bit output using
+326   the circuit provided in Figure 3. SBOX may also be implemented as a lookup table, as shown
+327   in Table 6.
+
+
+
+
+                                                             10
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+                                        x0                                 y0
+                                                   1
+                                        x1                                 y1
+                                                   1
+                                        x2                                 y2
+                                                   1                   1 y3
+                                        x3
+                                                   1
+                                        x4                                 y4
+                                                   1
+
+                                              Figure 3. 5-bit S-box SBOX
+
+
+328   3.4. Linear Diffusion Layer 𝑝𝐿
+329   The linear diffusion layer 𝑝𝐿 provides diffusion within each 64-bit word 𝑆𝑖 , as shown in Fig.
+330   4.
+                                                                                       𝑆0
+                                                                                       𝑆1
+                                                                                       𝑆2
+                                                                                       𝑆3
+                                                                                       𝑆4
+
+                                         Figure 4. Linear diffusion layer 𝑝𝐿
+
+      This layer applies the linear functions Σ𝑖 to their corresponding state words as 𝑆𝑖 ← Σ𝑖 (𝑆𝑖 ),
+      for 0 ≤ 𝑖 ≤ 4, where each Σ𝑖 is defined as:
+
+                                    Σ0 (𝑆0 ) = 𝑆0 ⊕ (𝑆0 ⋙ 19) ⊕ (𝑆0 ⋙ 28)                               (6)
+                                    Σ1 (𝑆1 ) = 𝑆1 ⊕ (𝑆1 ⋙ 61) ⊕ (𝑆1 ⋙ 39)                               (7)
+                                    Σ2 (𝑆2 ) = 𝑆2 ⊕ (𝑆2 ⋙ 1) ⊕ (𝑆2 ⋙ 6)                                 (8)
+                                    Σ3 (𝑆3 ) = 𝑆3 ⊕ (𝑆3 ⋙ 10) ⊕ (𝑆3 ⋙ 17)                               (9)
+                                    Σ4 (𝑆4 ) = 𝑆4 ⊕ (𝑆4 ⋙ 7) ⊕ (𝑆4 ⋙ 41)                              (10)
+
+
+                                 Table 6. Lookup table representation of SBOX
+
+          𝑥        0     1     2    3    4     5    6    7     8     9    a    b   c     d      e      f
+       SBOX(𝑥)     4     b 1f 14 1a 15 9                 2 1b 5           8 12 1d 3             6 1c
+          𝑥       10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f
+       SBOX(𝑥) 1e 13 7              e    0     d 11 18 10 c               1 19 16 a             f 17
+       Note that 5-bit inputs are represented in hexadecimal, (e.g., 𝑥 =1 corresponds to (0, 0, 0, 0, 1)).
+
+
+
+                                                         11
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+331   4. Authenticated Encryption Scheme: Ascon-AEAD128
+332   This section specifies the AEAD scheme Ascon-AEAD128, details implementation options
+333   (e.g., truncation and nonce masking), lists AEAD requirements, and provides security prop-
+334   erties.
+
+335   4.1. Specification of Ascon-AEAD128
+336   Ascon-AEAD128 consists of the encryption algorithm Ascon-AEAD128.enc (specified in
+337   Sec. 4.1.1) and the decryption algorithm Ascon-AEAD128.dec (specified in Sec. 4.1.2).
+338   Ascon-AEAD128.enc takes a 128-bit secret key 𝐾, a 128-bit nonce 𝑁, variable-length
+339   associated data 𝐴, and variable-length plaintext 𝑃 as inputs and outputs ciphertext 𝐶
+340   (where |𝐶| = |𝑃 |) and 128-authentication tag 𝑇 (see Section 4.2.1 for the truncation option):
+341                                                      Ascon-AEAD128.enc(𝐾, 𝑁 , 𝐴, 𝑃 ) = (𝐶, 𝑇 ),                                                                                          (11)
+342   Ascon-AEAD128.dec takes key 𝐾, nonce 𝑁, associated data 𝐴, ciphertext 𝐶, and authen-
+343   tication tag 𝑇 as inputs and outputs 𝑃 if the tag is valid:
+
+                                                                                                                      𝑃                     if the tag 𝑇 is valid
+344                             Ascon-AEAD128.dec(𝐾, 𝑁 , 𝐴, 𝐶, 𝑇 ) = {                                                                                                                       (12)
+                                                                                                                      fail                  otherwise
+
+345   4.1.1. Encryption
+346   This section outlines the encryption algorithm of Ascon-AEAD128, which comprises four
+347   phases: initialization, associated data processing, plaintext processing, and finalization (see
+348   Fig. 5).
+
+                                                                                                                                                       Pen Cen
+                                       A0                  Am                           P0 C0                 Pn−1 Cn−1                                                                      T
+                                                                                                                                          ℓ = |Pen |
+                               128                                              128                                                    128 ⧸                     128
+                                ⧸                                                ⧸                                                                                ⧸
+
+
+               Ascon-p[12]                                                                                                                                               Ascon-p[12]
+                                                                                                                                        ⧸ 128-ℓ
+
+
+                                            Ascon-p[8]           Ascon-p[8]                     Ascon-p[8]                Ascon-p[8]
+                                                                                                                                              ⧸                                              ⧸128
+
+                                      192                  192                                                                                    1 ∥ 0127−ℓ
+                                                                                        192                     192                       192                                          128
+                                      ⧸                    ⧸                             ⧸                       ⧸                         ⧸                                            ⧸
+
+
+      IV∥K∥N                 064 ∥K                                           0191 ∥1                                                                            K∥064                       K
+
+       Initialization                       Associated Data                                                  Plaintext                                            Finalization
+
+                                                            Figure 5. Ascon-AEAD128 encryption
+
+349   The pseudocode of Ascon-AEAD128.enc is provided in Algorithm 3.
+350      1. Initialization of the state. Given 128-bit 𝐾 and 128-bit 𝑁, the 320-bit internal state
+351         S is initialized as
+352                                                                                      S ← 𝐼𝑉 ∥ 𝐾 ∥ 𝑁                                                                                      (13)
+
+                                                                                                12
+NIST SP 800-232 ipd (Initial Public Draft)
+November 2024
+
+
+
+
+Algorithm 3 Ascon-AEAD128.enc(𝐾, 𝑁 , 𝐴, 𝑃 )
+Input: 128-bit key 𝐾; 128-bit nonce 𝑁; Associated data 𝐴; Plaintext 𝑃
+Output: Ciphertext 𝐶; 128-bit tag 𝑇
+
+   𝐼𝑉 ← 0x00001000808c0001                                                ▷ Initialization
+   S ← 𝐼𝑉 ‖ 𝐾 ‖ 𝑁
+   S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
+   S ← S ⊕ (0192 ‖ 𝐾)
+
+   if |𝐴| > 0 then                                           ▷ Processing Associated Data
+                        ̃ ← parse(𝐴, 128)
+        𝐴0 , … , 𝐴𝑚−1 , 𝐴 𝑚
+        𝐴𝑚 ←pad(𝐴    ̃ , 128)
+                      𝑚
+        for 𝑖 = 0 to 𝑚 do
+            S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8]((S[0∶127] ⊕ 𝐴𝑖 ) ‖ S[128∶319] )
+        end for
+   end if
+   S ← S ⊕ (0319 ‖ 1)
+
+                   ̃
+   𝑃0 , … , 𝑃𝑛−1 , 𝑃𝑛 ← parse(𝑃 , 128)                             ▷ Processing Plaintext
+   ℓ ← |𝑃̃  𝑛|
+   for 𝑖 = 0 to 𝑛 − 1 do
+        S[0∶127] ← S[0∶127] ⊕ 𝑃𝑖
+        𝐶𝑖 ← S[0∶127]
+        S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S)
+   end for
+   S[0∶127] ← S[0∶127] ⊕pad(𝑃 ̃𝑛 , 128)
+   ̃ ←S
+   𝐶 𝑛       [0,ℓ−1]
+                       ̃
+   𝐶 ← 𝐶0 ‖ … ‖ 𝐶𝑛−1 ‖ 𝐶𝑛
+
+   S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S ⊕ (0128 ‖ 𝐾 ‖ 064 ))                                  ▷ Finalization
+   𝑇 ← S[192∶319] ⊕ 𝐾
+   return 𝐶, 𝑇
+
+
+
+
+                                               13
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+353          where the initialization value 𝐼𝑉 is assigned to 0x00001000808c0001 (see Ap-
+354          pendix B for the details of determining the IV). Next, S is updated using the permuta-
+355          tion 𝐴𝑠𝑐𝑜𝑛-𝑝[12] as
+356                                           S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)                               (14)
+357          and followed by XORing the secret key 𝐾 into the last 128 bits of internal state:
+
+358                                                S ← S ⊕ (0192 ∥ 𝐾).                           (15)
+
+359      2. Processing associated data. This step has two parts, including absorbing the asso-
+360         ciated data (when it is non-empty) and applying the domain separation bit to the
+361         state.
+362          When associated data 𝐴 is non-empty (i.e., |𝐴| > 0), it is parsed into blocks, as
+
+363
+                                                            ̃ ← parse(𝐴, 128),
+                                       𝐴0 , 𝐴1 , … , 𝐴𝑚−1 , 𝐴                                    (16)
+                                                              𝑚
+
+
+364
+                                                                                  ̃ | < 128,
+             where 𝑚 = ⌊|𝐴|/128⌋ and |𝐴𝑖 | = 128 bits for 0 ≤ 𝑖 ≤ 𝑚 − 1, and 0 ≤ |𝐴 𝑚
+365
+                                                         ̃ can be empty. Next, 𝐴
+             as explained in Algorithm 1. The last block 𝐴                     ̃ is padded as
+                                                          𝑚                     𝑚
+
+                                                ̃ , 128) = 𝐴             ̃|
+                                                           ̃ ||1 ∥ 0127−|𝐴
+366                                    𝐴𝑚 ← pad(𝐴𝑚           𝑚
+                                                                           𝑚                     (17)
+
+367          so that |𝐴𝑚 | = 128, as explained in Algorithm 2.
+368          Each associated data block 𝐴𝑖 (0 ≤ 𝑖 ≤ 𝑚), is absorbed into the first 128 bits of state
+369          as
+370                                        S[0∶127] ← S[0∶127] ⊕ 𝐴𝑖 ,                           (18)
+371          and the permutation 𝐴𝑠𝑐𝑜𝑛-𝑝[8] is applied to the state as
+
+372                                                S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S).                            (19)
+
+373          The final step of processing associated data is to update the state with a constant
+
+374                                                 S ← S ⊕ (0319 ∥ 1)                           (20)
+
+375          that provides domain separation. For empty associated data, only the final step
+376          described in (20) is applied.
+377      3. Processing plaintext. Plaintext 𝑃 (including empty plaintext) is parsed into blocks as
+
+378                                                          ̃
+                                        𝑃0 , 𝑃1 , … , 𝑃𝑛−1 , 𝑃 𝑛 ← parse(𝑃 , 128),               (21)
+
+379                                                                       ̃
+             where 𝑛 = ⌊|𝑃 |/128⌋ and |𝑃𝑖 | = 128 for 0 ≤ 𝑖 ≤ 𝑛 − 1, and |𝑃 𝑛 | = ℓ, 0 ≤ ℓ < 128
+380                                                                   ̃
+             using Algorithm 1. When |𝑃 | mod 128 = 0, the last block 𝑃𝑛 is empty.
+
+
+
+                                                        14
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+381          For each 𝑃𝑖 , 0 ≤ 𝑖 ≤ 𝑛 − 1, the state S is updated as follows:
+
+382                                                S[0∶127] ← S[0∶127] ⊕ 𝑃𝑖 ,                  (22)
+
+383          followed by generating the corresponding ciphertext block 𝐶𝑖 as
+
+384                                                   𝐶𝑖 ← S[0∶127] ,                          (23)
+
+385          and the permutation 𝐴𝑠𝑐𝑜𝑛-𝑝[8] is applied to update the state as:
+
+386                                                 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S).                         (24)
+
+387                             ̃
+             For the last block 𝑃 𝑛 , the state is updated as
+
+388                                                                   ̃
+                                            S[0∶127] ← S[0∶127] ⊕ pad(𝑃𝑛 , 128),               (25)
+
+389
+                                           ̃ is obtained as
+             and the last ciphertext block 𝐶𝑛
+
+                                                      ̃ ←S
+                                                      𝐶
+390                                                    𝑛   [0∶ℓ−1] .                           (26)
+
+391          The ciphertext 𝐶 is constructed by concatenating the ciphertext blocks as
+
+392
+                                                                       ̃.
+                                                   𝐶 ← 𝐶0 ∥ … ∥ 𝐶𝑛−1 ∥ 𝐶                       (27)
+                                                                         𝑛
+
+
+393      4. Finalization and tag generation. During finalization, the key is first loaded to the
+394         state S, as
+395                                     S ← S ⊕ (0128 ∥ 𝐾 ∥ 064 ),                          (28)
+396          and the state S is then updated using the permutation 𝐴𝑠𝑐𝑜𝑛-𝑝[12], as
+
+397                                                 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S).                        (29)
+
+398          Finally, the tag 𝑇 is generated by XORing the key with the last 128 bits of the state:
+
+399                                                  𝑇 ← 𝑆[192∶319] ⊕ 𝐾.                       (30)
+
+400   The encryption algorithm returns the ciphertext 𝐶 and the tag 𝑇.
+
+401   4.1.2. Decryption
+402   This section describes each of the phases for decryption with Ascon-AEAD128.dec. Decryp-
+403   tion in Ascon-AEAD128 consists of four phases: initialization, associated data processing,
+404   ciphertext processing, and finalization. Decryption in Ascon-AEAD128 is similar to encryp-
+405   tion; only the last two phases differ from the encryption mode.
+406   The pseudocode of Ascon-AEAD128.dec is provided in Algorithm 4.
+
+                                                           15
+NIST SP 800-232 ipd (Initial Public Draft)
+November 2024
+
+
+
+
+Algorithm 4 Ascon-AEAD128.dec(𝐾, 𝑁 , 𝐴, 𝐶, 𝑇 )
+Input: 128-bit key 𝐾; 128-bit nonce 𝑁; Associated data 𝐴; Ciphertext 𝐶; 128-bit tag 𝑇
+Output: Plaintext 𝑃 or fail
+
+   𝐼𝑉 ← 0x00001000808c0001                                               ▷ Initialization
+   S ← 𝐼𝑉 ‖ 𝐾 ‖ 𝑁
+   S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
+   S ← S ⊕ (0192 ‖ 𝐾)
+
+   if |𝐴| > 0 then                                        ▷ Processing Associated Data
+                        ̃ ← parse(𝐴, 128)
+        𝐴0 , … , 𝐴𝑚−1 , 𝐴 𝑚
+                     ̃
+        𝐴𝑚 ←pad(𝐴𝑚 , 128)
+        for 𝑖 = 0 to 𝑚 do
+            S[0∶127] ← S[0∶127] ⊕ 𝐴𝑖
+            S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S)
+        end for
+   end if
+   S ← S ⊕ (0319 ‖ 1)
+
+                   ̃ ← parse(𝐶, 128)
+   𝐶0 , … , 𝐶𝑛−1 , 𝐶                                           ▷ Processing Ciphertext
+                     𝑛
+   for 𝑖 = 0 to 𝑛 − 1 do
+       𝑃𝑖 ← S[0∶127] ⊕ 𝐶𝑖
+       S[0∶127] ← 𝐶𝑖
+       S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S)
+   end for
+   ℓ = |𝐶̃|
+          𝑛
+   ̃
+   𝑃   ←              ̃
+     𝑛    S [0∶ℓ−1] ⊕ 𝐶𝑛
+   S[ℓ,127] ← S[ℓ,127] ⊕ (1||0127−ℓ )
+   S [0,ℓ−1]← 𝐶̃   𝑛
+
+
+   S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S ⊕ (0128 ‖ 𝐾 ‖ 064 ))                                 ▷ Finalization
+   𝑇 ′ ← S[192∶319] ⊕ 𝐾
+   if 𝑇 ′ == 𝑇 then
+                            ̃
+        𝑃 ← 𝑃0 ‖ … ‖ 𝑃𝑛−1 ‖ 𝑃 𝑛
+        return 𝑃
+   else
+        return fail
+   end if
+
+
+
+                                             16
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+                                                                                                                                                       Pen Cen
+                                       A0                Am                              P0 C0                Pn−1 Cn−1                                                                      T′
+                                                                                                                                          ℓ = |Cen |
+                               128                                             128                                                     128 ⧸                     128
+                                ⧸                                               ⧸                                                                                 ⧸
+
+
+               Ascon-p[12]                                                                                                                                               Ascon-p[12]
+                                                                                                                                        ⧸ 128-ℓ
+
+
+                                            Ascon-p[8]          Ascon-p[8]                       Ascon-p[8]               Ascon-p[8]
+                                                                                                                                              ⧸                                              ⧸128
+
+                                      192                192                                                                                      1 ∥ 0127−ℓ
+                                                                                        192                    192                        192                                          128
+                                      ⧸                  ⧸                               ⧸                      ⧸                          ⧸                                            ⧸
+
+
+      IV∥K∥N                 064 ∥K                                          0191 ∥1                                                                             K∥064                       K
+
+       Initialization                       Associated Data                                                   Ciphertext                                           Finalization
+
+                                                          Figure 6. Ascon-AEAD128 decryption
+
+407      1. Initialization of the state. Given 128-bit 𝐾 and 128-bit 𝑁, the 320-bit internal state
+408         S is initialized as
+
+409                                                                                       S ← 𝐼𝑉 ∥ 𝐾 ∥ 𝑁 ,                                                                                   (31)
+
+410              where the initial value 𝐼𝑉 is assigned to 0x00001000808c0001. Next, S is updated
+411              using the permutation 𝐴𝑠𝑐𝑜𝑛-𝑝[12] as
+
+412                                                                                      S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)                                                                                  (32)
+
+413              and followed by XORing the secret key into the last 128 bits of the state as
+
+414                                                                                      S ← S ⊕ (0192 ∥ 𝐾).                                                                                 (33)
+
+415              This step is exactly the same as Step 1 of the encryption function in Sec. 4.1.1.
+416      2. Processing associated data. This step has two parts, including absorbing the asso-
+417         ciated data (when it is non-empty) and applying the domain separation bit to the
+418         state.
+419              When the associated data 𝐴 is non-empty (i.e., |𝐴| > 0), it is parsed into blocks, as
+
+420
+                                                                                    ̃ ← parse(𝐴, 128),
+                                                               𝐴0 , 𝐴1 , … , 𝐴𝑚−1 , 𝐴                                                                                                        (34)
+                                                                                      𝑚
+
+
+421
+                                                                                      ̃ | < 128,
+                 where 𝑚 = ⌊|𝐴|/128⌋ and |𝐴𝑖 | = 128 bits for 0 ≤ 𝑖 ≤ 𝑚 − 1, and 0 ≤ |𝐴 𝑚
+422
+                                                             ̃ can be empty.
+                 as explained in Algorithm 1. The last block 𝐴 𝑚
+
+423
+                 ̃ is further processed by padding to a full 𝑟 = 128-bit block using Algorithm 2 as
+                 𝐴𝑚
+
+                                                                    ̃ , 128) = 𝐴             ̃|
+                                                                               ̃ ||1 ∥ 0127−|𝐴
+424                                                        𝐴𝑚 ← pad(𝐴 𝑚          𝑚
+                                                                                              𝑚 .                                                                                            (35)
+
+425              The associated data blocks 𝐴𝑖 ’s (0 ≤ 𝑖 ≤ 𝑚), are absorbed to the state S as follows:
+
+426                                                                                    S[0∶127] ← (S[0∶127] ⊕ 𝐴𝑖 ),                                                                          (36)
+
+                                                                                                    17
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+427          and the permutation 𝐴𝑠𝑐𝑜𝑛-𝑝[8] is applied to the state as
+428                                                  S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S).                          (37)
+429          The final step of processing associated data is to update the state to:
+430                                                   S ← S ⊕ (0319 ∥ 1)                         (38)
+431          for domain separation. For empty associated data, only the final step described in
+432          (38) is applied.
+433          This step is exactly the same as Step 2 of the encryption function in Sec. 4.1.1.
+434      3. Processing the ciphertext. Ciphertext 𝐶 is parsed into blocks as
+435
+                                                             ̃ ← parse(𝐶, 128),
+                                        𝐶0 , 𝐶1 , … , 𝐶𝑛−1 , 𝐶                                   (39)
+                                                               𝑛
+
+436          where 𝑛 = ⌊|𝐶|/128⌋, |𝐶𝑖 | = 128 for 0 ≤ 𝑖 ≤ 𝑛 − 1, |𝐶  ̃ | = ℓ, 0 ≤ ℓ < 128 using
+                                                                       𝑛
+437
+                                                                       ̃
+             Algorithm 1. Ciphertext 𝐶 or the last block of ciphertext 𝐶𝑛 can be empty.
+438          For each 𝐶𝑖 , 0 ≤ 𝑖 ≤ 𝑛 − 1, the following steps are applied:
+439                                                 𝑃𝑖 ← S[0∶127] ⊕ 𝐶𝑖                           (40)
+440                                                      S[0∶127] ← 𝐶𝑖                           (41)
+441                                                S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[8](S)                             (42)
+442
+                                                  ̃ (with length ℓ), the following steps are applied:
+             For the last block of the ciphertext 𝐶 𝑛
+
+                                                        ̃
+                                                        𝑃               ̃
+443                                                      𝑛 ← S[0,ℓ−1] ⊕ 𝐶𝑛                       (43)
+444
+                                                                           ̃
+                                                                S[0,ℓ−1] ← 𝐶                     (44)
+                                                                             𝑛
+445                                        S[ℓ,127] ← S[ℓ,127] ⊕ (1||0127−ℓ )                    (45)
+
+446          The plaintext 𝑃 is constructed by concatenating the plaintext blocks as
+447                                                                    ̃
+                                                   𝑃 ← 𝑃0 ∥ … ∥ 𝑃𝑛−1 ∥ 𝑃 𝑛.                      (46)
+
+448      4. Finalization. During finalization, the key is loaded to the state S as
+449                                                S ← S ⊕ (0128 ∥ 𝐾 ∥ 064 ),                    (47)
+450          and the state S is then updated using the permutation Ascon-p[12], as
+451                                                 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S).                          (48)
+452          Finally, the tag is generated by XORing the key with the last 128 bits of the state:
+453                                                 𝑇 ′ ← (𝑆[192∶319] ) ⊕ 𝐾.                     (49)
+
+454          As the last step, the computed 𝑇 ′ is compared with the input 𝑇. If the two match,
+455          the plaintext 𝑃 is returned. Otherwise, an error message fail is returned.
+
+                                                           18
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+456   4.2. Implementation Options
+457   4.2.1. Truncation
+458   Some applications may truncate the tag 𝑇 to a specific length 𝜆 (≤ |𝑇 |). The truncation
+459   function outputs the leftmost 𝜆 bits 𝑇[0∶𝜆−1] of the tag.
+460   The requirements on the tag lengths are provided in Sec. 4.3.
+461
+
+
+
+
+462   4.2.2. Nonce Masking
+463   This section provides an option to implement Ascon-AEAD128 using a 256-bit key, mainly
+464   to maintain the 128-bit security strength of Ascon-AEAD128 in a multi-key setting [12]. In
+465   this option, an additional 128-bit key is used to mask the input nonce.
+466   Let 𝐾 be the 128-bit key of Ascon-AEAD128 and 𝐾 ′ be an independently generated addi-
+467   tional 128-bit key. Ascon-AEAD128 with nonce masking is processed as follows:
+
+
+468                   E(𝐾 ∥ 𝐾 ′ , 𝑁 , 𝐴, 𝑃 ) = Ascon-AEAD128.enc(𝐾, 𝑁 ⊕ 𝐾 ′ , 𝐴, 𝑃 ),         (50)
+469
+
+470                D(𝐾 ∥ 𝐾 ′ , 𝑁 , 𝐴, 𝐶, 𝑇 ) = Ascon-AEAD128.dec(𝐾, 𝑁 ⊕ 𝐾 ′ , 𝐴, 𝐶, 𝑇 )       (51)
+
+471   Ascon-AEAD128 with nonce masking should only be used when context-commitment
+472   security [13] and related-key security are not concerns because the encryption of Ascon-
+473   AEAD128 with nonce masking always outputs the same (𝐶, 𝑇) pair for two different input
+474   tuples (𝐾 ‖ 𝐾 ′ , 𝑁 , 𝐴, 𝑃 ) and (𝐾 ‖ 𝐾 ″ , 𝑁 ′ , 𝐴, 𝑃 ), where 𝑁 ⊕ 𝐾 ′ = 𝑁 ′ ⊕ 𝐾 ″ .
+
+475   4.3. AEAD Requirements
+476   This section specifies requirements for Ascon-AEAD128.
+477   R1. Key generation. The secret key 𝐾 and the nonce-masking key 𝐾 ′ (if available)
+478       shall be generated following the recommendations for cryptographic key generation
+479       specified in SP 800-133 [14] and using an approved random bit generator that supports
+480       at least a 128-bit security strength. The keys shall not be used for other purposes.
+481   R2. Use of unique nonce. Nonce shall be distinct for each encryption operation for a
+482       given key to ensure that identical plaintexts encrypted multiple times produce different
+483       ciphertext.
+484   R3. Minimum length of truncated tag. When an application uses truncated tags, the
+485       bit length of the truncated tags shall be at least 64 bits, and the tag length shall be
+486       the same across the life-span of the key.
+
+
+
+                                                    19
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+487   R4. Limit on the maximum number of decryption failures. When the tag bit length
+488       is 𝜆, 64 ≤ 𝜆 ≤ 128, the maximum number of decryption failures for a fixed key shall
+489       be at most 2𝜆−64 .
+490   R5. Data limit. The total amount of data processed during encryption and decryption,
+491       including the nonce, shall not exceed 254 bytes for a given key.
+492   R6. Key update. The key shall be updated to a new one when the total number of input
+493       data blocks or the number of decryption failures reach their respective limits or if the
+494       nonce uniqueness requirement is violated.
+
+495   4.4. Security Properties
+496   This section provides the security properties of Ascon-AEAD128 in various scenarios, in-
+497   cluding single-key and multi-key settings, nonce-respecting and nonce-misuse settings, and
+498   with or without the truncation option.
+499   In the single-key setting, the attacker focuses on a specific key that is shared by one or more
+500   users. In contrast, in the multi-key setting with 𝑢 keys, the attacker aims to compromise
+501   any of the 𝑢 keys used by the users.
+502   The security of the Ascon-AEAD128 mode, in both single-key and multi-key settings, was
+503   evaluated in [12, 15–17].
+
+504   4.4.1. Single-Key Setting
+505   Ascon-AEAD128 (with no tag truncation) provides a 128-bit security strength in the single-
+506   key and nonce-respecting setting, for the confidentiality of the plaintext (except for its
+507   length) and the integrity of the tuple (nonce, associated data, ciphertext, tag), where the
+508   total number of input bytes is limited to 254 (i.e., 250 blocks).
+509   Impact of truncation. When the tag is 𝜆 bits, 64 ≤ 𝜆 ≤ 128, the maximum number of
+510   decryption failures for a fixed key is limited to 2𝜆−64 . Therefore, the probability that there
+511   is a valid forgery is at most 2−64 . Once a forgery attempt is successful, the confidentiality of
+512   the plaintext can be immediately compromised, as the decryption function may reveal some
+513   information about the plaintext. Therefore, in the single-key setting, Ascon-AEAD128 with
+514   tag length 𝜆 provides (min{128, 𝜆})-bit security strengths for confidentiality and integrity
+515   in the nonce-respecting setting.
+
+516   4.4.2. Multi-Key Setting
+517   When 𝑢 keys are independently selected for an application, Ascon-AEAD128 (with no tag-
+518   truncation) provides a (128 − log2 𝑢)-bit security strength in the nonce-respecting setting,
+519   for the confidentiality of the plaintext and the integrity of the tuple of (nonce, associated
+
+
+
+                                                     20
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+520   data, ciphertext, tag), where the total number of input bytes for all 𝑢 keys is limited to 254
+521   (i.e., 250 blocks).
+522   When the same nonce is used with 𝑢 keys, an attacker may be able to discover one of the 𝑢
+523   keys with a time complexity of 2128−log2 𝑢 , thereby compromising both confidentiality and
+524   integrity.
+525   To improve security in a multi-key setting, the nonce masking implementation option (see
+526   Sec. 4.2.2) can be used. This option provides 128-bit security (rather than 128 − log2 (𝑢))
+527   for confidentiality and integrity.
+528   Impact of truncation. When the tag is truncated to 𝜆 bits, 64 ≤ 𝜆 ≤ 128, the maximum
+529   number of decryption failures for all 𝑢 keys is limited to 2𝜆−64 . Therefore, the probabil-
+530   ity of obtaining a valid forgery is expected to be at most 2−64 . In the multi-key setting,
+531   Ascon-AEAD128 with tag-length 𝜆 provides (min{128 − log2 𝑢, 𝜆})-bit security strengths
+532   of confidentiality and integrity in the nonce-respecting setting.
+
+533   4.4.3. Nonce-Misuse Setting
+534   The plaintext confidentiality of Ascon-AEAD128 is lost when a nonce is repeated with the
+535   same secret key. However, Ascon-AEAD128 is designed to provide some level of security in
+536   case of certain implementation errors that violate the nonce-respecting requirement.
+537       • In the 𝑢-key setting, Ascon-AEAD128 with a 𝜆-bit tag provides (min{128−log2 (𝑢), 𝜆})-
+538         bit security strengths of confidentiality and integrity when a (nonce, associated data)
+539         pair is never repeated for two encryptions with each of 𝑢 keys and the number of
+540         nonce repetitions per key for encryption is limited to 28 . In this scenario, the security
+541         strengths of Ascon-AEAD128 are summarized in Table 7.
+542       • Ascon-AEAD128 with 𝜆-bit tag also provides a (min{128 − log2 (𝑢), 𝜆})-bit integrity
+543         security strength of the tuple (nonce, associated data, ciphertext, tag) if the number
+544         of repetitions of any (nonce, associated data) pair per each of 𝑢 keys for encryption
+545         is limited to 28 . In this scenario, the integrity security strength of Ascon-AEAD128
+546         with 𝜆-bit tag is summarized in Table 8.
+
+      Table 7. Security strength of Ascon-AEAD128 with 𝜆-bit tag in the 𝑢-key setting, where (𝑁,
+      𝐴) pair is unique for encryption.
+
+                                                        Security             Total number
+                            Security                    strengths           of repetitions of
+                                                          in bits                a nonce
+                 Confidentiality of plaintext      min{128 − log2 (𝑢), 𝜆}          ≤ 28
+                  Integrity of (𝑁 , 𝐴, 𝐶, 𝑇)       min{128 − log2 (𝑢), 𝜆}          ≤ 28
+
+
+
+
+                                                        21
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+547   5. Hash and Extendable Output Functions
+548   Hash and extendable output functions are built on the 𝐴𝑠𝑐𝑜𝑛-𝑝[12] permutation in a
+549   sponge-based mode. This section specifies three functions:
+550       • The hash function Ascon-Hash256, which produces a 256-bit digest,
+551       • The Ascon-XOF128 function that produces arbitrary length outputs, and
+552       • The customized XOF Ascon-CXOF128.
+
+553   5.1. Specification of Ascon-Hash256
+554   The mode of operation used by Ascon-Hash256 and Ascon-XOF128 is shown in Fig. 7. This
+555   mode comprises three main steps: initialization, absorbing the message, and squeezing the
+556   output. Note that 𝐿, the length of the output, and is 256 for Ascon-Hash256 and 𝐿 > 0
+557   for Ascon-XOF128.
+                                                M0                     Mn−1                 Mn                   H0                  H⌈L/64⌉−1
+                                           64                                                                                                 64
+
+
+                             Ascon-p[12]              Ascon-p[12]             Ascon-p[12]         Ascon-p[12]          Ascon-p[12]
+                                           ⧸                                                                                                  ⧸
+
+                                                256                     256                 256                  256                    256
+                                                ⧸                       ⧸                    ⧸                    ⧸                      ⧸
+
+
+                     IV∥0256
+                  Initialization                      Absorb Message                                            Squeeze Output
+
+                         Figure 7. Structure of Ascon-Hash256 and Ascon-XOF128
+
+558   Ascon-Hash256 takes a variable length message 𝑀 as input and produces a 256-bit digest.
+559   The full specification of Ascon-Hash256 can be found in Algorithm 5 and operates as
+560   follows:
+561      1. Initialization. The 320-bit internal state of Ascon-Hash256 is initialized with the
+562         concatenation of the 64-bit 𝐼𝑉 = 0x0000080100cc0002 and 256 zeroes, followed
+563         by the 𝐴𝑠𝑐𝑜𝑛-𝑝[12] permutation. That is the initialization step is
+564                                                                 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](𝐼𝑉 ∥ 0256 ).                                                   (52)
+
+      Table 8. Integrity security strength of Ascon-AEAD128 with 𝑢 keys in the nonce-misuse
+      setting
+
+                                                         Security strength                              Total number of repetitions
+                     Security
+                                                              in bits                                        of any (𝑁, 𝐴) pair
+            Integrity of (𝑁 , 𝐴, 𝐶, 𝑇)                 min{128 − log2 (𝑢), 𝜆}                                       ≤ 28
+
+                                                                                22
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+565      2. Absorbing the message. The absorbing phase behaves similarly to the associated
+566         data processing of Ascon-AEAD128. The message is partitioned into 64-bit blocks as
+
+567                                                        ̃𝑛 ← parse(𝑀 , 64).
+                                           𝑀0 , … , 𝑀𝑛−1 , 𝑀                                   (53)
+
+568                        ̃𝑛 is then padded to a full block 𝑀𝑛 :
+             Partial block 𝑀
+
+569                                                          ̃𝑛 , 64).
+                                                    𝑀𝑛 ← pad(𝑀                                 (54)
+
+570          Each message block 𝑀𝑖 is XORed with the state as
+
+571                                                S[0∶63] ← S[0∶63] ⊕ 𝑀𝑖 .                    (55)
+
+572          For all message blocks except the final block 𝑀𝑛 ,the XOR operation is immediately
+573          followed by applying 𝐴𝑠𝑐𝑜𝑛-𝑝[12] to the state.
+
+574                                                S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)                          (56)
+
+575      3. Squeezing the hash. The squeezing phase begins after 𝑀𝑛 is absorbed with an
+576         application of 𝐴𝑠𝑐𝑜𝑛-𝑝[12] to the state.
+
+577                                                S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)                          (57)
+
+578          The value of S[0∶63] is then taken as hash block 𝐻𝑖 , and the state is again updated by
+579          𝐴𝑠𝑐𝑜𝑛-𝑝[12].
+580                                                𝐻𝑖 ← S[0∶63]                                 (58)
+581
+582                                                S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)                          (59)
+583          Steps (58) and (59) are repeated alternately until hash blocks 𝐻0 , 𝐻1 , and 𝐻2 have
+584          been extracted. The final hash block is then extracted but is not followed by the
+585          permutation.
+586                                              𝐻3 ← S[0∶63]                                 (60)
+587          The resulting 256-bit digest is the concatenation of hash blocks as
+
+588                                                𝐻 ← 𝐻 0 ∥ 𝐻1 ∥ 𝐻2 ∥ 𝐻3 .                    (61)
+
+
+
+
+                                                          23
+NIST SP 800-232 ipd (Initial Public Draft)
+November 2024
+
+
+
+
+Algorithm 5 Ascon-Hash256(𝑀)
+Input: Bitstring 𝑀 ∈ {0, 1}∗
+Output: Digest 𝐻 ∈ {0, 1}256
+   𝐼𝑉 ←0x0000080100cc0002                         ▷ Initialization
+   S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](𝐼𝑉 ‖ 0256 )
+
+                   ̃𝑛 ← parse(𝑀 , 64)
+   𝑀0 , … , 𝑀𝑛−1 , 𝑀                                ▷ Absorbing
+   𝑀𝑛 ← pad(𝑀   ̃𝑛 , 64)
+   for 𝑖 = 0 to 𝑛 − 1 do
+       S[0∶63] ← S[0∶63] ⊕ 𝑀𝑖
+       S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
+   end for
+   S[0∶63] ← S[0∶63] ⊕ 𝑀𝑛
+
+   S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)                               ▷ Squeezing
+   for 𝑖 = 0 to 2 do
+       𝐻𝑖 ← S[0∶63]
+       S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
+   end for
+   𝐻3 ← S[0∶63]
+
+   𝐻 ← 𝐻 0 ‖ 𝐻1 ‖ 𝐻2 ‖ 𝐻 3
+   return 𝐻
+
+
+
+
+                                             24
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+589   5.2. Specification of Ascon-XOF128
+590   Ascon-XOF128 is similar to Ascon-Hash256 but has three main differences:
+591      1. Ascon-XOF128 accepts an additional input, 𝐿 > 0, that specifies the desired output
+592         length in bits.
+593      2. The number of blocks that are squeezed is equal to ⌈𝐿/64⌉.
+594      3. The initial value differs in one bit.
+595   The 128 in the name Ascon-XOF128 refers to the target security strength, not the output
+596   size.
+597   Ascon-XOF128 is specified by Algorithm 6 and is described as follows:
+598      1. Initialization. The 320-bit internal state of Ascon-XOF128 is initialized with the
+599         concatenation of the 64-bit 𝐼𝑉 = 0x0000080000cc0003 and 256 zeroes, followed
+600         by the 𝐴𝑠𝑐𝑜𝑛-𝑝[12] permutation:
+
+601                                            S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](𝐼𝑉 ∥ 0256 ).                (62)
+
+602      2. Absorbing the message. The absorbing phase behaves similar to the associated data
+603         processing of AEAD. The message is partitioned into 64-bit blocks as:
+
+604                                                        ̃𝑛 ← parse(𝑀 , 64).
+                                           𝑀0 , … , 𝑀𝑛−1 , 𝑀                               (63)
+
+605                        ̃𝑛 is then padded to a full block 𝑀𝑛 as
+             Partial block 𝑀
+
+606                                                         ̃𝑛 , 64).
+                                                   𝑀𝑛 ← pad(𝑀                              (64)
+
+607          Each message block 𝑀𝑖 is absorbed by XORing the block into the state as
+
+608                                                S[0∶63] ← S[0∶63] ⊕ 𝑀𝑖 .                (65)
+
+609          For all message blocks except the final block, the XOR operation is immediately
+610          followed by an application of 𝐴𝑠𝑐𝑜𝑛-𝑝[12] to the state.
+
+611                                                S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)                      (66)
+
+612      3. Squeezing the outputs. To obtain the requested 𝐿 output bits, ℎ = ⌈𝐿/64⌉ blocks
+613         must be extracted from the state. The squeezing phase begins with an application of
+614         𝐴𝑠𝑐𝑜𝑛-𝑝[12] to the state.
+615                                       S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)                               (67)
+
+
+                                                          25
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+616          The value of S[0∶63] is then taken as output block 𝐻𝑖 , and the state is again updated
+617          by 𝐴𝑠𝑐𝑜𝑛-𝑝[12].
+618                                                𝐻𝑖 ← S[0∶63]                                 (68)
+619
+620                                                S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)                           (69)
+621          Steps (68) and (69) are repeated alternately until output blocks 𝐻0 , … , 𝐻ℎ−1 have
+622          been squeezed. The final block is then squeezed without an additional permutation.
+
+623                                                   𝐻ℎ ← S[0∶63]                              (70)
+
+624          Finally, the output blocks are concatenated, and the first 𝐿 bits are returned as output
+625          𝐻.
+626                                             𝐻 ′ ← 𝐻0 ∥ … ∥ 𝐻 ℎ                               (71)
+627
+                                                           ′
+628                                                   𝐻 ← 𝐻[0∶𝐿−1]                              (72)
+
+
+      Algorithm 6 Ascon-XOF128(𝑀, 𝐿)
+      Input: Bitstring 𝑀 ∈ {0, 1}∗ ; Output length 𝐿 > 0
+      Output: Digest 𝐻 ∈ {0, 1}𝐿
+         𝐼𝑉 ← 0x0000080000cc0003                                                     ▷ Initialization
+         S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](𝐼𝑉 ‖ 0256 )
+
+                         ̃𝑛 ← parse(𝑀 , 64)
+         𝑀0 , … , 𝑀𝑛−1 , 𝑀                                                             ▷ Absorbing
+         𝑀𝑛 ← pad(𝑀   ̃𝑛 , 64)
+         for 𝑖 = 0 to 𝑛 − 1 do
+             S[0∶63] ← S[0∶63] ⊕ 𝑀𝑖
+             S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
+         end for
+         S[0∶63] ← S[0∶63] ⊕ 𝑀𝑛
+
+         S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)                                                            ▷ Squeezing
+         ℎ ← ⌈𝐿/64⌉ − 1
+         for 𝑖 = 0 to ℎ − 1 do
+             𝐻𝑖 ← S[0∶63]
+             S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
+         end for
+         𝐻ℎ ← S[0∶63]
+
+         𝐻 ′ ← 𝐻0 ‖ … ‖ 𝐻ℎ
+                 ′
+         𝐻 ← 𝐻[0∶𝐿−1]
+         return 𝐻
+
+
+                                                        26
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+                                    Z0                 Zm−1                 Zm                    M0                 Mn−1                 Mn                   H0                  H⌈L/64⌉−1
+                              64                                                                                                                                                            64
+                              ⧸                                                                                                                                                             ⧸
+
+
+                Ascon-p[12]        256   Ascon-p[12]    256   Ascon-p[12]   256   Ascon-p[12]   256    Ascon-p[12]    256   Ascon-p[12]   256   Ascon-p[12]    256   Ascon-p[12]      256
+                                   ⧸                    ⧸                    ⧸                  ⧸                     ⧸                    ⧸                    ⧸                      ⧸
+
+
+         IV∥0256
+
+      Initialization                         Customization                                             Absorb Message                                         Squeeze Output
+
+                                                         Figure 8. Structure of Ascon-CXOF128
+
+
+629   5.3. Specification of Ascon-CXOF128
+630   This section specifies the customized version of Ascon-XOF128 called Ascon-CXOF128.
+631   Customization extends the functionality of Ascon-XOF128 by allowing users to incorporate
+632   a customization string into the computation. For the same input message, two instances
+633   of a customized XOF using different customization strings will produce distinct outputs.
+634   Ascon-CXOF128 is a customized XOF that differs from Ascon-XOF128 in the following ways:
+635       • For domain separation, Ascon-CXOF128 uses a different IV than Ascon-XOF128. The
+636         IV for Ascon-CXOF128 is 0x0000080000cc0004.
+637       • In addition to the message, Ascon-CXOF128 takes the customization string 𝑍 as input.
+638         The length of the customization string shall be at most 2048 bits (i.e., 256 bytes).
+639       • The customization string 𝑍 is prepended to the message blocks as
+
+640                                                                𝑍0 ∥ 𝑍1 ∥ … ∥ 𝑍𝑚 ∥ 𝑀0 ∥ … ∥ 𝑀𝑛−1 ∥ 𝑀𝑛 ,                                                                                   (73)
+
+641          where 𝑍0 is a 64-bit integer that represents the bit-length of the customization string,
+642          and 𝑍1 , … , 𝑍𝑚 are 64-bit blocks generated by parsing and padding 𝑍.
+643   The general structure for Ascon-CXOF128 is shown in Fig. 8 and the full specification is
+644   given by Algorithm 7.
+
+645   5.4. Security Strengths
+646   The security strengths of Ascon-Hash256, Ascon-XOF128, and Ascon-CXOF128 are sum-
+647   marized in Table 9.
+
+
+
+
+                                                                                                 27
+NIST SP 800-232 ipd (Initial Public Draft)
+November 2024
+
+
+
+
+Algorithm 7 Ascon-CXOF128(𝑀, 𝐿, 𝑍)
+Input: Bitstring 𝑀 ∈ {0, 1}∗ ; Output length 𝐿 > 0; customization string 𝑍 ∈ {0, 1}∗ , where
+  |𝑍| ≤ 2048
+Output: Digest 𝐻 ∈ {0, 1}𝐿
+   𝐼𝑉 ← 0x0000080000cc0004                                                  ▷ Initialization
+   S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](𝐼𝑉 ‖ 0256 )
+
+   𝑍0 ← int64(|𝑍|)                                                        ▷ Customization
+                 ̃
+   𝑍1 … , 𝑍𝑚−1 , 𝑍𝑚 ← parse(𝑍, 64)
+                ̃
+   𝑍𝑚 ← pad(𝑍𝑚 , 64)
+   for 𝑖 = 0 to 𝑚 do
+       S[0∶63] ← S[0∶63] ⊕ 𝑍𝑖
+       S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
+   end for
+                   ̃𝑛 ← parse(𝑀 , 64)
+   𝑀0 , … , 𝑀𝑛−1 , 𝑀                                                 ▷ Absorbing message
+   𝑀𝑛 ← pad(𝑀   ̃𝑛 , 64)
+   for 𝑖 = 0 to 𝑛 − 1 do
+       S[0∶63] ← S[0∶63] ⊕ 𝑀𝑖
+       S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
+   end for
+   S[0∶63] ← S[0∶63] ⊕ 𝑀𝑛
+
+   S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)                                                         ▷ Squeezing
+   ℎ ← ⌈𝐿/64⌉ − 1
+   for 𝑖 = 0 to ℎ − 1 do
+       𝐻𝑖 ← S[0∶63]
+       S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S)
+   end for
+   𝐻ℎ ← S[0∶63]
+
+   𝐻 ′ ← 𝐻0 ‖ … ‖ 𝐻ℎ
+           ′
+   𝐻 ← 𝐻[0∶𝐿−1]
+   return 𝐻
+
+
+
+
+                                             28
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+      Table 9. Security strengths of Ascon-Hash256, Ascon-XOF128, and Ascon-CXOF128
+      algorithms
+
+                                     Output size             Security strengths in bits
+                  Function
+                                       in bits       Collision      Preimage 2nd Preimage
+             Ascon-Hash256              256            128              128             128
+              Ascon-XOF128                𝐿        min(𝐿/2,128) min(𝐿,128)         min(𝐿,128)
+             Ascon-CXOF128                𝐿        min(𝐿/2,128) min(𝐿,128)         min(𝐿,128)
+
+
+648   References
+649    [1] Dobraunig C, Eichlseder M, Mendel F, Schläffer M (2014) Ascon v1, Submission to
+650        Round 1 of the CAESAR competition. Available at https://competitions.cr.yp.to/roun
+651        d1/asconv1.pdf.
+652    [2] Dobraunig C, Eichlseder M, Mendel F, Schläffer M (2015) Ascon v1.1, Submission to
+653        Round 2 of the CAESAR competition. Available at https://competitions.cr.yp.to/roun
+654        d2/asconv11.pdf.
+655    [3] Dobraunig C, Eichlseder M, Mendel F, Schläffer M (2016) Ascon v1.2, Submission to
+656        Round 3 of the CAESAR competition. Available at https://competitions.cr.yp.to/roun
+657        d3/asconv12.pdf.
+658    [4] National Institute of Standards and Technology (2001) Advanced Encryption Standard
+659        (AES) (U.S. Department of Commerce), Report. DOI:10.6028/NIST.FIPS.197-upd1
+660    [5] Dworkin MJ (2007) Recommendation for Block Cipher Modes of Operation: Ga-
+661        lois/Counter Mode (GCM) and GMAC (National Institute of Standards and Technology),
+662        Report. DOI:10.6028/NIST.SP.800-38D
+663    [6] National Institute of Standards and Technology (2015) Secure Hash Standard (SHS)
+664        (U.S. Department of Commerce), Report. DOI:10.6028/NIST.FIPS.180-4
+665    [7] National Institute of Standards and Technology (2015) SHA-3 Standard: Permutation-
+666        Based Hash and Extendable-Output Functions (U.S. Department of Commerce), Report.
+667        DOI:10.6028/NIST.FIPS.202
+668    [8] Dobraunig C, Eichlseder M, Mendel F, Schläffer M (2021) Ascon v1.2, Submission
+669        to Final Round of the NIST Lightweight Cryptography project. Available at https:
+670        //csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/finalist-r
+671        ound/updated-spec-doc/ascon-spec-final.pdf.
+672    [9] Sönmez Turan M, McKay KA, Çalık Ç, Chang D, Bassham I Lawrence E (2019) Status Re-
+673        port on the First Round of the NIST Lightweight Cryptography Standardization Process
+674        (National Institute of Standards and Technology), Report. DOI:10.6028/NIST.IR.8268
+675   [10] Sönmez Turan M, McKay KA, Chang D, Çalık Ç, Bassham I Lawrence E, Kang J, Kelsey
+676        J (2021) Status Report on the Second Round of the NIST Lightweight Cryptography
+677        Standardization Process (National Institute of Standards and Technology), Report.
+678        DOI:10.6028/NIST.IR.8369
+
+
+
+                                                       29
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+679   [11] Sönmez Turan M, McKay KA, Chang D, Bassham L, Kang J, Waller N, Kelsey J, Hong
+680        D (2023) Status Report on the Final Round of the NIST Lightweight Cryptography
+681        Standardization Process (National Institute of Standards and Technology), Report.
+682        DOI:10.6028/NIST.IR.8454
+683   [12] Dobraunig C, Mennink B (2024) Generalized initialization of the duplex construction.
+684        Applied Cryptography and Network Security - 22nd International Conference, ACNS
+685        2024, Abu Dhabi, United Arab Emirates, March 5-8, 2024, Proceedings, Part II, eds
+686        Pöpper C, Batina L (Springer), Lecture Notes in Computer Science, Vol. 14584, pp
+687        460–484. DOI:10.1007/978-3-031-54773-7_18
+688   [13] Bellare M, Hoang VT (2022) Efficient schemes for committing authenticated encryption.
+689        Advances in Cryptology - EUROCRYPT 2022 - 41st Annual International Conference on
+690        the Theory and Applications of Cryptographic Techniques, Trondheim, Norway, May
+691        30 - June 3, 2022, Proceedings, Part II, eds Dunkelman O, Dziembowski S (Springer),
+692        Lecture Notes in Computer Science, Vol. 13276, pp 845–875. DOI:10.1007/978-3-031-
+693        07085-3_29
+694   [14] Barker E, Roginsky A, Davis R (2020) Recommendation for cryptographic key generation,
+695        (National Institute of Standards and Technology, Gaithersburg, MD), NIST Special
+696        Publication (SP) 800-133 Rev. 2. DOI:10.6028/NIST.SP.800-133r2.
+697   [15] Chakraborty B, Dhar C, Nandi M (2023) Exact security analysis of ASCON. Advances
+698        in Cryptology - ASIACRYPT 2023 - 29th International Conference on the Theory and
+699        Application of Cryptology and Information Security, Guangzhou, China, December 4-8,
+700        2023, Proceedings, Part III, eds Guo J, Steinfeld R (Springer), Lecture Notes in Computer
+701        Science, Vol. 14440, pp 346–369. DOI:10.1007/978-981-99-8727-6_12
+702   [16] Lefevre C, Mennink B (2023) Generic Security of the Ascon Mode: On the Power of
+703        Key Blinding, Cryptology ePrint Archive, Paper 2023/796. Available at https://ia.cr/20
+704        23/796.
+705   [17] Chakraborty B, Dhar C, Nandi M (2024) Tight multi-user security of ascon and its large
+706        key extension. Information Security and Privacy - 29th Australasian Conference, ACISP
+707        2024, Sydney, NSW, Australia, July 15-17, 2024, Proceedings, Part I, eds Zhu T, Li Y
+708        (Springer), Lecture Notes in Computer Science, Vol. 14895, pp 57–76. DOI:10.1007/978-
+709        981-97-5025-2_4
+
+
+
+
+                                                   30
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+710   Appendix A. Implementation Notes
+711   This specification follows the little-endian ordering convention. That is, on little-endian
+712   machines, byte strings or words of any size can be loaded from memory directly into the
+713   Ascon state without the need to perform any conversion. Neither bytes nor bits need to be
+714   reversed. The hexadecimal forms of the padding for Ascon functions are described in Sec.
+715   A.2.
+716   However, the convention for printing the Ascon state using 64-bit integer words in hex-
+717   adecimal notation (most significant byte and bit first) is different from printing the Ascon
+718   state using byte sequences or bitstrings (least significant byte and bit first). The conversion
+719   functions between printing byte sequences and printing integers are specified in Sec. A.1.
+720   The least significant bit of 𝑆0 is 𝑠(0,0) (or S[0∶0] ) and the most significant bit of 𝑆4 is 𝑠(4,63)
+721   (or S[319∶319] ). Similarly, the least significant byte of 𝑆0 is the first byte of state (S[0∶7] ) and
+722   the most significant byte of 𝑆4 is the last byte of the state (S[312∶319] ). This relationship
+723   between state words, bytes, and state bits is shown in Fig. 9, where 𝑆𝑖 [𝑗] denotes the 𝑗𝑡ℎ
+724   byte of state word 𝑆𝑖 for 0 ≤ 𝑖 ≤ 4 and 0 ≤ 𝑗 ≤ 7.
+
+                                        𝑆0                                          …                                   𝑆4
+
+
+
+      𝑆0 [0] 𝑆0 [1] 𝑆0 [2] 𝑆0 [3] 𝑆0 [4] 𝑆0 [5] 𝑆0 [6] 𝑆0 [7]                           𝑆4 [0] 𝑆4 [1] 𝑆4 [2] 𝑆4 [3] 𝑆4 [4] 𝑆4 [5] 𝑆4 [6] 𝑆4 [7]
+                             ]         ]         ]         ]         ]         ]              ]         ]         ]         ]         ]         ]         ]         ]
+          7]
+                   ]
+                   15       ∶23       ∶31       ∶39       ∶47       ∶55       ∶63          63       71        79        87        95        03        11        19
+        [0∶    [8∶      [16       [24        [32      [40       [48       [56            6∶2       4∶2       2∶2       0∶2       8∶2       6∶3       4∶3       2∶3
+      S        S        S         S         S         S         S         S             [25       [26       [27       [28       [28       [29       [30       [31
+                                                                                    S          S         S         S         S         S         S         S
+
+                                  Figure 9. Mapping between state words, bytes, and bits
+
+
+725   A.1. Conversion Functions
+726   When printing values as integers using hexadecimal notation, the most significant byte and
+727   most significant bit are shown first.
+728   Integers and byte sequences. Printing the integer representation of a byte sequence
+729   requires the byte order to be reversed. That is, the first element in the sequence of bytes is
+730   the least significant byte of the integer, while the last element in the sequence of bytes is
+731   the most significant byte of the integer.
+732   Integers and bitstrings. Printing a bitstring as an integer requires the byte order to be
+733   reversed, and additionally, bits within a byte to be reversed. That is, the first element of a
+734   bitstring is the least significant bit of the integer (or byte), while the last element of the
+735   bitstring is the least significant bit of the integer (or byte).
+
+                                                                                    31
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+      Table 10. Address for each byte of Ascon state word 𝑆𝑖 in memory on little-endian and
+      big-endian machines, where the word 𝑆𝑖 begins at memory address 𝑎.
+
+                                        Word       Little-endian   Big-endian
+                                        byte          address       address
+                                        𝑆𝑖 [0]          𝑎+0           𝑎+7
+                                        𝑆𝑖 [1]          𝑎+1           𝑎+6
+                                        𝑆𝑖 [2]          𝑎+2           𝑎+5
+                                        𝑆𝑖 [3]          𝑎+3           𝑎+4
+                                        𝑆𝑖 [4]          𝑎+4           𝑎+3
+                                        𝑆𝑖 [5]          𝑎+5           𝑎+2
+                                        𝑆𝑖 [6]          𝑎+6           𝑎+1
+                                        𝑆𝑖 [7]          𝑎+7           𝑎+0
+
+
+736   Loading 64-bit integer words from a byte sequence. When loading the state from a
+737   sequence of bytes stored in memory, the first eight bytes are mapped to the first 64-bit
+738   unsigned integer word 𝑆0 in little-endian notation (i.e., without byte reversal on little-endian
+739   machines). The next eight bytes are loaded to 𝑆1 . Bytes continue to be loaded in the same
+740   way until the final eight bytes of the stored state are loaded into 𝑆4 .
+741   An example of the mapping between memory addresses to state word bytes is presented in
+742   Table 10 for both little-endian and big-endian machines. An example of mappings between
+743   64-bit unsigned integers, byte sequences, and bitstrings is shown in Fig. 10. Note that
+744   64-bit integers and bitstrings only appear to be reversed in the visual representation.
+745   Writing 64-bit integer words to a byte sequence. The process for writing the 64-bit unsigned
+746   integer Ascon state words to a byte sequence in memory is simply the reverse of loading
+747   a state word from a byte sequence. The byte order does not need to be reversed on
+748   little-endian machines.
+
+749   A.2. Implementing with Integers
+750   This section provides additional information for software implementations that employ
+751   64-bit unsigned integers.
+752   Padding. The padding rule described in Algorithm 2 appends a one followed by one or
+753   more zeroes to data. For an integer 𝑥 that can be represented with 𝑛 < 8 bytes, an integer
+754   𝑦 representing a padded version of 𝑥 is computed as:
+
+
+755                                  𝑦 ← 𝑥 ⊕ (0x0000000000000001 ≪ 8𝑛)
+
+      Domain Separation Bit. The hexadecimal integer form of the domain separation bit is
+      0x8000000000000000. Therefore, the addition of this bit into the state may be imple-
+
+
+                                                          32
+NIST SP 800-232 ipd (Initial Public Draft)
+November 2024
+
+
+
+
+              State        State             Word value (64-bit unsigned integers)
+               bits        word
+             S[0∶63]         𝑆0                    0x0706050403020100
+            S[64∶127]        𝑆1                    0x0F0E0D0C0B0A0908
+            S[128∶191]       𝑆2                    0x1716151413121110
+            S[192∶255]       𝑆3                    0x1F1E1D1C1B1A1918
+            S[256∶319]       𝑆4                    0x2726252423222120
+                                                    ↕
+              State        State                 Word value (byte sequence)
+               bits        word
+             S[0∶63]         𝑆0      0x00 0x01 0x02 0x03 0x04 0x05 0x06 0x07
+            S[64∶127]        𝑆1      0x08 0x09 0x0A 0x0B 0x0C 0x0D 0x0E 0x0F
+            S[128∶191]       𝑆2      0x10 0x11 0x12 0x13 0x14 0x15 0x16 0x17
+            S[192∶255]       𝑆3      0x18 0x19 0x1A 0x1B 0x1C 0x1D 0x1E 0x1F
+            S[256∶319]       𝑆4      0x20 0x21 0x22 0x23 0x24 0x25 0x26 0x27
+                                                ↕
+              State        State                Word value (bitstring)
+               bits        word
+              S[0∶63]       𝑆0       0000 0000 1000 0000 0100 0000 1100 0000
+                                     0010 0000 1010 0000 0110 0000 1110 0000
+             S[64∶127]       𝑆1      0001 0000 1001 0000 0101 0000 1101 0000
+                                     0011 0000 1011 0000 0111 0000 1111 0000
+            S[128∶191]       𝑆2      0000 1000 1000 1000 0100 1000 1100 1000
+                                     0010 1000 1010 1000 0110 1000 1110 1000
+            S[192∶255]       𝑆3      0001 1000 1001 1000 0101 1000 1101 1000
+                                      0011 10001011 1000 0111 1000 1111 1000
+            S[256∶319]       𝑆4      0000 0100 1000 0100 0100 0100 1100 0100
+                                     0010 0100 1010 0100 0110 0100 1110 0100
+
+Figure 10. Representation of the Ascon state as 64-bit unsigned integers, byte sequences,
+and bitstrings, where 64-bit unsigned integers are used to define the permutation, data
+stored in memory is represented as byte sequences, and bitstrings are used to specify the
+modes of operation. Note that 64-bit integers and bitstrings only appear to be reversed in
+the visual representation.
+
+
+
+
+                                                    33
+NIST SP 800-232 ipd (Initial Public Draft)
+November 2024
+
+
+Table 11. Examples of padding an unsigned integer 𝑥 to a 64-bit block, where 𝑥 encodes a
+sequence of bytes each having value 0xFF in little-endian byte order.
+
+        Length of 𝑥       # Padding          Unsigned integer 𝑥   Padded 64-bit block
+         (in bytes)         Bytes
+              0               8              0x0000000000000000   0x0000000000000001
+              1               7              0x00000000000000FF   0x00000000000001FF
+              2               6              0x000000000000FFFF   0x000000000001FFFF
+              3               5              0x0000000000FFFFFF   0x0000000001FFFFFF
+              4               4              0x00000000FFFFFFFF   0x00000001FFFFFFFF
+              5               3              0x000000FFFFFFFFFF   0x000001FFFFFFFFFF
+              6               2              0x0000FFFFFFFFFFFF   0x0001FFFFFFFFFFFF
+              7               1              0x00FFFFFFFFFFFFFF   0x01FFFFFFFFFFFFFF
+
+mented as:
+                                  𝑆4 ← 𝑆4 ⊕ 0x8000000000000000.
+
+64-bit Block Absorption. In Ascon-Hash256, Ascon-XOF128, or Ascon-CXOF128, the
+absorption of a 64-bit message block expressed as the byte sequence 0x00, 0x01, 0x02,
+0x03, 0x04, 0x05, 0x06, 0x07 can be implemented as:
+                                  𝑆0 ← 𝑆0 ⊕ 0x0706050403020100,
+
+128-bit Block Absorption. Absorbing a 128-bit associated data or plaintext block repre-
+sented by byte sequence 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
+0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F can similarly be implemented as:
+                                  𝑆0 ← 𝑆0 ⊕ 0x0706050403020100
+                                  𝑆1 ← 𝑆1 ⊕ 0x0F0E0D0C0B0A0908
+
+Key Addition. Ascon-AEAD128 has keyed initialization and finalization, where the key is
+added to the state in various locations. For a key represented as a sequence of bytes
+having value 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B,
+0x0C, 0x0D, 0x0E, 0x0F, the key addition at the beginning of the initialization phase may
+be written as:
+                                  𝑆1 ← 𝑆1 ⊕ 0x0706050403020100
+                                  𝑆2 ← 𝑆2 ⊕ 0x0F0E0D0C0B0A0908,
+the key addition at the end of the initialization phase may be written as:
+                                  𝑆3 ← 𝑆3 ⊕ 0x0706050403020100
+                                  𝑆4 ← 𝑆4 ⊕ 0x0F0E0D0C0B0A0908,
+
+                                                     34
+NIST SP 800-232 ipd (Initial Public Draft)
+November 2024
+
+
+
+the key addition at the beginning of the finalization phase can be expressed as:
+
+                                  𝑆2 ← 𝑆2 ⊕ 0x0706050403020100
+                                  𝑆3 ← 𝑆3 ⊕ 0x0F0E0D0C0B0A0908,
+
+and the key addition at the end of finalization can be implemented as:
+
+                                  𝑆3 ← 𝑆3 ⊕ 0x0706050403020100
+                                  𝑆4 ← 𝑆4 ⊕ 0x0F0E0D0C0B0A0908.
+
+
+
+
+                                               35
+      NIST SP 800-232 ipd (Initial Public Draft)
+      November 2024
+
+
+
+756   Appendix B. Determination of the Initial Values
+757   Each variant of the Ascon family has a 64-bit initial value constructed as
+
+758                                        𝐼𝑉 = 𝑣 ∥ 08 ∥ 𝑎 ∥ 𝑏 ∥ 𝑡 ∥ 𝑟/8 ∥ 016 ,                       (74)
+
+759   where
+760       • 𝑣 is a unique identifier for the algorithm (represented in 8 bits).
+761       • 𝑎 is the number of rounds during initialization and finalization (represented in 4 bits).
+762       • 𝑏 is the number of rounds during the processing of AD, plaintext and ciphertext for
+763         AEAD, and the number of rounds during processing the message for hash, XOF and
+764         CXOF (represented in 4 bits).
+765       • 𝑡 is 128 for Ascon-AEAD128, 256 for Ascon-Hash256 and is 0 for Ascon-XOF128
+766         and Ascon-CXOF128 (represented in 16 bits).
+767       • 𝑟/8 is the number of input bytes processed per invocation of the underlying permu-
+768         tation (represented in 8 bits).
+769   The values of these parameters for each variant are given in Table 12, and initial values for
+770   each Ascon variant are specified in Table 13.
+
+                              Table 12. Parameters for initial value construction
+
+                                                   𝑣         𝑎          𝑏           𝑡        𝑟/8
+                       Ascon variants
+                                               (8 bits)   (4 bits)   (4 bits)   (16 bits)   (8 bits)
+                       Ascon-AEAD128               1        12         8           128        16
+                       Ascon-Hash256               2        12         12          256         8
+                       Ascon-XOF128                3        12         12           0         8
+                       Ascon-CXOF128               4        12         12           0         8
+
+                                Table 13. Initial values as hexadecimal integers
+
+                                   Ascon variants              Initial value
+                                   Ascon-AEAD128           0x00001000808c0001
+                                   Ascon-Hash256           0x0000080100cc0002
+                                   Ascon-XOF128            0x0000080000cc0003
+                                   Ascon-CXOF128           0x0000080000cc0004
+
+
+
+
+                                                            36
+

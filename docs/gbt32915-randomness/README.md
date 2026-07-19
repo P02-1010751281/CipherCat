@@ -11,3 +11,4 @@
 ## CipherCat 状态
 
 未实现。随机性检测适合独立工具，非积木块教学范围。metacrypt_server 已有实现。
+full.txt available (1175 lines)

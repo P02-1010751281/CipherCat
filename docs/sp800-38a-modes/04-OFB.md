@@ -2,6 +2,8 @@
 
 来源: NIST SP 800-38A
 
+来源: NIST SP 800-38A
+
 
 
 The Output Feedback (OFB) mode is a confidentiality mode that features the iteration of the

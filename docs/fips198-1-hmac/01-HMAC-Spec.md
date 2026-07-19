@@ -1,3 +1,7 @@
+# HMAC Specification (FIPS 198-1)
+
+来源: NIST FIPS 198-1 — The Keyed-Hash Message Authentication Code
+
 FIPS PUB 198-1
 FEDERAL INFORMATION PROCESSING STANDARDS PUBLICATION
 The Keyed-Hash Message Authentication Code

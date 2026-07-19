@@ -1,6 +1,8 @@
 # ECB — Electronic Codebook Mode (SP 800-38A §6.1)
 
 来源: NIST SP 800-38A
+
+来源: NIST SP 800-38A
 https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf
 
 

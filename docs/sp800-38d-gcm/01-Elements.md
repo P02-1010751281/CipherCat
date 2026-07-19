@@ -1,4 +1,7 @@
-# 5.1 Block Cipher
+# GCM Elements (SP 800-38D §5)
+
+来源: NIST SP 800-38D — GCM and GMAC
+
 5.1 Block Cipher
 The operations of GCM depend on the choice of an underlying symmetric key block cipher and
 thus can be considered a mode of operation (mode, for short) of the block cipher. The GCM key

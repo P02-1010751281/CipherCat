@@ -1,4 +1,6 @@
-# SHA-256 Hash Computation (FIPS 180-4 §6.2.2 + §5.3.3)
+# SHA-256 Hash Computation (FIPS 180-4 §6.2)
+
+来源: NIST FIPS 180-4
 
 来源: NIST FIPS 180-4 — Secure Hash Standard
 https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf

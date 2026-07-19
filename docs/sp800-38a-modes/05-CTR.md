@@ -2,6 +2,8 @@
 
 来源: NIST SP 800-38A
 
+来源: NIST SP 800-38A
+
 
 
 The Counter (CTR) mode is a confidentiality mode that features the application of the forward

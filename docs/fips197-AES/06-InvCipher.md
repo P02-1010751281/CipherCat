@@ -1,5 +1,7 @@
 # AES Inverse Cipher (FIPS 197 §5.3)
 
+来源: NIST FIPS 197
+
 含 InvShiftRows, InvSubBytes, InvMixColumns, EqInvCipher
 
 来源: NIST FIPS 197 — Advanced Encryption Standard
@@ -320,5 +322,3 @@ References
 
                                               28
 FIPS 197                                               A DVANCED E NCRYPTION S TANDARD (AES)
-
-

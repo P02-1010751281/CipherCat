@@ -1,4 +1,7 @@
-# 6.1 Examples of Basic Operations and Functions on Strings
+# GCM Mathematical Components (SP 800-38D §6)
+
+来源: NIST SP 800-38D
+
 6.1 Examples of Basic Operations and Functions on Strings
 In this document, the ‘0’ bit and the ‘1’ bit are indicated in the new courier font to help
 distinguish them from the integers 0 and 1.

@@ -1,4 +1,7 @@
-# 7.1 Algorithm for the Authenticated Encryption Function
+# GCM Specification (SP 800-38D §7)
+
+来源: NIST SP 800-38D
+
 7.1 Algorithm for the Authenticated Encryption Function
 Algorithm 4 below specifies the authenticated encryption function:
 14

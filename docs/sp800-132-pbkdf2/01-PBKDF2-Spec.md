@@ -1,3 +1,7 @@
+# PBKDF2 Specification (SP 800-132)
+
+来源: NIST SP 800-132 — Recommendation for Password-Based Key Derivation
+
 NIST Special Publication 800-132
 Recommendation for Password-Based Key
 Derivation

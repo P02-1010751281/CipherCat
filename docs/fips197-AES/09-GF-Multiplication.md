@@ -1,4 +1,6 @@
-# §4 — GF(2⁸) 域乘法与数学基础
+# AES GF(2⁸) Multiplication (FIPS 197)
+
+来源: NIST FIPS 197
 
 来源: FIPS 197 §4
 

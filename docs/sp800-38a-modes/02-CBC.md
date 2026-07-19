@@ -2,6 +2,8 @@
 
 来源: NIST SP 800-38A
 
+来源: NIST SP 800-38A
+
 
 
 The Cipher Block Chaining (CBC) mode is a confidentiality mode whose encryption process

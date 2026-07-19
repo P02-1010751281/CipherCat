@@ -1,5 +1,7 @@
 # AES MixColumns (FIPS 197 §5.1.3)
 
+来源: NIST FIPS 197
+
 来源: NIST FIPS 197 — Advanced Encryption Standard
 https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf
 
@@ -43,5 +45,3 @@ Figure 4 illustrates M IX C OLUMNS().
 
 
                               Figure 4. Illustration of M IX C OLUMNS()
-
-

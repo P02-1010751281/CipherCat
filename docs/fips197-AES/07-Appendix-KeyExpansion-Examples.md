@@ -1,5 +1,7 @@
 # AES Key Expansion Examples (FIPS 197 Appendix A)
 
+来源: NIST FIPS 197
+
 来源: NIST FIPS 197 — Advanced Encryption Standard
 https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf
 
@@ -426,8 +428,3 @@ update, NIST FIPS 197-upd1:
  23. The examples in Appendix C were removed in favor of a reference to the detailed example
      vectors that are now maintained at [8].
  24. Appendix D was created to summarize the changes in this update to FIPS 197.
-
-
-
-
-                                               38

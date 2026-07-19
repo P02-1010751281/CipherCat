@@ -1,5 +1,7 @@
 # AES Key Expansion (FIPS 197 §5.2)
 
+来源: NIST FIPS 197
+
 来源: NIST FIPS 197 — Advanced Encryption Standard
 https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf
 
@@ -73,4 +75,3 @@ preceding word, w[i − 1], and the word Nk positions earlier, w[i − Nk], as f
       18: end procedure
 
 Figures 6, 7, and 8 illustrate K EY E XPANSION() for AES-128, AES-192, and AES-256.
-

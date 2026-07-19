@@ -1,4 +1,6 @@
-# SHA-256 Preprocessing (FIPS 180-4 §6.2.1 + §5)
+# SHA-256 Preprocessing (FIPS 180-4 §5-§6)
+
+来源: NIST FIPS 180-4
 
 来源: NIST FIPS 180-4 — Secure Hash Standard
 https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf

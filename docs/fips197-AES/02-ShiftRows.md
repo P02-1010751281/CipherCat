@@ -1,5 +1,7 @@
 # AES ShiftRows (FIPS 197 §5.1.2)
 
+来源: NIST FIPS 197
+
 来源: NIST FIPS 197 — Advanced Encryption Standard
 https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf
 
@@ -25,5 +27,3 @@ of the row. The frst row, where r = 0, is unchanged.
 
 
                              Figure 3. Illustration of S HIFT ROWS()
-
-

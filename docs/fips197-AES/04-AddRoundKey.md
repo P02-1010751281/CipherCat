@@ -1,5 +1,7 @@
 # AES AddRoundKey (FIPS 197 §5.1.4)
 
+来源: NIST FIPS 197
+
 来源: NIST FIPS 197 — Advanced Encryption Standard
 https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf
 
@@ -29,5 +31,3 @@ within words of the key schedule was described in Sec. 3.5.
 
                                                           16
 FIPS 197                                                       A DVANCED E NCRYPTION S TANDARD (AES)
-
-

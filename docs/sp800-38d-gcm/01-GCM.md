@@ -50,7 +50,7 @@ ii
 
 NIST Special Publication 800-38D
 Acknowledgements
-The author wishes to thank David Mc Grew, who co-invented GCM and submitted it to NIST, and also the
+The author wishes to thank David McGrew, who co-invented GCM and submitted it to NIST, and also the
 author’s colleagues who reviewed drafts of this document and contributed to its development, especially
 Elaine Barker, John Kelsey, Allen Roginsky, Donna Dodson, Tim Polk, and Bill Burr. The author also
 gratefully acknowledges the many comments from the public and private sectors to improve the quality
@@ -195,7 +195,7 @@ uniqueness of the initialization strings may compromise the security assurance a
 detailed in Ref. [5] and summarized in Appendix A. Therefore, this mode of operation should
 not be deployed unless compliance with this uniqueness requirement is ensured. Some of the
 practical considerations are discussed further in Secs. 9.1 and 9.2.
-The designers of GCM are Mc Grew and Viega. They submitted GCM to NIST in Ref. [6], and
+The designers of GCM are McGrew and Viega. They submitted GCM to NIST in Ref. [6], and
 they discuss in detail its security and performance in Ref. [7].
 4 Definitions, Abbreviations, and Symbols
 4.1 Definitions and Abbreviations
@@ -1278,12 +1278,12 @@ Expansion for Storage Devices.
 [5] A. Joux, Authentication Failures in NIST version of GCM, Natl. Inst. Stand. Technol.
 [Web page], http://www.csrc.nist.gov/groups/ST/toolkit/BCM/documents/comments/800-
 38_Series-Drafts/GCM/Joux_comments.pdf.
-[6] D. Mc Grew, J. Viega, The Galois/Counter Mode of Operation (GCM), Natl. Inst. Stand.
+[6] D. McGrew, J. Viega, The Galois/Counter Mode of Operation (GCM), Natl. Inst. Stand.
 Technol. [Web page], http://www.csrc.nist.gov/groups/ST/toolkit/BCM/documents/
 proposedmodes/gcm/gcm-revised-spec.pdf, May 31, 2005.
-[7] D. Mc Grew and J. Viega. The Security and Performance of the Galois/Counter Mode
+[7] D. McGrew and J. Viega. The Security and Performance of the Galois/Counter Mode
 (GCM) of Operation. Proceedings of INDOCRYPT ’04, Springer-Verlag, 2004. Full
-paper available from the IACR Cryptology e Print Archive: Report 2004/193, [Web
+paper available from the IACR Cryptology ePrint Archive: Report 2004/193, [Web
 page], http://eprint.iacr.org/2004/193/, October 7, 2004.
 [9] National Institute of Standards and Technology and Communications Security
 Establishment, Implementation Guidance for FIPS Pub. 140-2 and the Cryptographic

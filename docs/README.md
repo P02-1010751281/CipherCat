@@ -35,8 +35,16 @@
 | [fips202-SHA3/](./fips202-SHA3/) | FIPS 202 SHA-3 / SHAKE / KECCAK-p |
 | [fips203-ML-KEM/](./fips203-ML-KEM/) | FIPS 203 ML-KEM (Kyber) |
 | [fips204-ML-DSA/](./fips204-ML-DSA/) | FIPS 204 ML-DSA (Dilithium) |
-| [gmt-0002-SM4/](./gmt-0002-SM4/) | GM/T 0002 SM4 国密分组密码 |
-| [gmt-0004-SM3/](./gmt-0004-SM3/) | GM/T 0004 SM3 国密哈希 |
+| [gbt32907-SM4/](./gbt32907-SM4/) | GB/T 32907 SM4 国密分组密码 |
+| [gbt32905-SM3/](./gbt32905-SM3/) | GB/T 32905 SM3 国密哈希 |
+| [sp800-38a-modes/](./sp800-38a-modes/) | SP 800-38A 分组密码模式 (ECB/CBC/CTR) |
+| [sp800-38d-gcm/](./sp800-38d-gcm/) | SP 800-38D GCM 认证加密 |
+| [fips198-1-hmac/](./fips198-1-hmac/) | FIPS 198-1 HMAC 消息认证码 |
+| [fips186-5-ecdsa/](./fips186-5-ecdsa/) | FIPS 186-5 ECDSA 数字签名 |
+| [sp800-132-pbkdf2/](./sp800-132-pbkdf2/) | SP 800-132 PBKDF2 密钥派生 |
+| [rfc5869-hkdf/](./rfc5869-hkdf/) | RFC 5869 HKDF 密钥派生 |
+| [rfc4648-base64/](./rfc4648-base64/) | RFC 4648 Base64 编码 |
+| [rfc2315-pkcs7/](./rfc2315-pkcs7/) | RFC 2315 PKCS#7 填充 |
 
 ### 📝 规范文件（根目录）
 

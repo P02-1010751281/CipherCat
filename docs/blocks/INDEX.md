@@ -19,12 +19,20 @@
 | FIPS 202 | FIPS 202 (SHA-3) | `fips202-SHA3/` |
 | FIPS 203 | FIPS 203 (ML-KEM) | `fips203-ML-KEM/` |
 | FIPS 204 | FIPS 204 (ML-DSA) | `fips204-ML-DSA/` |
-| GM/T 0002 | GM/T 0002 (SM4) | `gmt-0002-SM4/` |
-| GM/T 0004 | GM/T 0004 (SM3) | `gmt-0004-SM3/` |
+| GM/T 0002 | GB/T 32907 (SM4) | `gbt32907-SM4/` |
+| GM/T 0004 | GB/T 32905 (SM3) | `gbt32905-SM3/` |
 | NIST SP 800-38 | SP 800-38 (分组模式) | — |
 | RFC 4648 | RFC 4648 (Base64) | — |
 | RFC 2315 | RFC 2315 (PKCS#7) | — |
 | RFC 5869 | RFC 5869 (HKDF) | — |
+| NIST SP 800-38A | SP 800-38A (分组模式) | `sp800-38a-modes/` |
+| NIST SP 800-38D | SP 800-38D (GCM) | `sp800-38d-gcm/` |
+| FIPS 198-1 | FIPS 198-1 (HMAC) | `fips198-1-hmac/` |
+| FIPS 186-5 | FIPS 186-5 (ECDSA) | `fips186-5-ecdsa/` |
+| NIST SP 800-132 | SP 800-132 (PBKDF2) | `sp800-132-pbkdf2/` |
+| RFC 2315 | RFC 2315 (PKCS#7) | `rfc2315-pkcs7/` |
+| RFC 4648 | RFC 4648 (Base64) | `rfc4648-base64/` |
+| SP 800-90A | SP 800-90A (DRBG) | `sp800-90a-drbg/` |
 | SEC 2 | SEC 2 (ECC) | — |
 
 ## 按类目

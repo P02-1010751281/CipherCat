@@ -76,7 +76,6 @@ Donghoon Chang
 Strativia
 This publication is available free of charge from:
 24
-https://doi.org/10.6028/NIST.SP.800-232.ipd
 25
 November 2024
 26
@@ -2518,4 +2517,3 @@ Ascon-CXOF128 0x0000080000cc0004
 36
 
 ---
-来源: NIST SP 800-232 (IPD) — Ascon-Based Lightweight Cryptography

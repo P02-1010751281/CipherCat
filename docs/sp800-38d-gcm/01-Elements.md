@@ -134,4 +134,3 @@ diagrams, and summaries. Equivalent sets of steps that produce the correct outpu
 The inputs that are typically fixed across many invocations of the function are called the
 prerequisites, although they may also be regarded as (varying) inputs.
 
-来源: NIST SP 800-38D — GCM and GMAC

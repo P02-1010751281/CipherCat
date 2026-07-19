@@ -2,7 +2,6 @@
 
 来源: NIST SP 800-38A
 
-来源: NIST SP 800-38A
 
 
 

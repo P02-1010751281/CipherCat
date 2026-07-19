@@ -577,8 +577,8 @@ X ⊕ Y Bitwise exclusive-or (also bitwise addition modulo 2) of two bitstrings
 X and Y of the same length.
 X || Y Concatenation of two strings X and Y. X and Y are either both bitstrings
 or both byte strings.
-⎡x⎤ The ceiling of x; the smallest integer ≥ x. For example, ⎡5⎤ = 5, and
-⎡5.3⎤ = 6.
+⎡x⎤ The ceiling of x; the smallest integer ≥ x. For example, ⎡5⎤ = 5, and
+⎡5.3⎤ = 6.
 leftmost (V, a) The leftmost a bits of V.
 len (a) The length in bits of string a.
 min (a, b) The minimum of a and b.
@@ -603,26 +603,26 @@ represent 11000110, where c is 1100, and 6 is 0110.
 0x A string of x zero bits.
 6 Document Organization
 This Recommendation is organized as follows:
-⎯ Section 7 provides a functional model for a DRBG that uses a DRBG mechanism and
+⎯ Section 7 provides a functional model for a DRBG that uses a DRBG mechanism and
 discusses the major components of the DRBG mechanism.
-⎯ Section 8 provides concepts and general requirements for the implementation and use of a
+⎯ Section 8 provides concepts and general requirements for the implementation and use of a
 DRBG mechanism.
-⎯ Section 9 specifies the functions of a DRBG mechanism that were introduced in Section 8.
+⎯ Section 9 specifies the functions of a DRBG mechanism that were introduced in Section 8.
 These functions use the DRBG algorithms specified in Section 10.
-⎯ Section 10 specifies approved DRBG algorithms. Algorithms have been specified that are
+⎯ Section 10 specifies approved DRBG algorithms. Algorithms have been specified that are
 based on the hash functions specified in [FIPS 180], and the block cipher algorithms
 specified in [FIPS 197] and [SP 800-67] (AES and TDEA, respectively).
-⎯ Section 11 addresses assurance issues for DRBG mechanisms, including documentation
+⎯ Section 11 addresses assurance issues for DRBG mechanisms, including documentation
 requirements, and implementation validation and health testing.
 This Recommendation also includes the following appendices:
-⎯ Appendix A provides conversion routines.
-⎯ Appendix B provides example pseudocode for each DRBG mechanism. Examples of the
+⎯ Appendix A provides conversion routines.
+⎯ Appendix B provides example pseudocode for each DRBG mechanism. Examples of the
 values computed for the DRBGs using each approved cryptographic algorithm and key
 size are available at http://csrc.nist.gov/groups/ST/toolkit/examples.html under the entries
 for SP 800-90A.
-⎯ Appendix C provides a discussion on DRBG mechanism selection.
-⎯ Appendix D provides references.
-⎯ Appendix E provides a list of modifications to SP 800-90A since it was first published.
+⎯ Appendix C provides a discussion on DRBG mechanism selection.
+⎯ Appendix D provides references.
+⎯ Appendix E provides a list of modifications to SP 800-90A since it was first published.
 10
 
 NIST SP 800-90A Rev. 1 Recommendation for Random Number
@@ -1859,11 +1859,11 @@ Input:
 Output:
 1. returned_bits: The generated bits to be returned to the generate function.
 Hashgen Process:
- requested _ no _ of _ bits
+ requested _ no _ of _ bits
 1. m =
- 
+ 
 .
- outlen 
+ outlen 
 2. data = V.
 3. W = the Null string.
 €
@@ -2518,11 +2518,11 @@ ERROR_FLAG.
 2. requested_bits: The result of performing the Hash_df.
 Hash_df Process:
 1. temp = the Null string.
- no _ of _ bits_ to _ return
+ no _ of _ bits_ to _ return
 2. len =
- 
+ 
 .
- outlen 
+ outlen 
 3. counter = 0x01. Comment: An 8-bit binary value representing the
 integer "1".
 € 4. For i = 1 to len do
@@ -3853,7 +3853,7 @@ Applications Using Approved Hash Algorithms, August 2012.
 http://csrc.nist.gov/publications/nistpubs/800-107-rev1/sp800-107-rev1.pdf
 [accessed 6/9/15].
 [Campagna] M. J. Campagna, Security Bounds for the NIST Codebook-based Deterministic
-Random Bit Generator, Report 2006/379, Cryptology ePrint Archive, November
+Random Bit Generator, Report 2006/379, Cryptology e Print Archive, November
 2006. http://eprint.iacr.org/2006/379 [accessed 6/9/15].
 94
 

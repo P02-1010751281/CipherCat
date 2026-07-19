@@ -215,7 +215,7 @@ restrict the length of the data units for any key.  For example, an implementati
 only  data  units  that  are  sequences  of  complete  blocks.    In  this  case,  the  ciphertext  stealing
 components  in  the  implementations  of  the  XTS-AES-Enc  and  the  XTS-AES-Dec  procedures
 would  be  unnecessary,  and  these  procedures  essentially  would  be  reduced  to  the  XTS-AES-
-blockEnc and the XTS-AES-blockDec procedures, as specified in Ref. [2].
+block Enc and the XTS-AES-block Dec procedures, as specified in Ref. [2].
 
 Similarly,  an  implementation  may  restrict  its  support  to  either  the  256-bit  key  size  (for  XTS-
 AES-128) or the 512-bit key size (for XTS-AES-256).

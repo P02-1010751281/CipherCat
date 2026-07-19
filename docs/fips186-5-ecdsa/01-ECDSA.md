@@ -510,10 +510,10 @@ bit strings, or both are byte strings.
 7
 
 FIPS 186-5 DIGITAL SIGNATURE STANDARD (DSS)
-a The ceiling of a: the smallest integer that is greater than or equal to
-a. For example, 5 = 5, 5.3 = 6, and –2.1 = –2.
-a The floor of a; the largest integer that is less than or equal to a. For
-example, 5 = 5, 5.3 = 5, and –2.1 = −3.
+a The ceiling of a: the smallest integer that is greater than or equal to
+a. For example, 5 = 5, 5.3 = 6, and –2.1 = –2.
+a The floor of a; the largest integer that is less than or equal to a. For
+example, 5 = 5, 5.3 = 5, and –2.1 = −3.
 a| The absolute value of a; |a| is – a if a < 0; otherwise, it is simply a.
 For example, |2| = 2, and |–2| = 2.
 [a, b] The interval of integers between and including a and b. For
@@ -829,16 +829,16 @@ be 256 or 512 bits, respectively.
 (f) Random numbers shall be generated using an approved random bit generator, as
 2 < 𝑒𝑒 < 2 .
 specified in SP 800-90A [16].
-(g) For RSASSA-PSS, the length (in bytes) of the salt (sLen) shall satisfy 0 ≤ sLen ≤ hLen,
-where hLen is the length of the hash function output block (in bytes). This inequality
-shall also be checked during the signature verification process, where hLen is determined
-by the expected (approved) hash function, and sLen is the actual byte length of the byte
+(g) For RSASSA-PSS, the length (in bytes) of the salt (s Len) shall satisfy 0 ≤ s Len ≤ h Len,
+where h Len is the length of the hash function output block (in bytes). This inequality
+shall also be checked during the signature verification process, where h Len is determined
+by the expected (approved) hash function, and s Len is the actual byte length of the byte
 string following the leftmost (most significant) nonzero byte (which should be 0x01) in
 the recovered DB.
 (h) For RSASSA-PKCS-v1.5, when the hash value is recovered from the encoded message
 EM during the verification of the digital signature,7 the extraction of the ASN.1 value of
-the DigestInfo data structure shall be accomplished by either:
-7 PKCS #1, v2.2 (Section 8.2.2), provides two methods for comparing the DigestInfo values: 1) comparing the
+the Digest Info data structure shall be accomplished by either:
+7 PKCS #1, v2.2 (Section 8.2.2), provides two methods for comparing the Digest Info values: 1) comparing the
 18
 
 FIPS 186-5 DIGITAL SIGNATURE STANDARD (DSS)
@@ -846,16 +846,16 @@ FIPS 186-5 DIGITAL SIGNATURE STANDARD (DSS)
 determined by the size of a PKCS #1-defined ASN.1 DER value corresponding to the
 expected hash function’s algorithm identifier and output length, regardless of the
 length of the padding,
-Or (if the DigestInfo is selected by its location with respect to the last byte of
+Or (if the Digest Info is selected by its location with respect to the last byte of
 padding),
 • Checking that a byte string of the length expected for the ASN.1 DER value of
-DigestInfo fills the remaining rightmost (least significant) bytes of EM (i.e., no other
-information follows the DigestInfo data structure in the encoded message).
-Only if the extracted DigestInfo has the appropriate form shall the signature verification process
+Digest Info fills the remaining rightmost (least significant) bytes of EM (i.e., no other
+information follows the Digest Info data structure in the encoded message).
+Only if the extracted Digest Info has the appropriate form shall the signature verification process
 continue. Assuming that this is the case, the following two checks shall be performed:
-1. The algorithm identifier extracted from DigestInfo shall be examined to verify
+1. The algorithm identifier extracted from Digest Info shall be examined to verify
 that the expected (approved) hash function has been identified.
-2. The length of the digest value that is extracted from DigestInfo shall be
+2. The length of the digest value that is extracted from Digest Info shall be
 determined and verified to be equal to the length of hash values output by the
 expected hash function.
 Only upon successful verification of both the algorithm identifier and the length of the digest
@@ -867,13 +867,13 @@ multiple versions. This standard references version 2.2 as published in IETF RFC
 The mask generation function MGF1, to be used with RSASSA-PSS, is specified in Section
 B.2.1 of RFC 8017. This standard allows the use of SHAKE128 or SHAKE256 as alternative
 mask generation functions. The output length in bits of the alternative mask generation function
-is , where “emLen – hLen – 1” is the output length in bytes of the
-MGF. See RFC 8017 for the definitions of “emLen” and “hLen”. Concretely, in step 9 of Section
-9.18.1× of( 𝑒𝑒R𝑒𝑒FC𝑒𝑒𝑒𝑒 8𝑛𝑛01−7ℎ, i𝑒𝑒n𝑒𝑒s𝑛𝑛te−ad 1o)f dbMask = MGF1(H, emLen – hLen - 1), set either dbMask =
+is , where “em Len – h Len – 1” is the output length in bytes of the
+MGF. See RFC 8017 for the definitions of “em Len” and “h Len”. Concretely, in step 9 of Section
+9.18.1× of( 𝑒𝑒R𝑒𝑒FC𝑒𝑒𝑒𝑒 8𝑛𝑛01−7ℎ, i𝑒𝑒n𝑒𝑒s𝑛𝑛te−ad 1o)f db Mask = MGF1(H, em Len – h Len - 1), set either db Mask =
 or
-. Similarly, for step 7 of Section 9.1.2, instead of dbMask = MGF1(H, emLen – hLen
+. Similarly, for step 7 of Section 9.1.2, instead of db Mask = MGF1(H, em Len – h Len
 SHAKE128�𝐻𝐻,8×(𝑒𝑒𝑒𝑒𝑒𝑒𝑒𝑒𝑛𝑛−ℎ𝑒𝑒𝑒𝑒𝑛𝑛−1)� 𝑑𝑑𝑝𝑝𝑑𝑑𝑝𝑝𝑑𝑑𝑑𝑑 = SHAKE256�𝐻𝐻,8×(𝑒𝑒𝑒𝑒𝑒𝑒𝑒𝑒𝑛𝑛−
-– 1), then dbMask = or
+– 1), then db Mask = or
 ℎ𝑒𝑒𝑒𝑒𝑛𝑛−1)�
 SHAKE128�𝐻𝐻,8×(𝑒𝑒𝑒𝑒𝑒𝑒𝑒𝑒𝑛𝑛−ℎ𝑒𝑒𝑒𝑒𝑛𝑛−1)� 𝑑𝑑𝑝𝑝𝑑𝑑𝑝𝑝𝑑𝑑𝑑𝑑 =
 SHAKE256�𝐻𝐻,8×(𝑒𝑒𝑒𝑒𝑒𝑒𝑒𝑒𝑛𝑛−ℎ𝑒𝑒𝑒𝑒𝑛𝑛−1)�.
@@ -1061,7 +1061,7 @@ Process:
 1. Compute H = Hash(M) using the established hash function or XOF where the bit string H
 has hashlen bits.
 2. Derive the integer e from H as follows:
-a. If len(n) ≥ hashlen, set E = H. Otherwise, set E equal to the leftmost log (n) bits of
+a. If len(n) ≥ hashlen, set E = H. Otherwise, set E equal to the leftmost log (n) bits of
 2
 H.
 b. Convert the bit string E to the integer e as specified in Appendix B.2.1.
@@ -1127,8 +1127,8 @@ verification fails.
 2. Compute H = Hash(M) using the established hash function or XOF where the bit string H
 has hashlen bits.
 3. Derive the integer e from H as follows:
-a. If   ≥ hashlen, set E = H. Otherwise, set E equal to the leftmost
-  bits of H.
+a. If   ≥ hashlen, set E = H. Otherwise, set E equal to the leftmost
+  bits of H.
 log2(𝑛𝑛)
 a. Convert the bit string E to the integer e as specified in Appendix B.2.1.
 log2(𝑛𝑛)
@@ -1374,12 +1374,12 @@ Process:
 1. Decode the first half of the signature as a point R and the second half of the signature as an
 integer s. Verify that the integer s is in the range of 0 ≤ s < n. Decode the public key Q into a
 point Q’. If any of the decodings fail, output “reject”.
-2. Form the bit string HashData as the concatenation of the octet strings R, Q, and h(M) (i.e.,
-HashData = R || Q || h(M)) with h(M) = SHA-512(M) for Ed25519ph or h(M) =
+2. Form the bit string Hash Data as the concatenation of the octet strings R, Q, and h(M) (i.e.,
+Hash Data = R || Q || h(M)) with h(M) = SHA-512(M) for Ed25519ph or h(M) =
 SHAKE256(M, 512) for Ed448ph.
 3. Using SHA-512 or SHAKE256,
-3.1 For Ed25519ph, compute digest = SHA-512(dom2(1, context ) || HashData).
-3.2 For Ed448ph, compute digest = SHAKE256(dom4(1, context ) || HashData, 912).
+3.1 For Ed25519ph, compute digest = SHA-512(dom2(1, context ) || Hash Data).
+3.2 For Ed448ph, compute digest = SHAKE256(dom4(1, context ) || Hash Data, 912).
 Interpret digest as a little-endian integer t.
 4. Check that the verification equation [2c s]G = [2c]R + [2ct]Q’ holds. It is sufficient, but not
 required, to instead check [s]G = R + [t]Q’. Output “reject” if verification fails; output
@@ -2129,11 +2129,11 @@ B.2.3.
 with modulus n.
 1.3 Form seed_material by concatenating the octet string of the private key d with
 the octet string of the Hash H.
-1.4 Key = 0x00 00...00, where Key is 8 × hashlen / 8 bits in length.
+1.4 Key = 0x00 00...00, where Key is 8 × hashlen / 8 bits in length.
 49
 
 FIPS 186-5 DIGITAL SIGNATURE STANDARD (DSS)
-1.5 V = 0x01 0x01...0x01 where V is 8 × hashlen / 8 bits in length.
+1.5 V = 0x01 0x01...0x01 where V is 8 × hashlen / 8 bits in length.
 1.6 Key = HMAC(Key, V || 0x00 || seed_material).
 1.7 V = HMAC(Key, V).
 1.8 Key = HMAC(Key, V || 0x01 || seed_material).
@@ -2259,7 +2259,7 @@ Process:
 indication.
 2. Set i = a, j = z, y = 0, and y = 1.
 2 1
-3. quotient = i/j.
+3. quotient = i/j.
 4. remainder = i – ( j × quotient).
 5. y = y 2 – (y 1 × quotient).
 6. Set i = j, j = remainder, y = y , and y = y.
@@ -2571,7 +2571,7 @@ status  Where status is either PERFECT SQUARE or NOT A PERFECT SQUARE.
 
 Process:
 1.  Set n, such that 2n > C ≥ 2(n−1).
-2.  m =  n/2.
+2.  m =  n/2.
 3.  i = 0.
 | 4. | Select X | such that 2m > X |  | ≥ 2(m−1). |
 | --- | -------- | ----------------- | --- | ----------- |
@@ -2579,13 +2579,13 @@ Process:
 5.1  i = i + 1.
 Until (X)2 < 2m + C.
 i
-6.  If C =  X  2, then
+6.  If C =  X  2, then
 i
   Else
 7.  Return status.
 Notes:
-1.  By starting with X  > (1/2) Sqrt(C),  X  − Sqrt(C)is guaranteed to be less than X . This
-inequality is maintained in step 5; i.e., X − Sqrt(C)< X for all i.
+1.  By starting with X  > (1/2) Sqrt(C),  X  − Sqrt(C)is guaranteed to be less than X . This
+inequality is maintained in step 5; i.e., X − Sqrt(C)< X for all i.
 | --- | ------------------------------- | --- | --- | --- | ------------------ | --- | ----------- |
 | 2. | For i ≥ 1, 0 ≤ X − Sqrt(C) = (X |  |  |  | − Sqrt(C))2 / (2 X |  | ) < X /2i. |
 |  |  |  | i |  | i–1 |  | i–1 0 |
@@ -2687,7 +2687,7 @@ Comment: Steps 5 through 7 generate a
 pseudorandom integer c of length bits.
 5. c = Hash(prime_seed) ⊕ Hash(prime_seed + 1).
 6. c = 2length – 1 + (c mod 2length – 1).
-7. c = (2 × c / 2 ) + 1.
+7. c = (2 × c / 2 ) + 1.
 63
 
 FIPS 186-5 DIGITAL SIGNATURE STANDARD (DSS)
@@ -2702,11 +2702,11 @@ can be tested by trial division. See Appendix B.7.
 11.2 Return (SUCCESS, prime, prime_seed {, prime_gen_counter}).
 12. If (prime_gen_counter > (4 × length)), then return (FAILURE, 0, 0 {, 0}).
 13. Go to step 5.
-14. (status, c , prime_seed, prime_gen_counter) = (ST_Random_Prime (( length / 2 +
+14. (status, c , prime_seed, prime_gen_counter) = (ST_Random_Prime (( length / 2 +
 0
 1), input_seed).
 15. If FAILURE is returned, return (FAILURE, 0, 0 {, 0}).
-16. iterations = length / hashlen – 1.
+16. iterations = length / hashlen – 1.
 17. old_counter = prime_gen_counter.
 Comment: Steps 18 through 21 generate a
 pseudorandom integer x in the interval
@@ -2719,9 +2719,9 @@ x = x + (Hash(prime_seed + i) × 2i × hashlen).
 Comment: Steps 22 through 25 generate a
 candidate prime c in the interval [2length – 1,
 2length].
-22. t = x / (2c ).
+22. t = x / (2c ).
 0
-23. If (2tc 0 + 1 > 2length), then t = 2length – 1 / (2c 0 ).
+23. If (2tc 0 + 1 > 2length), then t = 2length – 1 / (2c 0 ).
 24. c = 2tc + 1.
 0
 25. prime_gen_counter = prime_gen_counter + 1.
@@ -2898,7 +2898,7 @@ p whose bit-length is slightly more than half that of p. In addition, the quanti
 0 0
 prime divisor whose bit-length is slightly more than half that of p .
 0
-This algorithm requires that N + N ≤ L – L/2 – 4. Values for N and N should be chosen such
+This algorithm requires that N + N ≤ L – L/2 – 4. Values for N and N should be chosen such
 1 2 1 2
 that N + N ≤ (L/2) – log (L) – 7 to ensure that the algorithm can generate as many as 5L distinct
 1 2 2
@@ -2970,7 +2970,7 @@ generation routine in Appendix B.6 to obtain p and p seed.
 generation routine in Appendix B.6 to obtain p and p seed.
 2 0
 5.2 If FAILURE is returned, then return (FAILURE, 0, 0, 0, 0).
-6. Using L / 2 + 1 as the length and p seed as the input_seed, use the random prime
+6. Using L / 2 + 1 as the length and p seed as the input_seed, use the random prime
 0
 generation routine in Appendix B.6 to obtain p and pseed. If FAILURE is returned,
 0
@@ -2982,7 +2982,7 @@ the interval [( 2 )(2L−1), 2L −1].
 69
 
 
-8.  iterations = L / hashlen −1.
+8.  iterations = L / hashlen −1.
 9.  pgen_counter = 0.
 Comment: Generate pseudo-random x in the
 10. x = 0.
@@ -2993,11 +2993,11 @@ Comment: Generate a candidate for the
 prime p.
 14. Compute y in the interval [1, p ] such that ( y p  p – 1) = 0 mod p  (the inverse
 algorithm of B.1 may be used).
-| 15. t = ((2 y p |  | p ) + x)/(2 p | p | p ). |
+| 15. t = ((2 y p |  | p ) + x)/(2 p | p | p ). |
 | ---------------- | ------------- | -------------- | ------------------------ | -------- | --------- | ----- |
 |  |  | 0 1 | 0 | 1 2 |
 | 16. If ((2(t p |  | − y) p | 0 p  + 1) > 2L), then |
-|  | t = ( (2 y p |  | ) + ( )(2L−1) ) / (2 p |  |  | ). |
+|  | t = ( (2 y p |  | ) + ( )(2L−1) ) / (2 p |  |  | ). |
 |  |  |  | 0  p 1 |  | 0  p 1  p | 2 |
 Comment: p satisfies
 |  |  |  |  |  |  | 0 = ( p–1)   mod (2p | 0  p 1 ) and |
@@ -3052,7 +3052,7 @@ an upper bound can be computed for t as a function of k and p , the maximum allo
 target
 probability of accidentally generating a composite numbe𝑝𝑝r 𝑘𝑘 . , 𝑡𝑡 The following is an algorithm for
 computing t:
-1. For t = 1, 2 … –log (p )/2
+1. For t = 1, 2 … –log (p )/2
 2 target
 1.1 For M = 3, 4 … (1)
 1.1.1 Compute as in (2).
@@ -3083,7 +3083,7 @@ FIPS 186-5 DIGITAL SIGNATURE STANDARD (DSS)
 generated by someone else. However, for sufficiently large k (e.g., k ≥ 51), it can be shown that
 p ≤ 4–t under the same assumptions concerning the selection of candidates as those made to
 k,t
-obtain formula (2) (see [26]). In such cases, t = –log (p )/2 rounds of Miller-Rabin testing
+obtain formula (2) (see [26]). In such cases, t = –log (p )/2 rounds of Miller-Rabin testing
 2 target
 can be used to both generate and validate primes with p serving as an upper bound on both
 target
@@ -3199,11 +3199,11 @@ Cryptosystems. 20th Annual International Cryptology Conference, CRYPTO 2000
 [20] Biham E, Shamir A (1997) Differential fault analysis of secret key cryptosystems. 17th
 Annual International Cryptology Conference, CRYPTO '97 (Springer, Santa Barbara, CA),
 pp 513-525. https://doi.org/10.1007/BFb0052259
-[21] Boneh D, DeMillo RA, Lipton RJ (2001) On the Importance of Eliminating Errors in
+[21] Boneh D, De Millo RA, Lipton RJ (2001) On the Importance of Eliminating Errors in
 Cryptographic Computations. Journal of Cryptology 14(2):101-119.
 https://doi.org/10.1007/s001450010016
 [22] Poddebniak D, Somorovsky J, Schinzel S, Lochter M, Rösler P (2017) Attacking
-Deterministic Signature Schemes Using Fault Attacks. Cryptology ePrint Archive,
+Deterministic Signature Schemes Using Fault Attacks. Cryptology e Print Archive,
 2017/1014. https://ia.cr/2017/1014
 [23] Accredited Standards Committee X9 (2005) Prime Number Generation, Primality Testing
 and Primality Certificates. (American National Standards Institute), American National

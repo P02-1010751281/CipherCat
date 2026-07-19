@@ -243,7 +243,7 @@ i
 K The block cipher key.
 Klen The bit length of the block cipher key.
 m The number of blocks in the formatted payload.
-MaxErrs The maximum number of times that the output of any implementation of the
+Max Errs The maximum number of times that the output of any implementation of the
 decryption-verification process can be INVALID before the key is retired.
 n The octet length of the nonce.
 N The nonce.
@@ -698,13 +698,13 @@ This guidance can be quantified in terms of the following two bounds: 1) the hig
 probability for an inauthentic message to pass the decryption-verification process, and 2) a limit
 on the number of times that the output is the error message INVALID before the key is retired,
 across all implementations of the decryption-verification process under the key. Given estimates
-of these quantities, denoted Risk and MaxErrs, respectively, Tlen should satisfy the following
+of these quantities, denoted Risk and Max Errs, respectively, Tlen should satisfy the following
 inequality:
-Tlen≥lg(MaxErrs/Risk).
+Tlen≥lg(Max Errs/Risk).
 For example, suppose that a system will not output INVALID for more than 1024 messages
-before retiring the key (i.e., MaxErrs=210), and that the users can tolerate about a one in a million
+before retiring the key (i.e., Max Errs=210), and that the users can tolerate about a one in a million
 chance that the system will accept an inauthentic message (i.e., Risk=2-20). In this case, Tlen may
-be as low as 32. On the other hand, if MaxErrs=232 and Risk=2-32, then Tlen should be at least
+be as low as 32. On the other hand, if Max Errs=232 and Risk=2-32, then Tlen should be at least
 64.
 16
 
@@ -853,7 +853,7 @@ b4ac6bec 93e8598e 7f0dadbc ea5b
 
 Appendix D: References
 [1] D. Whiting, R. Housley, N. Ferguson, Counter with CBC-MAC (CCM). Available at
-http://csrc.nist.gov/ CryptoToolkit/modes/proposedmodes/.
+http://csrc.nist.gov/ Crypto Toolkit/modes/proposedmodes/.
 [2] FIPS Publication 197, Advanced Encryption Standard (AES). U.S. DoC/NIST, November
 26, 2001. Available at http://csrc.nist.gov/publications/.
 [3] FIPS Publication 46-3, Data Encryption Standard (DES). U.S. DoC/NIST, October 25,
@@ -872,10 +872,10 @@ Operation – Methods and Techniques. U.S. DoC/NIST, December 2001. Available at
 http://csrc.nist.gov/publications/.
 [7] Draft NIST Special Publication 800-38B, Recommendation for Block Cipher Modes of
 Operation: the CMAC Authentication Mode. U.S. DoC/NIST, October 2003. Available
-at http://csrc.nist.gov/CryptoToolkit/modes.
+at http://csrc.nist.gov/Crypto Toolkit/modes.
 [8] J. Jonsson, On the Security of CTR + CBC-MAC, in Proceedings of Selected Areas in
 Cryptography – SAC, 2002, K. Nyberg, H. Heys, Eds., Lecture Notes in Computer
 Science, Vol. 2595, pp. 76-93, Berlin: Springer, 2002.
-[9] P. Rogaway and D. Wagner, A Critique of CCM. Cryptology ePrint Archive: Report
+[9] P. Rogaway and D. Wagner, A Critique of CCM. Cryptology e Print Archive: Report
 2003/070, April, 2003. Available at http://eprint.iacr.org/2003/070/.
 21

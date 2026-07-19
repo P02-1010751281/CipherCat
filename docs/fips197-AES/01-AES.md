@@ -169,7 +169,7 @@ FIPS 197 ADVANCED ENCRYPTION STANDARD (AES)
 List of Tables
 Table 1 Hexadecimal representation of 4-bit sequences . . . . . . . . . . . . . . 5
 Table2 Indicesforbytesandbits . . . . . . . . . . . . . . . . . . . . . . . . . . 6
-Table3 Key-Block-RoundCombinations . . . . . . . . . . . . . . . . . . . . . . . 11
+Table3 Key-Block-Round Combinations . . . . . . . . . . . . . . . . . . . . . . . 11
 Table 4 SBOX(): substitution values for the byte xy (in hexadecimal format) . . . 14
 Table5 Roundconstants . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
 Table 6 INVSBOX(): substitution values for the byte xy (in hexadecimal format) 23
@@ -1202,7 +1202,7 @@ length and a key length of 16 bytes each (i.e., Nb = 4 and Nk = 4).
 The Round Key values are taken from the Key Expansion example in Appendix A.1.
 | Round |  | Start | of | After | After |  | After |  | Round | Key |
 | ------- | --- | ------- | ------- | --------- | ---------- | --- | ----------- | --- | ------ | ----------- |
-| Number |  | Round |  | SubBytes | ShiftRows |  | MixColumns |  |  | Value |
+| Number |  | Round |  | Sub Bytes | Shift Rows |  | Mix Columns |  |  | Value |
 |  |  | 32  88 | 31  e0 |  |  |  |  |  | 2b | 28  ab  09 |
 |  |  | 43  5a | 31  37 |  |  |  |  |  | 7e | ae  f7  cf |
 input

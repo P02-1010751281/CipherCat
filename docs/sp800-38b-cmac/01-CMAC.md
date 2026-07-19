@@ -301,7 +301,7 @@ n The number of blocks in the formatted message.
 T The MAC.
 Tlen The bit length of the MAC.
 4.2.2 Operations and Functions
-x The least integer that is not less than the real number x.
+x The least integer that is not less than the real number x.
 X || Y The concatenation of two bit strings X and Y.
 X ⊕Y The bitwise exclusive-OR of two bit strings X and Y of the same length.
 CIPH (X) The output of the forward cipher function of the block cipher under the key K
@@ -337,8 +337,8 @@ https://doi.org/10.6028/NIST.SP.800-38B
 5.1 Examples of Operations and Functions
 Given a positive integer s, 0s denotes the string that consists of s ‘0’ bits. For example, 08 =
 00000000.
-Given a real number x, the ceiling function, denoted x, is the least integer that is not less than x.
-For example, 2.1 = 3, and 4 = 4.
+Given a real number x, the ceiling function, denoted x, is the least integer that is not less than x.
+For example, 2.1 = 3, and 4 = 4.
 The concatenation operation on bit strings is denoted ||; for example, 001 || 10111 = 00110111.
 Given bit strings of equal length, the exclusive-OR operation, denoted ⊕, specifies the addition,
 modulo 2, of the bits in each bit position, i.e., without carries. For example, 10011 ⊕ 10101 =
@@ -658,10 +658,10 @@ This guidance can be quantified in terms of the following two bounds: 1) the hig
 probability for an inauthentic message to pass the verification process, and 2) a limit on the number
 of times that the output is the error message INVALID before the key is retired, across all
 implementations of the verification process for the key. Given estimates of these quantities,
-denoted Risk and MaxInvalids, respectively, Tlen should satisfy the following inequality:
-Tlen≥lg(MaxInvalids/Risk).
+denoted Risk and Max Invalids, respectively, Tlen should satisfy the following inequality:
+Tlen≥lg(Max Invalids/Risk).
 For example, suppose that the MAC verification process(es) within a system will not output
-INVALID for more than 1024 messages before the key is retired (i.e., MaxInvalids = 210), and that
+INVALID for more than 1024 messages before the key is retired (i.e., Max Invalids = 210), and that
 the users can tolerate about a one in a million chance that the system will accept an inauthentic
 message (i.e., Risk = 2-20). In this case, any value of Tlen that is greater than or equal to 30 satisfies
 the inequality.

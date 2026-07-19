@@ -35,7 +35,7 @@ Initial Public Draft
 7
 Meltem Sönmez Turan
 8
-Kerry A. McKay
+Kerry A. Mc Kay
 9
 Donghoon Chang
 10
@@ -65,7 +65,7 @@ Initial Public Draft
 22
 Meltem Sönmez Turan
 23
-Kerry A. McKay
+Kerry A. Mc Kay
 Jinkeon Kang
 John Kelsey
 Computer Security Division
@@ -154,7 +154,7 @@ Publication History
 62
 Approved by the NIST Editorial Review Board on YYYY-MM-DD [Will be added in the final publication.]
 63
-How to cite this NIST Technical Series Publication: Meltem Sönmez Turan, Kerry A. McKay, Donghoon Chang,
+How to cite this NIST Technical Series Publication: Meltem Sönmez Turan, Kerry A. Mc Kay, Donghoon Chang,
 64
 Jinkeon Kang, John Kelsey (2024) Ascon-Based Lightweight Cryptography Standards for Constrained
 65
@@ -169,7 +169,7 @@ Author ORCID iDs
 68
 Meltem Sönmez Turan: 0000-0002-1950-7130
 69
-Kerry A. McKay: 0000-0002-5956-587X
+Kerry A. Mc Kay: 0000-0002-5956-587X
 70
 Donghoon Chang: 0000-0003-1249-2869
 71
@@ -234,7 +234,7 @@ Ascon-XOF128, and Ascon-CXOF128, and provides their security properties.
 99
 Keywords
 100
-Ascon; authenticated encryption; constrained devices; eXtendable Output Function (XOF);
+Ascon; authenticated encryption; constrained devices; e Xtendable Output Function (XOF);
 101
 hash function; lightweight cryptography; permutation-based cryptography; standardization.
 102
@@ -328,11 +328,11 @@ Table of Contents
 142
 2. Preliminaries.......................................................................... 4
 143
-2.1. AuxiliaryFunctions .......... ... ... ... ... ... .......... ... ... ... ... ... .......... ... 8
+2.1. Auxiliary Functions .......... ... ... ... ... ... .......... ... ... ... ... ... .......... ... 8
 144
 3. Ascon Permutations .................................................................. 9
 145
-3.1. InternalState ... ... ... ... ... .......... ... ... ... ... ... .......... ... ... ... ... ... ... 9
+3.1. Internal State ... ... ... ... ... .......... ... ... ... ... ... .......... ... ... ... ... ... ... 9
 146
 3.2. Constant-Addition Layer 𝑝 ...... ... ... ... ................ ... ... ... .............. 9
 147 𝐶
@@ -348,21 +348,21 @@ Table of Contents
 152
 4.1.2. Decryption ......... ... ... ... ................ ... ... ... ................ ... ... 15
 153
-4.2. ImplementationOptions ... ... ... ... ....... ... ... ... ... ... ... ... .... ... ... ... ... . 19
+4.2. Implementation Options ... ... ... ... ....... ... ... ... ... ... ... ... .... ... ... ... ... . 19
 154
 4.2.1. Truncation ......... ... ... ... ................ ... ... ... ................ ... ... 19
 155
-4.2.2. NonceMasking ... ................ ... ... ... ................ ... ... ... ....... 19
+4.2.2. Nonce Masking ... ................ ... ... ... ................ ... ... ... ....... 19
 156
 4.3. AEADRequirements .. ....... ... ... ... ... ... ... ....... ... ... ... ... ... ... ... .... ... 19
 157
-4.4. SecurityProperties .......... ... ... ... ... ... .......... ... ... ... ... ... .......... ... 20
+4.4. Security Properties .......... ... ... ... ... ... .......... ... ... ... ... ... .......... ... 20
 158
-4.4.1. Single-KeySetting .... ... ... .......... ... ... ... ... ... .......... ... ... ... ... . 20
+4.4.1. Single-Key Setting .... ... ... .......... ... ... ... ... ... .......... ... ... ... ... . 20
 159
-4.4.2. Multi-KeySetting .... ... ... .......... ... ... ... ... ... .......... ... ... ... ... . 20
+4.4.2. Multi-Key Setting .... ... ... .......... ... ... ... ... ... .......... ... ... ... ... . 20
 160
-4.4.3. Nonce-MisuseSetting ..... ... ... ... ... ... .......... ... ... ... ... ... ........ 21
+4.4.3. Nonce-Misuse Setting ..... ... ... ... ... ... .......... ... ... ... ... ... ........ 21
 161
 5. Hash and Extendable Output Functions ............................................. 22
 162
@@ -372,17 +372,17 @@ Table of Contents
 164
 5.3. Specification of Ascon-CXOF128 .. ... .......... ... ... ... ... ... .......... ... ... .. 27
 165
-5.4. SecurityStrengths ........... ... ... ... ................ ... ... ... ................ ... 27
+5.4. Security Strengths ........... ... ... ... ................ ... ... ... ................ ... 27
 166
-AppendixA. ImplementationNotes .................................................... 31
+AppendixA. Implementation Notes .................................................... 31
 167
-A.1. ConversionFunctions ... ................ ... ... ... ................ ... ... ... ....... 31
+A.1. Conversion Functions ... ................ ... ... ... ................ ... ... ... ....... 31
 168
 iii
 
 NIST SP 800-232 ipd (Initial Public Draft)
 November 2024
-A.2. ImplementingwithIntegers ..... ... ... ... ... ... .......... ... ... ... ... ... ........ 32
+A.2. Implementingwith Integers ..... ... ... ... ... ... .......... ... ... ... ... ... ........ 32
 169
 Appendix B. Determination of the Initial Values....................................... 36
 170
@@ -482,7 +482,7 @@ November 2024
 209
 This draft standard specifies the Ascon family of algorithms to provide Authenticated Encryp-
 210
-tion with Associated Data (AEAD), a hash function, and two eXtendable Output Functions
+tion with Associated Data (AEAD), a hash function, and two e Xtendable Output Functions
 211
 (XOFs). The Ascon family is designed to be efficient in constrained environments. The
 212
@@ -656,8 +656,8 @@ PRF Pseudo-Random Function
 SHA Secure Hash Algorithm
 SPN Substitution–Permutation Network
 SP Special Publication
-XOF eXtendable-Output Function
-XOR eXclusive OR
+XOF e Xtendable-Output Function
+XOR e Xclusive OR
 Table 2 defines the terms used in this standard.
 283
 Table 2. Terms and definitions
@@ -677,7 +677,7 @@ Table 2. Terms and definitions
 Term Definition
 capacity The width of the underlying permutation minus the rate.
 digest Hash value.
-eXtendable- A function on bit strings in which the output can be extended
+e Xtendable- A function on bit strings in which the output can be extended
 Output Function to any desired length.
 (XOF)
 forgery A (ciphertext, tag) pair produced by an adversary who is not
@@ -1032,7 +1032,7 @@ Fig. 5).
 |  | 192 | 192 |  | 192 | 192 | 192 |  | 128 |
 | -------------- | ----- | -------------- | ------ | --- | --------- | --- | ------------ |
 | IV∥K∥N | 064∥K |  | 0191∥1 |  |  |  | K∥064 | K |
-| Initialization |  | AssociatedData |  |  | Plaintext |  | Finalization |
+| Initialization |  | Associated Data |  |  | Plaintext |  | Finalization |
 Figure 5. Ascon-AEAD128 encryption
 The pseudocode of Ascon-AEAD128.enc is provided in Algorithm 3.
 349
@@ -1250,7 +1250,7 @@ P C 0 0
 ⧸
 1 ⧸ 92 1 ⧸ 92
 0191∥1
-AssociatedData
+Associated Data
 ]8[p-nocsA
 P C n−1 n−1
 192 ⧸
@@ -1601,22 +1601,19 @@ Figure 7. Structure of Ascon-Hash256 and Ascon-XOF128
 563
 564
 ]21[p-nocsA
-M
 0
 64
 ⧸
 Initialization
 ]21[p-nocsA
-M
 n−1
 256
 ⧸
 ]21[p-nocsA
-M
 n
 256 256
 ⧸ ⧸
-AbsorbMessage
+Absorb Message
 ]21[p-nocsA
 H
 0
@@ -1628,7 +1625,7 @@ H
 ⧸
 256 256
 ⧸
-SqueezeOutput
+Squeeze Output
 Ascon-Hash256 takes a variable length message 𝑀 as input and produces a 256-bit digest.
 The full specification of Ascon-Hash256 can be found in Algorithm 5 and operates as
 follows:
@@ -1872,7 +1869,7 @@ M n−1
 M n
 256 256
 ⧸ ⧸
-AbsorbMessage
+Absorb Message
 ]21[p-nocsA
 H 0
 ⧸
@@ -1882,7 +1879,7 @@ H ⌈L/64⌉−1
 ⧸
 256 256
 ⧸
-SqueezeOutput
+Squeeze Output
 5.3. Specification of Ascon-CXOF128
 This section specifies the customized version of Ascon-XOF128 called Ascon-CXOF128.
 Customization extends the functionality of Ascon-XOF128 by allowing users to incorporate
@@ -2006,13 +2003,13 @@ to Final Round of the NIST Lightweight Cryptography project. Available at https:
 670
 ound/updated-spec-doc/ascon-spec-final.pdf.
 671
-[9] Sönmez Turan M, McKay KA, Çalık Ç, Chang D, Bassham I Lawrence E (2019) Status Re-
+[9] Sönmez Turan M, Mc Kay KA, Çalık Ç, Chang D, Bassham I Lawrence E (2019) Status Re-
 672
 port on the First Round of the NIST Lightweight Cryptography Standardization Process
 673
 (National Institute of Standards and Technology), Report. DOI:10.6028/NIST.IR.8268
 674
-[10] Sönmez Turan M, McKay KA, Chang D, Çalık Ç, Bassham I Lawrence E, Kang J, Kelsey
+[10] Sönmez Turan M, Mc Kay KA, Chang D, Çalık Ç, Bassham I Lawrence E, Kang J, Kelsey
 675
 J (2021) Status Report on the Second Round of the NIST Lightweight Cryptography
 676
@@ -2024,7 +2021,7 @@ DOI:10.6028/NIST.IR.8369
 
 NIST SP 800-232 ipd (Initial Public Draft)
 November 2024
-[11] Sönmez Turan M, McKay KA, Chang D, Bassham L, Kang J, Waller N, Kelsey J, Hong
+[11] Sönmez Turan M, Mc Kay KA, Chang D, Bassham L, Kang J, Waller N, Kelsey J, Hong
 679
 D (2023) Status Report on the Final Round of the NIST Lightweight Cryptography
 680
@@ -2072,7 +2069,7 @@ Science, Vol. 14440, pp 346–369. DOI:10.1007/978-981-99-8727-6_12
 701
 [16] Lefevre C, Mennink B (2023) Generic Security of the Ascon Mode: On the Power of
 702
-Key Blinding, Cryptology ePrint Archive, Paper 2023/796. Available at https://ia.cr/20
+Key Blinding, Cryptology e Print Archive, Paper 2023/796. Available at https://ia.cr/20
 703
 23/796.
 704

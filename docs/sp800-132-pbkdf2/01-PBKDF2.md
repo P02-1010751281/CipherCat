@@ -175,21 +175,21 @@ PBKDF Password-based Key Derivation Function
 SHA Secure Hash Algorithm
 3.3 Symbols
 Symbol Meaning
- Bit-wise exclusive-or.
+ Bit-wise exclusive-or.
 Concatenation.
 The ceiling of a: the smallest integer that is greater than or equal to
- a
-a. For example, 5 = 5, 5.3 = 6, and –2.1 = –2.
+ a
+a. For example, 5 = 5, 5.3 = 6, and –2.1 = –2.
 C Iteration count.
-hLen The length of the output of PRF in bits.
+h Len The length of the output of PRF in bits.
 32-bit encoding of integer i, with the most significant bit on the
 Int(i)
 left.
-kLen The length of the output of PBKDF in bits.
+k Len The length of the output of PBKDF in bits.
 An integer that represents the number of PRF output blocks to be
-concatenated in order to obtain kLen bits of MK, i.e.,
+concatenated in order to obtain k Len bits of MK, i.e.,
 len
-len = kLen / hLen
+len = k Len / h Len
 mk The MK derived using the PBKDF.
 P A password or passphrase, represented as a binary string.
 A binary string defined for a specific application, message or a
@@ -201,7 +201,7 @@ SP 800-132 Recommendation for Password-Based Key Derivation December 2010
 of the salt.
 rv The randomly generated part of the salt.
 S The salt, represented as a binary string.
-sLen The length of the salt in bits.
+s Len The length of the salt in bits.
 T<0, 1, …, r-1> The truncation of the binary string T that retains its first r bits.
 4 General Discussion
 This Recommendation specifies a family of functions to derive cryptographic keying
@@ -223,13 +223,13 @@ KDFs are deterministic algorithms that are used to derive cryptographic keying m
 from a secret value, such as a password. Each PBKDF in the family is defined by the
 choice of a Pseudorandom Function (PRF) and a fixed iteration count, denoted as C. The
 input to an execution of PBKDF includes a password, denoted as P, a salt, denoted as S,
-and an indication of the desired length of the MK in bits, denoted as kLen. Symbolically:
+and an indication of the desired length of the MK in bits, denoted as k Len. Symbolically:
 5
 
 SP 800-132 Recommendation for Password-Based Key Derivation December 2010
-mk = PBKDF (P, S, kLen).
+mk = PBKDF (P, S, k Len).
 (PRF, C)
-The kLen value shall be at least 112 bits in length.
+The k Len value shall be at least 112 bits in length.
 A generic diagram of the PBKDF is given in Figure 1. The design rationale on generic
 PBKDFs is available in Appendix A.2.
 Figure 1: A generic diagram of the PBKDF
@@ -257,22 +257,22 @@ The following algorithm for the derivation of MKs from passwords is based on an
 algorithm specified in [6], where it was specified as PBKDF2 and used HMAC [1] with
 SHA-1 as a PRF. This Recommendation approves PBKDF2 as the PBKDF using HMAC
 with any approved hash function as the PRF. The digest size of the hash function in bits
-is denoted as hLen.
+is denoted as h Len.
 The details of the PBKDF algorithm are given below.
 
 | Input: | P   Password |
 | -------- | ------------------- |
 | S | Salt |
 | C | Iteration count |
-Length of MK in bits; at most (232-1)  hLen
-   kLen
+Length of MK in bits; at most (232-1)  h Len
+   k Len
 Parameter:    PRF     HMAC with an approved hash function
                         hlen     Digest size of the hash function
 Algorithm:
-If (kLen > (232-1)  hLen)
+If (k Len > (232-1)  h Len)
             Return an error indicator and stop ;
-len = kLen / hLen ;
-r = kLen – (len – 1)   hLen ;
+len = k Len / h Len ;
+r = k Len – (len – 1)   h Len ;
 For i = 1 to len
 i
 0
@@ -280,7 +280,7 @@ i
 |  | U = HMAC(P, U | ) |
 | --- | ------------- |
 |  | j | j-1 |
-T = T   U
+T = T   U
 |  | i  i j |
 | ----------------------- | ---------------- | -------- |
 | Return    mk = T |  |  | T |  | … |  | T | <0…r-1> |
@@ -399,7 +399,7 @@ harder to apply the dictionary or brute force attacks.
 A.2.1 Length of the Salt
 The purpose of the salt is to allow the generation of a large set of keys corresponding to
 each password, for a fixed iteration count. For a given password, the number of possible
-resulting keys is approximately 2sLen, where sLen is the length of the salt in bits.
+resulting keys is approximately 2s Len, where s Len is the length of the salt in bits.
 Therefore, using a salt makes it difficult for the attacker to generate a table of resulting
 keys, for even a small subset of the most-likely passwords.
 Optionally, to avoid any possible interaction between other applications that use a salt, an
@@ -411,7 +411,7 @@ The purpose of the iteration count C is to increase the amount of computation ne
 derive a key from a password, significantly increasing the workload of dictionary attacks.
 Using a PBKDF that requires C iterations to derive a key increases the computational
 cost of performing a dictionary attack on a password with t bits of entropy from 2t
-operations to C2t operations, and therefore, makes dictionary and brute force attacks
+operations to C2t operations, and therefore, makes dictionary and brute force attacks
 12
 
 SP 800-132 Recommendation for Password-Based Key Derivation December 2010

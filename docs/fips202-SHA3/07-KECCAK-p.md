@@ -1,6 +1,6 @@
 # Algorithm 7  KECCAK-p[b, nr](S)
 
-**章节**: §3.3  
+**章节**: §3.3
 **类别**: KECCAK-p 置换
 
 ### 规范

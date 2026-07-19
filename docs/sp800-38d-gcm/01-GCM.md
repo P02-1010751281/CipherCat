@@ -7,7 +7,6 @@ and GMAC
 Morris Dworkin
 C O M P U T E R S E C U R I T Y
 
-
 Recommendation for Block NIST Special Publication 800-38D Cipher Modes of Operation: Galois/Counter Mode (GCM)
 and GMAC
 Morris Dworkin

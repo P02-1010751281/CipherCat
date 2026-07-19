@@ -1,6 +1,6 @@
 # Algorithm 9  NTT(f) — 前向数论变换
 
-**章节**: §4.3 NTT 变换  
+**章节**: §4.3 NTT 变换
 **类别**: NTT 变换（Cooley-Tukey 蝶形）
 
 ### 规范

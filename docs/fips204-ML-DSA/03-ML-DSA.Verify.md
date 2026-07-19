@@ -1,6 +1,6 @@
 # Algorithm 3  ML-DSA.Verify(𝑝𝑘, 𝑀 , 𝜎, 𝑐𝑡𝑥)
 
-**章节**: §4  
+**章节**: §4
 **类别**: ML-DSA 公开 API
 
 ### 规范
@@ -20,6 +20,8 @@ return ⊥
 4:
 5: 𝑀 ′ ← BytesToBits(IntegerToBytes(0, 1) ∥ IntegerToBytes(|𝑐𝑡𝑥|, 1) ∥ 𝑐𝑡𝑥) ∥ 𝑀
 6: return ML-DSA.Verify_internal(𝑝𝑘, 𝑀 ′ , 𝜎)
+
+---
 
 5.4
 

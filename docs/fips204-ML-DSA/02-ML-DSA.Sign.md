@@ -1,6 +1,6 @@
 # Algorithm 2  ML-DSA.Sign(𝑠𝑘, 𝑀 , 𝑐𝑡𝑥)
 
-**章节**: §4  
+**章节**: §4
 **类别**: ML-DSA 公开 API
 
 ### 规范
@@ -28,6 +28,8 @@ return ⊥
 10: 𝑀 ′ ← BytesToBits(IntegerToBytes(0, 1) ∥ IntegerToBytes(|𝑐𝑡𝑥|, 1) ∥ 𝑐𝑡𝑥) ∥ 𝑀
 11: 𝜎 ← ML-DSA.Sign_internal(𝑠𝑘, 𝑀 ′ , 𝑟𝑛𝑑)
 12: return 𝜎
+
+---
 
 5.3
 

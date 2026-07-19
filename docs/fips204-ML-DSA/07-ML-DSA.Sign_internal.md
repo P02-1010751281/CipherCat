@@ -1,6 +1,6 @@
 # Algorithm 7  ML-DSA.Sign_internal(𝑠𝑘, 𝑀 ′ , 𝑟𝑛𝑑)
 
-**章节**: §7  
+**章节**: §7
 **类别**: ML-DSA 内部 API
 
 ### 规范

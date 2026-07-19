@@ -1,6 +1,6 @@
 # Algorithm 5  HashML-DSA.Verify(𝑝𝑘, 𝑀 , 𝜎, 𝑐𝑡𝑥, PH)
 
-**章节**: §5  
+**章节**: §5
 **类别**: HashML-DSA 公开 API
 
 ### 规范
@@ -51,6 +51,8 @@ case …
 21
 
 FIPS 204
+
+---
 
 6.
 

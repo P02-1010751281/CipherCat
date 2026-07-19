@@ -1,6 +1,6 @@
 # Algorithm 6  ML-DSA.KeyGen_internal(𝜉)
 
-**章节**: §7  
+**章节**: §7
 **类别**: ML-DSA 内部 API
 
 ### 规范

@@ -1,6 +1,6 @@
 # Algorithm 1  ML-DSA.KeyGen()
 
-**章节**: §4  
+**章节**: §4
 **类别**: ML-DSA 公开 API
 
 ### 规范
@@ -18,6 +18,8 @@ return ⊥
 3:
 4: end if
 5: return ML-DSA.KeyGen_internal (𝜉)
+
+---
 
 5.2
 

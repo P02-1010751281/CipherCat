@@ -1,6 +1,6 @@
 # Algorithm 8  ML-DSA.Verify_internal(𝑝𝑘, 𝑀 ′ , 𝜎)
 
-**章节**: §7  
+**章节**: §7
 **类别**: ML-DSA 内部 API
 
 ### 规范
@@ -47,6 +47,8 @@ computed in a different cryptographic module
 
 FIPS 204
 
+---
+
 7.
 
 MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
@@ -55,6 +57,8 @@ Auxiliary Functions
 
 This section provides pseudocode for subroutines utilized by ML-DSA, including functions for data-type
 conversions, arithmetic, and sampling.
+
+---
 
 7.1
 

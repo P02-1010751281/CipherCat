@@ -7,7 +7,6 @@ Devices
 Morris Dworkin
 C O M P U T E R S E C U R I T Y
 
-
 Recommendation for Block NIST Special Publication 800-38E Cipher Modes of Operation: The XTS-AES Mode for Confidentiality on Storage Devices
 Morris Dworkin
 C O M P U T E R S E C U R I T Y Comp uter Security Division Inform ation Technology Laboratory National Institute of Standards and Technology Gaithersburg, MD 20899-8930
@@ -35,7 +34,6 @@ NIST Special Publication 800-38E
 TABLE OF CONTENTS
 1 PURPOSE...........................................................................................................................................................1 2 AUTHORITY.....................................................................................................................................................1 3 INTRODUCTION..............................................................................................................................................1 4 CONFORMANCE.............................................................................................................................................2 5 ORDERING CONVENTION FOR THE CIPHERTEXT STEALING CASE............................................3 APPENDIX A: BIBLIOGRAPHY............................................................................................................................4
 v
-
 
 NIST Special Publication 800-38E
 1 Purpose

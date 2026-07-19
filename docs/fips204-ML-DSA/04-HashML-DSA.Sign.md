@@ -1,6 +1,6 @@
 # Algorithm 4  HashML-DSA.Sign(𝑠𝑘, 𝑀 , 𝑐𝑡𝑥, PH)
 
-**章节**: §5  
+**章节**: §5
 **类别**: HashML-DSA 公开 API
 
 ### 规范

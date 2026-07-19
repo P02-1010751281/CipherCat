@@ -9,7 +9,6 @@ Confidentiality
 Morris Dworkin
 C O M P U T E R S E C U R I T Y
 
-
 Recommendation for Block NIST Special Publication 800-38C Cipher Modes of Operation: The CCM Mode for Authentication
 and Confidentiality
 Morris Dworkin

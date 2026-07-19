@@ -82,6 +82,8 @@ TABLE OF CONTENTS
 APPENDIX A: The Differences Between FIPS 198 and FIPS 198-1................................7 APPENDIX B: References.................................................................................................7
 1
 
+---
+
 1. INTRODUCTION
 Providing a way to check the integrity of information transmitted over or stored in an unreliable medium is a prime necessity in the world of open computing and communications. Mechanisms that provide such integrity checks based on a secret key are usually called message authentication codes (MACs). Typically, message authentication codes are used between two parties that share a secret key in order to authenticate information transmitted between these parties. This Standard defines a MAC that uses a cryptographic hash function in conjunction with a secret key. This mechanism is called HMAC [HMAC]. HMAC shall use an Approved cryptographic hash function [FIPS 180-3]. HMAC uses the secret key for the calculation and verification of the
 MACs.
@@ -95,6 +97,8 @@ the MAC.
 Secret key: a cryptographic key that is uniquely associated with one or more entities. The use of the term "secret" in this context does not imply a classification level; rather the term implies the need to protect the key from disclosure or substitution.
 2
 
+---
+
 2.2 Acronyms
 The following acronyms and abbreviations are used throughout this Standard: FIPS Federal Information Processing Standard FIPS PUB FIPS Publication HMAC Keyed-Hash Message Authentication Code MAC Message Authentication Code NIST National Institute of Standards and Technology 2.3 HMAC Parameters and Symbols HMAC uses the following parameters: B Block size (in bytes) of the input to the Approved hash function.
 H An Approved hash function. ipad Inner pad; the byte x‘36’ repeated B times.
@@ -107,6 +111,8 @@ bits.
 || Concatenation.
 ⊕ Exclusive-Or operation.
 3
+
+---
 
 3. CRYPTOGRAPHIC KEYS
 HMAC uses a key, K, of appropriate security strength, as discussed in NIST Special Publication (SP) 800-107 [SP 800-107], Recommendation for Applications Using Approved Hash Algorithms. When an application uses a K longer than B-bytes, then it shall first hash the K using H and then use the resultant L-byte string as the key K ; detail

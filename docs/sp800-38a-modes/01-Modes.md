@@ -93,6 +93,8 @@ Output Block A data block that is an output of either the forward cipher functio
 Plaintext Usable data that is formatted as input to a mode.
 4
 
+---
+
 4.2 Symbols
 4.2.1 Variables
 b The block size, in bits. j The index to a sequence of data blocks or data segments ordered from left

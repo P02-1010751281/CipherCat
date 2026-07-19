@@ -2,7 +2,6 @@
 
 来源: NIST SP 800-38A
 
-来源: NIST SP 800-38A
 
 
 
@@ -137,4 +136,3 @@ series) from the IV and the ciphertext.
 
 The CFB mode is illustrated in Figure 3.
 
-6.4   The Output Feedback Mode

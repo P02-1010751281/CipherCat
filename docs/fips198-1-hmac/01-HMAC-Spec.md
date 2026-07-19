@@ -310,8 +310,3 @@ Management – Part 1: General (Revised), March 2007.
 [SP 800-107] NIST Special Publication (SP) 800-107, Recommendation for
 Applications Using Approved Hash Algorithms, February 2009.
 7
-
----
-来源: NIST FIPS 198-1
-The Keyed-Hash Message Authentication Code
-公式: HMAC(K,text)=H((K₀⊕opad)‖H((K₀⊕ipad)‖text))

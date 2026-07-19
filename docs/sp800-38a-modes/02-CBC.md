@@ -2,7 +2,6 @@
 
 来源: NIST SP 800-38A
 
-来源: NIST SP 800-38A
 
 
 
@@ -92,4 +91,3 @@ operations can be performed in parallel.
 
 The CBC mode is illustrated in Figure 2.
 
-6.3   The Cipher Feedback Mode

@@ -2,7 +2,6 @@
 
 来源: NIST SP 800-38A
 
-来源: NIST SP 800-38A
 
 
 
@@ -127,4 +126,3 @@ message under the given key.
 
 The OFB mode is illustrated in Figure 4.
 
-6.5   The Counter Mode

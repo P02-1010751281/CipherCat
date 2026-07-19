@@ -2,7 +2,6 @@
 
 来源: NIST SP 800-38A
 
-来源: NIST SP 800-38A
 https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf
 
 
@@ -58,4 +57,3 @@ should not be used.
 
 The ECB mode is illustrated in Figure 1.
 
-6.2   The Cipher Block Chaining Mode

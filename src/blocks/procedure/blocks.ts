@@ -36,7 +36,7 @@ Blockly.Blocks['crypto_return'] = {
     this.appendValueInput('VALUE').setCheck(null).appendField(
       Blockly.Msg.CRYPTO_PROCEDURES_RETURN_BLOCK_TOOLTIP
         ? '返回'
-        : 'return',
+        : '🔧 return',
     );
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -59,12 +59,12 @@ Blockly.Blocks['crypto_func_def'] = {
 
     // 函数名
     this.appendDummyInput('NAME_INPUT')
-      .appendField(msg.CRYPTO_PROCEDURES_TEMPLATE_TITLE || 'Crypto Func')
+      .appendField(msg.CRYPTO_PROCEDURES_TEMPLATE_TITLE || '🔧 Crypto Func')
       .appendField(new Blockly.FieldTextInput('myCipher'), 'FUNC_NAME');
 
     // 参数名 + 类型下拉
     this.appendDummyInput('PARAM_INPUT')
-      .appendField(msg.CRYPTO_PROCEDURES_PARAM_MSG || 'param:')
+      .appendField('🔧 ' + (msg.CRYPTO_PROCEDURES_PARAM_MSG || 'param:'))
       .appendField(new Blockly.FieldTextInput('seed'), 'PARAM_NAME')
       .appendField(':')
       .appendField(
@@ -88,7 +88,7 @@ Blockly.Blocks['crypto_func_def'] = {
     // 返回值（可选）
     this.appendValueInput('RETURN')
       .setCheck(null)
-      .appendField(msg.PROCEDURES_DEFRETURN_RETURN || 'return');
+      .appendField(msg.PROCEDURES_DEFRETURN_RETURN || '🔧 return');
 
     this.setInputsInline(false);
     this.setColour(290);
@@ -119,7 +119,7 @@ function _makeTemplateBlock(
         .appendField(new Blockly.FieldTextInput(presetName), 'FUNC_NAME');
 
       this.appendDummyInput('PARAM_INPUT')
-        .appendField((msg.CRYPTO_PROCEDURES_PARAM_MSG || 'param:') + ' ')
+        .appendField(('🔧 ' + (msg.CRYPTO_PROCEDURES_PARAM_MSG || 'param:')) + ' ')
         .appendField(new Blockly.FieldTextInput(paramName), 'PARAM_NAME')
         .appendField(':')
         .appendField(
@@ -141,7 +141,7 @@ function _makeTemplateBlock(
 
       this.appendValueInput('RETURN')
         .setCheck(null)
-        .appendField(msg.PROCEDURES_DEFRETURN_RETURN || 'return');
+        .appendField(msg.PROCEDURES_DEFRETURN_RETURN || '🔧 return');
 
       this.setInputsInline(false);
       this.setColour(290);

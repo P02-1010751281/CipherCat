@@ -19,7 +19,7 @@ export type ModeBlockType = (typeof MODE_BLOCK_TYPES)[number];
 
 Blockly.Blocks['mode_ecb'] = {
   init: function () {
-    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('ECB(');
+    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('🔧 ECB(');
     this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField(', key:');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
@@ -32,7 +32,7 @@ Blockly.Blocks['mode_ecb'] = {
 
 Blockly.Blocks['mode_cbc'] = {
   init: function () {
-    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('CBC(');
+    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('🔧 CBC(');
     this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField(', key:');
     this.appendValueInput('IV').setCheck(TYPE_BYTES).appendField(', iv:');
     this.appendDummyInput().appendField(')');
@@ -46,7 +46,7 @@ Blockly.Blocks['mode_cbc'] = {
 
 Blockly.Blocks['mode_ctr'] = {
   init: function () {
-    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('CTR(');
+    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('🔧 CTR(');
     this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField(', key:');
     this.appendValueInput('IV').setCheck(TYPE_BYTES).appendField(', iv:');
     this.appendDummyInput().appendField(')');
@@ -60,7 +60,7 @@ Blockly.Blocks['mode_ctr'] = {
 
 Blockly.Blocks['mode_gcm'] = {
   init: function () {
-    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('GCM(');
+    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('🔧 GCM(');
     this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField(', key:');
     this.appendValueInput('IV').setCheck(TYPE_BYTES).appendField(', iv:');
     this.appendDummyInput().appendField(')');

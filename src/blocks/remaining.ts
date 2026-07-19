@@ -40,7 +40,7 @@ const _bn = (t: string, l: string) => { Blockly.Blocks[t] = { init: function(thi
 ['bn_add','bn_sub','bn_mul','bn_div'].forEach(t => _bn(t, t.replace('bn_','BN ')));
 
 Blockly.Blocks['hash_hmac'] = { init: function(this: any) {
-  this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField('HMAC(');
+  this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField('🔧 HMAC(');
   this.appendValueInput('MSG').setCheck(TYPE_BYTES).appendField(',msg:');
   this.appendDummyInput().appendField(')'); this.setInputsInline(true);
   this.setOutput(true, TYPE_BYTES); this.setColour(270); this.setTooltip('HMAC');
@@ -71,27 +71,27 @@ _o('sm3_hash','SM3.Hash'); _o('sm3_hmac','HMAC-SM3');
 _o('hmac_sha256','HMAC-SHA256'); _o('kdf_pbkdf2','PBKDF2'); _o('kdf_hkdf','HKDF');
 
 Blockly.Blocks['base64_encode'] = { init: function(this: any) {
-  this.appendValueInput('INPUT').setCheck(TYPE_BYTES).appendField('Base64 Encode(');
+  this.appendValueInput('INPUT').setCheck(TYPE_BYTES).appendField('⚡Base64 Encode(');
   this.appendDummyInput().appendField(')'); this.setInputsInline(true);
   this.setOutput(true, TYPE_STRING); this.setColour(220); this.setTooltip('Base64');
 }};
 Blockly.Blocks['base64_decode'] = { init: function(this: any) {
-  this.appendValueInput('INPUT').setCheck(TYPE_STRING).appendField('Base64 Decode(');
+  this.appendValueInput('INPUT').setCheck(TYPE_STRING).appendField('⚡Base64 Decode(');
   this.appendDummyInput().appendField(')'); this.setInputsInline(true);
   this.setOutput(true, TYPE_BYTES); this.setColour(220); this.setTooltip('Base64');
 }};
 Blockly.Blocks['hex_to_bytes'] = { init: function(this: any) {
-  this.appendValueInput('INPUT').setCheck(TYPE_STRING).appendField('Hex→Bytes(');
+  this.appendValueInput('INPUT').setCheck(TYPE_STRING).appendField('⚡Hex→Bytes(');
   this.appendDummyInput().appendField(')'); this.setInputsInline(true);
   this.setOutput(true, TYPE_BYTES); this.setColour(220); this.setTooltip('Hex→Bytes');
 }};
 Blockly.Blocks['bytes_to_hex'] = { init: function(this: any) {
-  this.appendValueInput('INPUT').setCheck(TYPE_BYTES).appendField('Bytes→Hex(');
+  this.appendValueInput('INPUT').setCheck(TYPE_BYTES).appendField('⚡Bytes→Hex(');
   this.appendDummyInput().appendField(')'); this.setInputsInline(true);
   this.setOutput(true, TYPE_STRING); this.setColour(220); this.setTooltip('Bytes→Hex');
 }};
 Blockly.Blocks['endian_swap'] = { init: function(this: any) {
-  this.appendValueInput('INPUT').setCheck(TYPE_INT_LIST).appendField('Endian Swap(');
+  this.appendValueInput('INPUT').setCheck(TYPE_INT_LIST).appendField('⚡Endian Swap(');
   this.appendDummyInput().appendField(')'); this.setInputsInline(true);
   this.setOutput(true, TYPE_INT_LIST); this.setColour(220); this.setTooltip('字节序转换');
 }};

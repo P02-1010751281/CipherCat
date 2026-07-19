@@ -7,3 +7,4 @@
 
 未实现。XTS 用于磁盘/存储加密。
 full.txt available (297 lines)
+extracted.md 可用 (pdfplumber). 全文参考。

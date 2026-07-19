@@ -7,3 +7,4 @@
 
 未实现。CMAC 是基于分组密码的消息认证码。
 full.txt available (1172 lines)
+extracted.md 可用 (pdfplumber). 全文参考。

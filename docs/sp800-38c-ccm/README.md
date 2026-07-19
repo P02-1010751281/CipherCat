@@ -7,3 +7,4 @@
 
 未实现。CCM = CTR + CBC-MAC 组合。
 full.txt available (1188 lines)
+extracted.md 可用 (pdfplumber). 全文参考。

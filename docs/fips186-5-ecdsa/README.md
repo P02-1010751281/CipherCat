@@ -12,3 +12,5 @@
 | `ecc_multiply` | 标量乘法 k*P |
 | `nt_mod_inverse` | 模逆 (签名需要) |
 full.txt available (3580 lines)
+## 状态
+extracted.md 可用 (86页, pdfplumber提取). 全文参考，非教学拆分。

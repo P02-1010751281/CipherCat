@@ -10,3 +10,5 @@
 ## CipherCat 对应块
 
 未实现。`hash_hmac` 已覆盖基于哈希的 MAC。
+## 状态
+⏭️ 已忽略 — PDF需从 openstd 手动下载。CipherCat已有 hash_hmac 覆盖基于哈希的MAC。

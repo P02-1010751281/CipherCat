@@ -1,6 +1,6 @@
 # GB/T 32907 — SM4 分组密码算法参考
 
-来源: GB/T 32907-2016 — 信息安全技术 SM4分组密码算法
+来源: GB/T 32907-2016 — SM4分组密码算法
       PDF: [GBT-32907-2016-SM4.pdf](./GBT-32907-2016-SM4.pdf)
 
 ## 参数
@@ -10,15 +10,15 @@
 | 分组长度 | 128 bit |
 | 密钥长度 | 128 bit |
 | 轮数 | 32 |
-| S-box | 16×16 固定置换 |
 
 ## 文件索引
 
 | 序号 | 文件 | 名称 |
 |:--:|------|------|
-| 1 | [01-AlgorithmDescription.md](./01-AlgorithmDescription.md) | 算法描述 (§4-§7) |
-| 2 | [02-RoundFunction-KeyExpansion.md](./02-RoundFunction-KeyExpansion.md) | 轮函数F + 密钥扩展 (§5-§6) |
-| 3 | [03-Appendix-Examples.md](./03-Appendix-Examples.md) | 附录A 运算示例 |
+| 1 | [01-AlgorithmStructure.md](./01-AlgorithmStructure.md) | 算法结构 (§4-§5) |
+| 2 | [02-RoundFunction.md](./02-RoundFunction.md) | 轮函数F (§6) |
+| 3 | [03-EncryptionKeySchedule.md](./03-EncryptionKeySchedule.md) | 加密/解密/密钥扩展 (§7) |
+| 4 | [04-Appendix.md](./04-Appendix.md) | 附录 运算示例 |
 
 ## CipherCat 块
 

@@ -142,7 +142,6 @@ TABLE OF CONTENTS
 6. IMPLEMENTATION NOTE...................................................................................5
 APPENDIX A: The Differences Between FIPS 198 and FIPS 198-1................................7
 APPENDIX B: References.................................................................................................7
-1
 
 1. INTRODUCTION
 Providing a way to check the integrity of information transmitted over or stored in an
@@ -176,7 +175,6 @@ the MAC.
 Secret key: a cryptographic key that is uniquely associated with one or more entities. The
 use of the term "secret" in this context does not imply a classification level; rather the
 term implies the need to protect the key from disclosure or substitution.
-2
 
 2.2 Acronyms
 The following acronyms and abbreviations are used throughout this Standard:
@@ -192,7 +190,6 @@ H An Approved hash function.
 ipad Inner pad; the byte x‘36’ repeated B times.
 K Secret key shared between the originator and the intended receiver(s).
 K The key K after any necessary pre-processing to form a B byte key.
-0
 L Block size (in bytes) of the output of the Approved hash function.
 opad Outer pad; the byte x‘5c’ repeated B times.
 text The data on which the HMAC is calculated; text does not include the padded key.
@@ -201,14 +198,12 @@ x ‘N’ Hexadecimal notation, where each symbol in the string ‘N’ represen
 bits.
 || Concatenation.
 ⊕ Exclusive-Or operation.
-3
 
 3. CRYPTOGRAPHIC KEYS
 HMAC uses a key, K, of appropriate security strength, as discussed in NIST Special
 Publication (SP) 800-107 [SP 800-107], Recommendation for Applications Using
 Approved Hash Algorithms. When an application uses a K longer than B-bytes, then it
 shall first hash the K using H and then use the resultant L-byte string as the key K ; detail
-0
 can be found in Table 1 in Section 4 below.
 4. HMAC SPECIFICATION
 To compute a MAC over the data ‘text’ using the HMAC function, the following
@@ -220,21 +215,17 @@ Figure 1.
 Table 1: The HMAC Algorithm
 STEPS STEP-BY-STEP DESCRIPTION
 Step 1 If the length of K = B: set K = K. Go to step 4.
-0
 Step 2 If the length of K > B: hash K to obtain an L byte string, then append (B-L)
 zeros to create a B-byte string K (i.e., K = H(K) || 00...00). Go to step 4.
 0 0
 Step 3 If the length of K < B: append zeros to the end of K to create a B-byte string K
-0
 (e.g., if K is 20 bytes in length and B = 64, then K will be appended with 44
 zero bytes x’00’).
 Step 4 Exclusive-Or K with ipad to produce a B-byte string: K ⊕ ipad.
 0 0
 Step 5 Append the stream of data 'text' to the string resulting from step 4:
 (K ⊕ ipad) || text.
-0
 Step 6 Apply H to the stream generated in step 5: H((K ⊕ ipad) || text).
-0
 Step 7 Exclusive-Or K with opad: K ⊕ opad.
 0 0
 Step 8 Append the result from step 6 to step 7:
@@ -243,18 +234,13 @@ Step 8 Append the result from step 6 to step 7:
 Step 9 Apply H to the result from step 8:
 H((K ⊕ opad )|| H((K ⊕ ipad) || text)).
 0 0
-4
 
 Steps 1-3: Determine K
-0
 Step 4: K ⊕ipad
-0
 Step 5: (K ⊕ipad) || text
-0
 H((K ⊕ipad) || text)
 Step 6: 0
 Step 7: K ⊕opad
-0
 (K ⊕opad) || H ((K ⊕ipad) || text)
 Step 8: 0 0
 Step 9: H((K ⊕opad) || H((K ⊕ipad) || text))
@@ -272,7 +258,6 @@ The HMAC algorithm is specified for an arbitrary Approved iterative cryptographi
 function, H. In the HMAC algorithm, values of the ipad and the opad depend on the
 block size, B, of the Approved hash function. An HMAC implementation can easily
 replace one Approved iterative hash function, H, with another Approved iterative hash
-5
 
 function, H’ by generating new ipad and opad using the block size of H’ instead of H as
 defined in Section 2.3.
@@ -291,7 +276,6 @@ http://csrc.nist.gov/groups/ST/crypto_apps_infra/csor/algorithms.html,
 along with procedures for adding new OIDs.
 Examples of HMAC are available at
 http://csrc.nist.gov/groups/ST/toolkit/examples.html.
-6
 
 APPENDIX A: The Differences Between FIPS 198 and FIPS 198-1
 The length of truncated HMAC outputs and their security implications in FIPS 198 is not
@@ -309,4 +293,3 @@ October 2008.
 Management – Part 1: General (Revised), March 2007.
 [SP 800-107] NIST Special Publication (SP) 800-107, Recommendation for
 Applications Using Approved Hash Algorithms, February 2009.
-7

@@ -1,3 +1,9 @@
+# Ascon Lightweight Cryptography (NIST SP 800-232 IPD)
+
+⚠️ 本文档为已撤回的草案(Withdrawn Draft)，仅供参考。
+
+来源: NIST SP 800-232 (IPD) — Ascon-Based Lightweight Cryptography
+
 Withdrawn Draft
 Warning Notice
 The attached draft document has been withdrawn and is provided solely for historical purposes.

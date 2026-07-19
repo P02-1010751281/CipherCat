@@ -22,3 +22,4 @@
 ## CipherCat 状态
 
 未实现。需新建 ZUC 相关块 (LFSR/BR/F/S-box)。
+⚠️ CipherCat未实现，PDF参考。暂不拆分。

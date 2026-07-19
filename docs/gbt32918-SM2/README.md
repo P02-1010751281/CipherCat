@@ -33,3 +33,4 @@
 | `ecc_multiply` | 标量乘法 k*P |
 | `sm3_hash` | SM3 哈希 (签名/加密需要) |
 | `nt_mod_inverse` | 模逆 (签名需要) |
+⚠️ CipherCat未实现，PDF参考。暂不拆分。

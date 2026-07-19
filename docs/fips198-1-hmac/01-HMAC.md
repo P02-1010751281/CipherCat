@@ -180,4 +180,3 @@ APPENDIX A: The Differences Between FIPS 198 and FIPS 198-1 The length of trunca
 APPENDIX B: References [HMAC] H. Krawczyk, M. Bellare, and R. Canetti, HMAC: Keyed-Hashing for Message Authentication, Internet Engineering Task Force, Request for Comments (RFC) 2104, February 1997. [FIPS 180-3] National Institute of Standards and Technology, Secure Hash Standards (SHS), Federal Information Processing Standards Publication 180-3,
 October 2008.
 [SP 800-57] NIST Special Publication (SP) 800-57, Recommendation for Key Management – Part 1: General (Revised), March 2007. [SP 800-107] NIST Special Publication (SP) 800-107, Recommendation for Applications Using Approved Hash Algorithms, February 2009.
-7

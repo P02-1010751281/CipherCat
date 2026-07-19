@@ -90,4 +90,3 @@ Thus, if every external interface to the data retrieves the data in a manner tha
 3
 
 NIST Special Publication 800-38E Appendix A: Bibliography [1] Federal Information Processing Standards (FIPS) Publication 197, Announcing the Advanced Encryption Standard (AES), U.S. DoC/NIST, Nov. 26, 2001. [2] IEEE Std 1619-2007, The XTS-AES Tweakable Block Cipher, Institute of Electrical and Electronics Engineers, Inc., Apr. 18, 2008. [3] P. Rogaway, Efficient Instantiations of Tweakable Blockciphers and Refinements to Modes OCB and PMAC, Advances in Cryptology—Asiacrypt 2004, Lecture Notes in Computer Science, vol. 3329, pp. 16-31, Springer-Verlag, 2004.
-4

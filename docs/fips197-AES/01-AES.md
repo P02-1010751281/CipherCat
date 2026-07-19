@@ -865,4 +865,3 @@ to replace withdrawn publications and correct citation information and URLs.
 23. The examples in Appendix C were removed in favor of a reference to the detailed example
 vectors that are now maintained at [8].
 24. Appendix D was created to summarize the changes in this update to FIPS 197.
-38

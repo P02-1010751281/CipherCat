@@ -2324,4 +2324,3 @@ Table 12. Parameters for initial value construction
 𝑣 𝑎 𝑏 𝑡 𝑟/8
 Ascon variants
 (8 bits) (4 bits) (4 bits) (16 bits) (8 bits) Ascon-AEAD128 1 12 8 128 16 Ascon-Hash256 2 12 12 256 8 Ascon-XOF128 3 12 12 0 8 Ascon-CXOF128 4 12 12 0 8 Table 13. Initial values as hexadecimal integers Ascon variants Initial value Ascon-AEAD128 0x00001000808c0001 Ascon-Hash256 0x0000080100cc0002 Ascon-XOF128 0x0000080000cc0003 Ascon-CXOF128 0x0000080000cc0004
-36

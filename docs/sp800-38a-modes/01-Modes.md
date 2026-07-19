@@ -1641,4 +1641,3 @@ November 26, 2001.
 [3] FIPS Publication 46-3, “Data Encryption Standard (DES).” U.S. DoC/NIST, October 25,
 1999.
 [4] FIPS Publication 81, “DES Modes of Operation.” U.S. DoC/NIST, December 1980. [5] A. Menezes, P. van Oorschot, and S. Vanstone, “Handbook of Applied Cryptography.” CRC Press, New York, 1997.
-59

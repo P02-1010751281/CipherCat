@@ -2104,4 +2104,3 @@ deprecated.
 • The option to generate elliptic curves (besides those specified in SP 800-186) is removed.
 Similarly, users are not given the option to generate their own base points on elliptic
 curves.
-77

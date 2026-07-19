@@ -2136,4 +2136,3 @@ Section 10.2.1.
 [Campagna] has been added.
 20. The previous Appendix F was removed; this appendix contained a list of shall statements
 that could not be validated by NIST’s validation program.
-101

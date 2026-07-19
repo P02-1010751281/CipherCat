@@ -3,13 +3,13 @@
 来源: GB/T 33133-2016
 
 ICS35. 040 L
-中 华 人 民 共 和 国 国 家 标 准 GB/T 33133. 1—2016
+中华 人民 共和 国国 家标 准 GB/T 33133. 1—2016
 
-信息安全技术 祖冲之序列密码算法 第 1 部分 :算法描述 I nfo rma tions ecu rityte chnology—ZUCstre amc iphe ral gor ithm— Pat1: r   Al go r it  e hmdsc ript ion
+信息安全技术祖冲之序列密码算法第 1 部分 :算法描述 Info rmations ecurityte chnology—ZUCstre amciphe ralgor ithm— Pat1: r   Al gorit  ehmdsc ript ion
 
 2016 1013 发布                                     2017 0501 实施
 
-中华人民共和国国家质量监督检验检疫总局               发 布 中 国 国 家 标 准 化 管 理 委 员 会 GB/T 33133. 1—2016
+中华人民共和国国家质量监督检验检疫总局               发布 中国 国家 标准 化管 理委 员会 GB/T 33133. 1—2016
 
 目     次
 
@@ -20,55 +20,55 @@ ICS35. 040 L
 
 前   言
 
-GB/T33133《信息安全技术    祖冲之序列密码算法》分为以下 3 部分: ———第 1 部分:算法描述; ———第 2 部分:保密性算法; ———第 3 部分:完整性算法。 本部分为 GB/T33133 的第 1 部分。 本部分按照 GB/T1. 1—2009 给出的规则起草。 本部分由国家密码管理局提出。 本部分由全国信息安全标准化技术委员会(SAC/TC260)归口。 本部分起草单位:北京信息科学技术研究院、中国科学院软件 研 究 所、中 国 科 学 院 数 据 与 通 信 保 护 研究教育中心、北京创原天地科技有限公司。 本部分主要起草人:冯登国、林东岱、冯秀涛、周春芳、刘辛越。
+GB/T33133《信息安全技术    祖冲之序列密码算法》分为以下 3 部分: ———第 1 部分:算法描述; ———第 2 部分:保密性算法; ———第 3 部分:完整性算法。 本部分为 GB/T33133 的第 1 部分。 本部分按照 GB/T1. 1—2009 给出的规则起草。 本部分由国家密码管理局提出。 本部分由全国信息安全标准化技术委员会(SAC/TC260)归口。 本部分起草单位:北京信息科学技术研究院、中国科学院软件研 究所、中国 科学 院数 据与 通信 保护 研究教育中心、北京创原天地科技有限公司。 本部分主要起草人:冯登国、林东岱、冯秀涛、周春芳、刘辛越。
 
 Ⅲ GB/T 33133. 1—2016
 
 引       言
 
-本部分的目标是保证祖冲之序列密码算法使用的正确性,为国内企业 正 确 研 发 使 用 祖 冲 之 算 法 的 相关设备提供指导。 本部分修改采用如下国际标准:
-ETSI/SAGE TS35.221.Spe cif icat iono fthe3GPPConfi dentia lityandI nt r egit y Al gor ithms128 EEA3 & 128EIA3. Document1:128-EEA3and128EIA3Speci fic ation.
-ETS / I SAGE TS35.222.Spe cif icat iono fthe3GPPConfi dentia lityandI nt r egit y Al gor ithms128 EEA3 & 128EIA3.
-Document2:ZUCSpe ci fic ati on.
-ETS / I SAGE TS35.223.Spe cif ica tionofthe3GPPCon fi  t denia lit yandI nt r egit y Al gor ithms128 EEA3 & 128EIA3. Document3:Implement or’ sTestDa ta.
-ETS / I SAGE TR35.924.Spec ifi cat ionoft he3GPPCon fi  t denia lit yandI nt r egit y Al gor ithms128 EEA3 & 128EIA3.
+本部分的目标是保证祖冲之序列密码算法使用的正确性,为国内企业正 确研 发使 用祖 冲之 算法 的相关设备提供指导。 本部分修改采用如下国际标准:
+ETSI/SAGE TS35.221.Spe cificat iono fthe3GPPConfi dentia lityandI nt regit y Al gor ithms128 EEA3 & 128EIA3. Document1:128-EEA3and128EIA3Speci fication.
+ETS / I SAGE TS35.222.Spe cificat iono fthe3GPPConfi dentia lityandI nt regit y Al gor ithms128 EEA3 & 128EIA3.
+Document2:ZUCSpe cific ation.
+ETS / I SAGE TS35.223.Spe cifica tionofthe3GPPCon fi  tdenia lit yandI nt regit y Al gor ithms128 EEA3 & 128EIA3. Document3:Implement or’ sTestDa ta.
+ETS / I SAGE TR35.924.Spec ificat ionoft he3GPPCon fi  tdenia lit yandI nt regit y Al gor ithms128 EEA3 & 128EIA3.
 Do    t4: cumen Des ignandEva lua tionRepo rt. 本文件的发布机构请注意,声明符合本文件时,可能涉及《一种序列密码实现方法和装置》(专利号: 9)和《一种完整性认证方法》(专利号:
-ZL200910086409.                               9)相关专利的使用。 ZL200910243440. 本文件的发布机构对于该专利的真实性、有效性和范围无任何立场。 该专利的持有人已向本文件的发布机构保证,他愿意同任何申请 人 在 合 理 且 无 歧 视 的 条 款 和 条 件 下,就该专利授权许可进行谈判。该专利的持有人已在本文件的发 布 机 构 备 案。相 关 信 息 可 以 通 过 以 下联系方式获得: 专利持有人姓名:中国科学院数据与通信保护研究教育中心、中国科学院软件研究所 100093、北京市中关村南四街 4 号 邮编: 地址:北京市海淀区闵庄路甲 89 号 邮编:                      100190 请注意除上述专利外,本文件的某些内容仍可能涉及专利。本 文 件 的 发 布 机 构 不 承 担 识 别 这 些 专 利的责任。
+ZL200910086409.                               9)相关专利的使用。 ZL200910243440. 本文件的发布机构对于该专利的真实性、有效性和范围无任何立场。 该专利的持有人已向本文件的发布机构保证,他愿意同任何申请人 在合 理且 无歧 视的 条款 和条 件下,就该专利授权许可进行谈判。该专利的持有人已在本文件的发布 机构 备案。相关 信息 可以 通过 以下联系方式获得: 专利持有人姓名:中国科学院数据与通信保护研究教育中心、中国科学院软件研究所 100093、北京市中关村南四街 4 号邮编: 地址:北京市海淀区闵庄路甲 89 号邮编:                      100190 请注意除上述专利外,本文件的某些内容仍可能涉及专利。本文 件的 发布 机构 不承 担识 别这 些专 利的责任。
 
 Ⅳ GB/T 33133. 1—2016
 
-信息安全技术 祖冲之序列密码算法 第 1 部分:算法描述
+信息安全技术祖冲之序列密码算法第 1 部分:算法描述
 
 1 范围
 
-GB/T33133 的本部分给出了祖冲之序列 密 码 算 法 的 一 般 结 构,基 于 该 结 构 可 实 现 本 标 准 其 他 各 部分所规定的密码机制。 本部分适用于祖冲之序列密码算法相关产品的研制、检测和使用,可应用于涉及非国家秘密范畴的 商业应用领域。
+GB/T33133 的本部分给出了祖冲之序列密 码算 法的 一般 结构,基于 该结 构可 实现 本标 准其 他各 部分所规定的密码机制。 本部分适用于祖冲之序列密码算法相关产品的研制、检测和使用,可应用于涉及非国家秘密范畴的商业应用领域。
 
 2 规范性引用文件
 
-下列文件对于本文件的应用是必不可少的。凡是注日期的引 用 文 件,仅 注 日 期 的 版 本 适 用 于 本 文 件。凡是不注日期的引用文件,其最新版本(包括所有的修改单)适用于本文件。 GB/T25069—2010 信息安全技术术语
+下列文件对于本文件的应用是必不可少的。凡是注日期的引用 文件,仅注 日期 的版 本适 用于 本文 件。凡是不注日期的引用文件,其最新版本(包括所有的修改单)适用于本文件。 GB/T25069—2010 信息安全技术术语
 
 3 术语和定义
 
-GB/T25069—2010 界定的以及下列术语和定义适用于本文件。 3. 1 祖冲之序列密码算法 ZUCS tre am C ipher 祖冲之序列密码算法是中国自主 研 制 的 流 密 码 算 法,是 运 用 于 下 一 代 移 动 通 信 4G 网 络 中 的 国 际 标准密码算法,该算法包括祖冲之算法、保密性算法和完整性算法三个部分。 3. 2 位 b it 二进制数字 b ina ryd igi t 二进制计数制中使用的数字 0 或 1。 3. 3 字节 by te 一种由若干位组成的串,视作一个单位,通常代表一个字符或字符的一部分。 注 1:对一个给定的数据处理系统,一个字节中的位数是固定的。 注 2:一个字节通常是 8 位。
+GB/T25069—2010 界定的以及下列术语和定义适用于本文件。 3. 1 祖冲之序列密码算法 ZUCS tream C ipher 祖冲之序列密码算法是中国自主研 制的 流密 码算 法,是运 用于 下一 代移 动通 信 4G 网络 中的 国际 标准密码算法,该算法包括祖冲之算法、保密性算法和完整性算法三个部分。 3. 2 位 bit 二进制数字 bina rydigi t 二进制计数制中使用的数字 0 或 1。 3. 3 字节 byte 一种由若干位组成的串,视作一个单位,通常代表一个字符或字符的一部分。 注 1:对一个给定的数据处理系统,一个字节中的位数是固定的。 注 2:一个字节通常是 8 位。
 
-3. 4 字  wor d 由 2 个以上(包含 2 个)比特组成的比特串。 本部分主要使用 31 比特字和 32 比特字。 3. 5 字表示 wo rdr epr ese nta tion 本部分字默认采用十进制表示。当字采用其他进制表示时,总 是 在 字 的 表 示 之 前 或 之 后 添 加 指 示 符。例如,前缀 0x 指示该字采用十六进制表示,后缀下角标 2 指示该字采用二进制表示。 1 GB/T 33133. 1—2016
+3. 4 字  wor d 由 2 个以上(包含 2 个)比特组成的比特串。 本部分主要使用 31 比特字和 32 比特字。 3. 5 字表示 wordr eprese ntation 本部分字默认采用十进制表示。当字采用其他进制表示时,总是 在字 的表 示之 前或 之后 添加 指示 符。例如,前缀 0x 指示该字采用十六进制表示,后缀下角标 2 指示该字采用二进制表示。 1 GB/T 33133. 1—2016
 
-3. 6 高低位顺序 b ito rde ring 本部分规定字的最高位总是位于字表示中的最左边,最低位总是位于字表示中的最右边。
+3. 6 高低位顺序 bito rdering 本部分规定字的最高位总是位于字表示中的最左边,最低位总是位于字表示中的最右边。
 
 4 符号和缩略语
 
 4. 1 运算符
 
-下列运算符适用于本文件: +    算术加法运算 ab     整数 a 和b 的乘积 =      赋值操作符 mod    整数模运算 􀱇      按比特位逐位异或运算 模 232 加法运算 ‖      字符串或字节串连接符 ·H     取字的最高 16 比特 ·L     取字的最低 16 比特 <<< k    32 比特字循环左移k 位 >> k     32 比特字右移k 位 a→b     向量a 赋值给向量b,即按分量逐分量赋值
+下列运算符适用于本文件: +    算术加法运算 ab     整数 a 和b 的乘积 =      赋值操作符 mod    整数模运算 􀱇      按比特位逐位异或运算模 232 加法运算 ‖      字符串或字节串连接符 ·H     取字的最高 16 比特 ·L     取字的最低 16 比特 <<< k    32 比特字循环左移k 位 >> k     32 比特字右移k 位 a→b     向量a 赋值给向量b,即按分量逐分量赋值
 
 4. 2 符号
 
-下列符号适用于本文件: s0 , s1 , s2 ,…, s15 线性反馈移位寄存器的 16 个 31 比特寄存器单元变量 ,   , X0 X1 X2 X3,   比特重组输出的 4 个 32 比特字 R1 ,R2         非线性函数 F 的 2 个 32 比特记忆单元变量 W              非线性函数 F 输出的 32 比特字 W1             R1 与 X1 进行模 232 加法运算输出的 32 比特字 W2             R2 与 X2 按比特位逐位异或运算输出的 32 比特字 Z             算法每拍输出的 32 比特密钥字 k             初始种子密钥 i v             初始向量 di                       i=0, 15 比特的字符串常量,  1,2,…, 15 F             非线性函数 L             输出密钥字长度
+下列符号适用于本文件: s0 , s1 , s2 ,…, s15 线性反馈移位寄存器的 16 个 31 比特寄存器单元变量 ,   , X0 X1 X2 X3,   比特重组输出的 4 个 32 比特字 R1 ,R2         非线性函数 F 的 2 个 32 比特记忆单元变量 W              非线性函数 F 输出的 32 比特字 W1             R1 与 X1 进行模 232 加法运算输出的 32 比特字 W2             R2 与 X2 按比特位逐位异或运算输出的 32 比特字 Z             算法每拍输出的 32 比特密钥字 k             初始种子密钥 iv             初始向量 di                       i=0, 15 比特的字符串常量,  1,2,…, 15 F             非线性函数 L             输出密钥字长度
 
 4. 3 缩略语
 
 下列缩略语适用于本文件:
-LFSR   线性反馈移位寄存器(  LinearFeedba ckSh iftReg ist er)
+LFSR   线性反馈移位寄存器(  LinearFeedba ckSh iftReg ister)
 BR         B
 比特重组(itReo rgan izat ion)
 
@@ -88,7 +88,7 @@ LFSR 包括 16 个 31 比特寄存器单元变量s0 , s1 ,…, s15 。 LFSR 的�
 
 2. 5.2 初始化模式
 
-LFSR 接收 1 个 31 比特字 u 的输入,对寄存器单元变量s0 , s1 ,…, s15 进行更新,计算过程如下: LFSRWi thI nit ial ist ai      u) onMode( { ( 1)v=215s15 +217s13 +221s10 +220s4 + ( 1+28) s0 mod ( 231 -1); ( 2)s16 = ( v+u)mod ( 231 -1); ( 3)如果s16 =0,则置s16 =231 -1; ( 4)( s1 , s2 ,…, s15 , s16)→ ( s0 , s1 ,…, s14 , s15)。 } 模 231 -1 乘法和模 231 -1 加法的实现参见附录 B。
+LFSR 接收 1 个 31 比特字 u 的输入,对寄存器单元变量s0 , s1 ,…, s15 进行更新,计算过程如下: LFSRWi thI nitial istai      u) onMode( { ( 1)v=215s15 +217s13 +221s10 +220s4 + ( 1+28) s0 mod ( 231 -1); ( 2)s16 = ( v+u)mod ( 231 -1); ( 3)如果s16 =0,则置s16 =231 -1; ( 4)( s1 , s2 ,…, s15 , s16)→ ( s0 , s1 ,…, s14 , s15)。 } 模 231 -1 乘法和模 231 -1 加法的实现参见附录 B。
 
 2. 5.3 工作模式
 
@@ -115,11 +115,11 @@ d0 =1000100110101112 , d1 =0100110101111002 , d2 =1100010011010112 , d3 =0010011
 
 6. 5.1 概述
 
-祖冲之算法的输入参数为初始密钥k、初 始 向 量i v 和 正 整 数 L ,输 出 参 数 为 L 个 密 钥 字 Z 。 算 法 运行过程包含初始化步骤和工作步骤。
+祖冲之算法的输入参数为初始密钥k、初始 向量i v 和正 整数 L ,输出 参数 为 L 个密 钥字 Z 。 算法 运行过程包含初始化步骤和工作步骤。
 
 6. 5.2 初始化步骤
 
-a) 按照 4.              v 装 入 到 LFSR 的 寄 存 器 单 元 变 量s0 , 5 将初始密钥k 和初始向量i                              s1 ,…, s15 中,作 为 LFSR 的初态; b) 令 32 比特记忆单元变量 R1 和 R2 为 0; c) 重复执行下述过程 32 次: 1) B itRe const ruct ion(); 2) W =F ( X0 , X1 , X2); 3) 输出 32 比特字 W ; 4) LFSRWi thI nit ial ist ai          1)。 W >> onMode (
+a) 按照 4.              v 装入 到 LFSR 的寄 存器 单元 变量s0 , 5 将初始密钥k 和初始向量i                              s1 ,…, s15 中,作为 LFSR 的初态; b) 令 32 比特记忆单元变量 R1 和 R2 为 0; c) 重复执行下述过程 32 次: 1) B itRe const ruct ion(); 2) W =F ( X0 , X1 , X2); 3) 输出 32 比特字 W ; 4) LFSRWi thI nitial istai          1)。 W >> onMode (
 
 6. 5.3 工作步骤
 
@@ -127,12 +127,12 @@ a) 执行下述过程: 1) B itRe cons truc tion(); 2) F ( X0 , X1 , X2); 3) LFSR
 
 5 GB/T 33133. 1—2016
 
-附 录 A (规范性附录) S    盒
+附录 A (规范性附录) S    盒
 
 32 比特 S 盒S 由 4 个小的 8×8 的 S 盒并置而成,即 S= ( S0 , S1 , S2 , S3 ),其中 S0 =S2 , S1 =S3 。 S0 和 S1 的定义分别见表 A.        2。设 S0(或 S1)的 8 比特输入为 x。将 x 视作两个 16 进制数的 1 和表 A. 连接,即 x=h‖l,则表 A. 1 (或表 A. 2)中第 h 行和第l 列交叉的元素即为S0 或 S1)的输出 S0 ( x)[或 S1( x)]。 设 S 盒S 的 32 比特输入 X 和 32 比特输出Y 分别为:
 X =x0 ‖x1 ‖x2 ‖x3 Y =y0 ‖y1 ‖y2 ‖y3 其中,               i=0, xi 和yi 均为 8 比特字节,  1,2,3。则有 yi=Si(   xi), i=0, 1,2, 3。
 
-1 S0 盒 表 A.
+1 S0 盒表 A.
 
 0   1    2    3    4    5     6       7    8    9    A    B    C    D    E    F
 
@@ -164,7 +164,7 @@ E     8E   83   77   6B   25   05   3F   0C       30   EA   70   B7   A1   E8   
 F     8D   27   1A   DB   81   B3   A0       F4   45   7A   19   DF   EE   78   34
 6 GB/T 33133. 1—2016
 
-2 S1 盒 表 A.
+2 S1 盒表 A.
 
 0   1    2    3    4    5    6    7    8    9    A    B    C    D    E    F
 
@@ -195,19 +195,19 @@ F    64   BE   85   9B   2F   59   8A   D7   B0   25   AC   AF   12   03   E2   
 
 7 GB/T 33133. 1—2016
 
-附 录 B (资料性附录) 模 231 -1 乘法和模 231 -1 加法的实现
+附录 B (资料性附录) 模 231 -1 乘法和模 231 -1 加法的实现
 
 B. 1 模 231 -1 乘法
 
-两个 31 比特字模 231 -1 乘法可以快速实现。特别地,当其中一个字具有较低的汉明重量时,可以 通过 31 比特的循环移位运算和模 231 -1 加法运算实现。例如,计算 ab mod ( 231 -1),其中b=2i +2j +2k 。则 ab mod( 231 -1)= ( a<<< 31i)+( a<<< 31j)+( a<<< 31k)mod ( 231 -1)   ……(B. 1) 式中:<<< 31 表示 31 比特左循环移位运算。
+两个 31 比特字模 231 -1 乘法可以快速实现。特别地,当其中一个字具有较低的汉明重量时,可以通过 31 比特的循环移位运算和模 231 -1 加法运算实现。例如,计算 abmod ( 231 -1),其中b=2i +2j +2k 。则 abmod( 231 -1)= ( a<<< 31i)+( a<<< 31j)+( a<<< 31k)mod ( 231 -1)   ……(B. 1) 式中:<<< 31 表示 31 比特左循环移位运算。
 
 B. 2 模 231 -1 加法
 
-在 32 位处理平台上,两个 31 比特字 a 和b 模 231 -1 加法运算c=a+b mod ( 231 -1)可以通过下 面的两步计算实现: a) c=a+b; b) c= ( c & 0x7FFFFFFF)+ ( c>> 31)。
+在 32 位处理平台上,两个 31 比特字 a 和b 模 231 -1 加法运算c=a+bmod ( 231 -1)可以通过下面的两步计算实现: a) c=a+b; b) c= ( c & 0x7FFFFFFF)+ ( c>> 31)。
 
 8 GB/T 33133. 1—2016
 
-附 录 C (资料性附录) 算法计算实例
+附录 C (资料性附录) 算法计算实例
 
 1 测试向量 1(全 0) C.
 
@@ -231,13 +231,13 @@ t       X0          X1     X2        X3        R1       R2         W      S15
 
 4     7e acf 744   a c000078   f 100005e   350000a f 2c 85a 655 24259cb0 e 41b0514 006a 144c
 
-5    00d444ba cb1b00 f1 260000d7 a f00006b       cb fbc 5c0   44c 10b3a   50777 f9f 07038b9b
+5    00d444ba cb1b00 f1 260000d7 a f00006b       cbfbc 5c0   44c 10b3a   50777 f9f 07038b9b
 
 6    0e 07144c   2a 0f008 f 4d000035 780000e 083c 2 e  8d3         7ab f7679   0abddc c6 69b90e 2b
 
 7    d3728b9b f 7448a c7     9a 0000bc 13000013       14 147e f 4   b669e 72d a eb0b9c 1 62a 913e a
 
-8    c 5520e 2b 44ba 50c a a c000078         c 400009a 982834a 0 f 095d694 8796020c 7b591c c0
+8    c 5520e 2b 44ba 50c aa c000078         c 400009a 982834a 0 f 095d694 8796020c 7b591c c0
 
 9    f 6b213e a    144c e8c 9    cb1b00 f1   f 100005e e 14727d6 d0225869     5 f2f fdde 70e 21147
 
@@ -262,7 +262,7 @@ t      X0          X1      X2       X3        R1       R2        z       S15
 
 2 测试向量 2(全 1) C.
 
-输入: 密钥k:         f ffff ffff ffff ffff ffff ffff ffff fff v:f 初始向量i ff ff ff ff ffff ffff ffff ffff ffff fff 输出: z1 : 0657c fa0 z2 : 7096398b 初始化: 线性反馈移位寄存器初态:
+输入: 密钥k:         fffff ffff ffff ffff ffff ffff ffff fff v:f 初始向量i ffff ffff ffff ffff ffff ffff ffff fff 输出: z1 : 0657c fa0 z2 : 7096398b 初始化: 线性反馈移位寄存器初态:
 
 i     S0+i        S1+i     S2+i     S3+i     S4+i      S5+i     S6+i     S7+i
 
@@ -272,20 +272,20 @@ i     S0+i        S1+i     S2+i     S3+i     S4+i      S5+i     S6+i     S7+i
 
 t      X0          X1      X2       X3        R1       R2        W       S15
 
-0    f f8f 9af f      f 1ff ff5e    a fff ff6b   6b fff f89   b51c      3629a 2110 30a        f f8f 9af f 76e 49a 1a
+0    f f8f 9af f      f 1ff ff5e    afff ff6b   6b fff f89   b51c      3629a 2110 30a        f f8f 9af f 76e 49a 1a
 
 1    edc 9ac ff     26 fff fd7    78 fff fe2   5e fff f4d   a 75b6 f4b 1a 079628 8978 f089 5e 2d8983
 
 2    bc 5b9a 1a     4d fff f35    13 fff f13   89 fff fc4   9810b315 99296735 35088b79 5b9484b8
 
-3    b7298983   9a fff fbc    c 4ff ff9a   e 2ff ff26   4c 5bd8eb 2d577790 c 862a 1cb 2db5c
-4    5b6b84b8   a cff ff78    f 1ff ff5e   35 fff faf   a 13dcb66 21d0939 f 4487d3e 3 60579232
+3    b7298983   9a ffffbc    c 4ff ff9a   e 2ff ff26   4c 5bd8eb 2d577790 c 862a 1cb 2db5c
+4    5b6b84b8   acff ff78    f 1ff ff5e   35 ffffaf   a 13dcb66 21d0939 f 4487d3e 3 60579232
 
-5    c 0af c755     9a 1af ff1    26 fff fd7   f aff ff6b   c c e 5c260   0c 50a 8e2    83629 fd2 29d4e
+5    c 0af c755     9a 1af ff1    26 fff fd7   faff ff6b   cc e 5c260   0c 50a 8e2    83629 fd2 29d4e
 6    53a 99232    8983 ff8 f    4d fff f35   78 fff fe2   dada 0730 b516b128 a c461934 5e 02d9e
-7    bc 05e 960 84b8edc 9       9a fff fbc   13 fff f13   2bbe 53a 4 12a 8a16e     1b f69 f78 7904dddc
+7    bc 05e 960 84b8edc 9       9a ffffbc   13 fff f13   2bbe 53a 4 12a 8a16e     1b f69 f78 7904dddc
 
-8    f 209d9e 5     c 755bc 5b    a cff ff78   4 cff ff9a   4a 90d661 d9c 744b4    e c602ba f 0c 3c9016
+8    f 209d9e 5     c 755bc 5b    acff ff78   4 cff ff9a   4a 90d661 d9c 744b4    e c602ba f 0c 3c9016
 
 9    1879dddc 9232b729    9a 1af ff1   f 1ff ff5e   76bc 13d7 a 49e a404 2cb05071 0b9d257b
 
@@ -306,14 +306,14 @@ t       X0          X1       X2        X3        R1         R2         z      S1
 
 0     3 fc81c e8     c 2d141d1 4bd08879 42271346 a a131b11 09d7706c 668b56d f 13 f56db f
 
-1     27e a6106    82c 8f4b6 0b14d499 91872523 251e 7804        c aac 5d66    0657c fa0 0c 0fe
+1     27e a6106    82c 8f4b6 0b14d499 91872523 251e 7804        caac 5d66    0657c fa0 0c 0fe
 2     181 f6db f 04a 21879       f 24c 93c 6     773b4a aa d94e 9228 91d88 fba 7096398b 10 f1e ecf
 
 3 测试向量 3(随机) C.
 
 输入: 密钥k:  3d4c4be96a82f daeb58f641db17b455b v:84319aa 初始向量i       8de6915ca1f6bda6bfbd8c766 输出: z1 : 14f1c 272 z2 : 3279c419 初始化: 线性反馈移位寄存器初态:
 
-i      S0+i         S1+i    S2+i      S3+i      S4+i       S5+i       S6+i    S7+i 0     1e c4d784 2626bc 31 25e 26b9a 74935e a8 355789de 4135e 269              7e f13515 5709a fca 8     5a cd781 f     47a f136b   326bc 4da 0e 9af 16b      58de 26f b 3dbc 4dd8       22 f89a c7 2dc 7ac 66 t       X0          X1       X2        X3        R1         R2         W      S15 0     5b8 f9a c7     f 16b8 f5e    a fc826b a       6b9a 3d89   9c 62829 f 5d f00831       5b8 f9a c7 3c 7b93c 0 1     78 f7a c66     26 fb64d7   781 ffde 2     a 5e84c 4d    3d533 f3a    80 ff1 faf    4285372a 41901e e9 2     832093c 0 4dd81d35 136ba e13 89de 4bc 4          2c a57e 9d     d1db72 f9   3 f72c ca9 411e fa99 3     823d1e e9    9a c7b1bc c 4dab59a e 269e 926        0e 8dc 40f     60921a 4f 8073d36d 24b3 f49 f 4     4967 fa99    a c667b78   f 16b8 f5e    35156a af 16c 81467      da 8e7d8a a 87c 58e 5 74265785 5     e 84c f49 f      93c 045 f1    26 fb64d7   a fca 826b    50c 9ea a4     3c 3b2d fd    d9135e 82 481c 5b9d 6     90385785   1e e95b8 f 4dd81d35     781 ffde 2    59857b80   be 0fbdc 1    f d2c eb1e 4b7 f87ed 7     96 ff5b9d    f a9978 f7    9a c7b1bc 136ba e13     9528 f8e a     bc c7f 7eb    8d89ddde 0e 633c e7 8     1c c687ed    f 49f 8320    a c667b78 c 4dab59a c 59d2932 e 1098a 64           46b676 f2 643a e5a 6 9     c 8753c e7 5785823d 93c 045 f1         f 16b8 f5e         e 755eba8    3 f9e 6e86    e ef1a 039 625a c5d7 初始化后线性反馈移位寄存器状态:
+i      S0+i         S1+i    S2+i      S3+i      S4+i       S5+i       S6+i    S7+i 0     1e c4d784 2626bc 31 25e 26b9a 74935e a8 355789de 4135e 269              7e f13515 5709a fca 8     5a cd781 f     47a f136b   326bc 4da 0e 9af 16b      58de 26f b 3dbc 4dd8       22 f89a c7 2dc 7ac 66 t       X0          X1       X2        X3        R1         R2         W      S15 0     5b8 f9a c7     f 16b8 f5e    a fc826b a       6b9a 3d89   9c 62829 f 5d f00831       5b8 f9a c7 3c 7b93c 0 1     78 f7a c66     26 fb64d7   781 ffde 2     a 5e84c 4d    3d533 f3a    80 ff1 faf    4285372a 41901e e9 2     832093c 0 4dd81d35 136ba e13 89de 4bc 4          2c a57e 9d     d1db72 f9   3 f72c ca9 411e fa99 3     823d1e e9    9a c7b1bc c 4dab59a e 269e 926        0e 8dc 40f     60921a 4f 8073d36d 24b3 f49 f 4     4967 fa99    a c667b78   f 16b8 f5e    35156a af 16c 81467      da 8e7d8a a 87c 58e 5 74265785 5     e 84c f49 f      93c 045 f1    26 fb64d7   afca 826b    50c 9ea a4     3c 3b2d fd    d9135e 82 481c 5b9d 6     90385785   1e e95b8 f 4dd81d35     781 ffde 2    59857b80   be 0fbdc 1    f d2c eb1e 4b7 f87ed 7     96 ff5b9d    f a9978 f7    9a c7b1bc 136ba e13     9528 f8e a     bc c7f 7eb    8d89ddde 0e 633c e7 8     1c c687ed    f 49f 8320    a c667b78 c 4dab59a c 59d2932 e 1098a 64           46b676 f2 643a e5a 6 9     c 8753c e7 5785823d 93c 045 f1         f 16b8 f5e         e 755eba8    3 f9e 6e86    e ef1a 039 625a c5d7 初始化后线性反馈移位寄存器状态:
 
 i      S0+i         S1+i    S2+i      S3+i      S4+i       S5+i       S6+i    S7+i
 
@@ -339,7 +339,7 @@ t      X0         X1       X2        X3       R1        R2       z      S15
 
 参   考   文   献
 
-1] ETS [      I/SAGETS35. 221. Speci fia cti ono fthe3GPPConf identi ali tyandI nteg rit yAl gor ithms 128EEA3 & 128-EIA3.
-Documen  : t1 128EEA3and128EIA3Spec ifi cati on. 2] ETS [      I/SAGETS35. 222. Speci fia cti ono fthe3GPPConf identi ali tyandI nteg rit yAl gor ithms 128EEA3 & 128-EIA3.
-Document2:ZUCSpe c ifi cat ion. 3] ETS [      I/SAGETS35. 223. Spec ifi cat iono ft he3GPPCon fiden tia lit yandI nteg rit yAl gor ithms 128EEA3 & 128-EIA3. Document3:Implementr’ o sTestDat a. 4] ETS [      I/SAGE TR35.924.Spe cif icat ionofthe3GPPCon fiden tia lit yandI nteg rit yAl gor ithms 128EEA3 & 128EIA3.
+1] ETS [      I/SAGETS35. 221. Speci fiacti ono fthe3GPPConf identi ali tyandI nteg rit yAl gorithms 128EEA3 & 128-EIA3.
+Documen  : t1 128EEA3and128EIA3Spec ificati on. 2] ETS [      I/SAGETS35. 222. Speci fiacti ono fthe3GPPConf identi ali tyandI nteg rit yAl gorithms 128EEA3 & 128-EIA3.
+Document2:ZUCSpe cifi cation. 3] ETS [      I/SAGETS35. 223. Spec ificat iono ft he3GPPCon fiden tialit yandI nteg rit yAl gorithms 128EEA3 & 128-EIA3. Document3:Implementr’ o sTestDat a. 4] ETS [      I/SAGE TR35.924.Spe cificat ionofthe3GPPCon fiden tialit yandI nteg rit yAl gorithms 128EEA3 & 128EIA3.
 Do    t4: cumen Dei sgnandEva lua tionRepo rt.

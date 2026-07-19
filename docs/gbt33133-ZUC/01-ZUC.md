@@ -5,7 +5,7 @@
 ICS35. 040 L
 中华 人民 共和 国国 家标 准 GB/T 33133. 1—2016
 
-信息安全技术祖冲之序列密码算法第 1 部分 :算法描述 Info rmations ecurityte chnology—ZUCstre amciphe ralgor ithm— Pat1: r   Al gorit  ehmdsc ript ion
+信息安全技术祖冲之序列密码算法第 1 部分 :算法描述 Info rmations ecurityte chnology—ZUCstre amciphe ralgorithm— Pat1: r   Al gorit  ehmdsc ript ion
 
 2016 1013 发布                                     2017 0501 实施
 

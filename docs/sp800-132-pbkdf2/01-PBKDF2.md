@@ -176,7 +176,7 @@ SHA Secure Hash Algorithm
 3.3 Symbols
 Symbol Meaning
  Bit-wise exclusive-or.
-|| Concatenation.
+Concatenation.
 The ceiling of a: the smallest integer that is greater than or equal to
  a
 a. For example, 5 = 5, 5.3 = 6, and –2.1 = –2.

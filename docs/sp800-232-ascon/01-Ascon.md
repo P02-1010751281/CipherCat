@@ -765,7 +765,7 @@ Functions Definition
 {0,1}𝑠 The set of all bit strings of length 𝑠
 0𝑠 When 𝑠 ≥ 0, 0𝑠 is the bit string that consists of 𝑠 consecutive 0s.
 When 𝑠 = 0, then 0𝑠 is the empty string.
-|𝑋| Length of the bitstring 𝑋 in bits
+𝑋| Length of the bitstring 𝑋 in bits
 𝑋 ‖𝑌 Concatenation of bitstrings 𝑋 and 𝑌
 𝑥 × 𝑦 Multiplication of integers 𝑥 and 𝑦
 𝑥 + 𝑦 Addition of integers 𝑥 and 𝑦
@@ -1140,7 +1140,7 @@ described in (20) is applied.
 |  | 𝑃 , 𝑃 | , …, 𝑃 |  | ,𝑃̃ | ← parse(𝑃 ,128), |  |  | (21) |
 | ---- | ----- | ------ | --- | --- | ----------------- | --- | --- | ----- |
 | 378 | 0 | 1 | 𝑛−1 | 𝑛 |
-| = 128 for 0 ≤ 𝑖 ≤ 𝑛−1, and |𝑃̃| = ℓ, 0 ≤ ℓ < 128
+= 128 for 0 ≤ 𝑖 ≤ 𝑛−1, and |𝑃̃| = ℓ, 0 ≤ ℓ < 128
 where 𝑛 = ⌊|𝑃 |/128⌋ and |𝑃
 using Algorithm 1. When |𝑃 | mod 128 = 0, the last block 𝑃̃
 is empty.
@@ -1312,7 +1312,7 @@ as explained in Algorithm 1. The last block 𝐴 ̃ can be empty.
 𝑚
 ,128) = 𝐴 ̃
 𝑚
-||1 ∥ 0127−|𝐴̃ 𝑚 | . (35)
+|1 ∥ 0127−|𝐴̃ 𝑚 | . (35)
 The associated data blocks 𝐴 ’s (0 ≤ 𝑖 ≤ 𝑚), are absorbed to the state S as follows:
 425 𝑖
 S ← (S ⊕ 𝐴 ), (36)
@@ -1911,7 +1911,7 @@ NIST SP 800-232 ipd (Initial Public Draft)
 November 2024
 Algorithm 7 Ascon-CXOF128(𝑀, 𝐿, 𝑍)
 Input: Bitstring 𝑀 ∈{0,1}∗ ; Output length 𝐿 >0; customization string 𝑍 ∈ {0,1}∗, where
-|𝑍| ≤ 2048
+𝑍| ≤ 2048
 Output: Digest 𝐻 ∈ {0,1}𝐿
 S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](𝐼𝑉 ‖0256)
 0

@@ -199,7 +199,7 @@ text The data on which the HMAC is calculated; text does not include the padded 
 The length of text is n bits, where 0 ≤ n < 2B - 8B.
 x ‘N’ Hexadecimal notation, where each symbol in the string ‘N’ represents 4 binary
 bits.
-|| Concatenation.
+Concatenation.
 ⊕ Exclusive-Or operation.
 3
 

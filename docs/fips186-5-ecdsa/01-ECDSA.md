@@ -514,7 +514,7 @@ FIPS 186-5 DIGITAL SIGNATURE STANDARD (DSS)
 a. For example, 5 = 5, 5.3 = 6, and –2.1 = –2.
 a The floor of a; the largest integer that is less than or equal to a. For
 example, 5 = 5, 5.3 = 5, and –2.1 = −3.
-|a| The absolute value of a; |a| is – a if a < 0; otherwise, it is simply a.
+a| The absolute value of a; |a| is – a if a < 0; otherwise, it is simply a.
 For example, |2| = 2, and |–2| = 2.
 [a, b] The interval of integers between and including a and b. For
 example, [1, 4] consists of the integers 1, 2, 3 and 4.

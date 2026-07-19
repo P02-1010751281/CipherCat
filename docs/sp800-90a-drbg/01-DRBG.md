@@ -2811,7 +2811,7 @@ Process:
 significant to least significant).
 n
 
-| 2. 	  x = ∑  | 2 (n−i)
+2. 	  x = ∑  | 2 (n−i)
 b.  |     |     |     |
 i
 

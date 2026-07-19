@@ -34,6 +34,14 @@ javascriptGenerator.forBlock['hash_sm3_pad_text'] = function (
   return [getSm3PadFn() + '(' + input + ')', Order.ATOMIC];
 };
 
+javascriptGenerator.forBlock['hash_sm3_pad'] = function (
+  block: Block,
+): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
+  return [getSm3PadFn() + '(' + input + ')', Order.ATOMIC];
+};
+
 javascriptGenerator.forBlock['hash_sm3_pad_hex'] = function (
   block: Block,
 ): [string, number] {

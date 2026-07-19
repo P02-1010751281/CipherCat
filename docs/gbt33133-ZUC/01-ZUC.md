@@ -5,7 +5,7 @@
 ICS35040
 .
 L80
-| 中华 | 人   | 民   | 共   | 和   | 国   | 国家 标 | 准   |
+| 中华 | 人   | 民   | 共   | 和   | 国   | 国家标 | 准   |
 | --- | --- | --- | --- | --- | --- | ----- | --- |
 GB/T331331—2016
 .
@@ -959,7 +959,7 @@ R
 
 GB/T331331—2016
 .
-参考 文献
+参考文献
 [1] ETSI/SAGETS35.221.Specificationofthe3GPPConfidentialityandIntegrityAlgorithms
 128-EEA3&128-EIA3.Document1:128-EEA3and128-EIA3Specification.
 [2] ETSI/SAGETS35.222.Specificationofthe3GPPConfidentialityandIntegrityAlgorithms

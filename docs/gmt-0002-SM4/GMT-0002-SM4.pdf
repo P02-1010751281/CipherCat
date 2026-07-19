@@ -1,0 +1,46 @@
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<title>错误页面</title>
+
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<link rel="stylesheet" type="text/css"
+	href="/component/bootstrap/css/bootstrap.css">
+
+</head>
+
+<body>
+<div >
+					  <h3>请求错误</h3>
+					  <p>
+						 抱歉，出现了一个错误！请试着返回到 <a href="/">主页</a> 或者回退到前一个页面!
+					  </p>
+					  <div class="error-actions">
+						<a href="javascript:void(0)" id="back_btn" class="btn btn-large btn-primary">  &nbsp; 返回前一个页面
+						</a>
+
+
+
+					</div>
+	<!--/PAGE -->
+
+
+	<script src="/js/jquery/jquery-2.1.4.min.js"></script>
+	<script>
+		$(function($) {
+			$('#back_btn').click(function() {
+				window.history.back();
+				//return false;
+			});
+		});
+	</script>
+</body>
+
+</html>

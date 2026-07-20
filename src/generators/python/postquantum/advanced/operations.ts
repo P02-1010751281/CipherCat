@@ -10,12 +10,6 @@ import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
 
 import {
-  registerSeedWithNonce,
-  registerPolyAddMod,
-  registerNtt,
-  registerIntt,
-  registerNttMul,
-  registerSampleCbdEta,
 } from '../helpers';
 
 // ── 块生成器（当前空，M2.5 将在此注册便利块生成器）──

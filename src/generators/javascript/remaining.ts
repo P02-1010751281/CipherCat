@@ -10,11 +10,11 @@
 
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import { getTypeCoercion, TYPE_INT_LIST, TYPE_BYTES } from '@/constants/block-types';
+import { registerNtt, registerNttMul, registerPolyAddModQ, registerSampleCbdEta, registerSeedWithNonce } from './postquantum/helpers';
 import type { Block } from 'blockly/core';
 
 // ── 辅助：导入后量子 helpers（M0 保留的孤立辅助函数）──
 // 这些函数在 M0 清理后保留在 advanced/operations.ts 中
-import { registerSampleCbdEta, registerNtt, registerIntt, registerSeedWithNonce, registerPolyAddModQ, registerNttMul } from './postquantum/helpers';
 
 // ═══════════════════════════════════════════════════════════
 // M3 数学原语
@@ -54,15 +54,15 @@ function _bnReg() {
     'function '+javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_+'(n){var r=[];while(n>0n){r.push(Number(n&0xFFFFFFFFn));n>>=32n;}return r.length?r:[0];}',
   ]);
 }
-javascriptGenerator.forBlock['bn_add']=function(b:Block):[string,number]{_bnReg();var a=javascriptGenerator.valueToCode(b,'A',Order.ATOMIC)||'[0]',v=javascriptGenerator.valueToCode(b,'B',Order.ATOMIC)||'[0]';return['bnFromBigInt(bnToBigInt('+a+')+bnToBigInt('+v+'))',Order.ATOMIC];};
-javascriptGenerator.forBlock['bn_sub']=function(b:Block):[string,number]{_bnReg();var a=javascriptGenerator.valueToCode(b,'A',Order.ATOMIC)||'[0]',v=javascriptGenerator.valueToCode(b,'B',Order.ATOMIC)||'[0]';return['bnFromBigInt(bnToBigInt('+a+')-bnToBigInt('+v+'))',Order.ATOMIC];};
-javascriptGenerator.forBlock['bn_mul']=function(b:Block):[string,number]{_bnReg();var a=javascriptGenerator.valueToCode(b,'A',Order.ATOMIC)||'[0]',v=javascriptGenerator.valueToCode(b,'B',Order.ATOMIC)||'[0]';return['bnFromBigInt(bnToBigInt('+a+')*bnToBigInt('+v+'))',Order.ATOMIC];};
-javascriptGenerator.forBlock['bn_div']=function(b:Block):[string,number]{_bnReg();var a=javascriptGenerator.valueToCode(b,'A',Order.ATOMIC)||'[0]',v=javascriptGenerator.valueToCode(b,'B',Order.ATOMIC)||'[0]';return['bnFromBigInt(bnToBigInt('+a+')/bnToBigInt('+v+'))',Order.ATOMIC];};
+javascriptGenerator.forBlock['bn_add']=function(b:Block):[string,number]{_bnReg();const a=javascriptGenerator.valueToCode(b,'A',Order.ATOMIC)||'[0]',v=javascriptGenerator.valueToCode(b,'B',Order.ATOMIC)||'[0]';return['bnFromBigInt(bnToBigInt('+a+')+bnToBigInt('+v+'))',Order.ATOMIC];};
+javascriptGenerator.forBlock['bn_sub']=function(b:Block):[string,number]{_bnReg();const a=javascriptGenerator.valueToCode(b,'A',Order.ATOMIC)||'[0]',v=javascriptGenerator.valueToCode(b,'B',Order.ATOMIC)||'[0]';return['bnFromBigInt(bnToBigInt('+a+')-bnToBigInt('+v+'))',Order.ATOMIC];};
+javascriptGenerator.forBlock['bn_mul']=function(b:Block):[string,number]{_bnReg();const a=javascriptGenerator.valueToCode(b,'A',Order.ATOMIC)||'[0]',v=javascriptGenerator.valueToCode(b,'B',Order.ATOMIC)||'[0]';return['bnFromBigInt(bnToBigInt('+a+')*bnToBigInt('+v+'))',Order.ATOMIC];};
+javascriptGenerator.forBlock['bn_div']=function(b:Block):[string,number]{_bnReg();const a=javascriptGenerator.valueToCode(b,'A',Order.ATOMIC)||'[0]',v=javascriptGenerator.valueToCode(b,'B',Order.ATOMIC)||'[0]';return['bnFromBigInt(bnToBigInt('+a+')/bnToBigInt('+v+'))',Order.ATOMIC];};
 
 // HMAC
 javascriptGenerator.forBlock['hash_hmac'] = function(b:Block):[string,number]{
-  var k=javascriptGenerator.valueToCode(b,'KEY',Order.ATOMIC)||'[]',m=javascriptGenerator.valueToCode(b,'MSG',Order.ATOMIC)||'[]';
-  var fn=javascriptGenerator.provideFunction_('hmac',[
+  const k=javascriptGenerator.valueToCode(b,'KEY',Order.ATOMIC)||'[]',m=javascriptGenerator.valueToCode(b,'MSG',Order.ATOMIC)||'[]';
+  const fn=javascriptGenerator.provideFunction_('hmac',[
     'async function '+javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_+'(key,msg){',
     '  var a={name:"HMAC",hash:"SHA-256"};',
     '  var k=await crypto.subtle.importKey("raw",key,a,false,["sign"]);',
@@ -97,7 +97,7 @@ javascriptGenerator.forBlock['md_iterate'] = function(b: Block): [string, number
 javascriptGenerator.forBlock['sponge_duplex'] = function(b: Block): [string, number] {
   const state = javascriptGenerator.valueToCode(b,'STATE',Order.ATOMIC)||'[]';
   const data = javascriptGenerator.valueToCode(b,'DATA',Order.ATOMIC)||'[]';
-  const perm = b.getFieldValue('PERM') || 'keccak_f1600';
+  const perm = b.getFieldValue('PERM') || 'keccak_f1600'; void perm;
   const fn = javascriptGenerator.provideFunction_('spongeDuplex', [
     'function '+javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_+'(state,data,rate,permFn){',
     '  var absorb=0;',
@@ -121,18 +121,18 @@ javascriptGenerator.forBlock['sponge_duplex'] = function(b: Block): [string, num
 // ═══════════════════════════════════════════════════════════
 
 javascriptGenerator.forBlock['pq_ntt_vec'] = function(b:Block):[string,number]{
-  var input=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
-  var k=b.getFieldValue('K')||'3';
+  const input=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
+  const k=b.getFieldValue('K')||'3';
   return ['(function(v,k,q){for(var i=0;i<k;i++)v[i]=ntt(v[i],q);return v;})('+input+','+k+',3329)',Order.ATOMIC];
 };
 javascriptGenerator.forBlock['pq_intt_vec'] = function(b:Block):[string,number]{
-  var input=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
-  var k=b.getFieldValue('K')||'3';
+  const input=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
+  const k=b.getFieldValue('K')||'3';
   return ['(function(v,k,q){for(var i=0;i<k;i++)v[i]=intt(v[i],q);return v;})('+input+','+k+',3329)',Order.ATOMIC];
 };
 javascriptGenerator.forBlock['pq_cbd_ntt_vec'] = function(b:Block):[string,number]{
-  var seed=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
-  var k=b.getFieldValue('K')||'3';
+  const seed=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
+  const k=b.getFieldValue('K')||'3';
   registerSampleCbdEta(2); registerNtt(); registerSeedWithNonce();
   return ['(function(s,k,q){var v=[],eta=2;for(var i=0;i<k;i++){v[i]=ntt(sampleCbdEta2(seedWithNonce(s,i),q),q);}return v;})('+seed+','+k+',3329)',Order.ATOMIC];
 };
@@ -184,8 +184,8 @@ javascriptGenerator.forBlock['ml_kem_keygen'] = function(): [string, number] {
 
 // SM3 一键
 javascriptGenerator.forBlock['sm3_hash'] = function(b:Block):[string,number]{
-  var msg=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
-  var fn=javascriptGenerator.provideFunction_('sm3Hash',[
+  const msg=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
+  const fn=javascriptGenerator.provideFunction_('sm3Hash',[
     'function '+javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_+'(msg){',
     '  var padded=sm3Pad(msg);',
     '  var n=padded.length/64;',
@@ -199,12 +199,12 @@ javascriptGenerator.forBlock['sm3_hash'] = function(b:Block):[string,number]{
   return [fn+'('+msg+')',Order.ATOMIC];
 };
 javascriptGenerator.forBlock['sm3_hmac'] = function(b:Block):[string,number]{
-  var k=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
+  const k=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
   return ['/* HMAC-SM3 */ '+k,Order.ATOMIC];
 };
 javascriptGenerator.forBlock['hmac_sha256'] = function(b:Block):[string,number]{
-  var k=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
-  var fn=javascriptGenerator.provideFunction_('hmacSha256',[
+  const k=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
+  const fn=javascriptGenerator.provideFunction_('hmacSha256',[
     'async function '+javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_+'(key,msg){',
     '  var a={name:"HMAC",hash:"SHA-256"};',
     '  var k=await crypto.subtle.importKey("raw",key,a,false,["sign"]);',
@@ -216,9 +216,9 @@ javascriptGenerator.forBlock['hmac_sha256'] = function(b:Block):[string,number]{
 
 // KDF
 javascriptGenerator.forBlock['kdf_pbkdf2'] = function(b:Block):[string,number]{
-  var p=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
-  var s=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
-  var fn=javascriptGenerator.provideFunction_('pbkdf2',[
+  const p=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
+  const s=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
+  const fn=javascriptGenerator.provideFunction_('pbkdf2',[
     'async function '+javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_+'(pass,salt,iter,keyLen){',
     '  iter=iter||10000;keyLen=keyLen||32;',
     '  var k=await crypto.subtle.importKey("raw",pass,"PBKDF2",false,["deriveBits"]);',
@@ -228,9 +228,9 @@ javascriptGenerator.forBlock['kdf_pbkdf2'] = function(b:Block):[string,number]{
   return [fn+'('+p+','+s+')',Order.ATOMIC];
 };
 javascriptGenerator.forBlock['kdf_hkdf'] = function(b:Block):[string,number]{
-  var ikm=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
-  var salt=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
-  var fn=javascriptGenerator.provideFunction_('hkdf',[
+  const ikm=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
+  const salt=javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'[]';
+  const fn=javascriptGenerator.provideFunction_('hkdf',[
     'async function '+javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_+'(ikm,salt,info,keyLen){',
     '  keyLen=keyLen||32;info=info||new Uint8Array(0);',
     '  var k=await crypto.subtle.importKey("raw",ikm,"HKDF",false,["deriveBits"]);',

@@ -9,7 +9,6 @@
  *
  * 参考: FIPS 203 — https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
  */
-import * as Blockly from 'blockly/core';
 
 export const ADVANCED_OPERATIONS_BLOCK_TYPES = [] as const;
 

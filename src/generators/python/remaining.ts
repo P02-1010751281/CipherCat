@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * M3-M4 生成器 — Python 最终版
  * 

@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 /**
  * M2 对称密码便利层 + 模式块 — JavaScript 生成器
  */

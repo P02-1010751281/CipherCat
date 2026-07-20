@@ -34,7 +34,7 @@ Blockly.Blocks['pad_zero'] = {
     this.setInputsInline(true);
     this.setOutput(true, TYPE_BYTES);
     this.setColour(180);
-    this.setTooltip('零填充：填充 0x00 字节至 blockSize 的整数倍');
+    this.setTooltip('零填充：填充 0x00 字节至 blockSize 的整数倍  [Bytes & Number → Bytes]');
     this.setHelpUrl('');
   },
 };

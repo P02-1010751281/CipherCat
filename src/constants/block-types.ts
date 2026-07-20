@@ -31,6 +31,7 @@ export const TYPE_VECTOR = 'Vector';
 /** Blockly 原生数字类型（用于标量常数） */
 export const TYPE_NUMBER = 'Number';
 
+
 /** Blockly 原生字符串类型 */
 export const TYPE_STRING = 'String';
 

@@ -57,7 +57,7 @@ Blockly.Blocks['sponge_duplex'] = { init: function(this: any) {
   this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField(',data:');
   this.appendDummyInput().appendField(',perm:').appendField(new Blockly.FieldDropdown([['Keccak-f[1600]','keccak_f1600'],['Keccak-f[800]','keccak_f800']]), 'PERM').appendField(')');
   this.setInputsInline(true); this.setOutput(true, TYPE_BYTES); this.setColour(285);
-  this.setTooltip('海绵双工: absorb→permutation→squeeze一步完成');
+  this.setTooltip('海绵双工: absorb→permutation→squeeze一步完成  [IntList & Bytes → Bytes]');
 }};
 
 // M4 一键块

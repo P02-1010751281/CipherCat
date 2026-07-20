@@ -23,7 +23,7 @@ Blockly.Blocks['aes_sub_bytes'] = {
     this.setInputsInline(true);
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(180);
-    this.setTooltip('AES SubBytes: S-box 替换状态的每个字节 (FIPS 197 §5.1.1)');
+    this.setTooltip('AES SubBytes: S-box 替换状态的每个字节   [IntList → IntList] (FIPS 197 §5.1.1)');
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf');
   },
 };
@@ -35,7 +35,7 @@ Blockly.Blocks['aes_shift_rows'] = {
     this.setInputsInline(true);
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(180);
-    this.setTooltip('AES ShiftRows: 第 i 行循环左移 i 个字节 (FIPS 197 §5.1.2)');
+    this.setTooltip('AES ShiftRows: 第 i 行循环左移 i 个字节   [IntList → IntList] (FIPS 197 §5.1.2)');
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf');
   },
 };
@@ -47,7 +47,7 @@ Blockly.Blocks['aes_mix_columns'] = {
     this.setInputsInline(true);
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(180);
-    this.setTooltip('AES MixColumns: GF(2⁸) 矩阵列混合 (FIPS 197 §5.1.3)');
+    this.setTooltip('AES MixColumns: GF(2⁸) 矩阵列混合   [IntList → IntList] (FIPS 197 §5.1.3)');
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf');
   },
 };
@@ -60,7 +60,7 @@ Blockly.Blocks['aes_add_round_key'] = {
     this.setInputsInline(true);
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(180);
-    this.setTooltip('AES AddRoundKey: 状态 ⊕ 轮密钥 (FIPS 197 §5.1.4)');
+    this.setTooltip('AES AddRoundKey: 状态 ⊕ 轮密钥   [IntList & IntList → IntList] (FIPS 197 §5.1.4)');
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf');
   },
 };
@@ -90,7 +90,7 @@ Blockly.Blocks['aes_last_round'] = {
     this.setInputsInline(true);
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(195);
-    this.setTooltip('AES 最后一轮: SubBytes→ShiftRows→AddRoundKey (跳过 MixColumns) (FIPS 197 §5.1)');
+    this.setTooltip('AES 最后一轮: SubBytes→ShiftRows→AddRoundKey (跳过 MixColumns  [IntList & IntList → IntList]) (FIPS 197 §5.1)');
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf');
   },
 };

@@ -1,5 +1,4 @@
 import * as Blockly from 'blockly/core';
-import { TYPE_BITS, TYPE_BYTES } from '@/constants/block-types';
 
 export const CONVERT_BLOCK_TYPES = [
   'data_convert_to_int',
@@ -28,12 +27,12 @@ Blockly.Blocks['data_convert_to_int'] = {
 Blockly.Blocks['data_convert_bits_to_bytes'] = {
   init: function() {
     this.appendValueInput('BYTES')
-      .setCheck(TYPE_BYTES)
+      .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_CONVERT_BYTES || 'Bytes');
     this.appendDummyInput()
       .appendField('=');
     this.appendValueInput('BITS')
-      .setCheck(TYPE_BITS)
+      .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_CONVERT_BITS || 'Bit String');
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
@@ -47,12 +46,12 @@ Blockly.Blocks['data_convert_bits_to_bytes'] = {
 Blockly.Blocks['data_convert_bytes_to_bits'] = {
   init: function() {
     this.appendValueInput('BITS')
-      .setCheck(TYPE_BITS)
+      .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_CONVERT_BITS || 'Bit String');
     this.appendDummyInput()
       .appendField('=');
     this.appendValueInput('BYTES')
-      .setCheck(TYPE_BYTES)
+      .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_CONVERT_BYTES || 'Bytes');
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);

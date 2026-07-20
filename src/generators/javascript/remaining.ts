@@ -9,6 +9,7 @@
  */
 
 import { javascriptGenerator, Order } from 'blockly/javascript';
+import { getTypeCoercion, TYPE_INT_LIST, TYPE_BYTES } from '@/constants/block-types';
 import type { Block } from 'blockly/core';
 
 // ── 辅助：导入后量子 helpers（M0 保留的孤立辅助函数）──
@@ -241,7 +242,12 @@ javascriptGenerator.forBlock['kdf_hkdf'] = function(b:Block):[string,number]{
 
 // ═══ 编码工具 ═════════════════════════════════════════
 
-javascriptGenerator.forBlock['base64_encode'] = function(b:Block):[string,number]{return['btoa(String.fromCharCode(...'+(javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'new Uint8Array(0)')+'))',Order.ATOMIC];};
+javascriptGenerator.forBlock['base64_encode'] = function(b: Block): [string, number] {
+  const input = javascriptGenerator.valueToCode(b, 'INPUT', Order.ATOMIC) || 'new Uint8Array(0)';
+  // 确保输入为 Bytes 类型
+  const coerced = getTypeCoercion(TYPE_INT_LIST, TYPE_BYTES, input, 'javascript');
+  return ['btoa(String.fromCharCode(...' + (coerced || input) + '))', Order.ATOMIC];
+};
 javascriptGenerator.forBlock['base64_decode'] = function(b:Block):[string,number]{return['Uint8Array.from(atob('+(javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'""')+'),c=>c.charCodeAt(0))',Order.ATOMIC];};
 javascriptGenerator.forBlock['hex_to_bytes'] = function(b:Block):[string,number]{return['Uint8Array.from(('+(javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'""')+').match(/.{1,2}/g)||[],h=>parseInt(h,16))',Order.ATOMIC];};
 javascriptGenerator.forBlock['bytes_to_hex'] = function(b:Block):[string,number]{return['Array.from('+(javascriptGenerator.valueToCode(b,'INPUT',Order.ATOMIC)||'new Uint8Array(0)')+',b=>b.toString(16).padStart(2,"0")).join("")',Order.ATOMIC];};

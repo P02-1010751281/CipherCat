@@ -129,3 +129,39 @@ export const TYPE_MAP: Record<string, TypeMapping> = {
     mcl: 'VECTOR',
   },
 };
+
+// ─────────────────────────────────────────────────────────
+// 类型强制转换工具
+// ─────────────────────────────────────────────────────────
+
+/** 获取从 fromType 到 toType 的强制转换表达式 */
+export function getTypeCoercion(
+  fromType: string,
+  toType: string,
+  variable: string,
+  lang: 'python' | 'javascript',
+): string | null {
+  if (fromType === toType) return variable;
+
+  const to = TYPE_MAP[toType] as TypeMapping | undefined;
+  if (!to) return null;
+
+  const key = lang === 'python' ? 'pythonCoerce' : 'jsCoerce';
+  const expr = (to as unknown as Record<string, string | undefined>)[key];
+  return expr ? expr.replace('_v', variable) : null;
+}
+
+/** 已知的类型兼容映射：不需要转换直接可连接 */
+const COMPATIBLE_TYPES: Record<string, string[]> = {
+  Bits: ['IntList'],       // Bits 可连接到 IntList (同是 number[])
+  Vector: ['IntList'],     // Vector 连接到 IntList
+  Matrix: ['IntList'],     // Matrix 连接到 IntList
+};
+
+/** 检查两个类型是否兼容（相同或隐式兼容） */
+export function areTypesCompatible(a: string, b: string): boolean {
+  if (a === b) return true;
+  if (a === 'null' || b === 'null') return true;
+  return (COMPATIBLE_TYPES[a] || []).includes(b)
+      || (COMPATIBLE_TYPES[b] || []).includes(a);
+}

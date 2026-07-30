@@ -43,7 +43,18 @@ const categories: SubCategory[] = [
 
 function templateName(type: string): string {
   const key = (type + '_LABEL').toUpperCase();
-  return (msg as Record<string, string>)[key] || type;
+  const i18n = (msg as Record<string, string>)[key];
+  if (i18n) return i18n;
+  // Fallback friendly names for non-proc types
+  const names: Record<string, string> = {
+    crypto_func_def: '🔧 Function',
+    crypto_return: '🔧 return',
+    procedures_ifreturn: '🔧 if return',
+    crypto_encrypt_func: '🔐 Encrypt',
+    crypto_decrypt_func: '🔓 Decrypt',
+    crypto_hash_func: '#️⃣ Hash',
+  };
+  return names[type] || type;
 }
 
 function insertTemplate(type: string) {

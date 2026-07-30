@@ -27,34 +27,42 @@ javascriptGenerator.forBlock['crypto_func_def'] = function (
   block: Block,
 ): string {
   const funcName = block.getFieldValue('FUNC_NAME') || 'myCipher';
-  const paramName = block.getFieldValue('PARAM_NAME') || 'seed';
-  const paramType = block.getFieldValue('PARAM_TYPE') || 'bytes';
+  const count = parseInt(block.getFieldValue('PARAM_COUNT') as string || '1');
+
+  const typeComment: Record<string, string> = {
+    bytes: 'Uint8Array', int: 'number', int_list: 'number[]',
+    poly: 'number[]', seed: 'Uint8Array', key: 'Uint8Array', message: 'Uint8Array',
+  };
+
+  const params: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const pn = (block.getFieldValue('PARAM_NAME_' + i) as string) || 'arg' + i;
+    const pt = (block.getFieldValue('PARAM_TYPE_' + i) as string) || 'bytes';
+    const jsType = typeComment[pt] || pt;
+    params.push(pn);
+  }
+
   const body =
     javascriptGenerator.statementToCode(block, 'BODY') ||
     '  // TODO: 实现 ' + funcName + ' 算法\n';
   const returnValue =
     javascriptGenerator.valueToCode(block, 'RETURN', Order.NONE) ||
-    paramName;
+    params[0];
 
-  const typeComment: Record<string, string> = {
-    bytes: 'Uint8Array',
-    int: 'number',
-    int_list: 'number[]',
-    poly: 'number[]',
-    seed: 'Uint8Array',
-    key: 'Uint8Array',
-    message: 'Uint8Array',
-  };
+  const jsdocParams = params.map((p, i) => {
+    const pt = (block.getFieldValue('PARAM_TYPE_' + i) as string) || 'bytes';
+    return ' * @param {' + (typeComment[pt] || pt) + '} ' + p;
+  }).join('\n');
 
-  const jsType = typeComment[paramType] || paramType;
+  const firstType = typeComment[(block.getFieldValue('PARAM_TYPE_0') as string) || 'bytes'] || 'Uint8Array';
 
   const code = [
     '/**',
     ' * 密码学函数: ' + funcName,
-    ' * @param {' + jsType + '} ' + paramName + ' — ' + paramType + ' 类型参数',
-    ' * @returns {' + jsType + '} 算法输出',
+    jsdocParams,
+    ' * @returns {' + firstType + '} 算法输出',
     ' */',
-    'function ' + funcName + '(' + paramName + ') {',
+    'function ' + funcName + '(' + params.join(', ') + ') {',
     body,
     '  return ' + returnValue + ';',
     '}',

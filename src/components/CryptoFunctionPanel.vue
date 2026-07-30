@@ -46,7 +46,6 @@ const props = defineProps<{ visible: boolean; workspace: Blockly.WorkspaceSvg | 
 
 interface Template { type: string; label: string; param: string }
 interface SubCategory { key: string; label: string; templates: Template[] }
-
 function L(type: string): string {
   const key = (type + '_LABEL').toUpperCase();
   return (msg as Record<string, string>)[key] || type;
@@ -54,44 +53,44 @@ function L(type: string): string {
 
 const categories: SubCategory[] = [
   { key: 'base', label: msg.CRYPTO_SUBCAT_BASE || 'Base', templates: [
-    { type: 'crypto_func_def',       label: '🔧 Function',              param: 'param: Any → return' },
+    { type: 'crypto_func_def',       label: '🔧 Function',              param: '1 param (default seed:Bytes)' },
     { type: 'crypto_return',         label: '🔧 return',                param: 'value' },
     { type: 'procedures_ifreturn',   label: '🔧 if return',            param: 'condition' },
-    { type: 'crypto_encrypt_func',   label: '🔐 Encrypt',              param: 'message: Message' },
-    { type: 'crypto_decrypt_func',   label: '🔓 Decrypt',              param: 'ciphertext: Message' },
-    { type: 'crypto_hash_func',      label: '#️⃣ Hash',                 param: 'message: Message' },
+    { type: 'crypto_encrypt_func',   label: '🔐 Encrypt',              param: '1 param' },
+    { type: 'crypto_decrypt_func',   label: '🔓 Decrypt',              param: '1 param' },
+    { type: 'crypto_hash_func',      label: '#️⃣ Hash',                 param: '1 param' },
   ]},
   { key: 'symmetric', label: msg.CRYPTO_SUBCAT_SYMMETRIC || 'Symmetric', templates: [
-    { type: 'proc_aes_round',        label: L('proc_aes_round'),        param: 'state: IntList' },
-    { type: 'proc_aes_last_round',   label: L('proc_aes_last_round'),   param: 'state: IntList' },
-    { type: 'proc_aes_key_schedule', label: L('proc_aes_key_schedule'), param: 'key: Bytes' },
-    { type: 'proc_sm4_round',        label: L('proc_sm4_round'),        param: 'state: IntList' },
-    { type: 'proc_sm4_key_schedule', label: L('proc_sm4_key_schedule'), param: 'key: Bytes' },
+    { type: 'proc_aes_round',        label: L('proc_aes_round'),        param: '1 param' },
+    { type: 'proc_aes_last_round',   label: L('proc_aes_last_round'),   param: '1 param' },
+    { type: 'proc_aes_key_schedule', label: L('proc_aes_key_schedule'), param: '1 param' },
+    { type: 'proc_sm4_round',        label: L('proc_sm4_round'),        param: '1 param' },
+    { type: 'proc_sm4_key_schedule', label: L('proc_sm4_key_schedule'), param: '1 param' },
   ]},
   { key: 'hash', label: msg.CRYPTO_SUBCAT_HASH_MAC_KDF || 'Hash / MAC / KDF', templates: [
-    { type: 'proc_sha256_hash',      label: L('proc_sha256_hash'),      param: 'msg: Message' },
-    { type: 'proc_sm3_hash',         label: L('proc_sm3_hash'),         param: 'msg: Message' },
-    { type: 'proc_hmac_sha256',      label: L('proc_hmac_sha256'),      param: 'key: Bytes' },
-    { type: 'proc_sm3_hmac',         label: L('proc_sm3_hmac'),         param: 'key: Bytes' },
-    { type: 'proc_pbkdf2',           label: L('proc_pbkdf2'),           param: 'password: Bytes' },
-    { type: 'proc_hkdf',             label: L('proc_hkdf'),             param: 'ikm: Bytes' },
+    { type: 'proc_sha256_hash',      label: L('proc_sha256_hash'),      param: '1 param' },
+    { type: 'proc_sm3_hash',         label: L('proc_sm3_hash'),         param: '1 param' },
+    { type: 'proc_hmac_sha256',      label: L('proc_hmac_sha256'),      param: '1 param' },
+    { type: 'proc_sm3_hmac',         label: L('proc_sm3_hmac'),         param: '1 param' },
+    { type: 'proc_pbkdf2',           label: L('proc_pbkdf2'),           param: '1 param' },
+    { type: 'proc_hkdf',             label: L('proc_hkdf'),             param: '1 param' },
   ]},
   { key: 'mode', label: msg.CRYPTO_SUBCAT_MODE || 'Mode', templates: [
-    { type: 'proc_mode_ecb',         label: L('proc_mode_ecb'),         param: 'data: Bytes' },
-    { type: 'proc_mode_cbc',         label: L('proc_mode_cbc'),         param: 'data: Bytes' },
-    { type: 'proc_mode_ctr',         label: L('proc_mode_ctr'),         param: 'data: Bytes' },
-    { type: 'proc_mode_gcm',         label: L('proc_mode_gcm'),         param: 'data: Bytes' },
+    { type: 'proc_mode_ecb',         label: L('proc_mode_ecb'),         param: '1 param: data:Bytes' },
+    { type: 'proc_mode_cbc',         label: L('proc_mode_cbc'),         param: '1 param: data:Bytes' },
+    { type: 'proc_mode_ctr',         label: L('proc_mode_ctr'),         param: '1 param: data:Bytes' },
+    { type: 'proc_mode_gcm',         label: L('proc_mode_gcm'),         param: '1 param: data:Bytes' },
   ]},
   { key: 'pqc', label: msg.CRYPTO_SUBCAT_ITERATE_SPONGE_PQC || 'PQC', templates: [
-    { type: 'proc_md_iterate',       label: L('proc_md_iterate'),       param: 'iv: IntList' },
-    { type: 'proc_sponge_duplex',    label: L('proc_sponge_duplex'),    param: 'state: IntList' },
-    { type: 'proc_mlkem_keygen',     label: L('proc_mlkem_keygen'),     param: 'seed: Seed' },
-    { type: 'proc_ntt_vec',          label: L('proc_ntt_vec'),          param: 'vec: IntList' },
-    { type: 'proc_pq_cbd',           label: L('proc_pq_cbd'),           param: 'seed: Seed' },
-    { type: 'proc_pq_mat_mul',       label: L('proc_pq_mat_mul'),       param: 'mat: IntList' },
-    { type: 'proc_pq_sample',        label: L('proc_pq_sample'),        param: 'seed: Seed' },
-    { type: 'proc_pq_vec_add',       label: L('proc_pq_vec_add'),       param: 'a, b: IntList' },
-    { type: 'proc_pq_vec_sub',       label: L('proc_pq_vec_sub'),       param: 'a, b: IntList' },
+    { type: 'proc_md_iterate',       label: L('proc_md_iterate'),       param: '1 param: iv:IntList' },
+    { type: 'proc_sponge_duplex',    label: L('proc_sponge_duplex'),    param: '1 param: state:IntList' },
+    { type: 'proc_mlkem_keygen',     label: L('proc_mlkem_keygen'),     param: '1 param: seed:Seed' },
+    { type: 'proc_ntt_vec',          label: L('proc_ntt_vec'),          param: '1 param: vec:IntList' },
+    { type: 'proc_pq_cbd',           label: L('proc_pq_cbd'),           param: '1 param: seed:Seed' },
+    { type: 'proc_pq_mat_mul',       label: L('proc_pq_mat_mul'),       param: '1 param: mat:IntList' },
+    { type: 'proc_pq_sample',        label: L('proc_pq_sample'),        param: '1 param: seed:Seed' },
+    { type: 'proc_pq_vec_add',       label: L('proc_pq_vec_add'),       param: '1 param: a:IntList' },
+    { type: 'proc_pq_vec_sub',       label: L('proc_pq_vec_sub'),       param: '1 param: a:IntList' },
   ]},
 ];
 

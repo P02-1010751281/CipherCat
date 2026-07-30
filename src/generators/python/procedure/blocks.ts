@@ -27,38 +27,37 @@ pythonGenerator.forBlock['crypto_func_def'] = function (
   block: Block,
 ): string {
   const funcName = block.getFieldValue('FUNC_NAME') || 'my_cipher';
-  const paramName = block.getFieldValue('PARAM_NAME') || 'seed';
-  const paramType = block.getFieldValue('PARAM_TYPE') || 'bytes';
+  const count = parseInt(block.getFieldValue('PARAM_COUNT') as string || '1');
+
+  const pyTypeHint: Record<string, string> = {
+    bytes: 'bytes', int: 'int', int_list: 'list[int]',
+    poly: 'list[int]', seed: 'bytes', key: 'bytes', message: 'bytes',
+  };
+
+  const params: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const pn = (block.getFieldValue('PARAM_NAME_' + i) as string) || 'arg' + i;
+    const pt = (block.getFieldValue('PARAM_TYPE_' + i) as string) || 'bytes';
+    params.push(pn + ': ' + (pyTypeHint[pt] || pt));
+  }
+
   const body =
     pythonGenerator.statementToCode(block, 'BODY') ||
     '    # TODO: 实现 ' + funcName + ' 算法\n';
   const returnValue =
     pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) ||
-    paramName;
+    params[0].split(':')[0];
 
-  // Python 类型提示映射
-  const pyTypeHint: Record<string, string> = {
-    bytes: 'bytes',
-    int: 'int',
-    int_list: 'list[int]',
-    poly: 'list[int]',
-    seed: 'bytes',
-    key: 'bytes',
-    message: 'bytes',
-  };
-
-  const typeHint = pyTypeHint[paramType] || paramType;
+  const firstType = pyTypeHint[(block.getFieldValue('PARAM_TYPE_0') as string) || 'bytes'] || 'bytes';
   const bodyIndented = pythonGenerator.prefixLines(body, '    ');
 
   const code = [
     '',
-    'def ' + funcName + '(' + paramName + ': ' + typeHint + ') -> ' + typeHint + ':',
+    'def ' + funcName + '(' + params.join(', ') + ') -> ' + firstType + ':',
     '    """',
     '    密码学函数: ' + funcName,
-    '    参数类型: ' + paramType,
     '    """',
     '    global data',
-    '    data = ' + paramName,
     bodyIndented,
     '    return ' + returnValue,
     '',

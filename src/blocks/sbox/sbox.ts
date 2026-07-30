@@ -1,4 +1,5 @@
 import * as Blockly from 'blockly/core';
+import { TYPE_SBOX } from '@/constants/block-types';
 
 export const SBOX_BLOCK_TYPES = ['sbox', 'sbox_sub'] as const;
 
@@ -73,7 +74,7 @@ Blockly.Blocks['sbox'] = {
 
     this.updateShape();
 
-    this.setOutput(true, 'SBox');
+    this.setOutput(true, TYPE_SBOX);
     this.setColour(230);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SBOX_TOOLTIP || 'S-box lookup table, import CSV',
@@ -83,7 +84,6 @@ Blockly.Blocks['sbox'] = {
       this: SBoxBlock,
       event: Blockly.Events.Abstract,
     ) {
-      void this;
       if (event.type === Blockly.Events.BLOCK_CHANGE) {
         const e = event as Blockly.Events.BlockChange;
         if (e.blockId === this.id && (e.name === 'ROW' || e.name === 'COL')) {
@@ -92,6 +92,16 @@ Blockly.Blocks['sbox'] = {
             this.updateShape();
           } finally {
             Blockly.Events.enable();
+          }
+        }
+      } else if (event.type === Blockly.Events.BLOCK_DELETE) {
+        const e = event as Blockly.Events.BlockDelete;
+        if (e.blockId === this.id) {
+          if (this.settingsPopupClickHandler && this.settingsPopup) {
+            document.removeEventListener('click', this.settingsPopupClickHandler);
+            this.settingsPopup.remove();
+            this.settingsPopup = null;
+            this.settingsPopupClickHandler = null;
           }
         }
       }
@@ -119,7 +129,7 @@ Blockly.Blocks['sbox'] = {
     const rowA = String(state.row || 4);
     const colA = String(state.col || 4);
     const fmt = String(state.output_format || '2d');
-    const dataStr = state.data as string | undefined;
+    const dataStr = typeof state.data === 'string' ? state.data : undefined;
     if (rowA) this.setFieldValue(rowA, 'ROW');
     if (colA) this.setFieldValue(colA, 'COL');
     if (fmt) this.setFieldValue(fmt, 'OUTPUT_FORMAT');
@@ -364,7 +374,7 @@ Blockly.Blocks['sbox_sub'] = {
       .setCheck(null)
       .appendField(Blockly.Msg.CRYPTO_SBOX_SUB || 'S-box Sub Input Var');
     this.appendValueInput('SBOX_VAR')
-      .setCheck('SBox')
+      .setCheck(TYPE_SBOX)
       .appendField(Blockly.Msg.CRYPTO_SBOX_SUB_VAR || 'S-box');
     this.appendValueInput('OUTPUT_VAR')
       .setCheck(null)

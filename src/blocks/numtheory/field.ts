@@ -1,3 +1,5 @@
+import { TYPE_NUMBER } from '@/constants/block-types';
+
 import * as Blockly from 'blockly/core';
 
 export const FIELD_BLOCK_TYPES = [
@@ -24,7 +26,7 @@ Blockly.Blocks['nt_field_add'] = {
     this.appendValueInput('P')
       .setCheck(null);
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_NUMBER);
     this.setColour(210);
     this.setTooltip(Blockly.Msg.CRYPTO_FIELD_ADD_TOOLTIP || 'Finite field operation: add/sub/mul A and B then modulo P');
     this.setHelpUrl('');

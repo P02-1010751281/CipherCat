@@ -300,12 +300,31 @@ export const MESSAGES_ZH_HANS: Record<string, string> = {
   CRYPTO_CATEGORY_POSTQUANTUM: '后量子密码',
   CRYPTO_CATEGORY_POSTQUANTUM_BASIC: '后量子基础块',
   CRYPTO_CATEGORY_POSTQUANTUM_ADVANCED: '后量子高级块',
-  CRYPTO_CATEGORY_PROCEDURE: '函数封装空间',
+  CRYPTO_CATEGORY_CRYPTO_FUNCTIONS: '密码学函数',
+
+
+  // ── Crypto Functions 子类目 ──
+  CRYPTO_SUBCAT_BASE: '基础',
+  CRYPTO_SUBCAT_SYMMETRIC: '对称密码',
+  CRYPTO_SUBCAT_HASH_MAC_KDF: '哈希 / MAC / KDF',
+  CRYPTO_SUBCAT_MODE: '分组模式',
+  CRYPTO_SUBCAT_ITERATE_SPONGE_PQC: '迭代 / 海绵 / 后量子',
+  CRYPTO_FUNCTIONS_IMPORT_BUTTON: '📥 导入',
+  CRYPTO_FUNCTIONS_PANEL_TITLE: '密码学函数管理',
+  CRYPTO_FUNCTIONS_PANEL_EMPTY: '工作区中没有函数块',
+  PROC_AES_ROUND_LABEL: '🔧 AES_Round',
+  PROC_AES_LAST_ROUND_LABEL: '🔧 AES_LastRound',
+  PROC_AES_KEY_SCHEDULE_LABEL: '🔧 AES_KeySchedule',
+  PROC_SM4_ROUND_LABEL: '🔧 SM4_Round',
+
+  PROC_PQ_VEC_ADD_LABEL: '🔧 Vec_Add',
+  PROC_PQ_VEC_SUB_LABEL: '🔧 Vec_Sub',
+
+  CRYPTO_PROCEDURES_ENCRYPT_LABEL: '🔐 加密',
+  CRYPTO_PROCEDURES_DECRYPT_LABEL: '🔓 解密',
+  CRYPTO_PROCEDURES_HASH_LABEL: '#️⃣ 哈希',
 
   CRYPTO_PROCEDURES_PARAM_TYPE: '参数类型',
-  CRYPTO_PROCEDURES_PARAM_BYTES: 'bytes',
-  CRYPTO_PROCEDURES_PARAM_INT: 'int',
-  CRYPTO_PROCEDURES_PARAM_INT_LIST: 'int list',
   CRYPTO_PROCEDURES_PARAM_POLY: '多项式',
   CRYPTO_PROCEDURES_PARAM_SEED: '种子',
   CRYPTO_PROCEDURES_PARAM_KEY: '密钥',
@@ -516,11 +535,44 @@ export const MESSAGES_EN: Record<string, string> = {
   CRYPTO_CATEGORY_POSTQUANTUM_BASIC: 'PQC · Basic',
   CRYPTO_CATEGORY_POSTQUANTUM_ADVANCED: 'PQC · Advanced',
   CRYPTO_CATEGORY_PROCEDURE: 'Functions',
+  CRYPTO_CATEGORY_CRYPTO_FUNCTIONS: 'Crypto Functions',
+
+
+  CRYPTO_FUNCTIONS_FLYOUT_SYMMETRIC: '── Symmetric ──',
+  CRYPTO_FUNCTIONS_FLYOUT_HASH_MAC_KDF: '── Hash / MAC / KDF ──',
+  CRYPTO_FUNCTIONS_FLYOUT_MODE: '── Mode ──',
+  CRYPTO_FUNCTIONS_FLYOUT_ITERATE_SPONGE_PQC: '── Iterate / Sponge / PQC ──',
+  CRYPTO_FUNCTIONS_FLYOUT_PRESETS: '── Presets ──',
+  CRYPTO_FUNCTIONS_IMPORT_BUTTON: '📥 Import',
+  CRYPTO_FUNCTIONS_PANEL_TITLE: 'Crypto Function Manager',
+  CRYPTO_FUNCTIONS_PANEL_EMPTY: 'No function blocks in workspace',
+
+  PROC_AES_LAST_ROUND_LABEL: '🔧 AES_LastRound',
+  PROC_AES_KEY_SCHEDULE_LABEL: '🔧 AES_KeySchedule',
+  PROC_SM4_ROUND_LABEL: '🔧 SM4_Round',
+  PROC_SM4_KEY_SCHEDULE_LABEL: '🔧 SM4_KeySchedule',
+  PROC_SHA256_HASH_LABEL: '🔧 SHA256_Hash',
+  PROC_SM3_HASH_LABEL: '🔧 SM3_Hash',
+  PROC_HMAC_SHA256_LABEL: '🔧 HMAC_SHA256',
+  PROC_SM3_HMAC_LABEL: '🔧 HMAC_SM3',
+  PROC_PBKDF2_LABEL: '🔧 PBKDF2',
+  PROC_HKDF_LABEL: '🔧 HKDF',
+  PROC_MLKEM_KEYGEN_LABEL: '🔧 ML_KEM_KeyGen',
+  PROC_MD_ITERATE_LABEL: '🔧 MD_Iterate',
+  PROC_SPONGE_DUPLEX_LABEL: '🔧 Sponge_Duplex',
+  PROC_MODE_ECB_LABEL: '🔧 ECB',
+  PROC_MODE_CBC_LABEL: '🔧 CBC',
+  PROC_MODE_CTR_LABEL: '🔧 CTR',
+  PROC_MODE_GCM_LABEL: '🔧 GCM',
+
+  CRYPTO_SUBCAT_BASE: 'Base',
+  CRYPTO_SUBCAT_SYMMETRIC: 'Symmetric',
+  CRYPTO_SUBCAT_HASH_MAC_KDF: 'Hash / MAC / KDF',
+  CRYPTO_SUBCAT_MODE: 'Mode',
+  CRYPTO_SUBCAT_ITERATE_SPONGE_PQC: 'Iterate / Sponge / PQC',
+
 
   CRYPTO_PROCEDURES_PARAM_TYPE: 'Param Type',
-  CRYPTO_PROCEDURES_PARAM_BYTES: 'bytes',
-  CRYPTO_PROCEDURES_PARAM_INT: 'int',
-  CRYPTO_PROCEDURES_PARAM_INT_LIST: 'int list',
   CRYPTO_PROCEDURES_PARAM_POLY: 'polynomial',
   CRYPTO_PROCEDURES_PARAM_SEED: 'seed',
   CRYPTO_PROCEDURES_PARAM_KEY: 'key',
@@ -661,8 +713,8 @@ export function useUILocale() {
   return { ui, uiLocaleRef };
 }
 
-let currentLocale: BlocklyLocale = 'zh-hans';
-let isLocaleInitialized = false;
+const currentLocale = ref<BlocklyLocale>('zh-hans');
+const isLocaleInitialized = ref(false);
 
 function applyLocale(locale: BlocklyLocale): void {
   const messages = LOCALE_MESSAGES[locale];
@@ -682,9 +734,9 @@ function applyLocale(locale: BlocklyLocale): void {
     (Blockly.Msg as Record<string, string>)[key] = customMessages[key];
   });
 
-  currentLocale = locale;
+  currentLocale.value = locale;
   uiLocaleRef.value = locale;
-  isLocaleInitialized = true;
+  isLocaleInitialized.value = true;
 }
 
 export function useBlocklyLocale() {
@@ -701,13 +753,13 @@ export function useBlocklyLocale() {
   };
 
   const initLocale = (): void => {
-    if (!isLocaleInitialized) {
+    if (!isLocaleInitialized.value) {
       const browserLocale = getBrowserLocale();
       applyLocale(browserLocale);
     }
   };
 
-  const getCurrentLocale = (): BlocklyLocale => currentLocale;
+  const getCurrentLocale = (): BlocklyLocale => currentLocale.value;
 
   const getLocaleLabel = (locale: BlocklyLocale): string =>
     BLOCKLY_LOCALES[locale].label;

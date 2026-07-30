@@ -127,17 +127,14 @@ export async function downloadContent(
   if ('showSaveFilePicker' in window) {
     try {
       const blob = new Blob([content], { type: 'text/plain' });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const fileHandle = await (window as any).showSaveFilePicker({
-        suggestedName: filename,
-      });
+      type FileSystemWritable = { write: (_b: Blob) => Promise<void>; close: () => Promise<void> };
+      type FileSystemFileHandle = { createWritable: () => Promise<FileSystemWritable> };
+      const win = window as unknown as { showSaveFilePicker?: (_o: { suggestedName?: string }) => Promise<FileSystemFileHandle> };
+      const fileHandle = await win.showSaveFilePicker!({ suggestedName: filename });
       const writable = await fileHandle.createWritable();
       await writable.write(blob);
       await writable.close();
-      console.log(
-        'Workspace saved via File System Access API:',
-        fileHandle.name,
-      );
+      console.log('Workspace saved via File System Access API:', filename);
       return;
     } catch (error) {
       // 用户取消或 API 不可用，继续降级
@@ -255,12 +252,16 @@ function scheduleDeferred(fn: () => void): void {
   }
 }
 
+interface SBoxLike extends Blockly.Block {
+  updateShape?: () => void;
+  gridData?: string[];
+}
+
 function _applySboxFields(
   block: Blockly.Block,
   fields: Map<string, string>,
 ): void {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if (typeof (block as any).updateShape !== 'function') return;
+  if (typeof (block as SBoxLike).updateShape !== 'function') return;
 
   const firstKey = fields.keys().next().value;
   if (!firstKey) return;
@@ -268,8 +269,7 @@ function _applySboxFields(
 
   Blockly.Events.disable();
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (block as any).updateShape();
+    (block as SBoxLike).updateShape!();
     if (hasField) {
       // Old-format block: SBox_ fields exist
       for (const [fieldName, value] of fields) {
@@ -289,8 +289,7 @@ function _applySboxFields(
           if (idx < size) gd[idx] = value.padStart(2, '0');
         }
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (block as any).gridData = gd;
+      (block as SBoxLike).gridData = gd;
     }
   } finally {
     Blockly.Events.enable();
@@ -344,8 +343,7 @@ function fixSboxFieldsAfterLoad(
       'type:',
       block.type,
       'has updateShape:',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      typeof (block as any).updateShape === 'function',
+      typeof (block as SBoxLike).updateShape === 'function',
     );
 
     const fields = sboxFieldValues.get(block.id);

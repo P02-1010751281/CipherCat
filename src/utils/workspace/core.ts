@@ -5,7 +5,6 @@ import { WORKSPACE_OPTIONS } from '@/constants/workspace-config';
 
 import { createBlocklyTheme, type ThemeOptions } from './theme';
 import { registerSboxCategoryCallbacks } from '@/blocks/sbox/category';
-import { registerProcedureCategoryCallbacks } from '@/blocks/procedure/category';
 
 export interface WorkspaceState {
   workspace: Blockly.WorkspaceSvg | null;
@@ -31,7 +30,6 @@ export function createWorkspace(
     });
 
     registerSboxCategoryCallbacks(workspace);
-    registerProcedureCategoryCallbacks(workspace);
 
     return {
       workspace,

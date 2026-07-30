@@ -42,7 +42,7 @@ Blockly.Blocks['ecc_load_point'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(180);
+    this.setColour(230);
     this.setTooltip(Blockly.Msg.CRYPTO_CURVE_POINT_TOOLTIP || 'Define a point on elliptic curve');
     this.setHelpUrl('');
   }
@@ -59,7 +59,7 @@ Blockly.Blocks['ecc_point_double'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(285);
+    this.setColour(230);
     this.setTooltip(Blockly.Msg.CRYPTO_CURVE_DOUBLE_POINT_TOOLTIP || 'Calculate double point on elliptic curve');
     this.setHelpUrl('');
   }
@@ -79,7 +79,7 @@ Blockly.Blocks['ecc_add'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(45);
+    this.setColour(230);
     this.setTooltip(Blockly.Msg.CRYPTO_CURVE_ADD_TOOLTIP || 'Execute point addition on elliptic curve');
     this.setHelpUrl('');
   }
@@ -98,7 +98,7 @@ Blockly.Blocks['ecc_multiply'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(315);
+    this.setColour(230);
     this.setTooltip(Blockly.Msg.CRYPTO_CURVE_MULTIPLY_TOOLTIP || 'Execute k-times point multiplication on elliptic curve');
     this.setHelpUrl('');
   }

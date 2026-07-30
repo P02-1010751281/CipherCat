@@ -16,7 +16,7 @@
  * 参考: https://csrc.nist.gov/pubs/fips/202/final
  *       https://keccak.team/keccak_specs_summary.html
  */
-import { TYPE_BYTES, TYPE_NUMBER } from '@/constants/block-types';
+import { TYPE_BYTES, TYPE_INT_LIST, TYPE_NUMBER } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const SHA3_BLOCK_TYPES = [
@@ -121,7 +121,7 @@ Blockly.Blocks['keccak_f'] = {
       .appendField(']');
     this.appendValueInput('STATE').setCheck(null);
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SHA3_KECCAK_F_TOOLTIP ||
@@ -152,7 +152,7 @@ Blockly.Blocks['sponge_absorb'] = {
         'RATE',
       );
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SHA3_ABSORB_TOOLTIP ||
@@ -199,7 +199,7 @@ Blockly.Blocks['sponge_squeeze'] = {
 Blockly.Blocks['keccak_state_init'] = {
   init: function () {
     this.appendDummyInput().appendField('Keccak Init');
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(200);
     this.setTooltip('Initialize Keccak-f[1600] state as 25 zero lanes.');
     this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');

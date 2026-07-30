@@ -60,14 +60,14 @@ export default [
     rules: {
       'vue/multi-word-component-names': 'off',
       'no-unused-vars': 'off',
-      'no-console': 'off',
+      'no-console': ['warn', { allow: ['error', 'warn'] }],
       semi: ['error', 'always'],
       quotes: ['error', 'single', { avoidEscape: true }],
       '@typescript-eslint/no-unused-vars': [
         'warn',
         { argsIgnorePattern: '^_' },
       ],
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
     },
   },
 ];

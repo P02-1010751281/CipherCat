@@ -64,6 +64,11 @@
         <div class="toolbar-section">
           <div class="toolbar-divider" />
 
+          <button class="toolbar-btn" @click="showCryptoPanel = !showCryptoPanel">
+            <span>🧩</span>
+          </button>
+          <div class="toolbar-divider" />
+
           <select
             v-model="selectedBlocklyLocale"
             class="toolbar-select"
@@ -242,6 +247,12 @@
       />
     </div>
 
+    <CryptoFunctionPanel
+      :visible="showCryptoPanel"
+      :workspace="currentWorkspace"
+      @close="showCryptoPanel = false"
+    />
+
     <Transition name="toast">
       <div v-if="toastVisible" class="toast">{{ toastMessage }}</div>
     </Transition>
@@ -253,6 +264,7 @@ import { ref, computed, nextTick, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import BlocklyEditor from '@/components/BlocklyEditor.vue';
 import CodePreviewer from '@/components/CodePreviewer.vue';
+import CryptoFunctionPanel from '@/components/CryptoFunctionPanel.vue';
 import {
   CODE_LANGUAGES,
   LANGUAGE_LABELS,
@@ -287,6 +299,8 @@ const changeBlocklyLocale = (): void => {
 };
 
 blocklyLocale.initLocale();
+
+const showCryptoPanel = ref(false);
 
 const router = useRouter();
 const blocklyEditor = ref<InstanceType<typeof BlocklyEditor> | null>(null);
@@ -486,7 +500,7 @@ const codeStyle = computed(() => {
         width: '100%',
       };
     }
-    return {};
+    return { flex: '1', width: '100%' };
   }
   if (_rw !== undefined) {
     return { width: `${_rw}px`, flex: 'none' };
@@ -503,7 +517,7 @@ const editorStyle = computed(() => {
     if (_th !== undefined) {
       return { height: `${_th}px`, flex: 'none', width: '100%' };
     }
-    return {};
+    return { flex: '1', width: '100%' };
   }
   if (_rw !== undefined) {
     return { width: `calc(100% - ${_rw}px - 6px)`, flex: 'none' };

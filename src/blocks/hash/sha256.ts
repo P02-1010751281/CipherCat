@@ -6,7 +6,7 @@
  *
  * 参考: https://csrc.nist.gov/pubs/fips/180-4/upd1/final
  */
-import { TYPE_BYTES } from '@/constants/block-types';
+import { TYPE_BYTES, TYPE_INT_LIST } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const SHA256_BLOCK_TYPES = [
@@ -74,7 +74,7 @@ Blockly.Blocks['hash_sha256_compress'] = {
     this.appendValueInput('V').setCheck(null).appendField('V=');
     this.appendValueInput('W').setCheck(null).appendField('W=');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SHA256_COMPRESS_TOOLTIP ||

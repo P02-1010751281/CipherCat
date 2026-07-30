@@ -4,7 +4,7 @@
  * - pad: 消息填充 (1 || 0* || len), 对齐 512-bit 块
  * - compress: CF 压缩函数 (64 轮)
  */
-import { TYPE_BYTES } from '@/constants/block-types';
+import { TYPE_BYTES, TYPE_INT_LIST } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const SM3_BLOCK_TYPES = [
@@ -73,7 +73,7 @@ Blockly.Blocks['hash_sm3_compress'] = {
     this.appendValueInput('W').setCheck(null).appendField('W=');
     this.appendValueInput('WP').setCheck(null).appendField('WP=');
     this.setInputsInline(true);
-    this.setOutput(true, null);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SM3_COMPRESS_TOOLTIP ||

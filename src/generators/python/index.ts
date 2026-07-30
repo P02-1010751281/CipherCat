@@ -47,7 +47,7 @@ pythonGenerator.forBlock['cipher_key_from_seed'] = function (
 ): [string, Order] {
   void _block;
   return [
-    '[int.from_bytes(data[0:4].ljust(4,b"\\x00"),"big"), int.from_bytes(data[4:8].ljust(4,b"\\x00"),"big"), int.from_bytes(data[8:12].ljust(4,b"\\x00"),"big"), int.from_bytes(data[12:16].ljust(4,b"\\x00"),"big")]',
+    'if len(data) < 16: raise ValueError(\'Seed too short\')\n[int.from_bytes(data[0:4].ljust(4,b"\\x00"),"big"), int.from_bytes(data[4:8].ljust(4,b"\\x00"),"big"), int.from_bytes(data[8:12].ljust(4,b"\\x00"),"big"), int.from_bytes(data[12:16].ljust(4,b"\\x00"),"big")]',
     Order.ATOMIC,
   ];
 };

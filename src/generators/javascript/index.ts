@@ -49,7 +49,7 @@ javascriptGenerator.forBlock['cipher_key_from_seed'] = function (
 ): [string, Order] {
   void _block;
   return [
-    '[(data[0]<<24)|(data[1]<<16)|(data[2]<<8)|data[3], (data[4]<<24)|(data[5]<<16)|(data[6]<<8)|data[7], (data[8]<<24)|(data[9]<<16)|(data[10]<<8)|data[11], (data[12]<<24)|(data[13]<<16)|(data[14]<<8)|data[15]]',
+    'if (data.length < 16) throw new Error(\'Seed too short\');\n[(data[0]<<24)|(data[1]<<16)|(data[2]<<8)|data[3], (data[4]<<24)|(data[5]<<16)|(data[6]<<8)|data[7], (data[8]<<24)|(data[9]<<16)|(data[10]<<8)|data[11], (data[12]<<24)|(data[13]<<16)|(data[14]<<8)|data[15]]',
     Order.ATOMIC,
   ];
 };

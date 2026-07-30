@@ -1,4 +1,5 @@
 import { marked, Renderer } from 'marked';
+import DOMPurify from 'dompurify';
 import hljs from 'highlight.js';
 
 // Configure marked with highlight.js
@@ -35,7 +36,7 @@ renderer.table = (token) => {
 marked.use({ renderer });
 
 export function renderMarkdown(content: string): string {
-  return marked.parse(content, { async: false }) as string;
+  return DOMPurify.sanitize(marked.parse(content, { async: false }) as string);
 }
 
 export interface DocFile {

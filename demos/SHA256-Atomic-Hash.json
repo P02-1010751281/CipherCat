@@ -1,0 +1,56 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "hash_sha256_pad",
+        "id": "dee93305260a481dbbe5",
+        "x": 150,
+        "y": 150,
+        "inputs": {
+          "INPUT": {
+            "block": {
+              "type": "data_text",
+              "id": "274b45dc1d2c49bd8260",
+              "x": 100,
+              "y": 80,
+              "fields": {
+                "TEXT": "abc"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "hash_sha256_compress",
+        "id": "e61fabee7f1e422f9afb",
+        "x": 400,
+        "y": 200,
+        "inputs": {
+          "STATE": {
+            "block": {
+              "type": "data_value",
+              "id": "ed67fbd117cf4ee69ef6",
+              "x": 350,
+              "y": 150,
+              "fields": {
+                "NUM": "0"
+              }
+            }
+          },
+          "BLOCK": {
+            "block": {
+              "type": "data_value",
+              "id": "76d2f3dbd8334113a022",
+              "x": 350,
+              "y": 210,
+              "fields": {
+                "NUM": "0"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

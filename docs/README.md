@@ -12,9 +12,9 @@
 
 | 文档 | 受众 | 说明 |
 |------|------|------|
+| [DEMO.md](./DEMO.md) | 用户/开发者 | 演示指南：4 个实战场景快速上手 |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | 开发者 | 系统架构、数据流、模块组织、类型系统 |
 | [DEVELOPMENT.md](./DEVELOPMENT.md) | 开发者 | 环境搭建、添加积木块步骤、i18n、代码风格 |
-| [RULES.md](../RULES.md) | 开发者 | 工程行为准则（唯一权威） |
 
 ### 📊 规划与审计
 
@@ -23,7 +23,6 @@
 | [IMPLEMENTATION-PLAN.md](./IMPLEMENTATION-PLAN.md) | 开发者/PM | 完整实施计划：7 里程碑 77→140 块 |
 | [AUDIT-REPORT.md](./AUDIT-REPORT.md) | 开发者 | 密码原语完整性审计（含国密专项） |
 | [TYPE-SYSTEM.md](./TYPE-SYSTEM.md) | 开发者 | 数据类型规范：定义、值域、转换规则、兼容矩阵 |
-| [SYNC-PLAN.md](./SYNC-PLAN.md) | 开发者 | CipherCat → metacrypt_server 同步计划 |
 
 ### 🔬 算法规范
 

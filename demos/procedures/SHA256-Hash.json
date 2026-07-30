@@ -1,0 +1,46 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "crypto_func_def",
+        "id": "852bf80a6b001179b4d0",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [
+            {
+              "name": "msg",
+              "type": "bytes"
+            }
+          ]
+        },
+        "fields": {
+          "FUNC_NAME": "SHA256_Hash",
+          "RETURN_TYPE": "bytes"
+        },
+        "inputs": {
+          "STACK": {
+            "block": {
+              "type": "hash_sha256_pad",
+              "id": "2672ed383197192ee7e8",
+              "inputs": {
+                "INPUT": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "c676829480fc3a4dfd6a",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_msg"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "variables_set",
+        "id": "2832b5eb51e54a1683b9",
+        "x": 80,
+        "y": 80,
+        "fields": {
+          "VAR": {
+            "id": "b28a4a7f346e44968c2b"
+          }
+        },
+        "inputs": {
+          "VALUE": {
+            "block": {
+              "type": "data_text",
+              "id": "7a7a9ea955194ba1b7d5",
+              "x": 80,
+              "y": 160,
+              "fields": {
+                "TEXT": "16-byte state..."
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "variables_set",
+        "id": "37c5ab6630c946ae9d3f",
+        "x": 300,
+        "y": 80,
+        "fields": {
+          "VAR": {
+            "id": "ccd1658163e44eb6b76a"
+          }
+        },
+        "inputs": {
+          "VALUE": {
+            "block": {
+              "type": "data_value",
+              "id": "42cba26d8f284abfb0f1",
+              "x": 300,
+              "y": 160,
+              "fields": {
+                "NUM": "0x2b7e151628aed2a6abf7158809cf4f3c"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "aes_sub_bytes",
+        "id": "c015bfc6f400432e8ffe",
+        "x": 80,
+        "y": 280,
+        "inputs": {
+          "STATE": {
+            "block": {
+              "type": "variables_get",
+              "id": "c4d5affe80ac4cdb9433",
+              "x": 40,
+              "y": 240,
+              "fields": {
+                "VAR": {
+                  "id": "b28a4a7f346e44968c2b"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "aes_shift_rows",
+        "id": "0442ecf6d42642b2a48a",
+        "x": 300,
+        "y": 280,
+        "inputs": {
+          "STATE": {
+            "block": {
+              "type": "variables_get",
+              "id": "8c77448a370b436d9163",
+              "x": 260,
+              "y": 240,
+              "fields": {
+                "VAR": {
+                  "id": "b28a4a7f346e44968c2b"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "aes_mix_columns",
+        "id": "351ba5df70124d148761",
+        "x": 520,
+        "y": 280,
+        "inputs": {
+          "STATE": {
+            "block": {
+              "type": "variables_get",
+              "id": "981d5bc5bb88448ba038",
+              "x": 480,
+              "y": 240,
+              "fields": {
+                "VAR": {
+                  "id": "b28a4a7f346e44968c2b"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "aes_add_round_key",
+        "id": "e8dd797fbee747ae8ccf",
+        "x": 740,
+        "y": 280,
+        "inputs": {
+          "STATE": {
+            "block": {
+              "type": "variables_get",
+              "id": "3a37653c126940f4a478",
+              "x": 700,
+              "y": 240,
+              "fields": {
+                "VAR": {
+                  "id": "b28a4a7f346e44968c2b"
+                }
+              }
+            }
+          },
+          "ROUND_KEY": {
+            "block": {
+              "type": "variables_get",
+              "id": "505b3efe960f45ddbf49",
+              "x": 700,
+              "y": 300,
+              "fields": {
+                "VAR": {
+                  "id": "ccd1658163e44eb6b76a"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "crypto_func_def",
+        "id": "86dd7a15ad60e2eb7ff4",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [
+            {
+              "name": "data",
+              "type": "bytes"
+            },
+            {
+              "name": "key",
+              "type": "bytes"
+            }
+          ]
+        },
+        "fields": {
+          "FUNC_NAME": "ECB",
+          "RETURN_TYPE": "bytes"
+        },
+        "inputs": {
+          "STACK": {
+            "block": {
+              "type": "variables_get",
+              "id": "7bd4bf10d2dfb5dc7213",
+              "fields": {
+                "VAR": {
+                  "id": "param_data"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -15,10 +15,7 @@
 
 | 序号 | 文件 | 名称 |
 |:--:|------|------|
-| 1 | [01-Constants-Functions.md](./01-Constants-Functions.md) | 常数与函数 (§4) |
-| 2 | [02-Padding.md](./02-Padding.md) | 消息填充 (§5.1) |
-| 3 | [03-MessageExpansion-Compression.md](./03-MessageExpansion-Compression.md) | 消息扩展 + 压缩函数 (§5.2-§5.3) |
-| 4 | [04-Iteration-Appendix.md](./04-Iteration-Appendix.md) | 迭代过程 + 附录 |
+| 1 | [01-SM3.md](./01-SM3.md) | SM3 完整算法 |
 
 ## CipherCat 块
 

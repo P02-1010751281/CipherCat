@@ -1,0 +1,46 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "crypto_func_def",
+        "id": "50670960e74afa08d72e",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [
+            {
+              "name": "msg",
+              "type": "bytes"
+            }
+          ]
+        },
+        "fields": {
+          "FUNC_NAME": "SM3_Hash",
+          "RETURN_TYPE": "bytes"
+        },
+        "inputs": {
+          "STACK": {
+            "block": {
+              "type": "hash_sm3_pad",
+              "id": "8f2a4e73f95d1be731c6",
+              "inputs": {
+                "INPUT": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "5c1256b9e43ab1887160",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_msg"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

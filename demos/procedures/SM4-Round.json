@@ -1,0 +1,94 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "crypto_func_def",
+        "id": "04e3a19d0a29a31e5f5b",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [
+            {
+              "name": "state",
+              "type": "int_list"
+            },
+            {
+              "name": "rk",
+              "type": "int"
+            }
+          ]
+        },
+        "fields": {
+          "FUNC_NAME": "SM4_Round",
+          "RETURN_TYPE": "int_list"
+        },
+        "inputs": {
+          "STACK": {
+            "block": {
+              "type": "sm4_round_func",
+              "id": "4b003bf24412a16beb6a",
+              "inputs": {
+                "X0": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "5b5d1e56b3a96d10887a",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_state_0"
+                      }
+                    }
+                  }
+                },
+                "X1": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "551e43f1da246a9473a3",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_state_1"
+                      }
+                    }
+                  }
+                },
+                "X2": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "07264a0d80224de246c1",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_state_2"
+                      }
+                    }
+                  }
+                },
+                "X3": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "9c2c1eb3471b94dc7216",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_state_3"
+                      }
+                    }
+                  }
+                },
+                "RK": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "f2b174615aff0a40299c",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_rk"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

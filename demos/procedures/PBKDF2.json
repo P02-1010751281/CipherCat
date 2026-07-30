@@ -1,0 +1,42 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "crypto_func_def",
+        "id": "496fd6864329dd6cfd36",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [
+            {
+              "name": "password",
+              "type": "bytes"
+            },
+            {
+              "name": "salt",
+              "type": "bytes"
+            }
+          ]
+        },
+        "fields": {
+          "FUNC_NAME": "PBKDF2",
+          "RETURN_TYPE": "bytes"
+        },
+        "inputs": {
+          "STACK": {
+            "block": {
+              "type": "variables_get",
+              "id": "12b27137da225c4a7fe2",
+              "fields": {
+                "VAR": {
+                  "id": "param_password"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

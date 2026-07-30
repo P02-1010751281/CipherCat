@@ -1,6 +1,6 @@
 # CipherCat 积木块标准依据参考
 
-**版本**: 2.0 | **日期**: 2026-07-18 | **总块数**: ~110
+**版本**: 2.1 | **日期**: 2026-07-30 | **总块数**: 118
 
 ## 图例
 
@@ -39,12 +39,15 @@
 
 | 类目 | 文档 | 块数 |
 |------|------|------|
-| 对称密码 (AES+SM4) | [symmetric.md](symmetric.md) | ~15 |
+| 对称密码 (AES+SM4) | [symmetric.md](symmetric.md) | 11 |
 | 模式 + 填充 | [symmetric.md](symmetric.md) | 6 |
-| 哈希 (SHA/SM3/Keccak) | [hash.md](hash.md) | ~17 |
-| 后量子 (ML-KEM) | [post-quantum.md](post-quantum.md) | ~18 |
-| 数论 + 大数 | [numtheory.md](numtheory.md) | ~14 |
-| 位运算 + 逻辑 | [bitwise-logic.md](bitwise-logic.md) | ~11 |
-| 数据 + 编码 | [data-encoding.md](data-encoding.md) | ~15 |
-| ECC + S-Box | [ecc-sbox.md](ecc-sbox.md) | ~9 |
-| 控制流 + 函数 | [ctrl-procedure.md](ctrl-procedure.md) | ~6 |
+| 哈希 (SHA-2/SM3/SHA-3) | [hash.md](hash.md) | 25 |
+| 后量子 (ML-KEM) | [post-quantum.md](post-quantum.md) | 19 |
+| 数论 + 大数 | [numtheory.md](numtheory.md) | 15 |
+| 位运算 + 逻辑 | [bitwise-logic.md](bitwise-logic.md) | 11 |
+| 数据 + 编码 | [data-encoding.md](data-encoding.md) | 14 |
+| ECC | [ecc-sbox.md](ecc-sbox.md) | 5 |
+| S-Box | [ecc-sbox.md](ecc-sbox.md) | 4 |
+| 数组 | — | 1 |
+| 控制流 | — | 2 |
+| 函数封装 | — | 5 |

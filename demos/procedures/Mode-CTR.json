@@ -1,0 +1,46 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "crypto_func_def",
+        "id": "c875b9899e7eda05c427",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [
+            {
+              "name": "data",
+              "type": "bytes"
+            },
+            {
+              "name": "key",
+              "type": "bytes"
+            },
+            {
+              "name": "nonce",
+              "type": "bytes"
+            }
+          ]
+        },
+        "fields": {
+          "FUNC_NAME": "CTR",
+          "RETURN_TYPE": "bytes"
+        },
+        "inputs": {
+          "STACK": {
+            "block": {
+              "type": "variables_get",
+              "id": "38d8a2d8f3a37bedd8f5",
+              "fields": {
+                "VAR": {
+                  "id": "param_data"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "crypto_func_def",
+        "id": "2f1c62fe0312cceedbc2",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [
+            {
+              "name": "seed",
+              "type": "bytes"
+            }
+          ]
+        },
+        "fields": {
+          "FUNC_NAME": "ML_KEM_KeyGen",
+          "RETURN_TYPE": "bytes"
+        },
+        "inputs": {
+          "STACK": {
+            "block": {
+              "type": "variables_get",
+              "id": "27cda54b324c807d97a1",
+              "fields": {
+                "VAR": {
+                  "id": "param_seed"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

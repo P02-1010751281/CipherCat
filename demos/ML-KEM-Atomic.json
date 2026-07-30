@@ -1,0 +1,115 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "data_value",
+        "id": "04c10190bbce420a9cda",
+        "x": 100,
+        "y": 100,
+        "fields": {
+          "NUM": "0x000102030405060708090A0B0C0D0E0F"
+        }
+      },
+      {
+        "type": "pq_cbd_ntt_vec",
+        "id": "64561cc48ea24158a8ca",
+        "x": 400,
+        "y": 100,
+        "fields": {
+          "K": "2"
+        },
+        "inputs": {
+          "INPUT": {
+            "block": {
+              "type": "data_value",
+              "id": "904f70fc24bf4642b3f5",
+              "x": 360,
+              "y": 50,
+              "fields": {
+                "NUM": "0x000102030405060708090A0B0C0D0E0F"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "pq_ntt_vec",
+        "id": "d859ed076aee45ab84f4",
+        "x": 700,
+        "y": 100,
+        "fields": {
+          "K": "2"
+        },
+        "inputs": {
+          "INPUT": {
+            "block": {
+              "type": "data_value",
+              "id": "abf130c8064d414d80a0",
+              "x": 660,
+              "y": 50,
+              "fields": {
+                "NUM": "0x0001"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "pq_sample_ntt_mat",
+        "id": "d33fc2ca0592407b85de",
+        "x": 400,
+        "y": 250,
+        "fields": {
+          "K": "2"
+        },
+        "inputs": {
+          "SEED": {
+            "block": {
+              "type": "data_value",
+              "id": "5b552891368f4882ac09",
+              "x": 360,
+              "y": 200,
+              "fields": {
+                "NUM": "0x00010203"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "pq_mat_vec_mul_ntt",
+        "id": "cd9575d945584e339440",
+        "x": 700,
+        "y": 250,
+        "fields": {
+          "K": "2"
+        },
+        "inputs": {
+          "MAT": {
+            "block": {
+              "type": "data_value",
+              "id": "8698620de3a54b899e2d",
+              "x": 660,
+              "y": 200,
+              "fields": {
+                "NUM": "0"
+              }
+            }
+          },
+          "VEC": {
+            "block": {
+              "type": "data_value",
+              "id": "85a4f4c336e84e1c90c6",
+              "x": 660,
+              "y": 260,
+              "fields": {
+                "NUM": "0"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

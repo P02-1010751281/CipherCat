@@ -1,0 +1,46 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "crypto_func_def",
+        "id": "aa3e938b3593fedafecc",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [
+            {
+              "name": "data",
+              "type": "bytes"
+            },
+            {
+              "name": "key",
+              "type": "bytes"
+            },
+            {
+              "name": "iv",
+              "type": "bytes"
+            }
+          ]
+        },
+        "fields": {
+          "FUNC_NAME": "CBC",
+          "RETURN_TYPE": "bytes"
+        },
+        "inputs": {
+          "STACK": {
+            "block": {
+              "type": "variables_get",
+              "id": "d27ca7315c3c537f56a7",
+              "fields": {
+                "VAR": {
+                  "id": "param_data"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

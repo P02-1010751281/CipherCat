@@ -17,9 +17,7 @@
 
 | 序号 | 文件 | 名称 | § | CipherCat |
 |:--:|------|------|---|---|
-| 1 | [01-Functions-Constants.md](./01-Functions-Constants.md) | 函数 + 常数 | §4.1.2, §4.2.2 | `hash_sha256_compress` |
-| 2 | [02-Preprocessing.md](./02-Preprocessing.md) | 预处理 (填充+解析) | §5.1.1, §5.2.1, §6.2.1 | `hash_sha256_pad` |
-| 3 | [03-HashComputation.md](./03-HashComputation.md) | 哈希计算 (消息扩展+主循环) | §5.3.3, §6.2.2 | `hash_sha256_compress` |
+| 1 | [01-SHA2.md](./01-SHA2.md) | SHA-2 完整算法 | §4–§6 | — |
 
 ## 其他 SHA-2 变体
 

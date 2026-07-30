@@ -1,0 +1,61 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "crypto_func_def",
+        "id": "a12edf0d3787ceb394b1",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [
+            {
+              "name": "key",
+              "type": "bytes"
+            },
+            {
+              "name": "msg",
+              "type": "bytes"
+            }
+          ]
+        },
+        "fields": {
+          "FUNC_NAME": "HMAC_SHA256",
+          "RETURN_TYPE": "bytes"
+        },
+        "inputs": {
+          "STACK": {
+            "block": {
+              "type": "hash_hmac",
+              "id": "fab958ee8bde1a0f100c",
+              "inputs": {
+                "KEY": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "fa48e6d9cf63b52a75f9",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_key"
+                      }
+                    }
+                  }
+                },
+                "MSG": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "1bb7edf149650a6cc367",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_msg"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -15,9 +15,9 @@
 
 | 序号 | 文件 | 名称 |
 |:--:|------|------|
-| 1 | [01-AlgorithmStructure.md](./01-AlgorithmStructure.md) | 算法结构 (§4-§5) |
+| 1 | [01-Overview.md](./01-Overview.md) | 算法概述 (§4–§5) |
 | 2 | [02-RoundFunction.md](./02-RoundFunction.md) | 轮函数F (§6) |
-| 3 | [03-EncryptionKeySchedule.md](./03-EncryptionKeySchedule.md) | 加密/解密/密钥扩展 (§7) |
+| 3 | [03-Algorithm.md](./03-Algorithm.md) | 加密/解密/密钥扩展 (§7) |
 | 4 | [04-Appendix.md](./04-Appendix.md) | 附录 运算示例 |
 
 ## CipherCat 块

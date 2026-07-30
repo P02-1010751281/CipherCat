@@ -57,16 +57,16 @@ for f in \
   src/blocks/numtheory/poly-add.ts \
   src/blocks/numtheory/ntt.ts \
   src/blocks/index.ts; do
-  dest_dir=$(dirname "$META/frontend/src/blockly/$f")
-  mkdir -p "$dest_dir"
-  cp "$CIPHER/$f" "$META/frontend/src/blockly/$f"
+  dest="$META/frontend/src/blockly/blocks/$(echo $f | sed 's|src/blocks/||')"
+  mkdir -p "$(dirname "$dest")"
+  sed "s|from '@/constants/block-types'|from '@/blockly/constants/block-types'|g" "$CIPHER/$f" > "$dest"
   echo "  $f"
 done
 
 # ─── 6. 生成器修复 ───
 echo "[6/7] 生成器修复"
 cp "$CIPHER/src/generators/python/bit/expression.ts" \
-   "$META/frontend/src/blockly/generators/python/bit/expression.ts"
+   "$META/frontend/src/blockly/generators/python/bitwise/expression.ts"
 cp "$CIPHER/src/generators/javascript/array/partition.ts" \
    "$META/frontend/src/blockly/generators/javascript/array/partition.ts"
 

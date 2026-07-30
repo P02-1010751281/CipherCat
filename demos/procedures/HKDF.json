@@ -1,0 +1,42 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "crypto_func_def",
+        "id": "aa8f4d44ce0d8e6942d7",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [
+            {
+              "name": "ikm",
+              "type": "bytes"
+            },
+            {
+              "name": "salt",
+              "type": "bytes"
+            }
+          ]
+        },
+        "fields": {
+          "FUNC_NAME": "HKDF",
+          "RETURN_TYPE": "bytes"
+        },
+        "inputs": {
+          "STACK": {
+            "block": {
+              "type": "variables_get",
+              "id": "bafeebc59a9dafa284b1",
+              "fields": {
+                "VAR": {
+                  "id": "param_ikm"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

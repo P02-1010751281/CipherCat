@@ -1,15 +1,8 @@
 /**
  * 密码学函数封装块 — Python 代码生成器
- *
- * 处理 crypto_return 和 crypto_func_def 的 Python 代码生成。
- * 参照 Mixly 的 procedures.js 生成器模式，适配 CipherCat 的密码学场景。
  */
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
-
-// ─────────────────────────────────────────────────────────
-// crypto_return — 返回语句块
-// ─────────────────────────────────────────────────────────
 
 pythonGenerator.forBlock['crypto_return'] = function (
   block: Block,
@@ -19,41 +12,27 @@ pythonGenerator.forBlock['crypto_return'] = function (
   return 'return ' + value + '\n';
 };
 
-// ─────────────────────────────────────────────────────────
-// crypto_func_def — 密码学函数模板
-// ─────────────────────────────────────────────────────────
+const TYPE_MAP_PY: Record<string, string> = {
+  bytes: 'bytes', int: 'int', int_list: 'list[int]',
+  poly: 'list[int]', seed: 'bytes', key: 'bytes', message: 'bytes',
+};
 
-pythonGenerator.forBlock['crypto_func_def'] = function (
-  block: Block,
-): string {
-  const funcName = block.getFieldValue('FUNC_NAME') || 'my_cipher';
-  const count = parseInt(block.getFieldValue('PARAM_COUNT') as string || '1');
-
-  const pyTypeHint: Record<string, string> = {
-    bytes: 'bytes', int: 'int', int_list: 'list[int]',
-    poly: 'list[int]', seed: 'bytes', key: 'bytes', message: 'bytes',
-  };
-
-  const params: string[] = [];
-  for (let i = 0; i < count; i++) {
-    const pn = (block.getFieldValue('PARAM_NAME_' + i) as string) || 'arg' + i;
-    const pt = (block.getFieldValue('PARAM_TYPE_' + i) as string) || 'bytes';
-    params.push(pn + ': ' + (pyTypeHint[pt] || pt));
-  }
-
-  const body =
-    pythonGenerator.statementToCode(block, 'BODY') ||
+/** Shared generator for all template blocks. */
+export function generateTemplatePy(block: Block): string {
+  const funcName = (block.getFieldValue('FUNC_NAME') as string) || 'my_cipher';
+  const paramName = (block.getFieldValue('PARAM_NAME') as string) || 'arg';
+  const paramType = (block.getFieldValue('PARAM_TYPE') as string) || 'bytes';
+  const body = pythonGenerator.statementToCode(block, 'BODY') ||
     '    # TODO: 实现 ' + funcName + ' 算法\n';
   const returnValue =
-    pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) ||
-    params[0].split(':')[0];
+    pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) || paramName;
 
-  const firstType = pyTypeHint[(block.getFieldValue('PARAM_TYPE_0') as string) || 'bytes'] || 'bytes';
+  const typeHint = TYPE_MAP_PY[paramType] || paramType;
   const bodyIndented = pythonGenerator.prefixLines(body, '    ');
 
-  const code = [
+  return [
     '',
-    'def ' + funcName + '(' + params.join(', ') + ') -> ' + firstType + ':',
+    'def ' + funcName + '(' + paramName + ': ' + typeHint + ') -> ' + typeHint + ':',
     '    """',
     '    密码学函数: ' + funcName,
     '    """',
@@ -62,18 +41,20 @@ pythonGenerator.forBlock['crypto_func_def'] = function (
     '    return ' + returnValue,
     '',
   ].join('\n');
-
-  return code;
-};
-
-// ─────────────────────────────────────────────────────────
-// 预置模板块 — 复用 crypto_func_def 生成逻辑
-// ─────────────────────────────────────────────────────────
-
-function _generateCryptoFuncPy(block: Block): string {
-  return (pythonGenerator.forBlock['crypto_func_def'] as (b: Block) => string)(block);
 }
 
-pythonGenerator.forBlock['crypto_encrypt_func'] = _generateCryptoFuncPy;
-pythonGenerator.forBlock['crypto_decrypt_func'] = _generateCryptoFuncPy;
-pythonGenerator.forBlock['crypto_hash_func'] = _generateCryptoFuncPy;
+// Template block types
+const TEMPLATE_TYPES = [
+  'crypto_func_def', 'crypto_encrypt_func', 'crypto_decrypt_func', 'crypto_hash_func',
+  'proc_aes_round', 'proc_aes_last_round', 'proc_aes_key_schedule',
+  'proc_sm4_round', 'proc_sm4_key_schedule',
+  'proc_sha256_hash', 'proc_sm3_hash', 'proc_hmac_sha256', 'proc_sm3_hmac',
+  'proc_pbkdf2', 'proc_hkdf',
+  'proc_mlkem_keygen', 'proc_md_iterate', 'proc_sponge_duplex',
+  'proc_mode_ecb', 'proc_mode_cbc', 'proc_mode_ctr', 'proc_mode_gcm',
+  'proc_ntt_vec', 'proc_pq_cbd', 'proc_pq_mat_mul', 'proc_pq_sample',
+  'proc_pq_vec_add', 'proc_pq_vec_sub',
+];
+for (const t of TEMPLATE_TYPES) {
+  pythonGenerator.forBlock[t] = generateTemplatePy;
+}

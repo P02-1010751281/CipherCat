@@ -7,7 +7,7 @@
           <button class="cfp-close" @click="$emit('close')">✕</button>
         </div>
         <div class="cfp-actions">
-          <button class="cfp-btn cfp-btn-new" @click="insertTemplate('crypto_func_def')">{{ msg.CRYPTO_FUNCTIONS_NEW_BUTTON || '＋ 新建' }}</button>
+          <button class="cfp-btn cfp-btn-new" @click="insertTemplate('procedures_defreturn')">{{ msg.CRYPTO_FUNCTIONS_NEW_BUTTON || '＋ 新建' }}</button>
           <button class="cfp-btn" @click="handleImport">{{ msg.CRYPTO_FUNCTIONS_IMPORT_BUTTON || '📥 导入' }}</button>
           <button class="cfp-btn" @click="handleExportAll">{{ msg.CRYPTO_FUNCTIONS_EXPORT_BUTTON || '📤 导出' }}</button>
         </div>
@@ -102,13 +102,17 @@ let changeListener: (() => void) | null = null;
 function refreshWsFuncs() {
   const ws = props.workspace; if (!ws) { wsFuncs.value = []; return; }
   const cTypes = categories.flatMap(c => c.templates.map(t => t.type));
-  wsFuncs.value = ws.getAllBlocks(false)
-    .filter(b => cTypes.includes(b.type) || b.type === 'procedures_defreturn' || b.type === 'procedures_defnoreturn')
-    .map(b => ({
-      id: b.id,
-      name: (b.getFieldValue('FUNC_NAME') || b.getFieldValue('NAME') || b.type) as string,
-      type: b.type,
-    }));
+  // Native procedures + crypto templates
+  const all: {id:string; name:string; type:string}[] = [];
+  ws.getAllBlocks(false).forEach((b) => {
+    if (cTypes.includes(b.type)) {
+      all.push({ id: b.id, name: (b.getFieldValue('FUNC_NAME') as string) || b.type, type: b.type });
+    } else if (b.type === 'procedures_defreturn' || b.type === 'procedures_defnoreturn') {
+      const model = (b as unknown as Record<string, () => {getName:()=>string}>).getProcedureModel?.();
+      all.push({ id: b.id, name: model?.getName() || (b.getFieldValue('NAME') as string) || b.type, type: b.type });
+    }
+  });
+  wsFuncs.value = all;
 }
 
 function setupChangeListener() {
@@ -195,7 +199,10 @@ function exportWsBlock(id: string) {
   const block = ws.getBlockById(id); if (!block) return;
   const s = Blockly.serialization.blocks.save(block, { addCoordinates: false });
   if (!s) return;
-  const name = (block.getFieldValue('FUNC_NAME') || block.getFieldValue('NAME') || block.type || 'function') as string;
+  let name = (block.getFieldValue('FUNC_NAME') || block.getFieldValue('NAME') || block.type || 'function') as string;
+  // Native procedures: try model-based name
+  const fn = block as unknown as Record<string, () => {getName:()=>string}>;
+  if (fn.getProcedureModel) { try { name = fn.getProcedureModel().getName(); } catch(_) {} }
   download(JSON.stringify({ blocks: { languageVersion: 0, blocks: [s] } }, null, 2), name + '.json');
 }
 

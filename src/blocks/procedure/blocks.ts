@@ -5,7 +5,6 @@ import * as Blockly from 'blockly/core';
 
 export const PROCEDURE_BLOCK_TYPES = [
   'crypto_return',
-  'crypto_func_def',
   'crypto_encrypt_func',
   'crypto_decrypt_func',
   'crypto_hash_func',
@@ -24,87 +23,13 @@ Blockly.Blocks['crypto_return'] = {
   },
 };
 
-const PTYPES: [string, string][] = [
+
+
+
+export const CRYPTO_PARAM_TYPES: [string, string][] = [
   ['bytes', 'bytes'], ['int', 'int'], ['int_list', 'int_list'],
   ['poly', 'poly'], ['seed', 'seed'], ['key', 'key'], ['message', 'message'],
 ];
-
-function rebuildParams(block: Blockly.Block) {
-  const count = parseInt(block.getFieldValue('PARAM_COUNT') as string || '1');
-  // Remove existing param inputs (keep NAME_INPUT and COUNT_INPUT)
-  for (let i = 0; i < 8; i++) {
-    try { block.removeInput('PARAM_' + i); } catch (_) {}
-    try { block.removeInput('ARG' + i); } catch (_) {}
-  }
-  for (let i = 0; i < count; i++) {
-    const cache = (block as unknown as Record<string, Array<{name:string;type:string}>>)._paramCache;
-    const prev = cache?.[i];
-    const pn = prev?.name || 'arg' + i;
-    const pt = prev?.type || 'bytes';
-    block.appendDummyInput('PARAM_' + i)
-      .appendField('param:')
-      .appendField(new Blockly.FieldTextInput(pn), 'PARAM_NAME_' + i)
-      .appendField(':')
-      .appendField(new Blockly.FieldDropdown(PTYPES), 'PARAM_TYPE_' + i);
-    block.appendValueInput('ARG' + i).setCheck(null);
-  }
-  // Ensure BODY and RETURN exist
-  const msg = Blockly.Msg as Record<string, string>;
-  try { block.removeInput('BODY'); } catch (_) {}
-  try { block.removeInput('RETURN'); } catch (_) {}
-  block.appendStatementInput('BODY').setCheck(null).appendField(msg.CRYPTO_ITERATE_DO || 'Do');
-  block.appendValueInput('RETURN').setCheck(null).appendField(msg.PROCEDURES_DEFRETURN_RETURN || '\u2699 return');
-}
-
-Blockly.Blocks['crypto_func_def'] = {
-  init: function () {
-    const msg = Blockly.Msg as Record<string, string>;
-    this.appendDummyInput('NAME_INPUT')
-      .appendField(msg.CRYPTO_PROCEDURES_TEMPLATE_TITLE || '\u2699 function')
-      .appendField(new Blockly.FieldTextInput('myCipher'), 'FUNC_NAME');
-    this.appendDummyInput('COUNT_INPUT')
-      .appendField('params:')
-      .appendField(new Blockly.FieldDropdown([['1','1'],['2','2'],['3','3'],['4','4'],['5','5'],['6','6'],['7','7'],['8','8']]), 'PARAM_COUNT');
-    rebuildParams(this);
-    const self = this;
-    this.setOnChange(function(e: Blockly.Events.Abstract) {
-      if (e.type === Blockly.Events.BLOCK_CHANGE && (e as Blockly.Events.BlockChange).element === 'field' && (e as Blockly.Events.BlockChange).name === 'PARAM_COUNT') {
-        rebuildParams(self as unknown as Blockly.Block);
-      }
-    });
-    this.setInputsInline(false);
-    this.setColour(290);
-    this.setTooltip(msg.CRYPTO_PROCEDURES_TEMPLATE_TOOLTIP || 'Create a crypto-typed function wrapper.');
-    this.setHelpUrl('');
-  },
-  mutationToDom: function () {
-    const container = Blockly.utils.xml.createElement('mutation');
-    const count = (this as Blockly.Block).getFieldValue('PARAM_COUNT') || '1';
-    container.setAttribute('params', String(count));
-    for (let i = 0; i < parseInt(count as string); i++) {
-      const arg = Blockly.utils.xml.createElement('arg');
-      arg.setAttribute('name', ((this as Blockly.Block).getFieldValue('PARAM_NAME_' + i) as string) || 'arg' + i);
-      arg.setAttribute('type', ((this as Blockly.Block).getFieldValue('PARAM_TYPE_' + i) as string) || 'bytes');
-      container.appendChild(arg);
-    }
-    return container;
-  },
-  domToMutation: function (xmlElement: Element) {
-    const count = xmlElement.getAttribute('params') || '1';
-    (this as Blockly.Block).setFieldValue(count, 'PARAM_COUNT');
-    const args = xmlElement.getElementsByTagName('arg');
-    (this as unknown as Record<string, Array<{name:string;type:string}>>)._paramCache = [];
-    for (let i = 0; i < args.length; i++) {
-      (this as unknown as Record<string, Array<{name:string;type:string}>>)._paramCache!.push({
-        name: args[i].getAttribute('name') || 'arg' + i,
-        type: args[i].getAttribute('type') || 'bytes',
-      });
-    }
-    rebuildParams(this as Blockly.Block);
-    delete (this as unknown as Record<string, unknown>)._paramCache;
-  },
-};
-
 
 function _makeTemplateBlock(
   presetName: string, paramName: string, paramType: string, label: string,
@@ -115,26 +40,18 @@ function _makeTemplateBlock(
       this.appendDummyInput('NAME_INPUT')
         .appendField(label)
         .appendField(new Blockly.FieldTextInput(presetName), 'FUNC_NAME');
-      this.appendDummyInput('COUNT_INPUT')
-        .appendField('params:')
-        .appendField(new Blockly.FieldDropdown([['1','1'],['2','2'],['3','3'],['4','4'],['5','5'],['6','6'],['7','7'],['8','8']]), 'PARAM_COUNT');
-      // Pre-fill param0 from preset
-      (this as unknown as Record<string, Array<{name:string;type:string}>>)._paramCache = [{ name: paramName, type: paramType }];
-      rebuildParams(this);
-      delete (this as unknown as Record<string, unknown>)._paramCache;
-      const self = this;
-      this.setOnChange(function(e: Blockly.Events.Abstract) {
-        if (e.type === Blockly.Events.BLOCK_CHANGE && (e as Blockly.Events.BlockChange).element === 'field' && (e as Blockly.Events.BlockChange).name === 'PARAM_COUNT') {
-          rebuildParams(self as unknown as Blockly.Block);
-        }
-      });
+      this.appendDummyInput('PARAM_INPUT')
+        .appendField(msg.CRYPTO_PROCEDURES_PARAM_MSG || 'param:')
+        .appendField(new Blockly.FieldTextInput(paramName), 'PARAM_NAME')
+        .appendField(':')
+        .appendField(new Blockly.FieldDropdown(CRYPTO_PARAM_TYPES), 'PARAM_TYPE');
+      this.appendStatementInput('BODY').setCheck(null).appendField(msg.CRYPTO_ITERATE_DO || 'Do');
+      this.appendValueInput('RETURN').setCheck(null).appendField(msg.PROCEDURES_DEFRETURN_RETURN || '\u2699 return');
       this.setInputsInline(false);
       this.setColour(290);
       this.setTooltip(msg.CRYPTO_PROCEDURES_TEMPLATE_TOOLTIP || 'Pre-configured crypto function template.');
       this.setHelpUrl('');
     },
-    mutationToDom: (Blockly.Blocks['crypto_func_def'] as Record<string, (el:Element)=>Element>).mutationToDom,
-    domToMutation: (Blockly.Blocks['crypto_func_def'] as Record<string, (el:Element)=>void>).domToMutation,
   };
 }
 

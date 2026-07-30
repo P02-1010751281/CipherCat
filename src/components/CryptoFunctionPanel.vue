@@ -128,24 +128,24 @@ async function handleExportAll() {
 </script>
 
 <style scoped>
-.cfp-overlay { position: fixed; inset: 0; z-index: 1000; pointer-events: none; display: flex; align-items: flex-start; justify-content: flex-end; }
-.cfp-panel { pointer-events: auto; width: min(340px, 90vw); max-height: min(85vh, 700px); margin: clamp(24px, 5vh, 48px) clamp(8px, 2vw, 16px) 0 0; background: var(--ctp-surface0); border: 1px solid var(--ctp-surface2); border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.35); display: flex; flex-direction: column; overflow: hidden; }
-.cfp-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--ctp-surface1); }
-.cfp-header h3 { margin: 0; font-size: 14px; font-weight: 600; color: var(--ctp-text); }
-.cfp-close { background: none; border: none; color: var(--ctp-subtext0); font-size: 16px; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
-.cfp-close:hover { background: var(--ctp-surface1); color: var(--ctp-text); }
-.cfp-actions { display: flex; gap: 6px; padding: 8px 14px; border-bottom: 1px solid var(--ctp-surface1); }
-.cfp-btn { flex: 1; padding: 6px 10px; border: 1px solid var(--ctp-surface2); border-radius: 5px; background: var(--ctp-surface1); color: var(--ctp-text); font-size: 12px; cursor: pointer; }
-.cfp-btn:hover { background: var(--ctp-surface2); }
+.cfp-overlay { position: fixed; inset: 0; z-index: 1000; pointer-events: none; display: flex; align-items: flex-start; justify-content: flex-end; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+.cfp-panel { pointer-events: auto; width: min(340px, 90vw); max-height: min(85vh, 700px); margin: clamp(24px, 5vh, 48px) clamp(8px, 2vw, 16px) 0 0; background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.35); display: flex; flex-direction: column; overflow: hidden; }
+.cfp-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--color-bg-hover); }
+.cfp-header h3 { margin: 0; font-size: 14px; font-weight: 600; color: var(--color-text); }
+.cfp-close { background: none; border: none; color: var(--color-text-secondary); font-size: 16px; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+.cfp-close:hover { background: var(--color-bg-hover); color: var(--color-text); }
+.cfp-actions { display: flex; gap: 6px; padding: 8px 14px; border-bottom: 1px solid var(--color-bg-hover); }
+.cfp-btn { flex: 1; padding: 6px 10px; border: 1px solid var(--color-border); border-radius: 5px; background: var(--color-bg-hover); color: var(--color-text); font-size: 12px; cursor: pointer; }
+.cfp-btn:hover { background: var(--color-border); }
 .cfp-list { flex: 1; overflow-y: auto; padding: 6px 0; }
 .cfp-category { margin-bottom: 2px; }
-.cfp-cat-header { padding: 6px 14px; font-size: 11px; font-weight: 700; color: var(--ctp-overlay0); text-transform: uppercase; letter-spacing: 0.5px; }
+.cfp-cat-header { padding: 6px 14px; font-size: 11px; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
 .cfp-item { display: flex; align-items: center; padding: 4px 14px; gap: 6px; }
-.cfp-item:hover { background: var(--ctp-surface1); }
-.cfp-name { flex: 1; font-size: 12px; color: var(--ctp-text); font-family: ui-monospace, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cfp-item-btn { background: none; border: 1px solid transparent; border-radius: 4px; font-size: 12px; cursor: pointer; padding: 2px 6px; color: var(--ctp-subtext0); }
-.cfp-item-btn:hover { border-color: var(--ctp-surface2); background: var(--ctp-surface0); color: var(--ctp-text); }
-.cfp-item-insert:hover { color: var(--ctp-green); }
+.cfp-item:hover { background: var(--color-bg-hover); }
+.cfp-name { flex: 1; font-size: 12px; color: var(--color-text); font-family: ui-monospace, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cfp-item-btn { background: none; border: 1px solid transparent; border-radius: 4px; font-size: 12px; cursor: pointer; padding: 2px 6px; color: var(--color-text-secondary); }
+.cfp-item-btn:hover { border-color: var(--color-border); background: var(--color-bg-card); color: var(--color-text); }
+.cfp-item-insert:hover { color: var(--color-primary); }
 
 .panel-enter-active, .panel-leave-active { transition: opacity 0.2s ease; }
 .panel-enter-active .cfp-panel, .panel-leave-active .cfp-panel { transition: transform 0.2s ease; }

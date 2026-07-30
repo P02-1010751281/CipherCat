@@ -1,6 +1,6 @@
 <template>
   <Transition name="panel">
-    <div v-if="visible" class="cfp-overlay">
+    <div v-if="visible" class="cfp-overlay" @click.self="$emit('close')">
       <div class="cfp-panel">
         <div class="cfp-header">
           <h3>{{ msg.CRYPTO_FUNCTIONS_PANEL_TITLE || 'Crypto Functions' }}</h3>
@@ -209,8 +209,8 @@ function download(content: string, filename: string) {
 </script>
 
 <style scoped>
-.cfp-overlay { position: fixed; inset: 0; z-index: 1000; pointer-events: none; display: flex; align-items: flex-start; justify-content: flex-end; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
-.cfp-panel { pointer-events: auto; width: min(360px, 90vw); max-height: min(85vh, 700px); margin: clamp(24px, 5vh, 48px) clamp(8px, 2vw, 16px) 0 0; background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.35); display: flex; flex-direction: column; overflow: hidden; }
+.cfp-overlay { position: fixed; inset: 0; z-index: 1000; pointer-events: auto; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+.cfp-panel { pointer-events: auto; width: min(400px, 90vw); max-height: min(85vh, 700px); background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.35); display: flex; flex-direction: column; overflow: hidden; }
 .cfp-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--color-border); }
 .cfp-header h3 { margin: 0; font-size: 14px; font-weight: 600; color: var(--color-text); }
 .cfp-close { background: none; border: none; color: var(--color-text-secondary); font-size: 16px; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
@@ -233,7 +233,7 @@ function download(content: string, filename: string) {
 .cfp-item-ws { border-left: 2px solid var(--color-primary); }
 
 .panel-enter-active, .panel-leave-active { transition: opacity 0.2s ease; }
-.panel-enter-active .cfp-panel, .panel-leave-active .cfp-panel { transition: transform 0.2s ease; }
+.panel-enter-active .cfp-panel, .panel-leave-active .cfp-panel { transition: transform 0.2s ease, opacity 0.2s ease; }
 .panel-enter-from, .panel-leave-to { opacity: 0; }
-.panel-enter-from .cfp-panel, .panel-leave-to .cfp-panel { transform: translateX(40px); }
+.panel-enter-from .cfp-panel, .panel-leave-to .cfp-panel { transform: scale(0.95); }
 </style>

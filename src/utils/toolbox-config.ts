@@ -205,25 +205,13 @@ export function createToolboxConfig() {
     custom: 'PROCEDURE',
   };
 
-  const cryptoBase = { kind: 'category', name: (msg.CRYPTO_SUBCAT_BASE || 'Base'), colour: '#C67A4E', contents: ['crypto_func_def','crypto_return','procedures_ifreturn','crypto_encrypt_func','crypto_decrypt_func','crypto_hash_func'].map(t => ({ kind: 'block' as const, type: t })) };
-  const cryptoSymmetric = { kind: 'category', name: (msg.CRYPTO_SUBCAT_SYMMETRIC || 'Symmetric'), colour: '#C67A4E', contents: ['proc_aes_round','proc_aes_last_round','proc_aes_key_schedule','proc_sm4_round','proc_sm4_key_schedule'].map(t => ({ kind: 'block' as const, type: t })) };
-  const cryptoHash = { kind: 'category', name: (msg.CRYPTO_SUBCAT_HASH_MAC_KDF || 'Hash / MAC / KDF'), colour: '#C67A4E', contents: ['proc_sha256_hash','proc_sm3_hash','proc_hmac_sha256','proc_sm3_hmac','proc_pbkdf2','proc_hkdf'].map(t => ({ kind: 'block' as const, type: t })) };
-  const cryptoMode = { kind: 'category', name: (msg.CRYPTO_SUBCAT_MODE || 'Mode'), colour: '#C67A4E', contents: ['proc_mode_ecb','proc_mode_cbc','proc_mode_ctr','proc_mode_gcm'].map(t => ({ kind: 'block' as const, type: t })) };
-  const cryptoPqc = { kind: 'category', name: (msg.CRYPTO_SUBCAT_ITERATE_SPONGE_PQC || 'PQC'), colour: '#C67A4E', contents: ['proc_md_iterate','proc_sponge_duplex','proc_mlkem_keygen','proc_ntt_vec','proc_pq_cbd','proc_pq_mat_mul','proc_pq_sample','proc_pq_vec_add','proc_pq_vec_sub'].map(t => ({ kind: 'block' as const, type: t })) };
-
-  const cryptoFunctions = {
-    kind: 'category',
-    name: (msg.CRYPTO_CATEGORY_CRYPTO_FUNCTIONS || 'Crypto Functions'),
-    colour: '#C67A4E',
-    contents: [cryptoBase, cryptoSymmetric, cryptoHash, cryptoMode, cryptoPqc],
-  };
 
   return {
     kind: 'categoryToolbox' as const,
     contents: [
       ctrl, variable, math, array, data, bit, logicUnit, sbox, hash, symmetric,
       numtheory, ecc, postquantumBasic, postquantumAdvanced,
-      procedureNative, cryptoFunctions,
+      procedureNative,
     ],
   };
 }

@@ -128,8 +128,8 @@ async function handleExportAll() {
 </script>
 
 <style scoped>
-.cfp-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.3); display: flex; align-items: flex-start; justify-content: flex-end; }
-.cfp-panel { width: min(340px, 90vw); max-height: min(85vh, 700px); margin: clamp(24px, 5vh, 48px) clamp(8px, 2vw, 16px) 0 0; background: var(--ctp-surface0); border: 1px solid var(--ctp-surface2); border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.35); display: flex; flex-direction: column; overflow: hidden; }
+.cfp-overlay { position: fixed; inset: 0; z-index: 1000; pointer-events: none; display: flex; align-items: flex-start; justify-content: flex-end; }
+.cfp-panel { pointer-events: auto; width: min(340px, 90vw); max-height: min(85vh, 700px); margin: clamp(24px, 5vh, 48px) clamp(8px, 2vw, 16px) 0 0; background: var(--ctp-surface0); border: 1px solid var(--ctp-surface2); border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.35); display: flex; flex-direction: column; overflow: hidden; }
 .cfp-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--ctp-surface1); }
 .cfp-header h3 { margin: 0; font-size: 14px; font-weight: 600; color: var(--ctp-text); }
 .cfp-close { background: none; border: none; color: var(--ctp-subtext0); font-size: 16px; cursor: pointer; padding: 2px 6px; border-radius: 4px; }

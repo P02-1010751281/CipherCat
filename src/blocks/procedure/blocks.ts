@@ -32,7 +32,7 @@ const PTYPES: [string, string][] = [
 function rebuildParams(block: Blockly.Block) {
   const count = parseInt(block.getFieldValue('PARAM_COUNT') as string || '1');
   // Remove existing param inputs (keep NAME_INPUT and COUNT_INPUT)
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 8; i++) {
     try { block.removeInput('PARAM_' + i); } catch (_) {}
     try { block.removeInput('ARG' + i); } catch (_) {}
   }
@@ -64,7 +64,7 @@ Blockly.Blocks['crypto_func_def'] = {
       .appendField(new Blockly.FieldTextInput('myCipher'), 'FUNC_NAME');
     this.appendDummyInput('COUNT_INPUT')
       .appendField('params:')
-      .appendField(new Blockly.FieldDropdown([['1','1'],['2','2'],['3','3'],['4','4']]), 'PARAM_COUNT');
+      .appendField(new Blockly.FieldDropdown([['1','1'],['2','2'],['3','3'],['4','4'],['5','5'],['6','6'],['7','7'],['8','8']]), 'PARAM_COUNT');
     rebuildParams(this);
     const self = this;
     this.setOnChange(function(e: Blockly.Events.Abstract) {
@@ -117,7 +117,7 @@ function _makeTemplateBlock(
         .appendField(new Blockly.FieldTextInput(presetName), 'FUNC_NAME');
       this.appendDummyInput('COUNT_INPUT')
         .appendField('params:')
-        .appendField(new Blockly.FieldDropdown([['1','1'],['2','2'],['3','3'],['4','4']]), 'PARAM_COUNT');
+        .appendField(new Blockly.FieldDropdown([['1','1'],['2','2'],['3','3'],['4','4'],['5','5'],['6','6'],['7','7'],['8','8']]), 'PARAM_COUNT');
       // Pre-fill param0 from preset
       (this as unknown as Record<string, Array<{name:string;type:string}>>)._paramCache = [{ name: paramName, type: paramType }];
       rebuildParams(this);

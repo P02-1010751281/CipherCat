@@ -17,7 +17,7 @@ const TYPE_MAP_PY: Record<string, string> = {
   poly: 'list[int]', seed: 'bytes', key: 'bytes', message: 'bytes',
 };
 
-/** Shared generator for all template blocks. */
+/** Generate Python for all template blocks. */
 export function generateTemplatePy(block: Block): string {
   const funcName = (block.getFieldValue('FUNC_NAME') as string) || 'my_cipher';
   const paramName = (block.getFieldValue('PARAM_NAME') as string) || 'arg';

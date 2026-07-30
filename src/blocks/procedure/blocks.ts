@@ -23,13 +23,32 @@ Blockly.Blocks['crypto_return'] = {
   },
 };
 
-
-
-
 export const CRYPTO_PARAM_TYPES: [string, string][] = [
   ['bytes', 'bytes'], ['int', 'int'], ['int_list', 'int_list'],
   ['poly', 'poly'], ['seed', 'seed'], ['key', 'key'], ['message', 'message'],
 ];
+
+// ── Crypto mutator arg block (for procedure mutator workspace) ──
+
+Blockly.Blocks['crypto_mutatorarg'] = {
+  init: function () {
+    const msg = Blockly.Msg as Record<string, string>;
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldVariable(null, undefined, ['BYTES', 'INT_LIST', 'NUMBER', 'SBOX']), 'VAR_NAME')
+      .appendField(':')
+      .appendField(new Blockly.FieldDropdown(CRYPTO_PARAM_TYPES), 'PARAM_TYPE');
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(290);
+    this.setTooltip('A crypto procedure parameter with type annotation.');
+    this.setContextMenu(false);
+  },
+};
+
+// ── Crypto procedure def return block ──
+// Wraps Blockly's native procedure definition with crypto type support.
+
+// ── Template blocks (non-mutator, single-param inline) ──
 
 function _makeTemplateBlock(
   presetName: string, paramName: string, paramType: string, label: string,
@@ -59,7 +78,6 @@ _makeTemplateBlock('crypto_encrypt_func', 'message', 'message', Blockly.Msg.CRYP
 _makeTemplateBlock('crypto_decrypt_func', 'ciphertext', 'message', Blockly.Msg.CRYPTO_PROCEDURES_DECRYPT_LABEL || '🔓 decrypt');
 _makeTemplateBlock('crypto_hash_func', 'message', 'message', Blockly.Msg.CRYPTO_PROCEDURES_HASH_LABEL || '#️⃣ hash');
 
-// ── 便利块→procedure 模板 ──
 const MSG = Blockly.Msg as Record<string, string>;
 _makeTemplateBlock('proc_aes_round', 'state', 'int_list', MSG.PROC_AES_ROUND_LABEL || '🔧 AES_Round');
 _makeTemplateBlock('proc_aes_last_round', 'state', 'int_list', MSG.PROC_AES_LAST_ROUND_LABEL || '🔧 AES_LastRound');

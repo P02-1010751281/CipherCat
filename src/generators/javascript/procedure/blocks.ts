@@ -17,7 +17,7 @@ const TYPE_MAP_JS: Record<string, string> = {
   poly: 'number[]', seed: 'Uint8Array', key: 'Uint8Array', message: 'Uint8Array',
 };
 
-/** Shared generator for all template blocks (proc_* + encrypted/decrypt/hash presets). */
+/** Generate JS for all template blocks. */
 export function generateTemplateJS(block: Block): string {
   const funcName = (block.getFieldValue('FUNC_NAME') as string) || 'myCipher';
   const paramName = (block.getFieldValue('PARAM_NAME') as string) || 'arg';

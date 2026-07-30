@@ -3,17 +3,13 @@
  *
  * - sm4_round_func: 32-bit word×4 + round_key → 4 words (轮函数 F)
  * - sm4_linear_transform: L(B) 线性变换
- * - sm4_round: SM4 完整轮 (含密钥异或) — 便利块
- * - sm4_key_schedule: SM4 32轮密钥生成 — 便利块
  */
 import * as Blockly from 'blockly/core';
-import { TYPE_BYTES, TYPE_INT_LIST } from '@/constants/block-types';
+import { TYPE_BYTES, TYPE_INT_LIST, TYPE_NUMBER } from '@/constants/block-types';
 
 export const SM4_BLOCK_TYPES = [
   'sm4_round_func',
   'sm4_linear_transform',
-  'sm4_round',
-  'sm4_key_schedule',
 ] as const;
 export type Sm4BlockType = (typeof SM4_BLOCK_TYPES)[number];
 
@@ -23,7 +19,7 @@ Blockly.Blocks['sm4_round_func'] = {
     this.appendValueInput('X1').setCheck(TYPE_INT_LIST).appendField(',');
     this.appendValueInput('X2').setCheck(TYPE_INT_LIST).appendField(',');
     this.appendValueInput('X3').setCheck(TYPE_INT_LIST).appendField(',');
-    this.appendValueInput('RK').setCheck('Number').appendField(' rk:');
+    this.appendValueInput('RK').setCheck(TYPE_NUMBER).appendField(' rk:');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
     this.setOutput(true, TYPE_INT_LIST);
@@ -45,34 +41,3 @@ Blockly.Blocks['sm4_linear_transform'] = {
   },
 };
 
-// ─────────────────────────────────────────────
-// SM4 便利块（colour 195 = 180 + 15 便利层偏移）
-// ─────────────────────────────────────────────
-
-Blockly.Blocks['sm4_round'] = {
-  init: function () {
-    this.appendValueInput('X0').setCheck(TYPE_INT_LIST).appendField('SM4Round(');
-    this.appendValueInput('X1').setCheck(TYPE_INT_LIST).appendField(',');
-    this.appendValueInput('X2').setCheck(TYPE_INT_LIST).appendField(',');
-    this.appendValueInput('X3').setCheck(TYPE_INT_LIST).appendField(',');
-    this.appendValueInput('RK').setCheck('Number').appendField(' rk:');
-    this.appendDummyInput().appendField(')');
-    this.setInputsInline(true);
-    this.setOutput(true, TYPE_INT_LIST);
-    this.setColour(195);
-    this.setTooltip('SM4 完整轮: F(X0,X1,X2,X3,rk) 经 S-box + L 变换后异或到 X0 (GM/T 0002-2012)');
-    this.setHelpUrl('');
-  },
-};
-
-Blockly.Blocks['sm4_key_schedule'] = {
-  init: function () {
-    this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField('SM4KeySchedule(');
-    this.appendDummyInput().appendField(')');
-    this.setInputsInline(true);
-    this.setOutput(true, TYPE_INT_LIST);
-    this.setColour(195);
-    this.setTooltip('SM4 密钥扩展: 输入 16 字节密钥，输出 32 轮 32-bit 轮密钥 (GM/T 0002-2012)');
-    this.setHelpUrl('');
-  },
-};

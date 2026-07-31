@@ -8,6 +8,7 @@
  */
 import * as Blockly from 'blockly/core';
 import 'blockly/blocks';
+import { toolboxTemplates } from './toolbox-state';
 
 export const PROCEDURE_BLOCK_TYPES = [
   'crypto_return',
@@ -317,15 +318,19 @@ Blockly.Blocks['procedures_defnoreturn'] = makeDefBlock(false);
 // ─────────────────────────────────────────────────────────
 
 
-/** 构建 call 块 NAME 下拉选项：工作区自定义函数 + Crypto Functions 模板。 */
+/** 构建 call 块 NAME 下拉选项：工作区函数 + 拖出的模板 + Manager 添加到 toolbox 的模板。 */
 function buildCallOptions(block: AnyBlock): Array<[string, string]> {
   try {
     const ws = (block.workspace as unknown as { targetWorkspace?: Blockly.Workspace }).targetWorkspace || block.workspace;
     const tuples = Blockly.Procedures.allProcedures(ws);
     const names = tuples[0].concat(tuples[1]).map((t) => t[0]);
-    // 追加 Crypto Functions 模板（proc_* + crypto_* 预设）
-    const templateNames = Object.keys(TEMPLATE_REGISTRY);
-    const all = Array.from(new Set(names.concat(templateNames)));
+    // 工作区中拖出的模板（有 FUNC_NAME 字段的模板块）
+    const wsTemplateNames = ws.getAllBlocks(false)
+      .filter(function (b: Blockly.Block) { return b.getField('FUNC_NAME') !== null && b.type !== 'procedures_defreturn' && b.type !== 'procedures_defnoreturn'; })
+      .map(function (b: Blockly.Block) { return (b.getFieldValue('FUNC_NAME') as string) || b.type; });
+    // Manager 添加到 toolbox 的模板
+    const toolboxNames = toolboxTemplates.value;
+    const all = Array.from(new Set(names.concat(wsTemplateNames, toolboxNames)));
     if (!all.length) return [[Blockly.Msg.PROCEDURES_UNNAMED || 'unnamed', '']];
     return all.map((n) => [n, n]);
   } catch {

@@ -9,6 +9,7 @@ import * as Blockly from 'blockly/core';
 
 export const MODE_BLOCK_TYPES = [
   'mode_ecb_encrypt',
+  'mode_ecb_decrypt',
   'mode_cbc_encrypt',
   'mode_ctr_encrypt',
 ] as const;
@@ -24,6 +25,19 @@ Blockly.Blocks['mode_ecb_encrypt'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip('AES-ECB 加密：每个明文块独立用 AES-128 加密。 (SP 800-38A §6.1)');
+    this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38A.pdf');
+  },
+};
+
+Blockly.Blocks['mode_ecb_decrypt'] = {
+  init: function () {
+    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('ECB-Decrypt(');
+    this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField(', key:');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_BYTES);
+    this.setColour(190);
+    this.setTooltip('AES-ECB 解密：每个密文块独立用 AES-128 解密。 (SP 800-38A §6.1)');
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38A.pdf');
   },
 };

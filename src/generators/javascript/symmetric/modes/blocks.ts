@@ -1,11 +1,18 @@
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
-import { registerAesEcb, registerAesCbc, registerAesCtr } from './helpers';
+import { registerAesEcb, registerAesCbc, registerAesCtr, registerAesEcbDecrypt } from './helpers';
 
 javascriptGenerator.forBlock['mode_ecb_encrypt'] = function(block: Block): [string, number] {
   const data = javascriptGenerator.valueToCode(block, 'DATA', Order.ATOMIC) || '[]';
   const key = javascriptGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
   const fn = registerAesEcb();
+  return [`${fn}(${data}, ${key})`, Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['mode_ecb_decrypt'] = function(block: Block): [string, number] {
+  const data = javascriptGenerator.valueToCode(block, 'DATA', Order.ATOMIC) || '[]';
+  const key = javascriptGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
+  const fn = registerAesEcbDecrypt();
   return [`${fn}(${data}, ${key})`, Order.ATOMIC];
 };
 

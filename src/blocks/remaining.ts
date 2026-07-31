@@ -23,8 +23,11 @@ const _bn = (t: string, l: string) => { Blockly.Blocks[t] = { init: function(thi
 Blockly.Blocks['hash_hmac'] = { init: function(this: B) {
   this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField('🔧 HMAC(');
   this.appendValueInput('MSG').setCheck(TYPE_BYTES).appendField(',msg:');
-  this.appendDummyInput().appendField(')'); this.setInputsInline(true);
-  this.setOutput(true, TYPE_BYTES); this.setColour(270); this.setTooltip('HMAC');
+  this.appendDummyInput().appendField(')').appendField(new Blockly.FieldDropdown([
+    ['SHA-256', 'SHA-256'],
+    ['SM3', 'SM3'],
+  ]), 'HASH');
+  this.setInputsInline(true); this.setOutput(true, TYPE_BYTES); this.setColour(270); this.setTooltip('HMAC (SHA-256 / SM3)');
 }};
 
 Blockly.Blocks['base64_encode'] = { init: function(this: B) {

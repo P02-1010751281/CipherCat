@@ -1,11 +1,18 @@
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
-import { registerAesEcb, registerAesCbc, registerAesCtr } from './helpers';
+import { registerAesEcb, registerAesCbc, registerAesCtr, registerAesEcbDecrypt } from './helpers';
 
 pythonGenerator.forBlock['mode_ecb_encrypt'] = function(block: Block): [string, number] {
   const data = pythonGenerator.valueToCode(block, 'DATA', Order.ATOMIC) || '[]';
   const key = pythonGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
   const fn = registerAesEcb();
+  return [fn + '(' + data + ', ' + key + ')', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['mode_ecb_decrypt'] = function(block: Block): [string, number] {
+  const data = pythonGenerator.valueToCode(block, 'DATA', Order.ATOMIC) || '[]';
+  const key = pythonGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
+  const fn = registerAesEcbDecrypt();
   return [fn + '(' + data + ', ' + key + ')', Order.ATOMIC];
 };
 

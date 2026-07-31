@@ -542,6 +542,8 @@ interface TemplatePrefill {
   returnChain?: string[];
   /** 链中 variables_get 引用的参数变量名。 */
   paramVarName?: string;
+  /** 链块字段覆盖：blockType → { fieldName: 值 }（如 hash_hmac → { HASH: 'SM3' }）。 */
+  chainFields?: Record<string, Record<string, string>>;
   /** BODY statement 预填的块 state（如 ctrl_iterate 循环）。 */
   bodyState?: Blockly.serialization.blocks.State;
 }
@@ -640,9 +642,9 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'mode_ecb_encrypt'],
     paramVarName: 'message',
   },
-  // 通用解密函数：ECB 链（key 输入留空）
+  // 通用解密函数：ECB 解密链（key 输入留空）
   crypto_decrypt_func: {
-    returnChain: ['variables_get', 'mode_ecb_encrypt'],
+    returnChain: ['variables_get', 'mode_ecb_decrypt'],
     paramVarName: 'ciphertext',
   },
   // 海绵海绵挤压：squeeze(state) — outlen 留空
@@ -660,10 +662,11 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'hash_hmac'],
     paramVarName: 'key',
   },
-  // HMAC-SM3：HMAC(key, msg) — key 连参数，msg 留空
+  // HMAC-SM3：HMAC(key, msg) — key 连参数，msg 留空，HASH 强制 SM3
   proc_sm3_hmac: {
     returnChain: ['variables_get', 'hash_hmac'],
     paramVarName: 'key',
+    chainFields: { hash_hmac: { HASH: 'SM3' } },
   },
   // ML-KEM KeyGen：NTT(CBD(seed))
   proc_mlkem_keygen: {
@@ -696,6 +699,7 @@ function buildReturnChain(
   ws: Blockly.Workspace,
   chain: string[],
   varName: string,
+  chainFields?: Record<string, Record<string, string>>,
 ): Blockly.BlockSvg | null {
   let root: Blockly.BlockSvg | null = null;
   let child: Blockly.BlockSvg | null = null;
@@ -707,6 +711,13 @@ function buildReturnChain(
     const b = ws.newBlock(type) as Blockly.BlockSvg;
     if (type === 'variables_get' && varModel) {
       b.setFieldValue(varModel.getId(), 'VAR');
+    }
+    // 链块字段覆盖（如 hash_hmac 的 HASH 下拉）
+    const fields = chainFields && chainFields[type];
+    if (fields) {
+      for (const [fieldName, fieldValue] of Object.entries(fields)) {
+        if (b.getField(fieldName)) b.setFieldValue(fieldValue, fieldName);
+      }
     }
     b.initSvg();
     if (child && child.outputConnection) {
@@ -734,7 +745,7 @@ function injectPrefill(block: AnyBlock, prefill: TemplatePrefill | undefined, pa
   }
   if (prefill.returnChain) {
     try {
-      const valueBlock = buildReturnChain(ws, prefill.returnChain, prefill.paramVarName || paramName);
+      const valueBlock = buildReturnChain(ws, prefill.returnChain, prefill.paramVarName || paramName, prefill.chainFields);
       if (valueBlock) {
         const retInput = block.getInput('RETURN');
         if (retInput && valueBlock.outputConnection) {
@@ -815,10 +826,28 @@ function _makeTemplateBlock(
       // 拖出到主 workspace 后注入预填内容（flyout 预览不展开，保持紧凑）
       const self = this as unknown as { __prefilled?: boolean; isInFlyout?: boolean };
       if (self.isInFlyout) return;
-      if (!self.__prefilled) {
+      if (self.__prefilled) return;
+      // 防御：RETURN 或 BODY 已有内容视为已注入（兼容旧损坏工作区，防止二次注入）
+      const retInput = (this as unknown as Blockly.Block).getInput('RETURN');
+      const bodyInput = (this as unknown as Blockly.Block).getInput('BODY');
+      if (
+        (retInput && retInput.connection && retInput.connection.targetBlock()) ||
+        (bodyInput && bodyInput.connection && bodyInput.connection.targetBlock())
+      ) {
         self.__prefilled = true;
-        injectPrefill(this as unknown as AnyBlock, TEMPLATE_PREFILL[presetName], paramName);
+        return;
       }
+      self.__prefilled = true;
+      injectPrefill(this as unknown as AnyBlock, TEMPLATE_PREFILL[presetName], paramName);
+    },
+    // 预填标记随序列化持久化：保存→重载后 onchange 不再重复注入
+    saveExtraState: function (this: Blockly.Block) {
+      const self = this as unknown as { __prefilled?: boolean };
+      return self.__prefilled ? { prefilled: true } : null;
+    },
+    loadExtraState: function (this: Blockly.Block, state: Record<string, unknown>) {
+      const self = this as unknown as { __prefilled?: boolean };
+      if (state && state.prefilled) self.__prefilled = true;
     },
   };
 }

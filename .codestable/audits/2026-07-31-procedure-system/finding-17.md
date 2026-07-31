@@ -6,7 +6,8 @@ nature: maintainability
 severity: P2
 confidence: high
 suggested_action: cs-refactor
-status: open
+status: closed
+closed_by: refactor 2026-07-31-maintenance-cleanup
 ---
 
 # Finding 17：remaining.ts 13 个块未收录 ALL_BLOCK_TYPES（旧 #10 未关）

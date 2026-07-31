@@ -6,7 +6,8 @@ nature: maintainability
 severity: P2
 confidence: high
 suggested_action: cs-refactor
-status: open
+status: closed
+closed_by: refactor 2026-07-31-maintenance-cleanup
 ---
 
 # Finding 14：28 项模板清单三处手工复制已漂移（幻影条目 crypto_func_def）；生成器 JS/Python 镜像无一致性机制

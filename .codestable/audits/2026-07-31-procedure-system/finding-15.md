@@ -6,7 +6,8 @@ nature: maintainability
 severity: P2
 confidence: high
 suggested_action: cs-refactor
-status: open
+status: closed
+closed_by: refactor 2026-07-31-maintenance-cleanup
 ---
 
 # Finding 15：BlocklyEditor.vue 工具箱样式选择器指向 Blockly ≤11 类名，12.5.1 下全部失效

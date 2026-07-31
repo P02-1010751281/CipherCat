@@ -46,10 +46,10 @@ total_findings: 18
 | 11 | performance | P2 | medium | Panel listener 未按 visible 门控 | [finding-11.md](finding-11.md) |
 | 12 | performance | P2 | low | 分割拖拽强制回流 | [finding-12.md](finding-12.md) |
 | 13 | performance | P2 | low | 外层 setTimeout 孤儿定时器（旧 #18 残留） | [finding-13.md](finding-13.md) |
-| 14 | maintainability | P2 | high | 模板清单三处漂移 + 生成器镜像 | [finding-14.md](finding-14.md) |
-| 15 | maintainability | P2 | high | 工具箱死样式选择器（12.5 类名） | [finding-15.md](finding-15.md) |
-| 16 | maintainability | P2 | high | locale ~14 对死键 + 重复键 | [finding-16.md](finding-16.md) |
-| 17 | maintainability | P2 | high | remaining.ts 13 块未入 ALL_BLOCK_TYPES（旧 #10） | [finding-17.md](finding-17.md) |
+| 14 | maintainability | P2 | high | 模板清单三处漂移 + 生成器镜像 ✅已修 | [finding-14.md](finding-14.md) |
+| 15 | maintainability | P2 | high | 工具箱死样式选择器（12.5 类名） ✅已修 | [finding-15.md](finding-15.md) |
+| 16 | maintainability | P2 | high | locale ~14 对死键 + 重复键 ✅已修 | [finding-16.md](finding-16.md) |
+| 17 | maintainability | P2 | high | remaining.ts 13 块未入 ALL_BLOCK_TYPES（旧 #10） ✅已修 | [finding-17.md](finding-17.md) |
 | 18 | maintainability | P2 | medium | Metacrypto 品牌未迁移（旧 #14） | [finding-18.md](finding-18.md) |
 
 ## 按维度分布

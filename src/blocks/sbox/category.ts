@@ -23,12 +23,12 @@ export function createSboxFlyoutCallback(
   for (const type of SBOX_VAR_BLOCK_TYPES) {
     items.push({ kind: 'block', type });
   }
-  items.push({ kind: 'sep' } as Blockly.utils.toolbox.FlyoutItemInfo);
+  items.push({ kind: 'sep', gap: 24 } as Blockly.utils.toolbox.FlyoutItemInfo);
 
   for (const type of SBOX_BLOCK_TYPES) {
     items.push({ kind: 'block', type });
   }
-  items.push({ kind: 'sep' } as Blockly.utils.toolbox.FlyoutItemInfo);
+  items.push({ kind: 'sep', gap: 24 } as Blockly.utils.toolbox.FlyoutItemInfo);
 
   items.push({
     kind: 'button',

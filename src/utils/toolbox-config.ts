@@ -203,7 +203,7 @@ export function createToolboxConfig() {
     kind: 'category',
     name: (msg.CRYPTO_CATEGORY_PROCEDURE || 'Functions'),
     colour: '#A6745C',
-    custom: 'PROCEDURE',
+    custom: 'CRYPTO_PROCEDURE',
   };
 
   const cryptoTemplates = {

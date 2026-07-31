@@ -5,6 +5,7 @@ import { WORKSPACE_OPTIONS } from '@/constants/workspace-config';
 
 import { createBlocklyTheme, type ThemeOptions } from './theme';
 import { registerSboxCategoryCallbacks } from '@/blocks/sbox/category';
+import { registerProcedureCallbacks } from '@/blocks/procedure/category';
 import { toolboxTemplates } from '@/blocks/procedure/toolbox-state';
 
 export interface WorkspaceState {
@@ -41,6 +42,7 @@ export function createWorkspace(
     });
 
     registerSboxCategoryCallbacks(workspace);
+    registerProcedureCallbacks(workspace);
     registerCryptoTemplateCallbacks(workspace);
 
     return {

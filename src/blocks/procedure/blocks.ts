@@ -580,6 +580,21 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'pq_mat_vec_mul'],
     paramVarName: 'mat',
   },
+  // ECB：ECB-Encrypt(data, key) — key 输入留空
+  proc_mode_ecb: {
+    returnChain: ['variables_get', 'mode_ecb_encrypt'],
+    paramVarName: 'data',
+  },
+  // CBC：CBC-Encrypt(data, key, iv) — key/iv 输入留空
+  proc_mode_cbc: {
+    returnChain: ['variables_get', 'mode_cbc_encrypt'],
+    paramVarName: 'data',
+  },
+  // CTR：CTR-Encrypt(data, key, nonce) — key/nonce 输入留空
+  proc_mode_ctr: {
+    returnChain: ['variables_get', 'mode_ctr_encrypt'],
+    paramVarName: 'data',
+  },
   // 海绵海绵挤压：squeeze(state) — outlen 留空
   proc_sponge_duplex: {
     returnChain: ['variables_get', 'sponge_squeeze'],

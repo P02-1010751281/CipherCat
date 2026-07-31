@@ -16,6 +16,14 @@ export function registerPolyAddMod(): string {
   ]);
 }
 
+
+export function registerPolySubMod(): string {
+  return pythonGenerator.provideFunction_('poly_sub_mod', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, b, q=3329):',
+    '    return [(x - y) % q for x, y in zip(a, b)]',
+  ]);
+}
+
 export function registerNtt(): string {
   return pythonGenerator.provideFunction_('ntt', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, q=3329, n=256):',

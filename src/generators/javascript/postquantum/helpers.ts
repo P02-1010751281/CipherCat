@@ -31,6 +31,23 @@ export function registerPolyAddModQ(): string {
   ]);
 }
 
+
+export function registerPolySubModQ(): string {
+  return javascriptGenerator.provideFunction_('polySubModQ', [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(a, b, q) {',
+    '  q = q || 3329;',
+    '  let len = Math.min(a.length, b.length);',
+    '  let res = new Array(len);',
+    '  for (let i = 0; i < len; i++) {',
+    '    res[i] = ((a[i] - b[i]) % q + q) % q;',
+    '  }',
+    '  return res;',
+    '}',
+  ]);
+}
+
 export function registerNtt(): string {
   const powModName = registerPowMod();
   return javascriptGenerator.provideFunction_('ntt', [

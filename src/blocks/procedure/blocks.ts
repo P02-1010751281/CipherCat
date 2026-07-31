@@ -570,6 +570,11 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'pq_poly_add'],
     paramVarName: 'a',
   },
+  // 向量减法：PolySub(a, b) — b 输入留空
+  proc_pq_vec_sub: {
+    returnChain: ['variables_get', 'pq_poly_sub'],
+    paramVarName: 'a',
+  },
   // 海绵海绵挤压：squeeze(state) — outlen 留空
   proc_sponge_duplex: {
     returnChain: ['variables_get', 'sponge_squeeze'],

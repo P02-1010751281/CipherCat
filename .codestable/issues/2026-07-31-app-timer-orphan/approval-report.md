@@ -1,7 +1,7 @@
 ---
 doc_type: approval-report
 unit: .codestable/issues/2026-07-31-app-timer-orphan
-status: pending
+status: approved
 reason: other
 approvals: {issue-report: approved, issue-fast-path: approved, issue-fix-completion: approved}
 approval_groups: {}

@@ -1,9 +1,9 @@
 ---
 doc_type: approval-report
 unit: .codestable/issues/2026-07-31-procedure-interaction-bugs
-status: pending
+status: approved
 reason: other
-approvals: {issue-report: approved, fix-plan: approved, issue-fix-completion: pending}
+approvals: {issue-report: approved, fix-plan: approved, issue-fix-completion: approved}
 approval_groups: {}
 created_at: 2026-07-31
 ---
@@ -14,7 +14,7 @@ created_at: 2026-07-31
 
 - 2026-07-31 — `issue-report`: **approved**（批准，P2，进 analyze）
 - 2026-07-31 — `fix-plan`: **approved**（方案 A）
-- 2026-07-31 — `issue-fix-completion`: **pending**（待 owner 确认）
+- 2026-07-31 — `issue-fix-completion`: **approved**（owner 确认，issue 关闭）
 
 ## Decision Needed
 

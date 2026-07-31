@@ -1,7 +1,7 @@
 ---
 doc_type: approval-report
 unit: .codestable/issues/2026-07-31-procedure-template-prefill
-status: pending
+status: approved
 reason: other
 approvals: {issue-report: approved, fix-plan: approved, issue-fix-completion: approved}
 approval_groups: {}

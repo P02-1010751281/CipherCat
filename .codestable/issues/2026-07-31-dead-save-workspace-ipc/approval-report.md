@@ -1,9 +1,9 @@
 ---
 doc_type: approval-report
 unit: .codestable/issues/2026-07-31-dead-save-workspace-ipc
-status: pending
+status: approved
 reason: other
-approvals: {issue-report: approved, issue-fast-path: approved, issue-fix-completion: pending}
+approvals: {issue-report: approved, issue-fast-path: approved, issue-fix-completion: approved}
 approval_groups: {}
 created_at: 2026-07-31
 ---
@@ -14,7 +14,7 @@ created_at: 2026-07-31
 
 - 2026-07-31 — `issue-report`: **approved**（批准，P1）
 - 2026-07-31 — `issue-fast-path`: **approved**（跳过 analyze 直接 fix）
-- 2026-07-31 — `issue-fix-completion`: **pending**（待 owner 确认）
+- 2026-07-31 — `issue-fix-completion`: **approved**（owner 确认，issue 关闭）
 
 ## Decision Needed
 

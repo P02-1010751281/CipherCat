@@ -524,6 +524,8 @@ interface TemplatePrefill {
   returnChain?: string[];
   /** 链中 variables_get 引用的参数变量名。 */
   paramVarName?: string;
+  /** BODY statement 预填的块 state（如 ctrl_iterate 循环）。 */
+  bodyState?: Blockly.serialization.blocks.State;
 }
 
 /** 各模板的预填内容定义。 */
@@ -593,6 +595,24 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'pq_sample_poly_cbd', 'pq_ntt'],
     paramVarName: 'seed',
   },
+  // AES 密钥扩展：10 轮迭代循环骨架
+  proc_aes_key_schedule: {
+    bodyState: iterateState(10),
+    returnChain: ['variables_get'],
+    paramVarName: 'key',
+  },
+  // SM4 密钥扩展：32 轮迭代循环骨架
+  proc_sm4_key_schedule: {
+    bodyState: iterateState(32),
+    returnChain: ['variables_get'],
+    paramVarName: 'key',
+  },
+  // 消息摘要迭代：16 轮迭代循环骨架
+  proc_md_iterate: {
+    bodyState: iterateState(16),
+    returnChain: ['variables_get'],
+    paramVarName: 'iv',
+  },
 };
 
 /** 构建 RETURN 表达式链：chain 从叶子到根（如 [variables_get, aes_sub_bytes, ...]），
@@ -650,6 +670,44 @@ function injectPrefill(block: AnyBlock, prefill: TemplatePrefill | undefined, pa
       console.warn('[prefill] ' + block.type + ' inject failed:', e);
     }
   }
+  if (prefill.bodyState) {
+    try {
+      const state = JSON.parse(JSON.stringify(prefill.bodyState));
+      const bodyBlock = Blockly.serialization.blocks.append(
+        state as Blockly.serialization.blocks.State,
+        ws,
+      ) as unknown as Blockly.BlockSvg | null;
+      if (bodyBlock) {
+        bodyBlock.initSvg();
+        bodyBlock.render();
+        const bodyInput = block.getInput('BODY');
+        if (bodyInput && bodyBlock.previousConnection) {
+          bodyInput.connection.connect(bodyBlock.previousConnection);
+        }
+      }
+    } catch (e) {
+      console.warn('[prefill] ' + block.type + ' body inject failed:', e);
+    }
+  }
+}
+
+/** 构建 ctrl_iterate 循环块 state（BODY 预填用）。 */
+function iterateState(times: number, varName = 'i', bodyBlocks?: Blockly.serialization.blocks.State[]): Blockly.serialization.blocks.State {
+  const state: Record<string, unknown> = {
+    type: 'ctrl_iterate',
+    fields: { VAR: varName, TIMES: String(times) },
+    inputs: {},
+  };
+  if (bodyBlocks && bodyBlocks.length) {
+    (state.inputs as Record<string, unknown>).DO = { block: bodyBlocks[0] };
+    for (let i = 0; i < bodyBlocks.length - 1; i++) {
+      const b = bodyBlocks[i];
+      const next = bodyBlocks[i + 1];
+      const rec = b as unknown as { next?: { block: Blockly.serialization.blocks.State } };
+      rec.next = { block: next };
+    }
+  }
+  return state as unknown as Blockly.serialization.blocks.State;
 }
 
 function _makeTemplateBlock(

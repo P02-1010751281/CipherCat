@@ -229,15 +229,16 @@ function makeDefBlock(hasReturn: boolean): AnyBlock {
       return state;
     },
     loadExtraState: function (this: AnyBlock, state: Record<string, unknown>) {
-      const params = (state.params as Array<{ name: string; id: string; type?: string }>) || [];
+      const raw = (state.params as Array<{ name: string; id: string; type?: string } | string>) || [];
       this.arguments_ = [];
       this.argumentVarModels_ = [];
       this.paramTypes_ = [];
-      for (const p of params) {
+      for (const item of raw) {
+        const p = typeof item === 'string' ? { name: item, id: '', type: 'bytes' } : item;
         this.arguments_.push(p.name);
         this.paramTypes_.push(p.type || 'bytes');
         const v = (this.workspace.getVariableMap().getVariable(p.name, '') ||
-          this.workspace.createVariable(p.name, '', p.id)) as unknown as Blockly.VariableModel;
+          this.workspace.createVariable(p.name, '', p.id || undefined)) as unknown as Blockly.VariableModel;
         this.argumentVarModels_.push(v);
       }
       this.updateParams_();
@@ -413,15 +414,17 @@ function makeCallBlock(hasReturn: boolean): AnyBlock {
       return state;
     },
     loadExtraState: function (this: AnyBlock, state: Record<string, unknown>) {
-      const params = (state.params as Array<{ name: string; id: string; type?: string }>) || [];
+      const raw = (state.params as Array<{ name: string; id: string; type?: string } | string>) || [];
       this.arguments_ = [];
       this.argumentVarModels_ = [];
       this.paramTypes_ = [];
-      for (const p of params) {
+      for (const item of raw) {
+        // flyout 传字符串数组 ['key','msg']；序列化存对象数组 [{name,id,type}]
+        const p = typeof item === 'string' ? { name: item, id: '', type: 'bytes' } : item;
         this.arguments_.push(p.name);
         this.paramTypes_.push(p.type || 'bytes');
         const v = (this.workspace.getVariableMap().getVariable(p.name, '') ||
-          this.workspace.createVariable(p.name, '', p.id)) as unknown as Blockly.VariableModel;
+          this.workspace.createVariable(p.name, '', p.id || undefined)) as unknown as Blockly.VariableModel;
         this.argumentVarModels_.push(v);
       }
       this.updateShape_();

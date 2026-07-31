@@ -3,6 +3,7 @@
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
+import { TEMPLATE_TYPES } from '@/blocks/procedure/blocks';
 
 javascriptGenerator.forBlock['crypto_return'] = function (
   block: Block,
@@ -87,18 +88,7 @@ export function generateTemplateJS(block: Block): string {
   ].join('\n');
 }
 
-// Template block types
-const TEMPLATE_TYPES = [
-  'crypto_func_def', 'crypto_encrypt_func', 'crypto_decrypt_func', 'crypto_hash_func',
-  'proc_aes_round', 'proc_aes_last_round', 'proc_aes_key_schedule',
-  'proc_sm4_round', 'proc_sm4_key_schedule',
-  'proc_sha256_hash', 'proc_sm3_hash', 'proc_hmac_sha256', 'proc_sm3_hmac',
-  'proc_pbkdf2', 'proc_hkdf',
-  'proc_mlkem_keygen', 'proc_md_iterate', 'proc_sponge_duplex',
-  'proc_mode_ecb', 'proc_mode_cbc', 'proc_mode_ctr', 'proc_mode_gcm',
-  'proc_ntt_vec', 'proc_pq_cbd', 'proc_pq_mat_mul', 'proc_pq_sample',
-  'proc_pq_vec_add', 'proc_pq_vec_sub',
-];
+// Template block types（单一数据源：派生自 blocks 注册表）
 for (const t of TEMPLATE_TYPES) {
   javascriptGenerator.forBlock[t] = generateTemplateJS;
 }

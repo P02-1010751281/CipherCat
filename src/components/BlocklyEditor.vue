@@ -140,27 +140,6 @@ defineExpose({
   stroke: none !important;
 }
 
-:deep(.blocklyToolboxDiv) {
-  background: var(--el-fill-color-lighter, #fafbfc) !important;
-  border-right: 1px solid var(--el-border-color-light, #e4e7ed) !important;
-  padding: 4px 0 !important;
-}
-
-:deep(.blocklyTreeRow) {
-  padding: 6px 12px !important;
-  margin: 2px 4px !important;
-  border-radius: 6px !important;
-  transition: background 0.15s !important;
-}
-
-:deep(.blocklyTreeRow:hover) {
-  background: var(--el-color-primary-light-9, #ecf5ff) !important;
-}
-
-:deep(.blocklyTreeSelected) {
-  background: var(--el-color-primary-light-8, #d9ecff) !important;
-}
-
 :deep(.blocklyFlyoutBackground) {
   fill: var(--el-fill-color-light, #f7f8fa) !important;
   fill-opacity: 0.97 !important;
@@ -168,10 +147,6 @@ defineExpose({
 
 :deep(.blocklyFlyout) {
   z-index: 30 !important;
-}
-
-:deep(.blocklyToolboxDiv) {
-  z-index: 20 !important;
 }
 
 :deep(.blocklyWidgetDiv) {

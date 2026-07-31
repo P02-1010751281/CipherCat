@@ -46,6 +46,7 @@
 import { ref, watch, onUnmounted } from 'vue';
 import * as Blockly from 'blockly/core';
 import { toolboxTemplates, toggleTemplate } from '@/blocks/procedure/toolbox-state';
+import { TEMPLATE_REGISTRY } from '@/blocks/procedure/blocks';
 
 const msg = Blockly.Msg as Record<string, string>;
 const props = defineProps<{ visible: boolean; workspace: Blockly.WorkspaceSvg | null }>();
@@ -64,48 +65,47 @@ function L(type: string): string {
   return (msg as Record<string, string>)[key] || type;
 }
 
+/** 模板项显示文案（cosmetic，与类型清单无关；缺省 '1 param'）。 */
+const PANEL_PARAM: Record<string, string> = {
+  proc_mode_ecb: '1 param: data:Bytes',
+  proc_mode_cbc: '1 param: data:Bytes',
+  proc_mode_ctr: '1 param: data:Bytes',
+  proc_mode_gcm: '1 param: data:Bytes',
+  proc_md_iterate: '1 param: iv:IntList',
+  proc_sponge_duplex: '1 param: state:IntList',
+  proc_mlkem_keygen: '1 param: seed:Seed',
+  proc_ntt_vec: '1 param: vec:IntList',
+  proc_pq_cbd: '1 param: seed:Seed',
+  proc_pq_mat_mul: '1 param: mat:IntList',
+  proc_pq_sample: '1 param: seed:Seed',
+  proc_pq_vec_add: '1 param: a:IntList',
+  proc_pq_vec_sub: '1 param: a:IntList',
+};
+
 function buildCategories(): SubCategory[] {
-  return [
-  { key: 'base', label: msg.CRYPTO_SUBCAT_BASE || 'Base', templates: [
-    { type: 'crypto_return',         label: L('crypto_return'),         param: 'value' },
-    { type: 'procedures_ifreturn',   label: L('procedures_ifreturn'),   param: 'condition' },
-    { type: 'crypto_encrypt_func',   label: L('crypto_encrypt_func'),   param: '1 param' },
-    { type: 'crypto_decrypt_func',   label: L('crypto_decrypt_func'),   param: '1 param' },
-    { type: 'crypto_hash_func',      label: L('crypto_hash_func'),      param: '1 param' },
-  ]},
-  { key: 'symmetric', label: msg.CRYPTO_SUBCAT_SYMMETRIC || 'Symmetric', templates: [
-    { type: 'proc_aes_round',        label: L('proc_aes_round'),        param: '1 param' },
-    { type: 'proc_aes_last_round',   label: L('proc_aes_last_round'),   param: '1 param' },
-    { type: 'proc_aes_key_schedule', label: L('proc_aes_key_schedule'), param: '1 param' },
-    { type: 'proc_sm4_round',        label: L('proc_sm4_round'),        param: '1 param' },
-    { type: 'proc_sm4_key_schedule', label: L('proc_sm4_key_schedule'), param: '1 param' },
-  ]},
-  { key: 'hash', label: msg.CRYPTO_SUBCAT_HASH_MAC_KDF || 'Hash / MAC / KDF', templates: [
-    { type: 'proc_sha256_hash',      label: L('proc_sha256_hash'),      param: '1 param' },
-    { type: 'proc_sm3_hash',         label: L('proc_sm3_hash'),         param: '1 param' },
-    { type: 'proc_hmac_sha256',      label: L('proc_hmac_sha256'),      param: '1 param' },
-    { type: 'proc_sm3_hmac',         label: L('proc_sm3_hmac'),         param: '1 param' },
-    { type: 'proc_pbkdf2',           label: L('proc_pbkdf2'),           param: '1 param' },
-    { type: 'proc_hkdf',             label: L('proc_hkdf'),             param: '1 param' },
-  ]},
-  { key: 'mode', label: msg.CRYPTO_SUBCAT_MODE || 'Mode', templates: [
-    { type: 'proc_mode_ecb',         label: L('proc_mode_ecb'),         param: '1 param: data:Bytes' },
-    { type: 'proc_mode_cbc',         label: L('proc_mode_cbc'),         param: '1 param: data:Bytes' },
-    { type: 'proc_mode_ctr',         label: L('proc_mode_ctr'),         param: '1 param: data:Bytes' },
-    { type: 'proc_mode_gcm',         label: L('proc_mode_gcm'),         param: '1 param: data:Bytes' },
-  ]},
-  { key: 'pqc', label: msg.CRYPTO_SUBCAT_ITERATE_SPONGE_PQC || 'PQC', templates: [
-    { type: 'proc_md_iterate',       label: L('proc_md_iterate'),       param: '1 param: iv:IntList' },
-    { type: 'proc_sponge_duplex',    label: L('proc_sponge_duplex'),    param: '1 param: state:IntList' },
-    { type: 'proc_mlkem_keygen',     label: L('proc_mlkem_keygen'),     param: '1 param: seed:Seed' },
-    { type: 'proc_ntt_vec',          label: L('proc_ntt_vec'),          param: '1 param: vec:IntList' },
-    { type: 'proc_pq_cbd',           label: L('proc_pq_cbd'),           param: '1 param: seed:Seed' },
-    { type: 'proc_pq_mat_mul',       label: L('proc_pq_mat_mul'),       param: '1 param: mat:IntList' },
-    { type: 'proc_pq_sample',        label: L('proc_pq_sample'),        param: '1 param: seed:Seed' },
-    { type: 'proc_pq_vec_add',       label: L('proc_pq_vec_add'),       param: '1 param: a:IntList' },
-    { type: 'proc_pq_vec_sub',       label: L('proc_pq_vec_sub'),       param: '1 param: a:IntList' },
-  ]},
+  const categories: SubCategory[] = [
+    { key: 'base', label: msg.CRYPTO_SUBCAT_BASE || 'Base', templates: [] },
+    { key: 'symmetric', label: msg.CRYPTO_SUBCAT_SYMMETRIC || 'Symmetric', templates: [] },
+    { key: 'hash', label: msg.CRYPTO_SUBCAT_HASH_MAC_KDF || 'Hash / MAC / KDF', templates: [] },
+    { key: 'mode', label: msg.CRYPTO_SUBCAT_MODE || 'Mode', templates: [] },
+    { key: 'pqc', label: msg.CRYPTO_SUBCAT_ITERATE_SPONGE_PQC || 'PQC', templates: [] },
   ];
+  // 模板清单从注册表派生（单一数据源），显示文案保持原样
+  for (const [type, info] of Object.entries(TEMPLATE_REGISTRY)) {
+    const group = categories.find((c) => c.key === info.category);
+    if (!group) continue;
+    group.templates.push({
+      type,
+      label: L(type),
+      param: PANEL_PARAM[type] || '1 param',
+    });
+  }
+  // base 类目额外项（非注册表模板，固定在前）
+  categories[0].templates.unshift(
+    { type: 'crypto_return', label: L('crypto_return'), param: 'value' },
+    { type: 'procedures_ifreturn', label: L('procedures_ifreturn'), param: 'condition' },
+  );
+  return categories;
 }
 
 const categories = ref<SubCategory[]>(buildCategories());
@@ -163,7 +163,8 @@ function isInToolbox(type: string): boolean {
 function toggleTpl(type: string) {
   toggleTemplate(type);
   // 刷新 toolbox 显示（null = 用原配置重新渲染）
-  try { props.workspace?.updateToolbox(null); } catch {}
+  try { props.workspace?.updateToolbox(null); }
+  catch (e) { console.warn('[FunctionManager] toolbox refresh failed:', e); }
 }
 
 function insertTemplate(type: string) {
@@ -228,7 +229,10 @@ function exportWsBlock(id: string) {
   let name = (block.getFieldValue('FUNC_NAME') || block.getFieldValue('NAME') || block.type || 'function') as string;
   // Native procedures: try model-based name
   const fn = block as unknown as Record<string, () => {getName:()=>string}>;
-  if (fn.getProcedureModel) { try { name = fn.getProcedureModel().getName(); } catch(_) {} }
+  if (fn.getProcedureModel) {
+    try { name = fn.getProcedureModel().getName(); }
+    catch (e) { console.warn('[FunctionManager] procedure model name unavailable, falling back to field name:', e); }
+  }
   download(JSON.stringify({ blocks: { languageVersion: 0, blocks: [s] } }, null, 2), name + '.json');
 }
 

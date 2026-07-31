@@ -55,3 +55,22 @@ Blockly.Blocks['endian_swap'] = { init: function(this: B) {
   this.appendDummyInput().appendField(')'); this.setInputsInline(true);
   this.setOutput(true, TYPE_INT_LIST); this.setColour(220); this.setTooltip('字节序转换');
 }};
+
+/** 本文件直接注册的块类型清单（供 ALL_BLOCK_TYPES 收录，保持类型系统完整）。 */
+export const REMAINING_BLOCK_TYPES = [
+  'nt_mod',
+  'nt_mod_pow',
+  'nt_div_rem',
+  'bn_add',
+  'bn_sub',
+  'bn_mul',
+  'bn_div',
+  'hash_hmac',
+  'base64_encode',
+  'base64_decode',
+  'hex_to_bytes',
+  'bytes_to_hex',
+  'endian_swap',
+] as const;
+
+export type RemainingBlockType = typeof REMAINING_BLOCK_TYPES[number];

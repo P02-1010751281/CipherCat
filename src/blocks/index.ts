@@ -33,6 +33,10 @@ import {
   SYMMETRIC_BLOCK_TYPES,
   type SymmetricBlockType,
 } from './symmetric';
+import {
+  REMAINING_BLOCK_TYPES,
+  type RemainingBlockType,
+} from './remaining';
 
 export const ALL_BLOCK_TYPES = [
   ...CTRL_BLOCK_TYPES,
@@ -47,6 +51,7 @@ export const ALL_BLOCK_TYPES = [
   ...PQ_BLOCK_TYPES,
   ...PROCEDURE_BLOCK_TYPES,
   ...SYMMETRIC_BLOCK_TYPES,
+  ...REMAINING_BLOCK_TYPES,
 ] as const;
 
 export type AllBlockType =
@@ -61,4 +66,5 @@ export type AllBlockType =
   | EccBlockType
   | PostQuantumBlockType
   | ProcedureBlockType
-  | SymmetricBlockType;
+  | SymmetricBlockType
+  | RemainingBlockType;

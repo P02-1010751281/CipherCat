@@ -23,3 +23,5 @@ CodeStable 所有落盘产出的正文用**中文**：plan / design、plan revie
 ### 环境变量与凭证
 
 ### 其他
+
+- **不滥用 try/catch（及 Rust `expect`）：有抛出必有处理**。`catch` 必须给出实际处理——日志上报（`console.warn(e)`）或定义明确的回退行为；禁止空吞 `catch {}` / noop。`expect()` 仅用于不可恢复的启动初始化路径。

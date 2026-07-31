@@ -1,0 +1,29 @@
+refactor: 2026-07-31-maintenance-cleanup
+steps:
+  - id: step-1
+    title: "#4 remaining.ts 13 块纳入 ALL_BLOCK_TYPES 类型联合"
+    checks:
+      - "vue-tsc --noEmit 通过"
+      - "ALL_BLOCK_TYPES 含 remaining 13 块（长度 +13）"
+      - "grep 确认 AllBlockType 联合含新成员"
+  - id: step-2
+    title: "#2 删除 BlocklyEditor.vue 4 条死样式选择器"
+    checks:
+      - "vue-tsc --noEmit 通过"
+      - "grep blocklyToolboxDiv|blocklyTreeRow|blocklyTreeSelected 零残留"
+      - "浏览器工具箱渲染无差异（截图对比）"
+  - id: step-3
+    title: "#3 删除 locale.ts 14 对死键并合并重复键对"
+    checks:
+      - "vue-tsc --noEmit 通过"
+      - "每删除键 grep 零引用（ZH+EN 同步）"
+      - "浏览器中/英语言切换面板/工具箱正常"
+  - id: step-4
+    title: "#1 模板清单收敛单一数据源 + 删幻影条目"
+    checks:
+      - "vue-tsc --noEmit + vite build 通过"
+      - "grep crypto_func_def 零残留（代码与 i18n）"
+      - "浏览器拖出模板/生成代码冒烟正常"
+checks:
+  - id: check-final
+    title: "全量验证：vue-tsc + eslint + vite build + 浏览器冒烟"

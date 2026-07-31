@@ -33,13 +33,13 @@ export function generateDefreturnJS(block: Block): string {
     jsdoc.push(' * @param {' + jsType + '} ' + name + ' — ' + type + ' 类型参数');
   });
   const body = javascriptGenerator.statementToCode(block, 'STACK') ||
-    '  // TODO: 实现 ' + funcName + ' 算法\\n';
+    '  // TODO: implement ' + funcName + ' algorithm\\n';
   const returnValue =
     javascriptGenerator.valueToCode(block, 'RETURN', Order.NONE) || params[0] || 'undefined';
   const firstType = argNodes.length ? (TYPE_MAP_JS[argNodes[0].getAttribute('type') || 'bytes'] || 'Uint8Array') : 'Uint8Array';
   return [
     '/**',
-    ' * 密码学函数: ' + funcName,
+    ' * Crypto function: ' + funcName,
     jsdoc.join('\\n'),
     ' * @returns {' + firstType + '} 算法输出',
     ' */',
@@ -68,14 +68,14 @@ export function generateTemplateJS(block: Block): string {
   const paramName = (block.getFieldValue('PARAM_NAME') as string) || 'arg';
   const paramType = (block.getFieldValue('PARAM_TYPE') as string) || 'bytes';
   const body = javascriptGenerator.statementToCode(block, 'BODY') ||
-    '  // TODO: 实现 ' + funcName + ' 算法\n';
+    '  // TODO: implement ' + funcName + ' algorithm\n';
   const returnValue =
     javascriptGenerator.valueToCode(block, 'RETURN', Order.NONE) || paramName;
 
   const jsType = TYPE_MAP_JS[paramType] || paramType;
   return [
     '/**',
-    ' * 密码学函数: ' + funcName,
+    ' * Crypto function: ' + funcName,
     ' * @param {' + jsType + '} ' + paramName + ' — ' + paramType + ' 类型参数',
     ' * @returns {' + jsType + '} 算法输出',
     ' */',

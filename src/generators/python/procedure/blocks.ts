@@ -31,7 +31,7 @@ export function generateDefreturnPy(block: Block): string {
     params.push(name + ': ' + pyType);
   });
   const body = pythonGenerator.statementToCode(block, 'STACK') ||
-    '# TODO: 实现 ' + funcName + ' 算法\\n';
+    '# TODO: implement ' + funcName + ' algorithm\\n';
   const returnValue =
     pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) || (params[0]?.split(':')[0] || 'None');
   const firstType = argNodes.length ? (TYPE_MAP_PY[argNodes[0].getAttribute('type') || 'bytes'] || 'bytes') : 'bytes';
@@ -40,9 +40,8 @@ export function generateDefreturnPy(block: Block): string {
     '',
     'def ' + funcName + '(' + params.join(', ') + ') -> ' + firstType + ':',
     '    """',
-    '    密码学函数: ' + funcName,
+    '    Crypto function: ' + funcName,
     '    """',
-    '    global data',
     bodyIndented,
     '    return ' + returnValue,
     '',
@@ -66,7 +65,7 @@ export function generateTemplatePy(block: Block): string {
   const paramName = (block.getFieldValue('PARAM_NAME') as string) || 'arg';
   const paramType = (block.getFieldValue('PARAM_TYPE') as string) || 'bytes';
   const body = pythonGenerator.statementToCode(block, 'BODY') ||
-    '# TODO: 实现 ' + funcName + ' 算法\n';
+    '# TODO: implement ' + funcName + ' algorithm\n';
   const returnValue =
     pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) || paramName;
 
@@ -77,9 +76,8 @@ export function generateTemplatePy(block: Block): string {
     '',
     'def ' + funcName + '(' + paramName + ': ' + typeHint + ') -> ' + typeHint + ':',
     '    """',
-    '    密码学函数: ' + funcName,
+    '    Crypto function: ' + funcName,
     '    """',
-    '    global data',
     bodyIndented,
     '    return ' + returnValue,
     '',

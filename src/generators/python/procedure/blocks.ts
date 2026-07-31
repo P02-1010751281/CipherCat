@@ -17,6 +17,47 @@ const TYPE_MAP_PY: Record<string, string> = {
   poly: 'list[int]', seed: 'bytes', key: 'bytes', message: 'bytes',
 };
 
+/** Generate Python for crypto_defreturn. */
+export function generateDefreturnPy(block: Block): string {
+  const funcName = (block.getFieldValue('NAME') as string) || 'unnamed';
+  const mutation = (block as any).mutationToDom?.() as Element | null;
+  const argNodes = mutation ? Array.from(mutation.getElementsByTagName('arg')) : [];
+  const params: string[] = [];
+  argNodes.forEach((arg, i) => {
+    const name = arg.getAttribute('name') || 'arg' + i;
+    const type = arg.getAttribute('type') || 'bytes';
+    const pyType = TYPE_MAP_PY[type] || type;
+    params.push(name + ': ' + pyType);
+  });
+  const body = pythonGenerator.statementToCode(block, 'BODY') ||
+    '    # TODO: 实现 ' + funcName + ' 算法\\n';
+  const returnValue =
+    pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) || (params[0]?.split(':')[0] || 'None');
+  const firstType = argNodes.length ? (TYPE_MAP_PY[argNodes[0].getAttribute('type') || 'bytes'] || 'bytes') : 'bytes';
+  const bodyIndented = pythonGenerator.prefixLines(body, '    ');
+  return [
+    '',
+    'def ' + funcName + '(' + params.join(', ') + ') -> ' + firstType + ':',
+    '    """',
+    '    密码学函数: ' + funcName,
+    '    """',
+    '    global data',
+    bodyIndented,
+    '    return ' + returnValue,
+    '',
+  ].join('\\n');
+}
+
+/** Generate Python for crypto_callreturn. */
+function generateCallreturnPy(block: Block): string {
+  const funcName = (block.getFieldValue('NAME') as string) || 'unnamed';
+  const mutation = (block as any).mutationToDom?.() as Element | null;
+  const argNodes = mutation ? Array.from(mutation.getElementsByTagName('arg')) : [];
+  const args = argNodes.map((arg, i) =>
+    pythonGenerator.valueToCode(block, 'ARG' + i, Order.NONE) || 'None');
+  return funcName + '(' + args.join(', ') + ')';
+}
+
 /** Generate Python for all template blocks. */
 export function generateTemplatePy(block: Block): string {
   const funcName = (block.getFieldValue('FUNC_NAME') as string) || 'my_cipher';
@@ -58,3 +99,5 @@ const TEMPLATE_TYPES = [
 for (const t of TEMPLATE_TYPES) {
   pythonGenerator.forBlock[t] = generateTemplatePy;
 }
+pythonGenerator.forBlock['crypto_defreturn'] = generateDefreturnPy;
+pythonGenerator.forBlock['crypto_callreturn'] = generateCallreturnPy;

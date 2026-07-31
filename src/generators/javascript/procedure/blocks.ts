@@ -17,6 +17,49 @@ const TYPE_MAP_JS: Record<string, string> = {
   poly: 'number[]', seed: 'Uint8Array', key: 'Uint8Array', message: 'Uint8Array',
 };
 
+/** Generate JS for crypto_defreturn (typed multi-param def). */
+export function generateDefreturnJS(block: Block): string {
+  const funcName = (block.getFieldValue('NAME') as string) || 'unnamed';
+  const mutation = (block as any).mutationToDom?.() as Element | null;
+  const argNodes = mutation ? Array.from(mutation.getElementsByTagName('arg')) : [];
+  const params: string[] = [];
+  const jsdoc: string[] = [];
+  argNodes.forEach((arg, i) => {
+    const name = arg.getAttribute('name') || 'arg' + i;
+    const type = arg.getAttribute('type') || 'bytes';
+    const jsType = TYPE_MAP_JS[type] || type;
+    params.push(name);
+    jsdoc.push(' * @param {' + jsType + '} ' + name + ' — ' + type + ' 类型参数');
+  });
+  const body = javascriptGenerator.statementToCode(block, 'BODY') ||
+    '  // TODO: 实现 ' + funcName + ' 算法\\n';
+  const returnValue =
+    javascriptGenerator.valueToCode(block, 'RETURN', Order.NONE) || params[0] || 'undefined';
+  const firstType = argNodes.length ? (TYPE_MAP_JS[argNodes[0].getAttribute('type') || 'bytes'] || 'Uint8Array') : 'Uint8Array';
+  return [
+    '/**',
+    ' * 密码学函数: ' + funcName,
+    jsdoc.join('\\n'),
+    ' * @returns {' + firstType + '} 算法输出',
+    ' */',
+    'function ' + funcName + '(' + params.join(', ') + ') {',
+    body,
+    '  return ' + returnValue + ';',
+    '}',
+    '',
+  ].join('\\n');
+}
+
+/** Generate JS for crypto_callreturn. */
+function generateCallreturnJS(block: Block): string {
+  const funcName = (block.getFieldValue('NAME') as string) || 'unnamed';
+  const mutation = (block as any).mutationToDom?.() as Element | null;
+  const argNodes = mutation ? Array.from(mutation.getElementsByTagName('arg')) : [];
+  const args = argNodes.map((arg, i) =>
+    javascriptGenerator.valueToCode(block, 'ARG' + i, Order.NONE) || 'undefined');
+  return funcName + '(' + args.join(', ') + ')';
+}
+
 /** Generate JS for all template blocks. */
 export function generateTemplateJS(block: Block): string {
   const funcName = (block.getFieldValue('FUNC_NAME') as string) || 'myCipher';
@@ -57,3 +100,5 @@ const TEMPLATE_TYPES = [
 for (const t of TEMPLATE_TYPES) {
   javascriptGenerator.forBlock[t] = generateTemplateJS;
 }
+javascriptGenerator.forBlock['crypto_defreturn'] = generateDefreturnJS;
+javascriptGenerator.forBlock['crypto_callreturn'] = generateCallreturnJS;

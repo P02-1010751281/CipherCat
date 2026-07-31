@@ -7,7 +7,7 @@
           <button class="cfp-close" @click="$emit('close')">✕</button>
         </div>
         <div class="cfp-actions">
-          <button class="cfp-btn cfp-btn-new" @click="insertTemplate('procedures_defreturn')">{{ msg.CRYPTO_FUNCTIONS_NEW_BUTTON || '＋ 新建' }}</button>
+          <button class="cfp-btn cfp-btn-new" @click="insertTemplate('crypto_defreturn')">{{ msg.CRYPTO_FUNCTIONS_NEW_BUTTON || '＋ 新建' }}</button>
           <button class="cfp-btn" @click="handleImport">{{ msg.CRYPTO_FUNCTIONS_IMPORT_BUTTON || '📥 导入' }}</button>
           <button class="cfp-btn" @click="handleExportAll">{{ msg.CRYPTO_FUNCTIONS_EXPORT_BUTTON || '📤 导出' }}</button>
         </div>
@@ -107,7 +107,7 @@ function refreshWsFuncs() {
   ws.getAllBlocks(false).forEach((b) => {
     if (cTypes.includes(b.type)) {
       all.push({ id: b.id, name: (b.getFieldValue('FUNC_NAME') as string) || b.type, type: b.type });
-    } else if (b.type === 'procedures_defreturn' || b.type === 'procedures_defnoreturn') {
+    } else if (b.type === 'crypto_defreturn' || b.type === 'crypto_callreturn' || b.type === 'procedures_defreturn' || b.type === 'procedures_defnoreturn') {
       const model = (b as unknown as Record<string, () => {getName:()=>string}>).getProcedureModel?.();
       all.push({ id: b.id, name: model?.getName() || (b.getFieldValue('NAME') as string) || b.type, type: b.type });
     }

@@ -12,7 +12,8 @@ scope:
   - area: docs/blocks/
     files: 9
     dimensions: [maintainability]
-status: complete
+status: superseded
+superseded-by: 2026-07-31-procedure-system
 ---
 
 # Blockly 原语覆盖与设计一致性审计 — 2026-07-30

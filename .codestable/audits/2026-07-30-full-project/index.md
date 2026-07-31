@@ -15,7 +15,8 @@ scope:
   - area: configs
     files: 10
     dimensions: [security, maintainability]
-status: complete
+status: superseded
+superseded-by: 2026-07-31-procedure-system
 ---
 
 # 全项目审计 — 2026-07-30

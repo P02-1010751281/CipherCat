@@ -519,6 +519,79 @@ Blockly.Blocks['procedures_callnoreturn'] = makeCallBlock(false);
 // Template blocks (single-param inline)
 // ─────────────────────────────────────────────────────────
 
+interface TemplatePrefill {
+  /** RETURN 表达式链：从叶子到根的块类型序列（最后一个是根）。 */
+  returnChain?: string[];
+  /** 链中 variables_get 引用的参数变量名。 */
+  paramVarName?: string;
+}
+
+/** 各模板的预填内容定义。 */
+const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
+  // AES 轮：SubBytes(state) → ShiftRows → MixColumns
+  proc_aes_round: {
+    returnChain: ['variables_get', 'aes_sub_bytes', 'aes_shift_rows', 'aes_mix_columns'],
+    paramVarName: 'state',
+  },
+};
+
+/** 构建 RETURN 表达式链：chain 从叶子到根（如 [variables_get, aes_sub_bytes, ...]），
+ *  每个新块把前一块（子）连到自己的第一个 VALUE input。返回根块。 */
+function buildReturnChain(
+  ws: Blockly.Workspace,
+  chain: string[],
+  varName: string,
+): Blockly.BlockSvg | null {
+  let root: Blockly.BlockSvg | null = null;
+  let child: Blockly.BlockSvg | null = null;
+  // 确保变量存在（FieldVariable 用 id 引用）
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let varModel: any = ws.getVariableMap().getVariable(varName, '');
+  if (!varModel) varModel = ws.createVariable(varName, '');
+  for (const type of chain) {
+    const b = ws.newBlock(type) as Blockly.BlockSvg;
+    if (type === 'variables_get' && varModel) {
+      b.setFieldValue(varModel.getId(), 'VAR');
+    }
+    b.initSvg();
+    if (child && child.outputConnection) {
+      const valInput = b.inputList.find((i) => i.type === Blockly.inputs.inputTypes.VALUE);
+      if (valInput && valInput.connection) {
+        valInput.connection.connect(child.outputConnection);
+      }
+    }
+    child = b;
+    root = b;
+  }
+  if (root) {
+    root.render();
+  }
+  return root;
+}
+
+/** 向模板块注入预填内容（RETURN 表达式链 / BODY 语句）。 */
+function injectPrefill(block: AnyBlock, prefill: TemplatePrefill | undefined, paramName: string) {
+  if (!prefill) return;
+  const ws = block.workspace;
+  // 确保参数变量存在
+  if (prefill.paramVarName && !ws.getVariableMap().getVariable(prefill.paramVarName, '')) {
+    ws.createVariable(prefill.paramVarName, '');
+  }
+  if (prefill.returnChain) {
+    try {
+      const valueBlock = buildReturnChain(ws, prefill.returnChain, prefill.paramVarName || paramName);
+      if (valueBlock) {
+        const retInput = block.getInput('RETURN');
+        if (retInput && valueBlock.outputConnection) {
+          retInput.connection.connect(valueBlock.outputConnection);
+        }
+      }
+    } catch (e) {
+      console.warn('[prefill] ' + block.type + ' inject failed:', e);
+    }
+  }
+}
+
 function _makeTemplateBlock(
   presetName: string, paramName: string, paramType: string, label: string,
 ): void {
@@ -539,6 +612,14 @@ function _makeTemplateBlock(
       this.setColour(290);
       this.setTooltip(msg.CRYPTO_PROCEDURES_TEMPLATE_TOOLTIP || 'Pre-configured crypto function template.');
       this.setHelpUrl('');
+    },
+    onchange: function () {
+      // 首次渲染后注入预填内容（仅一次）
+      const rec = this as unknown as { __prefilled?: boolean };
+      if (!rec.__prefilled) {
+        rec.__prefilled = true;
+          injectPrefill(this as unknown as AnyBlock, TEMPLATE_PREFILL[presetName], paramName);
+      }
     },
   };
 }

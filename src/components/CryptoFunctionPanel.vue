@@ -22,9 +22,9 @@
                 class="cfp-item-btn"
                 :class="isInToolbox(tpl.type) ? 'cfp-item-in-toolbox' : ''"
                 @click="toggleTpl(tpl.type)"
-                :title="isInToolbox(tpl.type) ? 'Remove from toolbox' : 'Add to toolbox'"
+                :title="isInToolbox(tpl.type) ? (msg.CRYPTO_FUNCTIONS_REMOVE_TIP || 'Remove from toolbox') : (msg.CRYPTO_FUNCTIONS_ADD_TIP || 'Add to toolbox')"
               >{{ isInToolbox(tpl.type) ? '✕' : '＋📦' }}</button>
-              <button class="cfp-item-btn cfp-item-export" @click="exportTemplate(tpl.type)" title="Export">📤</button>
+              <button class="cfp-item-btn cfp-item-export" @click="exportTemplate(tpl.type)" :title="msg.CRYPTO_FUNCTIONS_EXPORT_TIP || 'Export'">📤</button>
             </div>
           </div>
           <!-- Workspace Functions -->
@@ -33,7 +33,7 @@
             <div v-for="fn in wsFuncs" :key="fn.id" class="cfp-item cfp-item-ws">
               <span class="cfp-name" :title="fn.type">{{ fn.name }}</span>
               <span class="cfp-param">{{ fn.type }}</span>
-              <button class="cfp-item-btn cfp-item-export" @click="exportWsBlock(fn.id)" title="Export">📤</button>
+              <button class="cfp-item-btn cfp-item-export" @click="exportWsBlock(fn.id)" :title="msg.CRYPTO_FUNCTIONS_EXPORT_TIP || 'Export'">📤</button>
             </div>
           </div>
         </div>

@@ -533,6 +533,11 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'aes_sub_bytes', 'aes_shift_rows', 'aes_mix_columns'],
     paramVarName: 'state',
   },
+  // AES 最后一轮：SubBytes → ShiftRows → AddRoundKey（rk 留待用户接）
+  proc_aes_last_round: {
+    returnChain: ['variables_get', 'aes_sub_bytes', 'aes_shift_rows'],
+    paramVarName: 'state',
+  },
 };
 
 /** 构建 RETURN 表达式链：chain 从叶子到根（如 [variables_get, aes_sub_bytes, ...]），

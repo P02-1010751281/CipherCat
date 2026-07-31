@@ -18,7 +18,7 @@ export type ModeBlockType = typeof MODE_BLOCK_TYPES[number];
 
 Blockly.Blocks['mode_ecb_encrypt'] = {
   init: function () {
-    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('ECB-Encrypt(');
+    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('AES-ECB-Encrypt(');
     this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField(', key:');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
@@ -31,7 +31,7 @@ Blockly.Blocks['mode_ecb_encrypt'] = {
 
 Blockly.Blocks['mode_ecb_decrypt'] = {
   init: function () {
-    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('ECB-Decrypt(');
+    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('AES-ECB-Decrypt(');
     this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField(', key:');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
@@ -44,7 +44,7 @@ Blockly.Blocks['mode_ecb_decrypt'] = {
 
 Blockly.Blocks['mode_cbc_encrypt'] = {
   init: function () {
-    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('CBC-Encrypt(');
+    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('AES-CBC-Encrypt(');
     this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField(', key:');
     this.appendValueInput('IV').setCheck(TYPE_BYTES).appendField(', iv:');
     this.appendDummyInput().appendField(')');
@@ -58,7 +58,7 @@ Blockly.Blocks['mode_cbc_encrypt'] = {
 
 Blockly.Blocks['mode_ctr_encrypt'] = {
   init: function () {
-    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('CTR-Encrypt(');
+    this.appendValueInput('DATA').setCheck(TYPE_BYTES).appendField('AES-CTR-Encrypt(');
     this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField(', key:');
     this.appendValueInput('NONCE').setCheck(TYPE_BYTES).appendField(', nonce:');
     this.appendDummyInput().appendField(')');

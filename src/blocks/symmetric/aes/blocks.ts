@@ -14,7 +14,7 @@ export type AesBlockType = (typeof AES_BLOCK_TYPES)[number];
 
 Blockly.Blocks['aes_sub_bytes'] = {
   init: function () {
-    this.appendValueInput('STATE').setCheck(TYPE_INT_LIST).appendField('SubBytes(');
+    this.appendValueInput('STATE').setCheck(TYPE_INT_LIST).appendField('AES SubBytes(');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
     this.setOutput(true, TYPE_INT_LIST);
@@ -26,7 +26,7 @@ Blockly.Blocks['aes_sub_bytes'] = {
 
 Blockly.Blocks['aes_shift_rows'] = {
   init: function () {
-    this.appendValueInput('STATE').setCheck(TYPE_INT_LIST).appendField('ShiftRows(');
+    this.appendValueInput('STATE').setCheck(TYPE_INT_LIST).appendField('AES ShiftRows(');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
     this.setOutput(true, TYPE_INT_LIST);
@@ -38,7 +38,7 @@ Blockly.Blocks['aes_shift_rows'] = {
 
 Blockly.Blocks['aes_mix_columns'] = {
   init: function () {
-    this.appendValueInput('STATE').setCheck(TYPE_INT_LIST).appendField('MixColumns(');
+    this.appendValueInput('STATE').setCheck(TYPE_INT_LIST).appendField('AES MixColumns(');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
     this.setOutput(true, TYPE_INT_LIST);
@@ -50,7 +50,7 @@ Blockly.Blocks['aes_mix_columns'] = {
 
 Blockly.Blocks['aes_add_round_key'] = {
   init: function () {
-    this.appendValueInput('STATE').setCheck(TYPE_INT_LIST).appendField('AddRoundKey(');
+    this.appendValueInput('STATE').setCheck(TYPE_INT_LIST).appendField('AES AddRoundKey(');
     this.appendValueInput('ROUND_KEY').setCheck(TYPE_INT_LIST).appendField(', rk:');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);

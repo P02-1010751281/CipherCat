@@ -548,6 +548,26 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'hash_sm3_pad'],
     paramVarName: 'msg',
   },
+  // NTT：NTT(vec)
+  proc_ntt_vec: {
+    returnChain: ['variables_get', 'pq_ntt'],
+    paramVarName: 'vec',
+  },
+  // CBD 采样：SamplePolyCBD(seed) — η/q 下拉预设
+  proc_pq_cbd: {
+    returnChain: ['variables_get', 'pq_sample_poly_cbd'],
+    paramVarName: 'seed',
+  },
+  // NTT 采样：SampleNTT(seed)
+  proc_pq_sample: {
+    returnChain: ['variables_get', 'pq_sample_ntt'],
+    paramVarName: 'seed',
+  },
+  // 向量加法：PolyAdd(a, b) — b 输入留空
+  proc_pq_vec_add: {
+    returnChain: ['variables_get', 'pq_poly_add'],
+    paramVarName: 'a',
+  },
 };
 
 /** 构建 RETURN 表达式链：chain 从叶子到根（如 [variables_get, aes_sub_bytes, ...]），

@@ -229,6 +229,10 @@ function makeDefBlock(hasReturn: boolean): AnyBlock {
       return state;
     },
     loadExtraState: function (this: AnyBlock, state: Record<string, unknown>) {
+      // flyout 传 {name, params}：name 应用到 NAME 字段（函数选择）
+      if (typeof state.name === 'string' && state.name) {
+        try { this.setFieldValue(state.name, 'NAME'); } catch {}
+      }
       const raw = (state.params as Array<{ name: string; id: string; type?: string } | string>) || [];
       this.arguments_ = [];
       this.argumentVarModels_ = [];
@@ -316,7 +320,7 @@ Blockly.Blocks['procedures_defnoreturn'] = makeDefBlock(false);
 /** 构建 call 块 NAME 下拉选项：所有已定义函数名。 */
 function buildCallOptions(block: AnyBlock): Array<[string, string]> {
   try {
-    const ws = block.workspace;
+    const ws = (block.workspace as unknown as { targetWorkspace?: Blockly.Workspace }).targetWorkspace || block.workspace;
     const tuples = Blockly.Procedures.allProcedures(ws);
     const names = tuples[0].concat(tuples[1]).map((t) => t[0]);
     if (!names.length) return [[Blockly.Msg.PROCEDURES_UNNAMED || 'unnamed', '']];
@@ -328,7 +332,7 @@ function buildCallOptions(block: AnyBlock): Array<[string, string]> {
 
 /** call 块选择函数后同步参数行。 */
 function syncCallParams(block: AnyBlock, funcName: string) {
-  const ws = block.workspace;
+  const ws = (block.workspace as unknown as { targetWorkspace?: Blockly.Workspace }).targetWorkspace || block.workspace;
   const def = Blockly.Procedures.getDefinition(funcName, ws);
   if (!def) { block.arguments_ = []; block.argumentVarModels_ = []; block.paramTypes_ = []; block.updateShape_!(); return; }
   const defRec = def as unknown as Record<string, unknown>;
@@ -354,7 +358,7 @@ function makeCallBlock(hasReturn: boolean): AnyBlock {
         : (msg.PROCEDURES_CALLNORETURN_TITLE || 'call');
       // NAME 用下拉：列出工作区中所有已定义函数，供用户选择调用
       const nameField = new Blockly.FieldDropdown(buildCallOptions(this));
-      nameField.setValidator(function (this: Blockly.Field, newName: string) {
+            nameField.setValidator(function (this: Blockly.Field, newName: string) {
         // 选择函数后同步参数
         const block = this.getSourceBlock();
         if (block && newName) {
@@ -456,6 +460,10 @@ function makeCallBlock(hasReturn: boolean): AnyBlock {
       return state;
     },
     loadExtraState: function (this: AnyBlock, state: Record<string, unknown>) {
+      // flyout 传 {name, params}：name 应用到 NAME 字段（函数选择）
+      if (typeof state.name === 'string' && state.name) {
+        try { this.setFieldValue(state.name, 'NAME'); } catch {}
+      }
       const raw = (state.params as Array<{ name: string; id: string; type?: string } | string>) || [];
       this.arguments_ = [];
       this.argumentVarModels_ = [];

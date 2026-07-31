@@ -595,6 +595,38 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'mode_ctr_encrypt'],
     paramVarName: 'data',
   },
+  // GCM：CTR-Encrypt(data, key, iv) 骨架 — GHASH 组合留待用户
+  proc_mode_gcm: {
+    returnChain: ['variables_get', 'mode_ctr_encrypt'],
+    paramVarName: 'data',
+  },
+  // PBKDF2：迭代 HMAC 骨架（password 参数）
+  proc_pbkdf2: {
+    bodyState: iterateState(1000),
+    returnChain: ['variables_get'],
+    paramVarName: 'password',
+  },
+  // HKDF：提取-扩展骨架
+  proc_hkdf: {
+    bodyState: iterateState(2),
+    returnChain: ['variables_get'],
+    paramVarName: 'ikm',
+  },
+  // 通用哈希函数：SHA-256 pad 链
+  crypto_hash_func: {
+    returnChain: ['variables_get', 'hash_sha256_pad'],
+    paramVarName: 'message',
+  },
+  // 通用加密函数：ECB 链（key 输入留空）
+  crypto_encrypt_func: {
+    returnChain: ['variables_get', 'mode_ecb_encrypt'],
+    paramVarName: 'message',
+  },
+  // 通用解密函数：ECB 链（key 输入留空）
+  crypto_decrypt_func: {
+    returnChain: ['variables_get', 'mode_ecb_encrypt'],
+    paramVarName: 'ciphertext',
+  },
   // 海绵海绵挤压：squeeze(state) — outlen 留空
   proc_sponge_duplex: {
     returnChain: ['variables_get', 'sponge_squeeze'],

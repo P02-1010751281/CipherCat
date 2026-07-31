@@ -1,18 +1,31 @@
 /**
  * 密码学函数封装积木块定义
+ *
+ * 策略：完整独立实现增强版 procedure 块，直接注册到 Blockly 原生块名
+ * （procedures_defreturn 等），覆盖原生注册。不 Object.assign 原生定义——
+ * 全部方法自包含，参数带密码学类型下拉（bytes/int/int_list/...）。
+ * 兼容原生 flyout / mutateCallers / 序列化 / toolbox。
  */
 import * as Blockly from 'blockly/core';
+import 'blockly/blocks';
 
 export const PROCEDURE_BLOCK_TYPES = [
   'crypto_return',
-  'crypto_defreturn',
-  'crypto_callreturn',
   'crypto_encrypt_func',
   'crypto_decrypt_func',
   'crypto_hash_func',
 ] as const;
 
 export type ProcedureBlockType = (typeof PROCEDURE_BLOCK_TYPES)[number];
+
+export const CRYPTO_PARAM_TYPES: [string, string][] = [
+  ['bytes', 'bytes'], ['int', 'int'], ['int_list', 'int_list'],
+  ['poly', 'poly'], ['seed', 'seed'], ['key', 'key'], ['message', 'message'],
+];
+
+// ─────────────────────────────────────────────────────────
+// crypto_return — 独立返回块
+// ─────────────────────────────────────────────────────────
 
 Blockly.Blocks['crypto_return'] = {
   init: function () {
@@ -25,139 +38,433 @@ Blockly.Blocks['crypto_return'] = {
   },
 };
 
-export const CRYPTO_PARAM_TYPES: [string, string][] = [
-  ['bytes', 'bytes'], ['int', 'int'], ['int_list', 'int_list'],
-  ['poly', 'poly'], ['seed', 'seed'], ['key', 'key'], ['message', 'message'],
-];
+// ─────────────────────────────────────────────────────────
+// 内部工具
+// ─────────────────────────────────────────────────────────
 
-// ── Typed procedure definition (crypto_defreturn) ──
-// 形态对齐 Blockly 原生 procedures_defreturn，但参数是显式行
-// （参数名 + 类型下拉），支持 1-8 个参数，类型系统内建。
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyBlock = any;
 
-const MAX_PARAMS = 8;
+// ─────────────────────────────────────────────────────────
+// procedures_mutatorcontainer — mutator 根块
+// ─────────────────────────────────────────────────────────
 
-interface ParamCache { name: string; type: string }
-
-function collectParams(block: Blockly.Block): ParamCache[] {
-  const count = parseInt((block.getFieldValue('PARAM_COUNT') as string) || '1');
-  const params: ParamCache[] = [];
-  for (let i = 0; i < count; i++) {
-    params.push({
-      name: (block.getFieldValue('PARAM_NAME_' + i) as string) || 'arg' + i,
-      type: (block.getFieldValue('PARAM_TYPE_' + i) as string) || 'bytes',
-    });
-  }
-  return params;
-}
-
-function rebuildParamInputs(block: Blockly.Block, cache: ParamCache[] | null) {
-  const count = parseInt((block.getFieldValue('PARAM_COUNT') as string) || '1');
-  // Remove old param inputs
-  for (let i = 0; i < MAX_PARAMS; i++) {
-    try { block.removeInput('PARAM_' + i); } catch {}
-    try { block.removeInput('ARG' + i); } catch {}
-  }
-  for (let i = 0; i < count; i++) {
-    const p = cache?.[i] ?? { name: 'arg' + i, type: 'bytes' };
-    block.appendDummyInput('PARAM_' + i)
-      .appendField('param:')
-      .appendField(new Blockly.FieldTextInput(p.name), 'PARAM_NAME_' + i)
-      .appendField(':')
-      .appendField(new Blockly.FieldDropdown(CRYPTO_PARAM_TYPES), 'PARAM_TYPE_' + i);
-    block.appendValueInput('ARG' + i).setCheck(null);
-  }
-  // Ensure BODY / RETURN exist (for def) or output exists (for call)
-  const isDef = block.type === 'crypto_defreturn';
-  try { block.removeInput('BODY'); } catch {}
-  try { block.removeInput('RETURN'); } catch {}
-  if (isDef) {
+Blockly.Blocks['procedures_mutatorcontainer'] = {
+  init: function () {
     const msg = Blockly.Msg as Record<string, string>;
-    block.appendStatementInput('BODY').setCheck(null).appendField(msg.CRYPTO_ITERATE_DO || 'Do');
-    block.appendValueInput('RETURN').setCheck(null).appendField(msg.PROCEDURES_DEFRETURN_RETURN || 'return');
-  }
+    this.appendDummyInput()
+      .appendField(msg.PROCEDURES_MUTATORCONTAINER_TITLE || 'procedure properties');
+    this.appendStatementInput('STACK');
+    this.setColour(290);
+    this.setTooltip(msg.PROCEDURES_MUTATORCONTAINER_TOOLTIP || 'Add, remove, or reorder items.');
+    this.setHelpUrl(msg.PROCEDURES_MUTATORCONTAINER_HELPURL || '');
+    (this as unknown as { contextMenu: boolean }).contextMenu = false;
+  },
+};
+
+// ─────────────────────────────────────────────────────────
+// procedures_mutatorarg — 参数块（变量名 + 类型下拉）
+// ─────────────────────────────────────────────────────────
+
+Blockly.Blocks['procedures_mutatorarg'] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField((Blockly.Msg as Record<string, string>).PROCEDURES_MUTATORARG_TITLE || 'input')
+      .appendField(new Blockly.FieldVariable(null, undefined, undefined, ''), 'NAME')
+      .appendField(':')
+      .appendField(new Blockly.FieldDropdown(CRYPTO_PARAM_TYPES), 'PARAM_TYPE');
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setStyle('procedure_blocks');
+    this.setColour(290);
+    this.setTooltip('A crypto procedure parameter with a type annotation.');
+    (this as unknown as { contextMenu: boolean }).contextMenu = false;
+  },
+};
+
+// ─────────────────────────────────────────────────────────
+// procedures_defreturn / procedures_defnoreturn
+// 完整独立实现，legacy procedure 路径（getProcedureDef + mutateCallers）
+// ─────────────────────────────────────────────────────────
+
+function makeDefBlock(hasReturn: boolean): AnyBlock {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const DEF: Record<string, any> = {
+    init: function (this: AnyBlock) {
+      const msg = Blockly.Msg as Record<string, string>;
+      const title = hasReturn
+        ? (msg.PROCEDURES_DEFRETURN_TITLE || 'to')
+        : (msg.PROCEDURES_DEFNORETURN_TITLE || 'to do');
+      const nameField = new Blockly.FieldTextInput(
+        Blockly.Procedures.findLegalName('', this),
+      );
+      nameField.setValidator(Blockly.Procedures.rename);
+      nameField.setSpellcheck(false);
+      this.appendDummyInput()
+        .appendField(title)
+        .appendField(nameField, 'NAME')
+        .appendField('', 'PARAMS');
+      if (hasReturn) {
+        this.appendValueInput('RETURN')
+          .setCheck(null)
+          .setAlign(Blockly.inputs.Align.RIGHT)
+          .appendField(msg.PROCEDURES_DEFRETURN_RETURN || 'return');
+      }
+      this.setMutator(new Blockly.icons.MutatorIcon(['procedures_mutatorarg'], this));
+      this.setStyle('procedure_blocks');
+      this.setColour(290);
+      this.setTooltip(msg.CRYPTO_PROCEDURES_TEMPLATE_TOOLTIP || 'A crypto function with typed parameters.');
+      this.setHelpUrl('');
+      this.arguments_ = [];
+      this.argumentVarModels_ = [];
+      this.paramTypes_ = [];
+      this.paramIds_ = [];
+      this.setStatements_(true);
+      this.statementConnection_ = null;
+    },
+    getProcedureDef: function (this: AnyBlock): [string, string[], boolean] {
+      return [this.getFieldValue('NAME') as string, this.arguments_, hasReturn];
+    },
+    updateParams_: function (this: AnyBlock) {
+      const msg = Blockly.Msg as Record<string, string>;
+      const before = msg.PROCEDURES_BEFORE_PARAMS || 'with';
+      const parts = this.arguments_.map((name: string, i: number) =>
+        name + ': ' + (this.paramTypes_[i] || 'bytes'));
+      const label = parts.length ? before + ' ' + parts.join(', ') : '';
+      Blockly.Events.disable();
+      try { this.setFieldValue(label, 'PARAMS'); } finally { Blockly.Events.enable(); }
+    },
+    setStatements_: function (this: AnyBlock, hasStatements: boolean) {
+      if (this.hasStatements_ === hasStatements) return;
+      if (hasStatements) {
+        this.appendStatementInput('STACK')
+          .appendField((Blockly.Msg as Record<string, string>).PROCEDURES_DEFRETURN_DO || 'do');
+        if (this.getInput('RETURN')) this.moveInputBefore('STACK', 'RETURN');
+      } else {
+        this.removeInput('STACK', true);
+      }
+      this.hasStatements_ = hasStatements;
+    },
+    mutationToDom: function (this: AnyBlock, opt_saveId?: boolean): Element {
+      const container = Blockly.utils.xml.createElement('mutation');
+      if (opt_saveId) container.setAttribute('name', (this.getFieldValue('NAME') as string) || '');
+      for (let i = 0; i < this.argumentVarModels_.length; i++) {
+        const arg = Blockly.utils.xml.createElement('arg');
+        const v = this.argumentVarModels_[i];
+        arg.setAttribute('name', v.getName());
+        arg.setAttribute('varid', v.getId());
+        if (opt_saveId && this.paramIds_) arg.setAttribute('paramId', this.paramIds_[i]);
+        arg.setAttribute('type', this.paramTypes_[i] || 'bytes');
+        container.appendChild(arg);
+      }
+      if (this.hasStatements_ === false) container.setAttribute('statements', 'false');
+      return container;
+    },
+    domToMutation: function (this: AnyBlock, xmlElement: Element) {
+      this.arguments_ = [];
+      this.argumentVarModels_ = [];
+      this.paramTypes_ = [];
+      const children = Array.from(xmlElement.childNodes);
+      for (const child of children) {
+        if (child.nodeName.toLowerCase() !== 'arg') continue;
+        const argEl = child as Element;
+        const name = argEl.getAttribute('name') || '';
+        const varId = argEl.getAttribute('varid') || argEl.getAttribute('varId') || '';
+        const type = argEl.getAttribute('type') || 'bytes';
+        this.arguments_.push(name);
+        this.paramTypes_.push(type);
+        const v = Blockly.Variables.getOrCreateVariablePackage(this.workspace, varId || null, name, '') as unknown as Blockly.VariableModel | null;
+        if (v) this.argumentVarModels_.push(v);
+        else console.warn(`Failed to create variable "${name}", ignoring.`);
+      }
+      this.updateParams_();
+      Blockly.Procedures.mutateCallers(this);
+      this.setStatements_((xmlElement.getAttribute('statements') !== 'false'));
+    },
+    decompose: function (this: AnyBlock, workspace: Blockly.Workspace): Blockly.Block {
+      const topBlock = workspace.newBlock('procedures_mutatorcontainer');
+      (topBlock as Blockly.BlockSvg).initSvg();
+      let connection = topBlock.getInput('STACK')?.connection ?? null;
+      for (let i = 0; i < this.arguments_.length; i++) {
+        const argBlock = workspace.newBlock('procedures_mutatorarg');
+        argBlock.setFieldValue(this.arguments_[i], 'NAME');
+        argBlock.setFieldValue(this.paramTypes_[i] || 'bytes', 'PARAM_TYPE');
+        (argBlock as Blockly.BlockSvg).initSvg();
+        if (connection && argBlock.previousConnection) connection.connect(argBlock.previousConnection);
+        connection = argBlock.nextConnection;
+      }
+      Blockly.Procedures.mutateCallers(this);
+      return topBlock;
+    },
+    compose: function (this: AnyBlock, topBlock: Blockly.Block) {
+      this.arguments_ = [];
+      this.paramIds_ = [];
+      this.argumentVarModels_ = [];
+      this.paramTypes_ = [];
+      let block: Blockly.Block | null = topBlock.getInputTargetBlock('STACK');
+      while (block && !block.isInsertionMarker()) {
+        const name = (block.getFieldValue('NAME') as string) || '';
+        const type = (block.getFieldValue('PARAM_TYPE') as string) || 'bytes';
+        this.arguments_.push(name);
+        this.paramTypes_.push(type);
+        this.paramIds_.push(block.id);
+        const v = this.workspace.getVariableMap().getVariable(name, '') as unknown as Blockly.VariableModel | null;
+        this.argumentVarModels_.push(v as unknown as Blockly.VariableModel);
+        block = block.getNextBlock();
+      }
+      this.updateParams_();
+      Blockly.Procedures.mutateCallers(this);
+    },
+    saveExtraState: function (this: AnyBlock): Record<string, unknown> | null {
+      if (!this.argumentVarModels_.length && this.hasStatements_ !== false) return null;
+      const state: Record<string, unknown> = {};
+      if (this.argumentVarModels_.length) {
+        state.params = this.argumentVarModels_.map((v: Blockly.VariableModel, i: number) => ({
+          name: v.getName(),
+          id: v.getId(),
+          type: this.paramTypes_[i] || 'bytes',
+        }));
+      }
+      if (this.hasStatements_ === false) state.hasStatements = false;
+      return state;
+    },
+    loadExtraState: function (this: AnyBlock, state: Record<string, unknown>) {
+      const params = (state.params as Array<{ name: string; id: string; type?: string }>) || [];
+      this.arguments_ = [];
+      this.argumentVarModels_ = [];
+      this.paramTypes_ = [];
+      for (const p of params) {
+        this.arguments_.push(p.name);
+        this.paramTypes_.push(p.type || 'bytes');
+        const v = (this.workspace.getVariableMap().getVariable(p.name, '') ||
+          this.workspace.createVariable(p.name, '', p.id)) as unknown as Blockly.VariableModel;
+        this.argumentVarModels_.push(v);
+      }
+      this.updateParams_();
+      Blockly.Procedures.mutateCallers(this);
+      if (state.hasStatements === false) this.setStatements_(false);
+    },
+    getVars: function (this: AnyBlock): string[] {
+      return this.arguments_;
+    },
+    getVarModels: function (this: AnyBlock): Blockly.VariableModel[] {
+      return this.argumentVarModels_;
+    },
+    renameVarById: function (this: AnyBlock, oldId: string, newId: string) {
+      const varmap = this.workspace.getVariableMap();
+      const oldVar = varmap.getVariableById(oldId);
+      if (!oldVar || oldVar.getType() !== '') return;
+      const newVar = varmap.getVariableById(newId);
+      if (!newVar) return;
+      const idx = this.argumentVarModels_.findIndex((v: Blockly.VariableModel) => v.getId() === oldId);
+      if (idx === -1) return;
+      const oldName = oldVar.getName();
+      this.arguments_[idx] = newVar.getName();
+      this.argumentVarModels_[idx] = newVar;
+      this.displayRenamedVar_(oldName, newVar.getName());
+      Blockly.Procedures.mutateCallers(this);
+    },
+    updateVarName: function (this: AnyBlock, variable: Blockly.VariableModel) {
+      const name = variable.getName();
+      let changed = false;
+      let oldName = '';
+      for (let i = 0; i < this.argumentVarModels_.length; i++) {
+        if (this.argumentVarModels_[i].getId() === variable.getId()) {
+          oldName = this.arguments_[i];
+          this.arguments_[i] = name;
+          changed = true;
+        }
+      }
+      if (changed) {
+        this.displayRenamedVar_(oldName, name);
+        Blockly.Procedures.mutateCallers(this);
+      }
+    },
+    displayRenamedVar_: function (this: AnyBlock, oldName: string, newName: string) {
+      this.updateParams_();
+      const icon = this.getIcon(Blockly.icons.MutatorIcon.TYPE) as unknown as {
+        bubbleIsVisible: () => boolean; getWorkspace: () => Blockly.WorkspaceSvg | null;
+      };
+      if (icon && icon.bubbleIsVisible()) {
+        const ws = icon.getWorkspace();
+        if (ws) {
+          for (const b of ws.getAllBlocks(false)) {
+            if (b.type === 'procedures_mutatorarg' &&
+                Blockly.Names.equals(oldName, b.getFieldValue('NAME') as string)) {
+              b.setFieldValue(newName, 'NAME');
+            }
+          }
+        }
+      }
+    },
+  };
+
+  DEF.callType_ = hasReturn ? 'procedures_callreturn' : 'procedures_callnoreturn';
+  return DEF;
 }
 
-function makeTypedProcBlock(isDef: boolean): any {
-  return {
-    init: function () {
+Blockly.Blocks['procedures_defreturn'] = makeDefBlock(true);
+Blockly.Blocks['procedures_defnoreturn'] = makeDefBlock(false);
+
+// ─────────────────────────────────────────────────────────
+// procedures_callreturn / procedures_callnoreturn
+// 完整独立实现，通过 mutateCallers 与 def 同步
+// ─────────────────────────────────────────────────────────
+
+function makeCallBlock(hasReturn: boolean): AnyBlock {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const CALL: Record<string, any> = {
+    init: function (this: AnyBlock) {
       const msg = Blockly.Msg as Record<string, string>;
-      const title = msg.PROCEDURES_DEFRETURN_TITLE || 'to';
-      this.appendDummyInput('NAME_INPUT')
+      const title = hasReturn
+        ? (msg.PROCEDURES_CALLRETURN_TITLE || 'call')
+        : (msg.PROCEDURES_CALLNORETURN_TITLE || 'call');
+      this.appendDummyInput('TOPROW')
         .appendField(title)
-        .appendField(new Blockly.FieldTextInput('unnamed'), 'NAME');
-      this.appendDummyInput('COUNT_INPUT')
-        .appendField('params:')
-        .appendField(new Blockly.FieldDropdown(
-          Array.from({ length: MAX_PARAMS }, (_, i) => [String(i + 1), String(i + 1)]),
-        ), 'PARAM_COUNT');
-      rebuildParamInputs(this as unknown as Blockly.Block, null);
-      this.setInputsInline(false);
+        .appendField('', 'NAME');
+      if (hasReturn) {
+        this.setOutput(true);
+      } else {
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+      }
+      this.setStyle('procedure_blocks');
       this.setColour(290);
-      this.setTooltip(isDef
-        ? msg.CRYPTO_PROCEDURES_TEMPLATE_TOOLTIP || 'A crypto function with typed parameters.'
-        : 'Call a crypto function with typed arguments.');
+      this.setTooltip('Call a typed crypto function.');
       this.setHelpUrl('');
+      this.arguments_ = [];
+      this.argumentVarModels_ = [];
+      this.paramTypes_ = [];
     },
-    mutationToDom: function () {
+    getProcedureCall: function (this: AnyBlock): string {
+      return this.getFieldValue('NAME') as string;
+    },
+    renameProcedure: function (this: AnyBlock, name: string, args: string[]) {
+      this.setFieldValue(name, 'NAME');
+      this.arguments_ = args || [];
+      this.updateShape_();
+    },
+    updateShape_: function (this: AnyBlock) {
+      for (let i = 0; i < this.arguments_.length; i++) {
+        const label = this.arguments_[i] + ': ' + (this.paramTypes_[i] || 'bytes');
+        const existing = this.getField('ARGNAME' + i);
+        if (existing) {
+          Blockly.Events.disable();
+          try { existing.setValue(label); } finally { Blockly.Events.enable(); }
+        } else {
+          this.appendValueInput('ARG' + i)
+            .setCheck(null)
+            .setAlign(Blockly.inputs.Align.RIGHT)
+            .appendField(label, 'ARGNAME' + i);
+        }
+      }
+      for (let i = this.arguments_.length; this.getInput('ARG' + i); i++) {
+        this.removeInput('ARG' + i);
+      }
+      const top = this.getInput('TOPROW');
+      if (top) {
+        if (this.arguments_.length) {
+          if (!this.getField('WITH')) {
+            top.appendField((Blockly.Msg as Record<string, string>).PROCEDURES_CALL_BEFORE_PARAMS || 'with', 'WITH');
+          }
+        } else if (this.getField('WITH')) {
+          top.removeField('WITH');
+        }
+      }
+    },
+    mutationToDom: function (this: AnyBlock): Element {
       const container = Blockly.utils.xml.createElement('mutation');
-      const params = collectParams(this as unknown as Blockly.Block);
-      container.setAttribute('params', String(params.length));
-      for (const p of params) {
+      for (let i = 0; i < this.argumentVarModels_.length; i++) {
         const arg = Blockly.utils.xml.createElement('arg');
-        arg.setAttribute('name', p.name);
-        arg.setAttribute('type', p.type);
+        const v = this.argumentVarModels_[i];
+        arg.setAttribute('name', v.getName());
+        arg.setAttribute('varid', v.getId());
+        arg.setAttribute('type', this.paramTypes_[i] || 'bytes');
         container.appendChild(arg);
       }
       return container;
     },
-    domToMutation: function (xmlElement: Element) {
-      const args = xmlElement.getElementsByTagName('arg');
-      (this as unknown as Blockly.Block).setFieldValue(String(args.length), 'PARAM_COUNT');
-      const cache: ParamCache[] = [];
-      for (let i = 0; i < args.length; i++) {
-        cache.push({
-          name: args[i].getAttribute('name') || 'arg' + i,
-          type: args[i].getAttribute('type') || 'bytes',
-        });
+    domToMutation: function (this: AnyBlock, xmlElement: Element) {
+      this.arguments_ = [];
+      this.argumentVarModels_ = [];
+      this.paramTypes_ = [];
+      const children = Array.from(xmlElement.childNodes);
+      for (const child of children) {
+        if (child.nodeName.toLowerCase() !== 'arg') continue;
+        const argEl = child as Element;
+        const name = argEl.getAttribute('name') || '';
+        const varId = argEl.getAttribute('varid') || argEl.getAttribute('varId') || '';
+        const type = argEl.getAttribute('type') || 'bytes';
+        this.arguments_.push(name);
+        this.paramTypes_.push(type);
+        const v = Blockly.Variables.getOrCreateVariablePackage(this.workspace, varId || null, name, '') as unknown as Blockly.VariableModel | null;
+        if (v) this.argumentVarModels_.push(v);
       }
-      rebuildParamInputs(this as unknown as Blockly.Block, cache);
-      const count = (this as unknown as Blockly.Block).getFieldValue('PARAM_COUNT');
-      for (let i = 0; i < cache.length; i++) {
-        (this as unknown as Blockly.Block).setFieldValue(cache[i].name, 'PARAM_NAME_' + i);
-        (this as unknown as Blockly.Block).setFieldValue(cache[i].type, 'PARAM_TYPE_' + i);
+      this.updateShape_();
+    },
+    saveExtraState: function (this: AnyBlock): Record<string, unknown> | null {
+      if (!this.argumentVarModels_.length) return null;
+      const state: Record<string, unknown> = {};
+      state.params = this.argumentVarModels_.map((v: Blockly.VariableModel, i: number) => ({
+        name: v.getName(),
+        id: v.getId(),
+        type: this.paramTypes_[i] || 'bytes',
+      }));
+      return state;
+    },
+    loadExtraState: function (this: AnyBlock, state: Record<string, unknown>) {
+      const params = (state.params as Array<{ name: string; id: string; type?: string }>) || [];
+      this.arguments_ = [];
+      this.argumentVarModels_ = [];
+      this.paramTypes_ = [];
+      for (const p of params) {
+        this.arguments_.push(p.name);
+        this.paramTypes_.push(p.type || 'bytes');
+        const v = (this.workspace.getVariableMap().getVariable(p.name, '') ||
+          this.workspace.createVariable(p.name, '', p.id)) as unknown as Blockly.VariableModel;
+        this.argumentVarModels_.push(v);
       }
-      void count;
+      this.updateShape_();
+    },
+    getVars: function (this: AnyBlock): string[] {
+      return this.arguments_;
+    },
+    getVarModels: function (this: AnyBlock): Blockly.VariableModel[] {
+      return this.argumentVarModels_;
+    },
+    renameVarById: function (this: AnyBlock, oldId: string, newId: string) {
+      const varmap = this.workspace.getVariableMap();
+      const oldVar = varmap.getVariableById(oldId);
+      if (!oldVar || oldVar.getType() !== '') return;
+      const newVar = varmap.getVariableById(newId);
+      if (!newVar) return;
+      const idx = this.argumentVarModels_.findIndex((v: Blockly.VariableModel) => v.getId() === oldId);
+      if (idx === -1) return;
+      this.arguments_[idx] = newVar.getName();
+      this.argumentVarModels_[idx] = newVar;
+      this.updateShape_();
+    },
+    updateVarName: function (this: AnyBlock, variable: Blockly.VariableModel) {
+      const name = variable.getName();
+      let changed = false;
+      for (let i = 0; i < this.argumentVarModels_.length; i++) {
+        if (this.argumentVarModels_[i].getId() === variable.getId()) {
+          this.arguments_[i] = name;
+          changed = true;
+        }
+      }
+      if (changed) this.updateShape_();
     },
   };
+  return CALL;
 }
 
-function addParamCountListener(block: Blockly.Block) {
-  const self = block;
-  block.setOnChange(function (e: Blockly.Events.Abstract) {
-    if (e.type === Blockly.Events.BLOCK_CHANGE &&
-        (e as Blockly.Events.BlockChange).element === 'field' &&
-        (e as Blockly.Events.BlockChange).name === 'PARAM_COUNT') {
-      rebuildParamInputs(self, collectParams(self));
-    }
-  });
-}
+Blockly.Blocks['procedures_callreturn'] = makeCallBlock(true);
+Blockly.Blocks['procedures_callnoreturn'] = makeCallBlock(false);
 
-Blockly.Blocks['crypto_defreturn'] = makeTypedProcBlock(true);
-Blockly.Blocks['crypto_callreturn'] = makeTypedProcBlock(false);
-
-// 给两个块挂上 PARAM_COUNT 变更监听（init 后注册）
-const _initDef = Blockly.Blocks['crypto_defreturn'].init;
-Blockly.Blocks['crypto_defreturn'].init = function () {
-  _initDef.call(this);
-  addParamCountListener(this as unknown as Blockly.Block);
-};
-const _initCall = Blockly.Blocks['crypto_callreturn'].init;
-Blockly.Blocks['crypto_callreturn'].init = function () {
-  _initCall.call(this);
-  addParamCountListener(this as unknown as Blockly.Block);
-};
-
-// ── Template blocks (single-param inline) ──
+// ─────────────────────────────────────────────────────────
+// Template blocks (single-param inline)
+// ─────────────────────────────────────────────────────────
 
 function _makeTemplateBlock(
   presetName: string, paramName: string, paramType: string, label: string,

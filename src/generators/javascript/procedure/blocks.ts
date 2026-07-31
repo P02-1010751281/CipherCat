@@ -20,7 +20,8 @@ const TYPE_MAP_JS: Record<string, string> = {
 /** Generate JS for crypto_defreturn (typed multi-param def). */
 export function generateDefreturnJS(block: Block): string {
   const funcName = (block.getFieldValue('NAME') as string) || 'unnamed';
-  const mutation = (block as any).mutationToDom?.() as Element | null;
+  const mutation = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (block as any).mutationToDom?.() as Element | null;
   const argNodes = mutation ? Array.from(mutation.getElementsByTagName('arg')) : [];
   const params: string[] = [];
   const jsdoc: string[] = [];
@@ -31,7 +32,7 @@ export function generateDefreturnJS(block: Block): string {
     params.push(name);
     jsdoc.push(' * @param {' + jsType + '} ' + name + ' — ' + type + ' 类型参数');
   });
-  const body = javascriptGenerator.statementToCode(block, 'BODY') ||
+  const body = javascriptGenerator.statementToCode(block, 'STACK') ||
     '  // TODO: 实现 ' + funcName + ' 算法\\n';
   const returnValue =
     javascriptGenerator.valueToCode(block, 'RETURN', Order.NONE) || params[0] || 'undefined';
@@ -53,7 +54,8 @@ export function generateDefreturnJS(block: Block): string {
 /** Generate JS for crypto_callreturn. */
 function generateCallreturnJS(block: Block): string {
   const funcName = (block.getFieldValue('NAME') as string) || 'unnamed';
-  const mutation = (block as any).mutationToDom?.() as Element | null;
+  const mutation = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (block as any).mutationToDom?.() as Element | null;
   const argNodes = mutation ? Array.from(mutation.getElementsByTagName('arg')) : [];
   const args = argNodes.map((arg, i) =>
     javascriptGenerator.valueToCode(block, 'ARG' + i, Order.NONE) || 'undefined');
@@ -65,7 +67,7 @@ export function generateTemplateJS(block: Block): string {
   const funcName = (block.getFieldValue('FUNC_NAME') as string) || 'myCipher';
   const paramName = (block.getFieldValue('PARAM_NAME') as string) || 'arg';
   const paramType = (block.getFieldValue('PARAM_TYPE') as string) || 'bytes';
-  const body = javascriptGenerator.statementToCode(block, 'BODY') ||
+  const body = javascriptGenerator.statementToCode(block, 'STACK') ||
     '  // TODO: 实现 ' + funcName + ' 算法\n';
   const returnValue =
     javascriptGenerator.valueToCode(block, 'RETURN', Order.NONE) || paramName;
@@ -100,5 +102,8 @@ const TEMPLATE_TYPES = [
 for (const t of TEMPLATE_TYPES) {
   javascriptGenerator.forBlock[t] = generateTemplateJS;
 }
-javascriptGenerator.forBlock['crypto_defreturn'] = generateDefreturnJS;
-javascriptGenerator.forBlock['crypto_callreturn'] = generateCallreturnJS;
+// 覆盖原生 procedures 生成器（类型增强）
+javascriptGenerator.forBlock['procedures_defreturn'] = generateDefreturnJS;
+javascriptGenerator.forBlock['procedures_defnoreturn'] = generateDefreturnJS;
+javascriptGenerator.forBlock['procedures_callreturn'] = generateCallreturnJS;
+javascriptGenerator.forBlock['procedures_callnoreturn'] = generateCallreturnJS;

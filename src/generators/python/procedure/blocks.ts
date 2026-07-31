@@ -20,7 +20,8 @@ const TYPE_MAP_PY: Record<string, string> = {
 /** Generate Python for crypto_defreturn. */
 export function generateDefreturnPy(block: Block): string {
   const funcName = (block.getFieldValue('NAME') as string) || 'unnamed';
-  const mutation = (block as any).mutationToDom?.() as Element | null;
+  const mutation = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (block as any).mutationToDom?.() as Element | null;
   const argNodes = mutation ? Array.from(mutation.getElementsByTagName('arg')) : [];
   const params: string[] = [];
   argNodes.forEach((arg, i) => {
@@ -29,7 +30,7 @@ export function generateDefreturnPy(block: Block): string {
     const pyType = TYPE_MAP_PY[type] || type;
     params.push(name + ': ' + pyType);
   });
-  const body = pythonGenerator.statementToCode(block, 'BODY') ||
+  const body = pythonGenerator.statementToCode(block, 'STACK') ||
     '    # TODO: 实现 ' + funcName + ' 算法\\n';
   const returnValue =
     pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) || (params[0]?.split(':')[0] || 'None');
@@ -51,7 +52,8 @@ export function generateDefreturnPy(block: Block): string {
 /** Generate Python for crypto_callreturn. */
 function generateCallreturnPy(block: Block): string {
   const funcName = (block.getFieldValue('NAME') as string) || 'unnamed';
-  const mutation = (block as any).mutationToDom?.() as Element | null;
+  const mutation = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (block as any).mutationToDom?.() as Element | null;
   const argNodes = mutation ? Array.from(mutation.getElementsByTagName('arg')) : [];
   const args = argNodes.map((arg, i) =>
     pythonGenerator.valueToCode(block, 'ARG' + i, Order.NONE) || 'None');
@@ -63,7 +65,7 @@ export function generateTemplatePy(block: Block): string {
   const funcName = (block.getFieldValue('FUNC_NAME') as string) || 'my_cipher';
   const paramName = (block.getFieldValue('PARAM_NAME') as string) || 'arg';
   const paramType = (block.getFieldValue('PARAM_TYPE') as string) || 'bytes';
-  const body = pythonGenerator.statementToCode(block, 'BODY') ||
+  const body = pythonGenerator.statementToCode(block, 'STACK') ||
     '    # TODO: 实现 ' + funcName + ' 算法\n';
   const returnValue =
     pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) || paramName;
@@ -99,5 +101,8 @@ const TEMPLATE_TYPES = [
 for (const t of TEMPLATE_TYPES) {
   pythonGenerator.forBlock[t] = generateTemplatePy;
 }
-pythonGenerator.forBlock['crypto_defreturn'] = generateDefreturnPy;
-pythonGenerator.forBlock['crypto_callreturn'] = generateCallreturnPy;
+// 覆盖原生 procedures 生成器（类型增强）
+pythonGenerator.forBlock['procedures_defreturn'] = generateDefreturnPy;
+pythonGenerator.forBlock['procedures_defnoreturn'] = generateDefreturnPy;
+pythonGenerator.forBlock['procedures_callreturn'] = generateCallreturnPy;
+pythonGenerator.forBlock['procedures_callnoreturn'] = generateCallreturnPy;

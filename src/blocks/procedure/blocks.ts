@@ -528,15 +528,25 @@ interface TemplatePrefill {
 
 /** 各模板的预填内容定义。 */
 const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
-  // AES 轮：SubBytes(state) → ShiftRows → MixColumns
+  // AES 轮：AddRoundKey(MixColumns(ShiftRows(SubBytes(state))), rk) — rk 输入留空待用户接
   proc_aes_round: {
-    returnChain: ['variables_get', 'aes_sub_bytes', 'aes_shift_rows', 'aes_mix_columns'],
+    returnChain: ['variables_get', 'aes_sub_bytes', 'aes_shift_rows', 'aes_mix_columns', 'aes_add_round_key'],
     paramVarName: 'state',
   },
-  // AES 最后一轮：SubBytes → ShiftRows → AddRoundKey（rk 留待用户接）
+  // AES 最后一轮：AddRoundKey(ShiftRows(SubBytes(state)), rk) — rk 输入留空
   proc_aes_last_round: {
-    returnChain: ['variables_get', 'aes_sub_bytes', 'aes_shift_rows'],
+    returnChain: ['variables_get', 'aes_sub_bytes', 'aes_shift_rows', 'aes_add_round_key'],
     paramVarName: 'state',
+  },
+  // SHA-256：pad(msg) → compress — W/V 输入留空
+  proc_sha256_hash: {
+    returnChain: ['variables_get', 'hash_sha256_pad'],
+    paramVarName: 'msg',
+  },
+  // SM3：pad(msg) → compress — W/WP/V 输入留空
+  proc_sm3_hash: {
+    returnChain: ['variables_get', 'hash_sm3_pad'],
+    paramVarName: 'msg',
   },
 };
 

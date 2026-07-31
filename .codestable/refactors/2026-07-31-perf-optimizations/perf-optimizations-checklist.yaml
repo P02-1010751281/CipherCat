@@ -1,0 +1,21 @@
+refactor: 2026-07-31-perf-optimizations
+steps:
+  - id: step-1
+    title: "#1 语言切换就地刷新块标签（markDirty + render），删 serialize→clear→load"
+    checks:
+      - "vue-tsc --noEmit 通过"
+      - "浏览器切换语言：块标签更新、undo/滚动保留、块数不变"
+      - "grep refreshBlocks 无 exportXml/clear/loadXml 残留"
+  - id: step-2
+    title: "#2 Panel 监听 visible 门控 + cTypes 模块级常量 + 事件过滤"
+    checks:
+      - "vue-tsc --noEmit 通过"
+      - "浏览器：面板关闭时增删块监听计数为 0"
+  - id: step-3
+    title: "#3 split 拖拽缓存 rect + rAF 节流"
+    checks:
+      - "vue-tsc --noEmit 通过"
+      - "浏览器拖拽分隔条布局跟随正常"
+checks:
+  - id: check-final
+    title: "全量：vue-tsc + eslint + vite build + 浏览器冒烟"

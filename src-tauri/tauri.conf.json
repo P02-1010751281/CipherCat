@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/dev/crates/tauri-config-schema/schema.json",
-  "productName": "CipherCat",
+  "productName": "Metacrypto",
   "identifier": "com.ciphercat.editor",
   "build": {
     "frontendDist": "../dist",
@@ -9,10 +9,10 @@
     "beforeBuildCommand": "npm run build"
   },
   "app": {
-    "withGlobalTauri": true,
+    "withGlobalTauri": false,
     "windows": [
       {
-        "title": "CipherCat",
+        "title": "Metacrypto",
         "width": 1280,
         "height": 800,
         "minWidth": 900,

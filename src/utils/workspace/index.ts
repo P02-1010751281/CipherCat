@@ -162,6 +162,9 @@ export function Workspace(): WorkspaceReturn {
   const refreshBlocks = (): void => {
     if (!workspace) return;
     try {
+      // 语言切换后块标签需重建（字段文本在 init 时从 Msg 读取，无就地刷新 API）——
+      // 空工作区直接跳过（常见路径零成本）；坐标由 XML 保留，undo 历史随重建丢失（固有）
+      if (workspace.getAllBlocks(false).length === 0) return;
       const xml = serialization.exportXml(workspace);
       if (!xml) return;
       workspace.clear();

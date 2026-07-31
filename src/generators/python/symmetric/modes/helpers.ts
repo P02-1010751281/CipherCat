@@ -69,6 +69,7 @@ export function registerAesEcb(): string {
   registerAesEncryptBlock();
   return pythonGenerator.provideFunction_('aes_ecb_encrypt', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data, key):',
+    '    if len(key) != 16: raise ValueError("AES-128 key must be 16 bytes")',
     '    padded = list(data)',
     '    while len(padded) % 16: padded.append(0)',
     '    out = []',
@@ -82,6 +83,8 @@ export function registerAesCbc(): string {
   registerAesEncryptBlock();
   return pythonGenerator.provideFunction_('aes_cbc_encrypt', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data, key, iv):',
+    '    if len(key) != 16: raise ValueError("AES-128 key must be 16 bytes")',
+    '    if len(iv) != 16: raise ValueError("AES-CBC IV must be 16 bytes")',
     '    padded = list(data)',
     '    while len(padded) % 16: padded.append(0)',
     '    out = []',
@@ -99,6 +102,8 @@ export function registerAesCtr(): string {
   registerAesEncryptBlock();
   return pythonGenerator.provideFunction_('aes_ctr_encrypt', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data, key, nonce):',
+    '    if len(key) != 16: raise ValueError("AES-128 key must be 16 bytes")',
+    '    if len(nonce) != 16: raise ValueError("AES-CTR nonce must be 16 bytes")',
     '    out = []',
     '    counter = list(nonce)',
     '    for i in range(0, len(data), 16):',
@@ -207,6 +212,7 @@ export function registerAesEcbDecrypt(): string {
   registerAesDecryptBlock();
   return pythonGenerator.provideFunction_('aes_ecb_decrypt', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data, key):',
+    '    if len(key) != 16: raise ValueError("AES-128 key must be 16 bytes")',
     '    out = []',
     '    for i in range(0, len(data), 16):',
     '        out += aes_decrypt_block(data[i:i+16], key)',

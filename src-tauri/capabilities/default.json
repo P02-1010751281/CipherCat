@@ -8,7 +8,6 @@
     {
       "identifier": "fs:allow-write-text-file",
       "allow": [
-        { "path": "$HOME/**" },
         { "path": "$DOWNLOAD/**" },
         { "path": "$DESKTOP/**" },
         { "path": "$DOCUMENT/**" }

@@ -115,25 +115,34 @@ interface WsFunc { id: string; name: string; type: string }
 const wsFuncs = ref<WsFunc[]>([]);
 let changeListener: (() => void) | null = null;
 
+// 模板类型清单静态化（派生自注册表；类别/文案仍随 locale 动态构建）
+const TEMPLATE_TYPE_SET = new Set(Object.keys(TEMPLATE_REGISTRY));
+
 function refreshWsFuncs() {
   const ws = props.workspace; if (!ws) { wsFuncs.value = []; return; }
-  const cTypes = categories.value.flatMap(c => c.templates.map(t => t.type));
-  // Native procedures + crypto templates
   const all: {id:string; name:string; type:string}[] = [];
   ws.getAllBlocks(false).forEach((b) => {
-    if (cTypes.includes(b.type)) {
+    if (TEMPLATE_TYPE_SET.has(b.type)) {
       all.push({ id: b.id, name: (b.getFieldValue('FUNC_NAME') as string) || b.type, type: b.type });
     } else if (b.type === 'procedures_defreturn' || b.type === 'procedures_defnoreturn') {
       const model = (b as unknown as Record<string, () => {getName:()=>string}>).getProcedureModel?.();
       all.push({ id: b.id, name: model?.getName() || (b.getFieldValue('NAME') as string) || b.type, type: b.type });
     }
   });
+  // 无变化不赋值（避免响应式重渲染）
+  const prev = wsFuncs.value;
+  if (prev.length === all.length && prev.every((f, i) => f.id === all[i].id && f.name === all[i].name && f.type === all[i].type)) return;
   wsFuncs.value = all;
 }
 
 function setupChangeListener() {
   if (!props.workspace || changeListener) return;
-  const handler = () => refreshWsFuncs();
+  const handler = (e: Blockly.Events.Abstract) => {
+    // 过滤非内容变更事件（拖拽/滚动/加载），降低重扫频率
+    const t = e.type;
+    if (t === Blockly.Events.UI || t === Blockly.Events.BLOCK_MOVE || t === Blockly.Events.FINISHED_LOADING) return;
+    refreshWsFuncs();
+  };
   props.workspace.addChangeListener(handler);
   changeListener = () => props.workspace?.removeChangeListener(handler);
 }
@@ -145,7 +154,11 @@ function teardownChangeListener() {
 
 watch(() => props.workspace, (ws) => {
   teardownChangeListener();
-  if (ws) { refreshWsFuncs(); setupChangeListener(); }
+  if (ws) {
+    refreshWsFuncs();
+    // 仅面板可见时挂监听（visible watch 负责开/关）
+    if (props.visible) setupChangeListener();
+  }
 });
 
 watch(() => props.visible, (v) => {
@@ -176,16 +189,42 @@ function insertTemplate(type: string) {
   block.moveBy(m.viewLeft + 40, m.viewTop + 40);
 }
 
-async function exportTemplate(type: string) {
-  const ws = props.workspace; if (!ws) return;
-  const block = ws.newBlock(type);
+/** 物化模板块并序列化（事件禁用 + 显式触发预填 → 零活动 workspace 副作用：
+ *  预填会向变量表 createVariable（事件禁用只抑制事件，变量表插入无条件），
+ *  导出后清理本次新增的变量）。 */
+function serializeTemplate(type: string): Blockly.serialization.blocks.State | null {
+  const ws = props.workspace; if (!ws) return null;
+  const varMap = ws.getVariableMap();
+  const beforeVarIds = new Set(varMap.getAllVariables().map((v) => v.getId()));
+  let tmpBlock: Blockly.Block | null = null;
+  Blockly.Events.disable();
   try {
-    block.initSvg(); block.render();
-    const state = Blockly.serialization.blocks.save(block, { addCoordinates: false });
-    if (!state) return;
-    const json = JSON.stringify({ blocks: { languageVersion: 0, blocks: [state] } }, null, 2);
-    download(json, type + '.json');
-  } finally { block.dispose(false); }
+    tmpBlock = ws.newBlock(type);
+    // 事件禁用时 BLOCK_CREATE 不派发 → 显式调用 onchange 触发预填链注入
+    const onchange = (tmpBlock as unknown as { onchange?: (e: unknown) => void }).onchange;
+    if (onchange) {
+      try { onchange.call(tmpBlock, { type: 'BLOCK_CREATE' }); }
+      catch (e) { console.warn('[FunctionManager] template prefill failed:', e); }
+    }
+    return Blockly.serialization.blocks.save(tmpBlock, { addCoordinates: false });
+  } finally {
+    if (tmpBlock) tmpBlock.dispose(false);
+    // 清理预填新增的参数变量（仅本次新增；变量作用域在 workspace，不随块销毁）
+    for (const v of varMap.getAllVariables()) {
+      if (!beforeVarIds.has(v.getId())) {
+        try { varMap.deleteVariable(v); }
+        catch (e) { console.warn('[FunctionManager] prefill variable cleanup failed:', e); }
+      }
+    }
+    Blockly.Events.enable();
+  }
+}
+
+async function exportTemplate(type: string) {
+  const state = serializeTemplate(type);
+  if (!state) return;
+  const json = JSON.stringify({ blocks: { languageVersion: 0, blocks: [state] } }, null, 2);
+  download(json, type + '.json');
 }
 
 function handleImport() {
@@ -206,16 +245,11 @@ function handleImport() {
 }
 
 async function handleExportAll() {
-  const ws = props.workspace; if (!ws) return;
   const allTypes = categories.value.flatMap(c => c.templates.map(t => t.type));
   const states: unknown[] = [];
   for (const type of allTypes) {
-    const block = ws.newBlock(type);
-    try {
-      block.initSvg(); block.render();
-      const s = Blockly.serialization.blocks.save(block, { addCoordinates: false });
-      if (s) states.push(s);
-    } finally { block.dispose(false); }
+    const s = serializeTemplate(type);
+    if (s) states.push(s);
   }
   if (!states.length) return;
   download(JSON.stringify({ blocks: { languageVersion: 0, blocks: states } }, null, 2), 'ciphercat_templates.json');

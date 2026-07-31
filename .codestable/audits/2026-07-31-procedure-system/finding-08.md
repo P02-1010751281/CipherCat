@@ -6,7 +6,8 @@ nature: security
 severity: P2
 confidence: medium
 suggested_action: cs-issue
-status: open
+status: closed
+closed_by: cs-issue 2026-07-31-security-hardening
 ---
 
 # Finding 08：ECB 模式块无安全警告（旧 #11 未关）

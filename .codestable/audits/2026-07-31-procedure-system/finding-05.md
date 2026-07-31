@@ -6,7 +6,8 @@ nature: bug
 severity: P2
 confidence: medium
 suggested_action: cs-issue
-status: open
+status: closed
+closed_by: cs-issue 2026-07-31-procedure-interaction-bugs
 ---
 
 # Finding 05：Function Manager 导出在活动 workspace 物化临时块，污染 undo/变更状态

@@ -36,21 +36,21 @@ total_findings: 18
 | 1 | bug | P1 | high | crypto_decrypt_func 预填 ECB-Encrypt 链 ✅已修 | [finding-01.md](finding-01.md) |
 | 2 | bug | P1 | high | proc_sm3_hmac 静默生成 HMAC-SHA256 ✅已修 | [finding-02.md](finding-02.md) |
 | 3 | bug | P1 | medium | 模板预填链加载/导入后重复注入 ✅已修 | [finding-03.md](finding-03.md) |
-| 4 | bug | P2 | medium | call 块缺原生 onchange，改名/删除后孤立 | [finding-04.md](finding-04.md) |
-| 5 | bug | P2 | medium | Manager 导出物化临时块污染工作区 | [finding-05.md](finding-05.md) |
+| 4 | bug | P2 | medium | call 块缺原生 onchange，改名/删除后孤立 ✅已修 | [finding-04.md](finding-04.md) |
+| 5 | bug | P2 | medium | Manager 导出物化临时块污染工作区 ✅已修 | [finding-05.md](finding-05.md) |
 | 6 | security | P1 | high | 死代码 IPC save_workspace + rx.recv() 阻塞 ✅已修 | [finding-06.md](finding-06.md) |
-| 7 | security | P2 | medium | FS 写权限过宽 + withGlobalTauri + 跳过对话框 | [finding-07.md](finding-07.md) |
-| 8 | security | P2 | medium | ECB 块无安全警告（旧 #11） | [finding-08.md](finding-08.md) |
-| 9 | security | P2 | low | AES/SM4 无 key/IV 长度校验（旧 #26） | [finding-09.md](finding-09.md) |
-| 10 | performance | P2 | high | locale 切换双重建（旧 #25） | [finding-10.md](finding-10.md) |
-| 11 | performance | P2 | medium | Panel listener 未按 visible 门控 | [finding-11.md](finding-11.md) |
-| 12 | performance | P2 | low | 分割拖拽强制回流 | [finding-12.md](finding-12.md) |
-| 13 | performance | P2 | low | 外层 setTimeout 孤儿定时器（旧 #18 残留） | [finding-13.md](finding-13.md) |
+| 7 | security | P2 | medium | FS 写权限过宽 + withGlobalTauri + 跳过对话框 ✅已修 | [finding-07.md](finding-07.md) |
+| 8 | security | P2 | medium | ECB 块无安全警告（旧 #11） ✅已修 | [finding-08.md](finding-08.md) |
+| 9 | security | P2 | low | AES/SM4 无 key/IV 长度校验（旧 #26） ✅已修 | [finding-09.md](finding-09.md) |
+| 10 | performance | P2 | high | locale 切换双重建（旧 #25） ✅已修 | [finding-10.md](finding-10.md) |
+| 11 | performance | P2 | medium | Panel listener 未按 visible 门控 ✅已修 | [finding-11.md](finding-11.md) |
+| 12 | performance | P2 | low | 分割拖拽强制回流 ✅已修 | [finding-12.md](finding-12.md) |
+| 13 | performance | P2 | low | 外层 setTimeout 孤儿定时器（旧 #18 残留） ✅已修 | [finding-13.md](finding-13.md) |
 | 14 | maintainability | P2 | high | 模板清单三处漂移 + 生成器镜像 ✅已修 | [finding-14.md](finding-14.md) |
 | 15 | maintainability | P2 | high | 工具箱死样式选择器（12.5 类名） ✅已修 | [finding-15.md](finding-15.md) |
 | 16 | maintainability | P2 | high | locale ~14 对死键 + 重复键 ✅已修 | [finding-16.md](finding-16.md) |
 | 17 | maintainability | P2 | high | remaining.ts 13 块未入 ALL_BLOCK_TYPES（旧 #10） ✅已修 | [finding-17.md](finding-17.md) |
-| 18 | maintainability | P2 | medium | Metacrypto 品牌未迁移（旧 #14） | [finding-18.md](finding-18.md) |
+| 18 | maintainability | P2 | medium | Metacrypto 品牌未迁移（旧 #14） ✅已修 | [finding-18.md](finding-18.md) |
 
 ## 按维度分布
 

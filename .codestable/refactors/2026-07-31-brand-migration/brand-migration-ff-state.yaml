@@ -1,0 +1,16 @@
+---
+doc_type: refactor-ff-state
+refactor: 2026-07-31-brand-migration
+scope: "tauri.conf.json productName/title、index.html title、docs/blocks/INDEX.md 标题 → Metacrypto"
+method: fastforward
+approval: owner-approved-in-batch
+verification: "grep CipherCat/薛定喵 用户可见面零残留（历史计划文档 SYNC-PLAN 除外）"
+review: pending
+completion: pending
+---
+
+# brand-migration ff-state
+
+- scope: 用户可见品牌名迁移（CipherCat/薛定喵 → Metacrypto），不含历史计划文档
+- method: fastforward（机械改名，grep 可自证，行为变化仅为品牌名本身——迁移的预期目的）
+- 验证: vue-tsc + vite build + cargo check + grep 用户可见面零残留

@@ -24,7 +24,7 @@ Blockly.Blocks['mode_ecb_encrypt'] = {
     this.setInputsInline(true);
     this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
-    this.setTooltip('AES-ECB 加密：每个明文块独立用 AES-128 加密。 (SP 800-38A §6.1)');
+    this.setTooltip('⚠️ AES-ECB 加密（仅教学演示）：每个明文块独立用 AES-128 加密。ECB 泄露明文模式信息，勿用于真实加密。 (SP 800-38A §6.1)');
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38A.pdf');
   },
 };

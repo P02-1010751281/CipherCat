@@ -1,5 +1,5 @@
 /**
- * CipherCat 密码学积木块类型常量
+ * Metacrypto 密码学积木块类型常量
  *
  * 定义 Blockly 输入/输出类型字符串，用于 `setCheck()` 和 `setOutput()` 的类型约束。
  * 与 Blockly 原生类型（Number, String, Boolean, Array）共同构成完整的类型体系。

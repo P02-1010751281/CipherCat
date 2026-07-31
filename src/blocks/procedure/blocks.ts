@@ -303,6 +303,34 @@ function makeDefBlock(hasReturn: boolean): AnyBlock {
         }
       }
     },
+    // 生命周期联动：改名（BLOCK_CHANGE field NAME）按旧名匹配 call 块并同步（删除由 call 块侧 onchange 处理——
+    // def 的 change listener 在 dispose 时被移除，BLOCK_DELETE 派发时 def 侧已收不到）
+    onchange: function (this: AnyBlock, event: Blockly.Events.Abstract) {
+      const evt = event as unknown as { blockId?: string; element?: string; name?: string; oldValue?: string; newValue?: string };
+      if (evt.blockId !== this.id) return;
+      if (event.type !== Blockly.Events.BLOCK_CHANGE) return;
+      if (evt.element !== 'field' || evt.name !== 'NAME') return;
+      // mutateCallers 按新名匹配会落空（callers 仍为旧名），直接用事件 oldValue 匹配并同步
+      const oldName = evt.oldValue;
+      const newName = evt.newValue;
+      try {
+        if (oldName && newName && oldName !== newName) {
+          for (const b of this.workspace.getAllBlocks(false)) {
+            if ((b.type === 'procedures_callreturn' || b.type === 'procedures_callnoreturn') &&
+                (b.getFieldValue('NAME') as string) === oldName) {
+              // 刷新下拉选项缓存（getOptions(true) 走缓存，不刷则拒绝新选项）
+              const nameField = b.getField('NAME') as unknown as { getOptions?: (u: boolean) => unknown };
+              if (nameField && typeof nameField.getOptions === 'function') {
+                nameField.getOptions(false);
+              }
+              b.setFieldValue(newName, 'NAME');
+            }
+          }
+        }
+        // 参数同步（改名后 callers 已更新，mutateCallers 可匹配）
+        Blockly.Procedures.mutateCallers(this);
+      } catch (e) { console.warn('[procedure] rename propagation failed:', e); }
+    },
   };
 
   DEF.callType_ = hasReturn ? 'procedures_callreturn' : 'procedures_callnoreturn';
@@ -313,9 +341,13 @@ Blockly.Blocks['procedures_defreturn'] = makeDefBlock(true);
 Blockly.Blocks['procedures_defnoreturn'] = makeDefBlock(false);
 
 // ─────────────────────────────────────────────────────────
-// procedures_callreturn / procedures_callnoreturn
+// procedures_defreturn / procedures_defnoreturn
 // 完整独立实现，通过 mutateCallers 与 def 同步
 // ─────────────────────────────────────────────────────────
+
+/** 函数名/参数名标识符校验（拒绝非法字符输入）。 */
+const identifierValidator = (value: string): string | null =>
+  /^[A-Za-z_][A-Za-z0-9_]*$/.test(value) ? value : null;
 
 
 /** 构建 call 块 NAME 下拉选项：工作区函数 + 拖出的模板 + Manager 添加到 toolbox 的模板。 */
@@ -371,16 +403,18 @@ function makeCallBlock(hasReturn: boolean): AnyBlock {
   const CALL: Record<string, any> = {
     init: function (this: AnyBlock) {
       const msg = Blockly.Msg as Record<string, string>;
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
+      const block: AnyBlock = this;
       const title = hasReturn
         ? (msg.PROCEDURES_CALLRETURN_TITLE || 'call')
         : (msg.PROCEDURES_CALLNORETURN_TITLE || 'call');
-      // NAME 用下拉：列出工作区中所有已定义函数，供用户选择调用
-      const nameField = new Blockly.FieldDropdown(buildCallOptions(this));
-            nameField.setValidator(function (this: Blockly.Field, newName: string) {
+      // NAME 用下拉：列出工作区中所有已定义函数，供用户选择调用（惰性生成，打开菜单时刷新选项）
+      const nameField = new Blockly.FieldDropdown(() => buildCallOptions(block));
+      nameField.setValidator(function (this: Blockly.Field, newName: string) {
         // 选择函数后同步参数
-        const block = this.getSourceBlock();
-        if (block && newName) {
-          syncCallParams(block as AnyBlock, newName);
+        const src = this.getSourceBlock();
+        if (src && newName) {
+          syncCallParams(src as AnyBlock, newName);
         }
         return newName;
       });
@@ -437,6 +471,42 @@ function makeCallBlock(hasReturn: boolean): AnyBlock {
         }
       }
     },
+    // 删除联动：所引用函数被删除后自清为 unnamed（def 的 change listener 在 dispose 时被移除，
+    // BLOCK_DELETE 派发时只能由 call 块侧兜底；事件异步派发，此时 def 已从工作区移除）
+    onchange: function (this: AnyBlock, event: Blockly.Events.Abstract) {
+      if (event.type !== Blockly.Events.BLOCK_DELETE) return;
+      try {
+        const name = this.getFieldValue('NAME') as string;
+        if (!name) return;
+        const ws = (this.workspace as unknown as { targetWorkspace?: Blockly.Workspace }).targetWorkspace || this.workspace;
+        const tuples = Blockly.Procedures.allProcedures(ws);
+        const defNames = tuples[0].concat(tuples[1]).map((t) => t[0]);
+        const wsTemplateNames = ws.getAllBlocks(false)
+          .filter((b: Blockly.Block) => b.getField('FUNC_NAME') !== null)
+          .map((b: Blockly.Block) => (b.getFieldValue('FUNC_NAME') as string) || b.type);
+        const stillValid = defNames.includes(name) || wsTemplateNames.includes(name) || toolboxTemplates.value.includes(name);
+        if (!stillValid) {
+          const nameField = this.getField('NAME') as unknown as {
+            doValueUpdate_?: (v: string) => void; getOptions?: (u: boolean) => Array<[string, string]>;
+            selectedOption?: [string, string] | null; markDirty?: () => void; getSourceBlock?: () => Blockly.Block;
+          };
+          if (nameField && typeof nameField.doValueUpdate_ === 'function' && typeof nameField.getOptions === 'function') {
+            // 刷新选项缓存后置值（doValueUpdate_ 内部 getOptions(true) 同步 selectedOption）
+            nameField.getOptions(false);
+            nameField.doValueUpdate_('');
+            // '' 可能不在选项列表（其他函数存在时）——显式对齐 selectedOption 并重渲染，避免 UI 残留旧函数名
+            const refreshed = nameField.getOptions(false);
+            const unnamed = refreshed.find((o) => o[1] === '');
+            nameField.selectedOption = unnamed || null;
+            if (typeof nameField.markDirty === 'function') nameField.markDirty();
+            const srcBlock = typeof nameField.getSourceBlock === 'function' ? nameField.getSourceBlock() : null;
+            if (srcBlock && typeof (srcBlock as unknown as { queueRender?: () => void }).queueRender === 'function') {
+              (srcBlock as unknown as { queueRender: () => void }).queueRender();
+            }
+          }
+        }
+      } catch (e) { console.warn('[procedure] call orphan cleanup failed:', e); }
+    },
     mutationToDom: function (this: AnyBlock): Element {
       const container = Blockly.utils.xml.createElement('mutation');
       for (let i = 0; i < this.argumentVarModels_.length; i++) {
@@ -450,6 +520,16 @@ function makeCallBlock(hasReturn: boolean): AnyBlock {
       return container;
     },
     domToMutation: function (this: AnyBlock, xmlElement: Element) {
+      // 改名传播：mutation 携带 name 时同步 NAME 字段（def 改名经 mutateCallers 到达）
+      const mutatedName = xmlElement.getAttribute('name');
+      if (mutatedName) {
+        // 刷新下拉选项缓存（getOptions(true) 走缓存，不刷则拒绝新选项）
+        const nameField = this.getField('NAME');
+        if (nameField && typeof (nameField as unknown as { getOptions: (u: boolean) => unknown }).getOptions === 'function') {
+          (nameField as unknown as { getOptions: (u: boolean) => unknown }).getOptions(false);
+        }
+        try { this.setFieldValue(mutatedName, 'NAME'); } catch (e) { console.warn('[procedure] call name sync failed:', e); }
+      }
       this.arguments_ = [];
       this.argumentVarModels_ = [];
       this.paramTypes_ = [];
@@ -809,12 +889,18 @@ function _makeTemplateBlock(
   const msg = Blockly.Msg as Record<string, string>;
   Blockly.Blocks[presetName] = {
     init: function () {
+      const funcNameField = new Blockly.FieldTextInput(presetName);
+      funcNameField.setValidator(identifierValidator);
+      funcNameField.setSpellcheck(false);
+      const paramNameField = new Blockly.FieldTextInput(paramName);
+      paramNameField.setValidator(identifierValidator);
+      paramNameField.setSpellcheck(false);
       this.appendDummyInput('NAME_INPUT')
         .appendField(label)
-        .appendField(new Blockly.FieldTextInput(presetName), 'FUNC_NAME');
+        .appendField(funcNameField, 'FUNC_NAME');
       this.appendDummyInput('PARAM_INPUT')
         .appendField(msg.CRYPTO_PROCEDURES_PARAM_MSG || 'param:')
-        .appendField(new Blockly.FieldTextInput(paramName), 'PARAM_NAME')
+        .appendField(paramNameField, 'PARAM_NAME')
         .appendField(':')
         .appendField(new Blockly.FieldDropdown(CRYPTO_PARAM_TYPES), 'PARAM_TYPE');
       this.appendStatementInput('BODY').setCheck(null).appendField(msg.CRYPTO_ITERATE_DO || 'Do');

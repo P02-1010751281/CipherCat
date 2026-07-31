@@ -75,6 +75,7 @@ export function registerAesEcb(): string {
   registerAesEncryptBlock();
   return javascriptGenerator.provideFunction_('aesEcbEncrypt', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data, key) {',
+    '  if (key.length !== 16) throw new Error("AES-128 key must be 16 bytes");',
     '  var padded = Array.from(data);',
     '  while (padded.length % 16) padded.push(0);',
     '  var out = [];',
@@ -90,6 +91,8 @@ export function registerAesCbc(): string {
   registerAesEncryptBlock();
   return javascriptGenerator.provideFunction_('aesCbcEncrypt', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data, key, iv) {',
+    '  if (key.length !== 16) throw new Error("AES-128 key must be 16 bytes");',
+    '  if (iv.length !== 16) throw new Error("AES-CBC IV must be 16 bytes");',
     '  var padded = Array.from(data);',
     '  while (padded.length % 16) padded.push(0);',
     '  var out = [];',
@@ -109,6 +112,8 @@ export function registerAesCtr(): string {
   registerAesEncryptBlock();
   return javascriptGenerator.provideFunction_('aesCtrEncrypt', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data, key, nonce) {',
+    '  if (key.length !== 16) throw new Error("AES-128 key must be 16 bytes");',
+    '  if (nonce.length !== 16) throw new Error("AES-CTR nonce must be 16 bytes");',
     '  var out = [];',
     '  var counter = Array.from(nonce);',
     '  for (var i = 0; i < data.length; i += 16) {',
@@ -216,6 +221,7 @@ export function registerAesEcbDecrypt(): string {
   registerAesDecryptBlock();
   return javascriptGenerator.provideFunction_('aesEcbDecrypt', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data, key) {',
+    '  if (key.length !== 16) throw new Error("AES-128 key must be 16 bytes");',
     '  var out = [];',
     '  for (var i = 0; i < data.length; i += 16) {',
     '    out = out.concat(aesDecryptBlock(data.slice(i, i + 16), key));',

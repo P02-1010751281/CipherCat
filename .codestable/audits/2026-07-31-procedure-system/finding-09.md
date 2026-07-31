@@ -6,7 +6,8 @@ nature: security
 severity: P2
 confidence: low
 suggested_action: cs-issue
-status: open
+status: closed
+closed_by: cs-issue 2026-07-31-security-hardening
 ---
 
 # Finding 09：AES/SM4 无运行时 key/IV 长度校验（旧 #26 未关）

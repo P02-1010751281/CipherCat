@@ -6,7 +6,8 @@ nature: performance
 severity: P2
 confidence: high
 suggested_action: cs-refactor
-status: open
+status: closed
+closed_by: refactor 2026-07-31-perf-optimizations
 ---
 
 # Finding 10：语言切换触发 refreshBlocks 全量序列化重建 + updateToolbox 双重建（旧 #25 未关）

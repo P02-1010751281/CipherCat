@@ -6,7 +6,8 @@ nature: performance
 severity: P2
 confidence: medium
 suggested_action: cs-refactor
-status: open
+status: closed
+closed_by: refactor 2026-07-31-perf-optimizations
 ---
 
 # Finding 11：Function Manager 的 change listener 未按 visible 门控，每次事件全量扫描

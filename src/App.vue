@@ -287,8 +287,8 @@ const changeBlocklyLocale = (): void => {
   blocklyLocale.setLocale(selectedBlocklyLocale.value);
   blocklyEditor.value?.updateToolbox();
   blocklyEditor.value?.refreshBlocks();
-  // 显示切换提示（延迟到中文覆盖生效后）
-  setTimeout(() => {
+  // 显示切换提示（延迟到中文覆盖生效后；外层定时器纳入 toastTimer 统一清理）
+  toastTimer = window.setTimeout(() => {
     toastMessage.value = ui('localeChanged');
     toastVisible.value = true;
     if (toastTimer) clearTimeout(toastTimer);
@@ -481,6 +481,8 @@ const MAX_RIGHT_RATIO = 0.55;
 
 let splitDragging = false;
 let rafId = 0;
+let dragRect: { top: number; right: number; width: number; height: number } | null = null;
+let dragPos: { x: number; y: number } | null = null;
 const narrowMedia = window.matchMedia('(max-width: 1200px)');
 
 function isNarrowLayout() {
@@ -528,34 +530,39 @@ const editorStyle = computed(() => {
 function onSplitDragStart(e: MouseEvent) {
   e.preventDefault();
   splitDragging = true;
+  // 拖拽起点缓存容器 rect（期间不变），避免每次 mousemove 强制回流
+  dragRect = editorViewRef.value?.getBoundingClientRect() ?? null;
   window.addEventListener('mousemove', onSplitDragMove, { capture: true });
   window.addEventListener('mouseup', onSplitDragEnd, { capture: true });
   document.body.style.cursor = isNarrowLayout() ? 'row-resize' : 'col-resize';
   document.body.style.userSelect = 'none';
 }
 
-function onSplitDragMove(e: MouseEvent) {
-  if (!splitDragging) return;
-  e.preventDefault();
-  const container = editorViewRef.value;
-  if (!container) return;
-  const rect = container.getBoundingClientRect();
-
+function applySplitDrag() {
+  const pos = dragPos;
+  const rect = dragRect;
+  if (!pos || !rect) return;
   if (isNarrowLayout()) {
-    const fromTop = e.clientY - rect.top;
+    const fromTop = pos.y - rect.top;
     const maxTop = rect.height * 0.7;
-    const newVal = Math.max(MIN_TOP, Math.min(fromTop, maxTop));
-    topHeight.value = newVal;
+    topHeight.value = Math.max(MIN_TOP, Math.min(fromTop, maxTop));
   } else {
-    const fromRight = rect.right - e.clientX;
+    const fromRight = rect.right - pos.x;
     const maxRight = rect.width * MAX_RIGHT_RATIO;
     rightWidth.value = Math.max(MIN_RIGHT, Math.min(fromRight, maxRight));
   }
-  // 拖拽中节流刷新 workspace
+  blocklyEditor.value?.resizeWorkspace();
+}
+
+function onSplitDragMove(e: MouseEvent) {
+  if (!splitDragging) return;
+  e.preventDefault();
+  // 记录最新位置，整个 handler 体 rAF 节流（每帧最多应用一次）
+  dragPos = { x: e.clientX, y: e.clientY };
   if (!rafId) {
     rafId = requestAnimationFrame(() => {
       rafId = 0;
-      blocklyEditor.value?.resizeWorkspace();
+      applySplitDrag();
     });
   }
 }
@@ -566,7 +573,13 @@ function onSplitDragEnd() {
   window.removeEventListener('mouseup', onSplitDragEnd, { capture: true });
   document.body.style.cursor = '';
   document.body.style.userSelect = '';
-  blocklyEditor.value?.resizeWorkspace();
+  if (rafId) {
+    cancelAnimationFrame(rafId);
+    rafId = 0;
+  }
+  applySplitDrag();
+  dragRect = null;
+  dragPos = null;
 }
 
 onUnmounted(() => {

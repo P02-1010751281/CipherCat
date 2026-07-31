@@ -54,9 +54,6 @@ export async function handleFileUpload(
 /** 自定义事件名，Tauri 保存成功后携带路径广播 */
 export const WORKSPACE_SAVED_EVENT = 'ciphercat:workspace-saved';
 
-/** 上次导出的路径，用于快速覆盖 */
-let lastExportPath: string | null = null;
-
 export async function downloadContent(
   content: string,
   filename: string,
@@ -71,26 +68,7 @@ export async function downloadContent(
     return;
   }
 
-  // Tauri: 如果有上次导出的路径，直接覆盖（跳过对话框）
-  if (lastExportPath) {
-    try {
-      const { writeTextFile } = await import('@tauri-apps/plugin-fs');
-      await writeTextFile(lastExportPath, content);
-      console.log('Workspace overwritten at:', lastExportPath);
-      window.dispatchEvent(
-        new CustomEvent(WORKSPACE_SAVED_EVENT, {
-          detail: { path: lastExportPath },
-        }),
-      );
-      return;
-    } catch (e) {
-      console.debug('[downloadContent] writeTextFile fallback failed:', e);
-      // writeTextFile 不可用，降级到弹对话框
-      lastExportPath = null;
-    }
-  }
-
-  // Tauri: 弹保存对话框（首次导出），直接写文件，不走 IPC 避免大内容撑爆缓冲区
+  // Tauri: 弹保存对话框（每次导出都经用户确认，路径即授权，不缓存免确认覆写）
   // 如果对话框可用，无论保存还是取消，都不再走浏览器回退
   let tauriDialogShown = false;
   try {
@@ -103,7 +81,6 @@ export async function downloadContent(
     tauriDialogShown = true;
     if (filePath) {
       await writeTextFile(filePath, content);
-      lastExportPath = filePath;
       console.log('Workspace saved to:', filePath);
       window.dispatchEvent(
         new CustomEvent(WORKSPACE_SAVED_EVENT, {

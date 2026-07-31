@@ -6,7 +6,8 @@ nature: maintainability
 severity: P2
 confidence: medium
 suggested_action: cs-refactor
-status: open
+status: closed
+closed_by: refactor 2026-07-31-brand-migration
 ---
 
 # Finding 18：Metacrypto 品牌迁移未完成（旧 #14 未关）

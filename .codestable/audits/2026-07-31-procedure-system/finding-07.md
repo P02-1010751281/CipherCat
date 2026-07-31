@@ -6,7 +6,8 @@ nature: security
 severity: P2
 confidence: medium
 suggested_action: cs-issue
-status: open
+status: closed
+closed_by: cs-issue 2026-07-31-security-hardening
 ---
 
 # Finding 07：文件系统写权限过宽（$HOME/**）+ withGlobalTauri + 跳过保存对话框

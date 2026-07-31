@@ -6,7 +6,8 @@ nature: performance
 severity: P2
 confidence: low
 suggested_action: cs-refactor
-status: open
+status: closed
+closed_by: refactor 2026-07-31-perf-optimizations
 ---
 
 # Finding 12：分割条拖拽每次 mousemove 强制回流，rAF 仅节流 Blockly resize

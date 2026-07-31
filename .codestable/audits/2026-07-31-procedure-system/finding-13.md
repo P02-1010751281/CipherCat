@@ -6,7 +6,8 @@ nature: performance
 severity: P2
 confidence: low
 suggested_action: cs-issue
-status: open
+status: closed
+closed_by: cs-issue 2026-07-31-app-timer-orphan
 ---
 
 # Finding 13：changeBlocklyLocale 外层 setTimeout 未纳入 toastTimer 管理（旧 #18 残留）

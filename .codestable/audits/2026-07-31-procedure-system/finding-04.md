@@ -6,7 +6,8 @@ nature: bug
 severity: P2
 confidence: medium
 suggested_action: cs-issue
-status: open
+status: closed
+closed_by: cs-issue 2026-07-31-procedure-interaction-bugs
 ---
 
 # Finding 04：call 块缺失原生 onchange 生命周期，函数改名/删除后调用孤立

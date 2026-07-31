@@ -19,6 +19,12 @@
               <span class="cfp-name" :title="tpl.type">{{ tpl.label }}</span>
               <span class="cfp-param">{{ tpl.param }}</span>
               <button class="cfp-item-btn cfp-item-insert" @click="insertTemplate(tpl.type)" title="Insert">＋</button>
+              <button
+                class="cfp-item-btn"
+                :class="isInToolbox(tpl.type) ? 'cfp-item-in-toolbox' : ''"
+                @click="toggleTpl(tpl.type)"
+                :title="isInToolbox(tpl.type) ? 'Remove from toolbox' : 'Add to toolbox'"
+              >{{ isInToolbox(tpl.type) ? '✕' : '＋📦' }}</button>
               <button class="cfp-item-btn cfp-item-export" @click="exportTemplate(tpl.type)" title="Export">📤</button>
             </div>
           </div>
@@ -40,6 +46,7 @@
 <script setup lang="ts">
 import { ref, watch, onUnmounted } from 'vue';
 import * as Blockly from 'blockly/core';
+import { toolboxTemplates, toggleTemplate } from '@/blocks/procedure/toolbox-state';
 
 const msg = Blockly.Msg as Record<string, string>;
 const props = defineProps<{ visible: boolean; workspace: Blockly.WorkspaceSvg | null }>();
@@ -47,7 +54,6 @@ const props = defineProps<{ visible: boolean; workspace: Blockly.WorkspaceSvg | 
 interface Template { type: string; label: string; param: string }
 interface SubCategory { key: string; label: string; templates: Template[] }
 const LABEL_KEYS: Record<string, string> = {
-  crypto_func_def: 'CRYPTO_FUNC_DEF_LABEL',
   crypto_return: 'CRYPTO_RETURN_LABEL',
   procedures_ifreturn: 'CRYPTO_IFRETURN_LABEL',
   crypto_encrypt_func: 'CRYPTO_PROCEDURES_ENCRYPT_LABEL',
@@ -62,7 +68,6 @@ function L(type: string): string {
 function buildCategories(): SubCategory[] {
   return [
   { key: 'base', label: msg.CRYPTO_SUBCAT_BASE || 'Base', templates: [
-    { type: 'crypto_func_def',       label: L('crypto_func_def'),       param: '1 param (default seed:Bytes)' },
     { type: 'crypto_return',         label: L('crypto_return'),         param: 'value' },
     { type: 'procedures_ifreturn',   label: L('procedures_ifreturn'),   param: 'condition' },
     { type: 'crypto_encrypt_func',   label: L('crypto_encrypt_func'),   param: '1 param' },
@@ -152,6 +157,16 @@ watch(() => props.visible, (v) => {
 onUnmounted(() => teardownChangeListener());
 
 // ── Actions ──
+function isInToolbox(type: string): boolean {
+  return toolboxTemplates.value.includes(type);
+}
+
+function toggleTpl(type: string) {
+  toggleTemplate(type);
+  // 刷新 toolbox 显示（null = 用原配置重新渲染）
+  try { props.workspace?.updateToolbox(null); } catch {}
+}
+
 function insertTemplate(type: string) {
   const ws = props.workspace; if (!ws) return;
   const block = ws.newBlock(type);
@@ -249,6 +264,7 @@ function download(content: string, filename: string) {
 .cfp-item-btn { background: none; border: 1px solid transparent; border-radius: 4px; font-size: 12px; cursor: pointer; padding: 2px 6px; color: var(--color-text-secondary); flex-shrink: 0; }
 .cfp-item-btn:hover { border-color: var(--color-border); background: var(--color-bg-hover); color: var(--color-text); }
 .cfp-item-insert:hover { color: var(--color-primary); }
+.cfp-item-in-toolbox { color: var(--color-success); border-color: var(--color-success); }
 .cfp-item-ws { border-left: 2px solid var(--color-primary); }
 
 .panel-enter-active, .panel-leave-active { transition: opacity 0.2s ease; }

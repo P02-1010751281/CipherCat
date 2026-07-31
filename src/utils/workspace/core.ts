@@ -5,10 +5,21 @@ import { WORKSPACE_OPTIONS } from '@/constants/workspace-config';
 
 import { createBlocklyTheme, type ThemeOptions } from './theme';
 import { registerSboxCategoryCallbacks } from '@/blocks/sbox/category';
+import { toolboxTemplates } from '@/blocks/procedure/toolbox-state';
 
 export interface WorkspaceState {
   workspace: Blockly.WorkspaceSvg | null;
   isReady: boolean;
+}
+
+/** 注册 Crypto Templates 动态类目：flyout 内容来自 Manager 添加的模板列表。 */
+function registerCryptoTemplateCallbacks(workspace: Blockly.WorkspaceSvg): void {
+  workspace.registerToolboxCategoryCallback('CRYPTO_TEMPLATES', () => {
+    return toolboxTemplates.value.map((type) => ({
+      kind: 'block' as const,
+      type,
+    }));
+  });
 }
 
 export function createWorkspace(
@@ -30,6 +41,7 @@ export function createWorkspace(
     });
 
     registerSboxCategoryCallbacks(workspace);
+    registerCryptoTemplateCallbacks(workspace);
 
     return {
       workspace,

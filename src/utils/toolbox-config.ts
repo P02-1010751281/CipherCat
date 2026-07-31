@@ -14,6 +14,7 @@ import {
   PQ_ADVANCED_BLOCK_TYPES,
 } from '@/blocks/post-quantum';
 import { getSboxCategoryKey } from '@/blocks/sbox/category';
+import { toolboxTemplates } from '@/blocks/procedure/toolbox-state';
 import { SYMMETRIC_BLOCK_TYPES } from '@/blocks/symmetric';
 
 export function createToolboxConfig() {
@@ -205,13 +206,19 @@ export function createToolboxConfig() {
     custom: 'PROCEDURE',
   };
 
+  const cryptoTemplates = {
+    kind: 'category',
+    name: (msg.CRYPTO_CATEGORY_CRYPTO_TEMPLATES || 'Crypto Templates'),
+    colour: '#C67A4E',
+    custom: 'CRYPTO_TEMPLATES',
+  };
 
   return {
     kind: 'categoryToolbox' as const,
     contents: [
       ctrl, variable, math, array, data, bit, logicUnit, sbox, hash, symmetric,
       numtheory, ecc, postquantumBasic, postquantumAdvanced,
-      procedureNative,
+      procedureNative, cryptoTemplates,
     ],
   };
 }

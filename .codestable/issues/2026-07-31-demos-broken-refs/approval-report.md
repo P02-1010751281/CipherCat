@@ -26,7 +26,7 @@ created_at: 2026-07-31
 
 ## Context
 
-转换规则：`FUNC_NAME`→`NAME`、STACK→RETURN、参数 id 与 body 变量对齐（SM4 拆字特殊处理）；`data_text`→`data_value`（占位文本改合法 hex）。唯一遗留 `ML-KEM-Atomic.json` 的 `pq_*_vec` 块替换需语义决策，README 已标注。
+转换规则：`FUNC_NAME`→`NAME`、STACK→RETURN、参数 id 与 body 变量对齐（SM4 拆字特殊处理）；`data_text`→`data_value`（占位文本改合法 hex）。后续追加修复 `ML-KEM-Atomic.json`（4 个已删 `pq_*_vec` 便利块 → 现有原子原语，浏览器实测通过）——**17 个损坏 demo 全部闭环**。
 
 ## Options
 

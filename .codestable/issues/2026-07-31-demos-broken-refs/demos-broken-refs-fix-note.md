@@ -35,6 +35,6 @@ tags: [demos, serialization, generator, migration]
 - 浏览器（Chromium 实测 6 个代表）：AES-Round / SM4-Round / Mode-ECB / SM3-Hash / HMAC-SHA256 / AES-Atomic-Round 全部导入 0 警告 + JS/Python 双语言生成成功（含官方向量 hex 保留）
 - 构建：vue-tsc 0 errors · eslint 0 errors · vite build ✓
 
-## 遗留
+## 遗留（已闭环）
 
-- `demos/ML-KEM-Atomic.json` 引用 `pq_*_vec` 4 块（已删除）——需设计决策（恢复块或改用现有 `pq_ntt` 等），README 已标注 ⚠️
+- `demos/ML-KEM-Atomic.json` 引用 4 个已删除 `pq_*_vec` 便利块——**后续已修复**：映射到现有原子原语（旧块为 `_pq` 工厂黑盒，33fe4350 删除）——`pq_cbd_ntt_vec` → `pq_sample_poly_cbd`（ETA=2, q=3329）、`pq_ntt_vec` → `pq_ntt`（q=3329, n=256）、`pq_sample_ntt_mat` → `pq_sample_ntt`（q=3329）、`pq_mat_vec_mul_ntt` → `pq_mat_vec_mul`（q=3329）；K 下拉删除（原子块无 K 参数）。浏览器实测导入 0 警告 + 双语言生成全部原语正确。

@@ -9,7 +9,7 @@
 | SM4 轮函数 | `SM4-Atomic-Round.json` | `sm4_round_func` + `sm4_linear_transform` |
 | AES 单轮 | `AES-Atomic-Round.json` | `aes_sub_bytes` → `aes_shift_rows` → `aes_mix_columns` → `aes_add_round_key` |
 | SHA-256 哈希 | `SHA256-Atomic-Hash.json` | `hash_sha256_pad` → `hash_sha256_compress` |
-| ML-KEM 底层 | `ML-KEM-Atomic.json` | `pq_cbd_ntt_vec` + `pq_ntt_vec` + `pq_sample_ntt_mat` + `pq_mat_vec_mul_ntt` ⚠️ 引用已删除块，待修复 |
+| ML-KEM 底层 | `ML-KEM-Atomic.json` | `pq_sample_poly_cbd` + `pq_ntt` + `pq_sample_ntt` + `pq_mat_vec_mul` |
 
 ## Procedure 封装 Demo
 

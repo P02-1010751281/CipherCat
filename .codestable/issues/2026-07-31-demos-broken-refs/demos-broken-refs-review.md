@@ -29,6 +29,6 @@ tags: [demos, serialization, generator]
 2. **生成器 STACK 守卫**：修复后空 STACK def 块生成 `// TODO` body + RETURN 表达式，行为正确（JS/PY 双实测）
 3. **变量 id 稳定性**：`param_` + 名字规则与旧导出一致，body 引用不漂移——静态差集为空佐证
 
-## 遗留（非 blocking）
+## 遗留（已闭环）
 
-- `ML-KEM-Atomic.json` 4 个 `pq_*_vec` 块替换需块语义决策，已标注 README ⚠️ 并记录于 fix-note 遗留
+- `ML-KEM-Atomic.json` 4 个 `pq_*_vec` 块已映射到现有原子原语（`pq_sample_poly_cbd` / `pq_ntt` / `pq_sample_ntt` / `pq_mat_vec_mul`），浏览器实测导入 0 警告 + JS/Python 双语言生成全部原语正确，README ⚠️ 已移除

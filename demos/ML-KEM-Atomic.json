@@ -12,15 +12,16 @@
         }
       },
       {
-        "type": "pq_cbd_ntt_vec",
+        "type": "pq_sample_poly_cbd",
         "id": "64561cc48ea24158a8ca",
         "x": 400,
         "y": 100,
         "fields": {
-          "K": "2"
+          "ETA": "2",
+          "MODULUS": "3329"
         },
         "inputs": {
-          "INPUT": {
+          "SEED": {
             "block": {
               "type": "data_value",
               "id": "904f70fc24bf4642b3f5",
@@ -34,12 +35,13 @@
         }
       },
       {
-        "type": "pq_ntt_vec",
+        "type": "pq_ntt",
         "id": "d859ed076aee45ab84f4",
         "x": 700,
         "y": 100,
         "fields": {
-          "K": "2"
+          "MODULUS": "3329",
+          "DEGREE": "256"
         },
         "inputs": {
           "INPUT": {
@@ -56,12 +58,12 @@
         }
       },
       {
-        "type": "pq_sample_ntt_mat",
+        "type": "pq_sample_ntt",
         "id": "d33fc2ca0592407b85de",
         "x": 400,
         "y": 250,
         "fields": {
-          "K": "2"
+          "MODULUS": "3329"
         },
         "inputs": {
           "SEED": {
@@ -78,15 +80,15 @@
         }
       },
       {
-        "type": "pq_mat_vec_mul_ntt",
+        "type": "pq_mat_vec_mul",
         "id": "cd9575d945584e339440",
         "x": 700,
         "y": 250,
         "fields": {
-          "K": "2"
+          "MODULUS": "3329"
         },
         "inputs": {
-          "MAT": {
+          "MATRIX": {
             "block": {
               "type": "data_value",
               "id": "8698620de3a54b899e2d",

@@ -317,27 +317,40 @@ Blockly.Blocks['procedures_defnoreturn'] = makeDefBlock(false);
 // ─────────────────────────────────────────────────────────
 
 
-/** 构建 call 块 NAME 下拉选项：所有已定义函数名。 */
+/** 构建 call 块 NAME 下拉选项：工作区自定义函数 + Crypto Functions 模板。 */
 function buildCallOptions(block: AnyBlock): Array<[string, string]> {
   try {
     const ws = (block.workspace as unknown as { targetWorkspace?: Blockly.Workspace }).targetWorkspace || block.workspace;
     const tuples = Blockly.Procedures.allProcedures(ws);
     const names = tuples[0].concat(tuples[1]).map((t) => t[0]);
-    if (!names.length) return [[Blockly.Msg.PROCEDURES_UNNAMED || 'unnamed', '']];
-    return names.map((n) => [n, n]);
+    // 追加 Crypto Functions 模板（proc_* + crypto_* 预设）
+    const templateNames = Object.keys(TEMPLATE_REGISTRY);
+    const all = Array.from(new Set(names.concat(templateNames)));
+    if (!all.length) return [[Blockly.Msg.PROCEDURES_UNNAMED || 'unnamed', '']];
+    return all.map((n) => [n, n]);
   } catch {
     return [[Blockly.Msg.PROCEDURES_UNNAMED || 'unnamed', '']];
   }
 }
 
-/** call 块选择函数后同步参数行。 */
+/** call 块选择函数后同步参数行（支持工作区自定义函数 + 模板）。 */
 function syncCallParams(block: AnyBlock, funcName: string) {
   const ws = (block.workspace as unknown as { targetWorkspace?: Blockly.Workspace }).targetWorkspace || block.workspace;
   const def = Blockly.Procedures.getDefinition(funcName, ws);
-  if (!def) { block.arguments_ = []; block.argumentVarModels_ = []; block.paramTypes_ = []; block.updateShape_!(); return; }
-  const defRec = def as unknown as Record<string, unknown>;
-  const args = Array.isArray(defRec.arguments_) ? (defRec.arguments_ as string[]) : [];
-  const types = Array.isArray(defRec.paramTypes_) ? (defRec.paramTypes_ as string[]) : [];
+  let args: string[] = [];
+  let types: string[] = [];
+  if (def) {
+    const defRec = def as unknown as Record<string, unknown>;
+    args = Array.isArray(defRec.arguments_) ? (defRec.arguments_ as string[]) : [];
+    types = Array.isArray(defRec.paramTypes_) ? (defRec.paramTypes_ as string[]) : [];
+  } else {
+    // 模板函数：用注册表参数
+    const tpl = Object.values(TEMPLATE_REGISTRY).find(function (t) { return t.name === funcName; });
+    if (tpl) {
+      args = [tpl.paramName];
+      types = [tpl.paramType];
+    }
+  }
   block.arguments_ = args;
   block.paramTypes_ = types;
   block.argumentVarModels_ = [];
@@ -767,9 +780,14 @@ function iterateState(times: number, varName = 'i', bodyBlocks?: Blockly.seriali
   return state as unknown as Blockly.serialization.blocks.State;
 }
 
+/** 模板注册表：type → 默认函数名 + 参数信息（供 call 块下拉和参数同步用）。 */
+export interface TemplateInfo { name: string; paramName: string; paramType: string }
+export const TEMPLATE_REGISTRY: Record<string, TemplateInfo> = {};
+
 function _makeTemplateBlock(
   presetName: string, paramName: string, paramType: string, label: string,
 ): void {
+  TEMPLATE_REGISTRY[presetName] = { name: presetName, paramName, paramType };
   const msg = Blockly.Msg as Record<string, string>;
   Blockly.Blocks[presetName] = {
     init: function () {

@@ -3,7 +3,7 @@
     "languageVersion": 0,
     "blocks": [
       {
-        "type": "crypto_func_def",
+        "type": "procedures_defreturn",
         "id": "496fd6864329dd6cfd36",
         "x": 100,
         "y": 100,
@@ -11,20 +11,22 @@
           "params": [
             {
               "name": "password",
+              "id": "param_password",
               "type": "bytes"
             },
             {
               "name": "salt",
+              "id": "param_salt",
               "type": "bytes"
             }
-          ]
+          ],
+          "hasStatements": false
         },
         "fields": {
-          "FUNC_NAME": "PBKDF2",
-          "RETURN_TYPE": "bytes"
+          "NAME": "PBKDF2"
         },
         "inputs": {
-          "STACK": {
+          "RETURN": {
             "block": {
               "type": "variables_get",
               "id": "12b27137da225c4a7fe2",

@@ -3,7 +3,7 @@
     "languageVersion": 0,
     "blocks": [
       {
-        "type": "crypto_func_def",
+        "type": "procedures_defreturn",
         "id": "aa3e938b3593fedafecc",
         "x": 100,
         "y": 100,
@@ -11,24 +11,27 @@
           "params": [
             {
               "name": "data",
+              "id": "param_data",
               "type": "bytes"
             },
             {
               "name": "key",
+              "id": "param_key",
               "type": "bytes"
             },
             {
               "name": "iv",
+              "id": "param_iv",
               "type": "bytes"
             }
-          ]
+          ],
+          "hasStatements": false
         },
         "fields": {
-          "FUNC_NAME": "CBC",
-          "RETURN_TYPE": "bytes"
+          "NAME": "CBC"
         },
         "inputs": {
-          "STACK": {
+          "RETURN": {
             "block": {
               "type": "variables_get",
               "id": "d27ca7315c3c537f56a7",

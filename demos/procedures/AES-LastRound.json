@@ -3,7 +3,7 @@
     "languageVersion": 0,
     "blocks": [
       {
-        "type": "crypto_func_def",
+        "type": "procedures_defreturn",
         "id": "e3dbbd03f67fcffa5a05",
         "x": 100,
         "y": 100,
@@ -11,20 +11,22 @@
           "params": [
             {
               "name": "state",
+              "id": "param_state",
               "type": "int_list"
             },
             {
               "name": "round_key",
+              "id": "param_round_key",
               "type": "int_list"
             }
-          ]
+          ],
+          "hasStatements": false
         },
         "fields": {
-          "FUNC_NAME": "AES_LastRound",
-          "RETURN_TYPE": "int_list"
+          "NAME": "AES_LastRound"
         },
         "inputs": {
-          "STACK": {
+          "RETURN": {
             "block": {
               "type": "aes_sub_bytes",
               "id": "cd6337746647ac5b43d6",

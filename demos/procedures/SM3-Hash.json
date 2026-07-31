@@ -3,7 +3,7 @@
     "languageVersion": 0,
     "blocks": [
       {
-        "type": "crypto_func_def",
+        "type": "procedures_defreturn",
         "id": "50670960e74afa08d72e",
         "x": 100,
         "y": 100,
@@ -11,16 +11,17 @@
           "params": [
             {
               "name": "msg",
+              "id": "param_msg",
               "type": "bytes"
             }
-          ]
+          ],
+          "hasStatements": false
         },
         "fields": {
-          "FUNC_NAME": "SM3_Hash",
-          "RETURN_TYPE": "bytes"
+          "NAME": "SM3_Hash"
         },
         "inputs": {
-          "STACK": {
+          "RETURN": {
             "block": {
               "type": "hash_sm3_pad",
               "id": "8f2a4e73f95d1be731c6",

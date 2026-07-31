@@ -3,7 +3,7 @@
     "languageVersion": 0,
     "blocks": [
       {
-        "type": "crypto_func_def",
+        "type": "procedures_defreturn",
         "id": "c875b9899e7eda05c427",
         "x": 100,
         "y": 100,
@@ -11,24 +11,27 @@
           "params": [
             {
               "name": "data",
+              "id": "param_data",
               "type": "bytes"
             },
             {
               "name": "key",
+              "id": "param_key",
               "type": "bytes"
             },
             {
               "name": "nonce",
+              "id": "param_nonce",
               "type": "bytes"
             }
-          ]
+          ],
+          "hasStatements": false
         },
         "fields": {
-          "FUNC_NAME": "CTR",
-          "RETURN_TYPE": "bytes"
+          "NAME": "CTR"
         },
         "inputs": {
-          "STACK": {
+          "RETURN": {
             "block": {
               "type": "variables_get",
               "id": "38d8a2d8f3a37bedd8f5",

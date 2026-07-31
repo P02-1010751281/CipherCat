@@ -3,7 +3,7 @@
     "languageVersion": 0,
     "blocks": [
       {
-        "type": "crypto_func_def",
+        "type": "procedures_defreturn",
         "id": "86dd7a15ad60e2eb7ff4",
         "x": 100,
         "y": 100,
@@ -11,20 +11,22 @@
           "params": [
             {
               "name": "data",
+              "id": "param_data",
               "type": "bytes"
             },
             {
               "name": "key",
+              "id": "param_key",
               "type": "bytes"
             }
-          ]
+          ],
+          "hasStatements": false
         },
         "fields": {
-          "FUNC_NAME": "ECB",
-          "RETURN_TYPE": "bytes"
+          "NAME": "ECB"
         },
         "inputs": {
-          "STACK": {
+          "RETURN": {
             "block": {
               "type": "variables_get",
               "id": "7bd4bf10d2dfb5dc7213",

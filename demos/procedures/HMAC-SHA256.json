@@ -3,7 +3,7 @@
     "languageVersion": 0,
     "blocks": [
       {
-        "type": "crypto_func_def",
+        "type": "procedures_defreturn",
         "id": "a12edf0d3787ceb394b1",
         "x": 100,
         "y": 100,
@@ -11,20 +11,22 @@
           "params": [
             {
               "name": "key",
+              "id": "param_key",
               "type": "bytes"
             },
             {
               "name": "msg",
+              "id": "param_msg",
               "type": "bytes"
             }
-          ]
+          ],
+          "hasStatements": false
         },
         "fields": {
-          "FUNC_NAME": "HMAC_SHA256",
-          "RETURN_TYPE": "bytes"
+          "NAME": "HMAC_SHA256"
         },
         "inputs": {
-          "STACK": {
+          "RETURN": {
             "block": {
               "type": "hash_hmac",
               "id": "fab958ee8bde1a0f100c",

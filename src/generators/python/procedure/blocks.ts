@@ -31,7 +31,9 @@ export function generateDefreturnPy(block: Block): string {
     const pyType = TYPE_MAP_PY[type] || type;
     params.push(name + ': ' + pyType);
   });
-  const body = pythonGenerator.statementToCode(block, 'STACK') ||
+  const body = (block.getInput('STACK')
+    ? pythonGenerator.statementToCode(block, 'STACK')
+    : '') ||
     '# TODO: implement ' + funcName + ' algorithm\\n';
   const returnValue =
     pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) || (params[0]?.split(':')[0] || 'None');

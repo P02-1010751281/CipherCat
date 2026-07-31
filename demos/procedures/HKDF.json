@@ -3,7 +3,7 @@
     "languageVersion": 0,
     "blocks": [
       {
-        "type": "crypto_func_def",
+        "type": "procedures_defreturn",
         "id": "aa8f4d44ce0d8e6942d7",
         "x": 100,
         "y": 100,
@@ -11,20 +11,22 @@
           "params": [
             {
               "name": "ikm",
+              "id": "param_ikm",
               "type": "bytes"
             },
             {
               "name": "salt",
+              "id": "param_salt",
               "type": "bytes"
             }
-          ]
+          ],
+          "hasStatements": false
         },
         "fields": {
-          "FUNC_NAME": "HKDF",
-          "RETURN_TYPE": "bytes"
+          "NAME": "HKDF"
         },
         "inputs": {
-          "STACK": {
+          "RETURN": {
             "block": {
               "type": "variables_get",
               "id": "bafeebc59a9dafa284b1",

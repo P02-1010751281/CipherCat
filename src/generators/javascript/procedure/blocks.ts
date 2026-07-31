@@ -33,7 +33,9 @@ export function generateDefreturnJS(block: Block): string {
     params.push(name);
     jsdoc.push(' * @param {' + jsType + '} ' + name + ' — ' + type + ' 类型参数');
   });
-  const body = javascriptGenerator.statementToCode(block, 'STACK') ||
+  const body = (block.getInput('STACK')
+    ? javascriptGenerator.statementToCode(block, 'STACK')
+    : '') ||
     '  // TODO: implement ' + funcName + ' algorithm\\n';
   const returnValue =
     javascriptGenerator.valueToCode(block, 'RETURN', Order.NONE) || params[0] || 'undefined';

@@ -10,12 +10,12 @@
         "inputs": {
           "INPUT": {
             "block": {
-              "type": "data_text",
+              "type": "data_value",
               "id": "274b45dc1d2c49bd8260",
               "x": 100,
               "y": 80,
               "fields": {
-                "TEXT": "abc"
+                "NUM": "abc"
               }
             }
           }

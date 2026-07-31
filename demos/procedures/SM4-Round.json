@@ -3,28 +3,45 @@
     "languageVersion": 0,
     "blocks": [
       {
-        "type": "crypto_func_def",
+        "type": "procedures_defreturn",
         "id": "04e3a19d0a29a31e5f5b",
         "x": 100,
         "y": 100,
         "extraState": {
           "params": [
             {
-              "name": "state",
-              "type": "int_list"
+              "name": "state_0",
+              "id": "param_state_0",
+              "type": "int"
+            },
+            {
+              "name": "state_1",
+              "id": "param_state_1",
+              "type": "int"
+            },
+            {
+              "name": "state_2",
+              "id": "param_state_2",
+              "type": "int"
+            },
+            {
+              "name": "state_3",
+              "id": "param_state_3",
+              "type": "int"
             },
             {
               "name": "rk",
+              "id": "param_rk",
               "type": "int"
             }
-          ]
+          ],
+          "hasStatements": false
         },
         "fields": {
-          "FUNC_NAME": "SM4_Round",
-          "RETURN_TYPE": "int_list"
+          "NAME": "SM4_Round"
         },
         "inputs": {
-          "STACK": {
+          "RETURN": {
             "block": {
               "type": "sm4_round_func",
               "id": "4b003bf24412a16beb6a",

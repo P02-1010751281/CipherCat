@@ -3,7 +3,7 @@
     "languageVersion": 0,
     "blocks": [
       {
-        "type": "crypto_func_def",
+        "type": "procedures_defreturn",
         "id": "852bf80a6b001179b4d0",
         "x": 100,
         "y": 100,
@@ -11,16 +11,17 @@
           "params": [
             {
               "name": "msg",
+              "id": "param_msg",
               "type": "bytes"
             }
-          ]
+          ],
+          "hasStatements": false
         },
         "fields": {
-          "FUNC_NAME": "SHA256_Hash",
-          "RETURN_TYPE": "bytes"
+          "NAME": "SHA256_Hash"
         },
         "inputs": {
-          "STACK": {
+          "RETURN": {
             "block": {
               "type": "hash_sha256_pad",
               "id": "2672ed383197192ee7e8",

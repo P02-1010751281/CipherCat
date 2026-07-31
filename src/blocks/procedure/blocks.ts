@@ -573,6 +573,26 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'sponge_squeeze'],
     paramVarName: 'state',
   },
+  // SM4 轮：F(state, x1, x2, x3, rk) — 仅 X0 连 state，其余留空
+  proc_sm4_round: {
+    returnChain: ['variables_get', 'sm4_round_func'],
+    paramVarName: 'state',
+  },
+  // HMAC-SHA256：HMAC(key, msg) — key 连参数，msg 留空
+  proc_hmac_sha256: {
+    returnChain: ['variables_get', 'hash_hmac'],
+    paramVarName: 'key',
+  },
+  // HMAC-SM3：HMAC(key, msg) — key 连参数，msg 留空
+  proc_sm3_hmac: {
+    returnChain: ['variables_get', 'hash_hmac'],
+    paramVarName: 'key',
+  },
+  // ML-KEM KeyGen：NTT(CBD(seed))
+  proc_mlkem_keygen: {
+    returnChain: ['variables_get', 'pq_sample_poly_cbd', 'pq_ntt'],
+    paramVarName: 'seed',
+  },
 };
 
 /** 构建 RETURN 表达式链：chain 从叶子到根（如 [variables_get, aes_sub_bytes, ...]），

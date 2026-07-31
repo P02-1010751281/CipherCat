@@ -31,7 +31,7 @@ export function generateDefreturnPy(block: Block): string {
     params.push(name + ': ' + pyType);
   });
   const body = pythonGenerator.statementToCode(block, 'STACK') ||
-    '    # TODO: 实现 ' + funcName + ' 算法\\n';
+    '# TODO: 实现 ' + funcName + ' 算法\\n';
   const returnValue =
     pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) || (params[0]?.split(':')[0] || 'None');
   const firstType = argNodes.length ? (TYPE_MAP_PY[argNodes[0].getAttribute('type') || 'bytes'] || 'bytes') : 'bytes';
@@ -65,8 +65,8 @@ export function generateTemplatePy(block: Block): string {
   const funcName = (block.getFieldValue('FUNC_NAME') as string) || 'my_cipher';
   const paramName = (block.getFieldValue('PARAM_NAME') as string) || 'arg';
   const paramType = (block.getFieldValue('PARAM_TYPE') as string) || 'bytes';
-  const body = pythonGenerator.statementToCode(block, 'STACK') ||
-    '    # TODO: 实现 ' + funcName + ' 算法\n';
+  const body = pythonGenerator.statementToCode(block, 'BODY') ||
+    '# TODO: 实现 ' + funcName + ' 算法\n';
   const returnValue =
     pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) || paramName;
 

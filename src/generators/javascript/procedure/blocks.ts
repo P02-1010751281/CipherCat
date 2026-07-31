@@ -67,7 +67,7 @@ export function generateTemplateJS(block: Block): string {
   const funcName = (block.getFieldValue('FUNC_NAME') as string) || 'myCipher';
   const paramName = (block.getFieldValue('PARAM_NAME') as string) || 'arg';
   const paramType = (block.getFieldValue('PARAM_TYPE') as string) || 'bytes';
-  const body = javascriptGenerator.statementToCode(block, 'STACK') ||
+  const body = javascriptGenerator.statementToCode(block, 'BODY') ||
     '  // TODO: 实现 ' + funcName + ' 算法\n';
   const returnValue =
     javascriptGenerator.valueToCode(block, 'RETURN', Order.NONE) || paramName;

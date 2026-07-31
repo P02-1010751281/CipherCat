@@ -46,19 +46,28 @@ const props = defineProps<{ visible: boolean; workspace: Blockly.WorkspaceSvg | 
 
 interface Template { type: string; label: string; param: string }
 interface SubCategory { key: string; label: string; templates: Template[] }
+const LABEL_KEYS: Record<string, string> = {
+  crypto_func_def: 'CRYPTO_FUNC_DEF_LABEL',
+  crypto_return: 'CRYPTO_RETURN_LABEL',
+  procedures_ifreturn: 'CRYPTO_IFRETURN_LABEL',
+  crypto_encrypt_func: 'CRYPTO_PROCEDURES_ENCRYPT_LABEL',
+  crypto_decrypt_func: 'CRYPTO_PROCEDURES_DECRYPT_LABEL',
+  crypto_hash_func: 'CRYPTO_PROCEDURES_HASH_LABEL',
+};
 function L(type: string): string {
-  const key = (type + '_LABEL').toUpperCase();
+  const key = LABEL_KEYS[type] || (type + '_LABEL').toUpperCase();
   return (msg as Record<string, string>)[key] || type;
 }
 
-const categories: SubCategory[] = [
+function buildCategories(): SubCategory[] {
+  return [
   { key: 'base', label: msg.CRYPTO_SUBCAT_BASE || 'Base', templates: [
-    { type: 'crypto_func_def',       label: '🔧 Function',              param: '1 param (default seed:Bytes)' },
-    { type: 'crypto_return',         label: '🔧 return',                param: 'value' },
-    { type: 'procedures_ifreturn',   label: '🔧 if return',            param: 'condition' },
-    { type: 'crypto_encrypt_func',   label: '🔐 Encrypt',              param: '1 param' },
-    { type: 'crypto_decrypt_func',   label: '🔓 Decrypt',              param: '1 param' },
-    { type: 'crypto_hash_func',      label: '#️⃣ Hash',                 param: '1 param' },
+    { type: 'crypto_func_def',       label: L('crypto_func_def'),       param: '1 param (default seed:Bytes)' },
+    { type: 'crypto_return',         label: L('crypto_return'),         param: 'value' },
+    { type: 'procedures_ifreturn',   label: L('procedures_ifreturn'),   param: 'condition' },
+    { type: 'crypto_encrypt_func',   label: L('crypto_encrypt_func'),   param: '1 param' },
+    { type: 'crypto_decrypt_func',   label: L('crypto_decrypt_func'),   param: '1 param' },
+    { type: 'crypto_hash_func',      label: L('crypto_hash_func'),      param: '1 param' },
   ]},
   { key: 'symmetric', label: msg.CRYPTO_SUBCAT_SYMMETRIC || 'Symmetric', templates: [
     { type: 'proc_aes_round',        label: L('proc_aes_round'),        param: '1 param' },
@@ -92,7 +101,10 @@ const categories: SubCategory[] = [
     { type: 'proc_pq_vec_add',       label: L('proc_pq_vec_add'),       param: '1 param: a:IntList' },
     { type: 'proc_pq_vec_sub',       label: L('proc_pq_vec_sub'),       param: '1 param: a:IntList' },
   ]},
-];
+  ];
+}
+
+const categories = ref<SubCategory[]>(buildCategories());
 
 // ── Workspace function tracking ──
 interface WsFunc { id: string; name: string; type: string }
@@ -101,7 +113,7 @@ let changeListener: (() => void) | null = null;
 
 function refreshWsFuncs() {
   const ws = props.workspace; if (!ws) { wsFuncs.value = []; return; }
-  const cTypes = categories.flatMap(c => c.templates.map(t => t.type));
+  const cTypes = categories.value.flatMap(c => c.templates.map(t => t.type));
   // Native procedures + crypto templates
   const all: {id:string; name:string; type:string}[] = [];
   ws.getAllBlocks(false).forEach((b) => {
@@ -133,7 +145,7 @@ watch(() => props.workspace, (ws) => {
 });
 
 watch(() => props.visible, (v) => {
-  if (v) { refreshWsFuncs(); setupChangeListener(); }
+  if (v) { categories.value = buildCategories(); refreshWsFuncs(); setupChangeListener(); }
   else { teardownChangeListener(); }
 });
 
@@ -180,7 +192,7 @@ function handleImport() {
 
 async function handleExportAll() {
   const ws = props.workspace; if (!ws) return;
-  const allTypes = categories.flatMap(c => c.templates.map(t => t.type));
+  const allTypes = categories.value.flatMap(c => c.templates.map(t => t.type));
   const states: unknown[] = [];
   for (const type of allTypes) {
     const block = ws.newBlock(type);

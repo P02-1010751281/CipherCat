@@ -619,11 +619,12 @@ function _makeTemplateBlock(
       this.setHelpUrl('');
     },
     onchange: function () {
-      // 首次渲染后注入预填内容（仅一次）
-      const rec = this as unknown as { __prefilled?: boolean };
-      if (!rec.__prefilled) {
-        rec.__prefilled = true;
-          injectPrefill(this as unknown as AnyBlock, TEMPLATE_PREFILL[presetName], paramName);
+      // 拖出到主 workspace 后注入预填内容（flyout 预览不展开，保持紧凑）
+      const self = this as unknown as { __prefilled?: boolean; isInFlyout?: boolean };
+      if (self.isInFlyout) return;
+      if (!self.__prefilled) {
+        self.__prefilled = true;
+        injectPrefill(this as unknown as AnyBlock, TEMPLATE_PREFILL[presetName], paramName);
       }
     },
   };

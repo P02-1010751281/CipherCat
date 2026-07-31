@@ -568,6 +568,11 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'pq_poly_add'],
     paramVarName: 'a',
   },
+  // 海绵海绵挤压：squeeze(state) — outlen 留空
+  proc_sponge_duplex: {
+    returnChain: ['variables_get', 'sponge_squeeze'],
+    paramVarName: 'state',
+  },
 };
 
 /** 构建 RETURN 表达式链：chain 从叶子到根（如 [variables_get, aes_sub_bytes, ...]），

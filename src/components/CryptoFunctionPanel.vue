@@ -18,7 +18,6 @@
             <div v-for="tpl in cat.templates" :key="tpl.type" class="cfp-item">
               <span class="cfp-name" :title="tpl.type">{{ tpl.label }}</span>
               <span class="cfp-param">{{ tpl.param }}</span>
-              <button class="cfp-item-btn cfp-item-insert" @click="insertTemplate(tpl.type)" title="Insert">＋</button>
               <button
                 class="cfp-item-btn"
                 :class="isInToolbox(tpl.type) ? 'cfp-item-in-toolbox' : ''"
@@ -263,7 +262,6 @@ function download(content: string, filename: string) {
 .cfp-param { flex: 1; font-size: 10px; color: var(--color-text-secondary); font-family: ui-monospace, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; }
 .cfp-item-btn { background: none; border: 1px solid transparent; border-radius: 4px; font-size: 12px; cursor: pointer; padding: 2px 6px; color: var(--color-text-secondary); flex-shrink: 0; }
 .cfp-item-btn:hover { border-color: var(--color-border); background: var(--color-bg-hover); color: var(--color-text); }
-.cfp-item-insert:hover { color: var(--color-primary); }
 .cfp-item-in-toolbox { color: var(--color-success); border-color: var(--color-success); }
 .cfp-item-ws { border-left: 2px solid var(--color-primary); }
 

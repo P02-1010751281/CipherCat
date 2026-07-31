@@ -32,6 +32,25 @@ export function registerPolyAddModQ(): string {
 }
 
 
+
+
+export function registerMatVecMulQ(): string {
+  return javascriptGenerator.provideFunction_('matVecMulQ', [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(A, v, q) {',
+    '  q = q || 3329;',
+    '  let k = v.length;',
+    '  let res = new Array(k).fill(0);',
+    '  for (let i = 0; i < k; i++) {',
+    '    for (let j = 0; j < k; j++) {',
+    '      res[i] = (res[i] + A[i * k + j] * v[j]) % q;',
+    '    }',
+    '  }',
+    '  return res;',
+    '}',
+  ]);
+}
 export function registerPolySubModQ(): string {
   return javascriptGenerator.provideFunction_('polySubModQ', [
     'function ' +

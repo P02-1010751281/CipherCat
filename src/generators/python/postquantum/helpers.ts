@@ -17,6 +17,15 @@ export function registerPolyAddMod(): string {
 }
 
 
+
+
+export function registerMatVecMul(): string {
+  return pythonGenerator.provideFunction_('mat_vec_mul', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(A, v, q=3329):',
+    '    k = len(v)',
+    '    return [sum(A[i * k + j] * v[j] for j in range(k)) % q for i in range(k)]',
+  ]);
+}
 export function registerPolySubMod(): string {
   return pythonGenerator.provideFunction_('poly_sub_mod', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, b, q=3329):',

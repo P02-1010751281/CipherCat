@@ -575,6 +575,11 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'pq_poly_sub'],
     paramVarName: 'a',
   },
+  // 矩阵×向量：MatVecMul(mat, v) — v 输入留空
+  proc_pq_mat_mul: {
+    returnChain: ['variables_get', 'pq_mat_vec_mul'],
+    paramVarName: 'mat',
+  },
   // 海绵海绵挤压：squeeze(state) — outlen 留空
   proc_sponge_duplex: {
     returnChain: ['variables_get', 'sponge_squeeze'],

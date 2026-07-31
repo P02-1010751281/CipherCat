@@ -231,7 +231,7 @@ function makeDefBlock(hasReturn: boolean): AnyBlock {
     loadExtraState: function (this: AnyBlock, state: Record<string, unknown>) {
       // flyout 传 {name, params}：name 应用到 NAME 字段（函数选择）
       if (typeof state.name === 'string' && state.name) {
-        try { this.setFieldValue(state.name, 'NAME'); } catch {}
+        try { this.setFieldValue(state.name, 'NAME'); } catch { /* noop */ }
       }
       const raw = (state.params as Array<{ name: string; id: string; type?: string } | string>) || [];
       this.arguments_ = [];
@@ -341,7 +341,7 @@ function syncCallParams(block: AnyBlock, funcName: string) {
   block.arguments_ = args;
   block.paramTypes_ = types;
   block.argumentVarModels_ = [];
-  args.forEach(function (name, i) {
+  args.forEach(function (name) {
     const v = block.workspace.getVariableMap().getVariable(name, '') || block.workspace.createVariable(name, '');
     block.argumentVarModels_.push(v);
   });
@@ -462,7 +462,7 @@ function makeCallBlock(hasReturn: boolean): AnyBlock {
     loadExtraState: function (this: AnyBlock, state: Record<string, unknown>) {
       // flyout 传 {name, params}：name 应用到 NAME 字段（函数选择）
       if (typeof state.name === 'string' && state.name) {
-        try { this.setFieldValue(state.name, 'NAME'); } catch {}
+        try { this.setFieldValue(state.name, 'NAME'); } catch { /* noop */ }
       }
       const raw = (state.params as Array<{ name: string; id: string; type?: string } | string>) || [];
       this.arguments_ = [];

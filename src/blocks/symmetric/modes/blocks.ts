@@ -4,7 +4,7 @@
  * ECB / CBC / CTR 分组模式的块加密原语。
  * 基于 AES-128 块加密，展示分组密码模式的教学核心。
  */
-import { TYPE_BYTES, TYPE_INT_LIST } from '@/constants/block-types';
+import { TYPE_BYTES } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const MODE_BLOCK_TYPES = [

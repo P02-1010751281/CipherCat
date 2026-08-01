@@ -4,7 +4,6 @@
 
 🐱 **Post-Quantum Cryptography Visual Programming Platform** — built on Blockly 12.x and Vue 3 (Composition API + TypeScript).
 
-Covers the full range of cryptographic primitives — from bit operations, S-Boxes and hash functions to post-quantum cryptography (ML-KEM / ML-DSA): 98 custom blocks + 27 function templates, 13 categories, complete type-constraint system. Every block is annotated with its international / national standard basis — see [BLOCK-STANDARDS.md](./BLOCK-STANDARDS.en.md).
 
 ---
 
@@ -14,38 +13,38 @@ Covers the full range of cryptographic primitives — from bit operations, S-Box
 
 | Doc | Audience | Description |
 |------|------|------|
-| [DEMO.md](./DEMO.en.md) | Users/Devs | Demo guide index (per algorithm: SM4/AES/hash/SM2/post-quantum, with official-vector verification) |
-| [ARCHITECTURE.md](./ARCHITECTURE.en.md) | Devs | System architecture, data flow, module organization, type system |
-| [DEVELOPMENT.md](./DEVELOPMENT.en.md) | Devs | Environment setup, adding blocks, i18n, code style |
+| [DEMO.md](./guides/DEMO.en.md) | Users/Devs | Demo guide index (per algorithm: SM4/AES/hash/SM2/post-quantum, with official-vector verification) |
+| [ARCHITECTURE.md](./guides/ARCHITECTURE.en.md) | Devs | System architecture, data flow, module organization, type system |
+| [DEVELOPMENT.md](./guides/DEVELOPMENT.en.md) | Devs | Environment setup, adding blocks, i18n, code style |
 
 ### 📊 Planning & Audits
 
 | Doc | Audience | Description |
 |------|------|------|
-| [IMPLEMENTATION-PLAN.md](./IMPLEMENTATION-PLAN.en.md) | Devs/PM | Full implementation plan: 7 milestones 77→140 blocks |
-| [AUDIT-REPORT.md](./AUDIT-REPORT.en.md) | Devs | Cryptographic primitive completeness audit (incl. Chinese national standards) |
-| [TYPE-SYSTEM.md](./TYPE-SYSTEM.en.md) | Devs | Data type spec: definitions, value ranges, conversion rules, compatibility matrix |
+| [IMPLEMENTATION-PLAN.md](./guides/IMPLEMENTATION-PLAN.en.md) | Devs/PM | Full implementation plan: 7 milestones 77→140 blocks |
+| [AUDIT-REPORT.md](./guides/AUDIT-REPORT.en.md) | Devs | Cryptographic primitive completeness audit (incl. Chinese national standards) |
+| [TYPE-SYSTEM.md](./guides/TYPE-SYSTEM.en.md) | Devs | Data type spec: definitions, value ranges, conversion rules, compatibility matrix |
 
 ### 🔬 Algorithm Specs
 
 | Doc | Description |
 |------|------|
 | [blocks/INDEX.md](./blocks/INDEX.md) | Block standard-basis reference (split by category) |
-| [fips197-AES/](./fips197-AES/) | FIPS 197 AES reference |
-| [fips180-4-SHA2/](./fips180-4-SHA2/) | FIPS 180-4 SHA-2 reference |
-| [fips202-SHA3/](./fips202-SHA3/) | FIPS 202 SHA-3 / SHAKE / KECCAK-p |
-| [fips203-ML-KEM/](./fips203-ML-KEM/) | FIPS 203 ML-KEM (Kyber) |
-| [fips204-ML-DSA/](./fips204-ML-DSA/) | FIPS 204 ML-DSA (Dilithium) |
-| [gbt32907-SM4/](./gbt32907-SM4/) | GB/T 32907 SM4 block cipher |
-| [gbt32905-SM3/](./gbt32905-SM3/) | GB/T 32905 SM3 hash |
-| [sp800-38a-modes/](./sp800-38a-modes/) | SP 800-38A block modes (ECB/CBC/CTR) |
-| [sp800-38d-gcm/](./sp800-38d-gcm/) | SP 800-38D GCM authenticated encryption |
-| [fips198-1-hmac/](./fips198-1-hmac/) | FIPS 198-1 HMAC |
-| [fips186-5-ecdsa/](./fips186-5-ecdsa/) | FIPS 186-5 ECDSA |
-| [sp800-132-pbkdf2/](./sp800-132-pbkdf2/) | SP 800-132 PBKDF2 |
-| [rfc5869-hkdf/](./rfc5869-hkdf/) | RFC 5869 HKDF |
-| [rfc4648-base64/](./rfc4648-base64/) | RFC 4648 Base64 |
-| [rfc2315-pkcs7/](./rfc2315-pkcs7/) | RFC 2315 PKCS#7 padding |
+| [fips197-AES/](./standards/fips197-AES/) | FIPS 197 AES reference |
+| [fips180-4-SHA2/](./standards/fips180-4-SHA2/) | FIPS 180-4 SHA-2 reference |
+| [fips202-SHA3/](./standards/fips202-SHA3/) | FIPS 202 SHA-3 / SHAKE / KECCAK-p |
+| [fips203-ML-KEM/](./standards/fips203-ML-KEM/) | FIPS 203 ML-KEM (Kyber) |
+| [fips204-ML-DSA/](./standards/fips204-ML-DSA/) | FIPS 204 ML-DSA (Dilithium) |
+| [gbt32907-SM4/](./standards/gbt32907-SM4/) | GB/T 32907 SM4 block cipher |
+| [gbt32905-SM3/](./standards/gbt32905-SM3/) | GB/T 32905 SM3 hash |
+| [sp800-38a-modes/](./standards/sp800-38a-modes/) | SP 800-38A block modes (ECB/CBC/CTR) |
+| [sp800-38d-gcm/](./standards/sp800-38d-gcm/) | SP 800-38D GCM authenticated encryption |
+| [fips198-1-hmac/](./standards/fips198-1-hmac/) | FIPS 198-1 HMAC |
+| [fips186-5-ecdsa/](./standards/fips186-5-ecdsa/) | FIPS 186-5 ECDSA |
+| [sp800-132-pbkdf2/](./standards/sp800-132-pbkdf2/) | SP 800-132 PBKDF2 |
+| [rfc5869-hkdf/](./standards/rfc5869-hkdf/) | RFC 5869 HKDF |
+| [rfc4648-base64/](./standards/rfc4648-base64/) | RFC 4648 Base64 |
+| [rfc2315-pkcs7/](./standards/rfc2315-pkcs7/) | RFC 2315 PKCS#7 padding |
 
 ### 📝 Root Specs
 

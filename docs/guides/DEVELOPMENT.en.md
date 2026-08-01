@@ -245,7 +245,7 @@ npm run typecheck    # vue-tsc 类型检查 (如有配置)
 - **Generator style**: use `generator.forBlock['block_name']` + `generator.provideFunction_()` to inject helper functions
 - **Import order**: standard library → third-party libraries → project-internal modules (alias `@/`)
 
-For the complete engineering behavior guidelines, see [RULES.md](../RULES.md), which covers file conventions, type conventions, naming conventions, and more.
+For the complete engineering behavior guidelines, see [RULES.md](../../RULES.md), which covers file conventions, type conventions, naming conventions, and more.
 
 ---
 
@@ -286,6 +286,6 @@ If an old block type is renamed or deprecated, add a mapping entry to `BLOCK_TYP
 - [Blockly Developer Documentation](https://developers.google.com/blockly/guides/overview)
 - [Vue 3 Documentation](https://vuejs.org/guide/introduction)
 - [Tauri Documentation](https://v2.tauri.app/start/)
-- [FIPS 202 (SHA-3)](./fips202-SHA3/)
-- [FIPS 203 (ML-KEM)](./fips203-ML-KEM/)
-- [FIPS 204 (ML-DSA)](./fips204-ML-DSA/)
+- [FIPS 202 (SHA-3)](../standards/fips202-SHA3/)
+- [FIPS 203 (ML-KEM)](../standards/fips203-ML-KEM/)
+- [FIPS 204 (ML-DSA)](../standards/fips204-ML-DSA/)

@@ -4,7 +4,7 @@
 
 Pre-built Blockly workspace examples, all using **atomic blocks** (no convenience wrappers), showcasing low-level crypto primitives.
 
-> Step-by-step tutorials (per algorithm): [docs/demos/](../docs/demos/), index [docs/DEMO.md](../docs/DEMO.en.md). This file is the file index + verification commands.
+> Step-by-step tutorials (per algorithm): [docs/demos/](../docs/demos/), index [docs/DEMO.md](../docs/guides/DEMO.en.md). This file is the file index + verification commands.
 
 ## Atomic Block Demos
 

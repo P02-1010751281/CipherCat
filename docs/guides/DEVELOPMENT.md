@@ -243,7 +243,7 @@ npm run typecheck    # vue-tsc 类型检查 (如有配置)
 - **生成器风格**: 使用 `generator.forBlock['block_name']` + `generator.provideFunction_()` 注入辅助函数
 - **导入顺序**: 标准库 → 第三方库 → 项目内部模块 (alias `@/`)
 
-完整的工程行为准则请参阅 [RULES.md](../RULES.md)，涵盖文件规范、类型规范、命名约定等。
+完整的工程行为准则请参阅 [RULES.md](../../RULES.md)，涵盖文件规范、类型规范、命名约定等。
 
 ---
 
@@ -284,6 +284,6 @@ npm run typecheck    # vue-tsc 类型检查 (如有配置)
 - [Blockly 开发者文档](https://developers.google.com/blockly/guides/overview)
 - [Vue 3 文档](https://vuejs.org/guide/introduction)
 - [Tauri 文档](https://v2.tauri.app/start/)
-- [FIPS 202 (SHA-3)](./fips202-SHA3/)
-- [FIPS 203 (ML-KEM)](./fips203-ML-KEM/)
-- [FIPS 204 (ML-DSA)](./fips204-ML-DSA/)
+- [FIPS 202 (SHA-3)](../standards/fips202-SHA3/)
+- [FIPS 203 (ML-KEM)](../standards/fips203-ML-KEM/)
+- [FIPS 204 (ML-DSA)](../standards/fips204-ML-DSA/)

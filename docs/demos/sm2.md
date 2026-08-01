@@ -2,7 +2,7 @@
 
 > [English](./sm2.en.md) · [中文](./sm2.md)
 
-> [← 返回索引](../DEMO.md) · [demo 文件清单](../../demos/README.md)
+> [← 返回索引](../guides/DEMO.md) · [demo 文件清单](../../demos/README.md)
 >
 > 场景 8（点乘），对应 `docs/DEMO.md` 索引。
 

@@ -2,7 +2,7 @@
 
 > [中文](./post-quantum.md)
 
-> [← Back to index](../DEMO.en.md) · [demo file index](../../demos/README.en.md)
+> [← Back to index](../guides/DEMO.en.md) · [demo file index](../../demos/README.en.md)
 >
 > Scenario 4 (ML-KEM primitives) + Scenario 9 (ML-KEM.Encaps), per the `docs/DEMO.md` index.
 
@@ -64,7 +64,7 @@ Build the full ML-KEM-512 Encaps chain (k=2) with post-quantum atomic blocks; ve
 
 ---
 
-**Related guide**: ML-KEM-768 (k=3) composite/basic-block builds: [fips203-ML-KEM/guides/](../fips203-ML-KEM/guides/ML-KEM-768-Encaps-搭建指南.md).
+**Related guide**: ML-KEM-768 (k=3) composite/basic-block builds: [fips203-ML-KEM/guides/](../standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-搭建指南.md).
 
 ---
 

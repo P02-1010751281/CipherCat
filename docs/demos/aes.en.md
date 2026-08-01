@@ -2,7 +2,7 @@
 
 > [中文](./aes.md)
 
-> [← Back to index](../DEMO.en.md) · [demo file index](../../demos/README.en.md)
+> [← Back to index](../guides/DEMO.en.md) · [demo file index](../../demos/README.en.md)
 >
 > Scenario 2 (single-round encryption) + Scenario 5 (function wrapping), per the `docs/DEMO.md` index.
 

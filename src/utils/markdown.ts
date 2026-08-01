@@ -40,7 +40,7 @@ export function renderMarkdown(content: string): string {
 }
 
 export interface DocFile {
-  path: string;       // full path like /docs/fips202-SHA3/01-Theta.md
+  path: string;       // full path like /docs/standards/fips202-SHA3/01-Theta.md
   category: string;   // fips202-SHA3
   filename: string;   // 01-Theta.md
   title: string;      // Theta (display title extracted from content or filename)

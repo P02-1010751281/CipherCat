@@ -143,15 +143,17 @@ function buildCategories(): DocCategory[] {
   const catMap = new Map<string, DocFile[]>();
 
   for (const path of Object.keys(docLoaders)) {
-    // path looks like: /docs/fips202-SHA3/01-Theta.md
+    // path looks like: /docs/standards/fips202-SHA3/01-Theta.md
     const parts = path.replace(/^\/docs\//, '').split('/');
     if (parts.length < 2) continue;
 
-    const category = parts[0];
+    // 标准规范目录现位于 standards/ 下：category 取第二层（fips202-SHA3 等）
+    const category = parts[0] === 'standards' ? parts[1] : parts[0];
     const filename = parts[parts.length - 1];
 
-    // Skip guides subdirectory for now
-    if (parts.length > 2) continue;
+    // 只收 standards/<cat>/<file>（3 层）——guides/blocks/demos 暂不在此视图展示
+    if (parts[0] === 'standards' && parts.length !== 3) continue;
+    if (parts[0] !== 'standards') continue;
 
     const file: DocFile = {
       path,

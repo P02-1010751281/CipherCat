@@ -2,7 +2,7 @@
 
 > [中文](./hash.md)
 
-> [← Back to index](../DEMO.en.md) · [demo file index](../../demos/README.en.md)
+> [← Back to index](../guides/DEMO.en.md) · [demo file index](../../demos/README.en.md)
 >
 > Scenario 3 (SHA-256) + Scenario 7 (SM3), per the `docs/DEMO.md` index.
 

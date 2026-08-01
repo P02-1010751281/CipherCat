@@ -140,21 +140,124 @@ SHA-256("abc") = `ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61
 
 ---
 
-## 场景 6-9：官方向量验证的 Procedure Demo（2026-08-01 新增）
+## 场景 6：SM4 S-box 查表（3 分钟）
 
-用 `procedures_defreturn` 封装**原子块链**（不用 `proc_*` 模板块），生成代码经 `scripts/verify-demo.ts --exec` 实测通过官方测试向量（Python + JavaScript 双语言）。文件在 `demos/procedures/`，期望值在 `demos/tests.json`。
+### 目标
+用 `procedures_defreturn` 封装 `sm4_sbox` 原子块，验证 GM/T 0002-2012 S-box 表。
 
-| 场景 | 文件 | 封装内容 | 官方向量 |
-|------|------|----------|----------|
-| 6. SM4 S-box | `SM4-Sbox.json` | `sm4_sbox(x)` 查表 | GM/T 0002-2012（S(0x01)=0x90） |
-| 7. SM3 哈希 | `SM3-Hash.json` | `hash_sm3_pad` → `hash_sm3_compress`（IV 常量） | GB/T 32905-2016（SM3("abc")） |
-| 8. SM2 点乘 | `SM2-PointMul.json` | `ecc_load_curve_params`/`load_point`/`multiply` | GB/T 32918.5-2017（k·G） |
-| 9. ML-KEM.Encaps | `ML-KEM-Encaps.json` | SampleNTT/CBD/NTT/INTT/ntt_mul/compress/encode 全链 | FIPS 203（ML-KEM-512 encaps） |
+### 步骤
 
-### 验证方法
+1. **加载 demo**：导入 `demos/procedures/SM4-Sbox.json`
+2. **观察结构**：
+   - `procedures_defreturn` 块：函数名 `SM4_Sbox`，参数 `x: int`
+   - 函数体 RETURN：`sm4_sbox(x)` 查表
+3. **生成代码**：点击「▶」选择 Python 或 JavaScript
+4. **验证**：
+   - Python：`SM4_Sbox(1)` → `144`（0x90）
+   - 官方向量：S(0x01)=0x90（GM/T 0002-2012 附录）
+
+### 涉及块
+| 块 | 功能 |
+|----|------|
+| `sm4_sbox` | SM4 8×8 S-box 查找（GM/T 0002-2012） |
+| `procedures_defreturn` | 定义带类型参数的函数 |
+
+---
+
+## 场景 7：SM3 哈希（10 分钟）
+
+### 目标
+用原子块搭 SM3 填充 + 压缩，封装为 `SM3_Hash(msg)`，验证 GB/T 32905-2016 官方向量。
+
+### 步骤
+
+1. **加载 demo**：导入 `demos/procedures/SM3-Hash.json`
+2. **观察结构**：
+   - `procedures_defreturn` 块：函数名 `SM3_Hash`，参数 `msg: message`
+   - 函数体 RETURN：`hash_sm3_compress(V=IV 常量, W=hash_sm3_pad(msg))`
+   - IV 常量 = 8 个 32-bit 字（`0x7380166f, 0x4914b2b9, ...`）用 `data_value` 数组字面量
+3. **生成代码**：点击「▶」选择 Python 或 JavaScript
+4. **验证**：
+   - Python：`SM3_Hash("abc")` → `66c7f0f4 62eeedd9 ... b0fb0e4e`
+   - 官方向量：SM3("abc") = `66c7f0f462eeedd9d1f2d46bdc10e4e24167c4875cf2f7a2297da02b8f4ba8e0`（GB/T 32905-2016 A.1）
+
+> 注意：demo 演示单块消息（≤55 字节）路径；多块消息需 `ctrl_iterate` 循环，留作扩展。
+
+### 涉及块
+| 块 | 功能 |
+|----|------|
+| `hash_sm3_pad` | SM3 消息填充（1‖0*‖64-bit 长度） |
+| `hash_sm3_compress` | CF 压缩函数（64 轮，W/W′ 内部展开） |
+| `data_value` | 原样透传表达式（IV 数组字面量） |
+
+---
+
+## 场景 8：SM2 点乘（10 分钟）
+
+### 目标
+用 ECC 语句块搭 sm2p256v1 曲线上的标量乘法，验证 GB/T 32918.5-2017 官方向量 k·G。
+
+### 步骤
+
+1. **加载 demo**：导入 `demos/procedures/SM2-PointMul.json`
+2. **观察结构**（`procedures_defreturn` 含 STACK 语句 + RETURN 值）：
+   - STACK：`ecc_load_curve_params`（sm2p256v1 a/b/p）→ `ecc_load_point`（G 坐标）→ `ecc_multiply`（k·G → 变量 R）
+   - RETURN：变量 R（点 `{x, y}`）
+3. **生成代码**：点击「▶」选择 Python 或 JavaScript
+4. **验证**：
+   - 输出 x = `04ebfc71 8e8d1798 ...`，y = `e858f9d8 1e5430a5 ...`
+   - 官方向量：k·G 的 x 坐标与 GB/T 32918.5-2017 示例一致（k = `59276E27...`）
+
+> JS 生成器已改用 BigInt——256-bit 域算术必须任意精度，普通 number 会溢出。
+
+### 涉及块
+| 块 | 功能 |
+|----|------|
+| `ecc_load_curve_params` | 设定曲线 a/b/p |
+| `ecc_load_point` | 定义曲线点（G） |
+| `ecc_multiply` | 倍加算法标量乘法 k·G |
+
+---
+
+## 场景 9：ML-KEM.Encaps（进阶，20 分钟）
+
+### 目标
+用后量子原子块搭完整 ML-KEM-512 Encaps 全链（k=2），验证 FIPS 203 官方向量。
+
+### 步骤
+
+1. **加载 demo**：导入 `demos/procedures/ML-KEM-Encaps.json`
+2. **观察结构**（`procedures_defreturn` 参数 `ek: bytes` + `m: bytes`，STACK 存中间量，RETURN = c‖K）：
+   - **H(ek)**：SHA3-256（keccak_state_init → sponge_pad(1088, 0x06) → absorb → squeeze 32）
+   - **G(m‖H)**：SHA3-512（rate 576）→ 前 32B = K、后 32B = r
+   - **t̂/rho 解码**：`pq_byte_decode`(d=12) 拆 ek → t0/t1 + rho
+   - **A 矩阵**：4× `pq_sample_ntt`（rho‖i‖j，`pq_seed_with_nonce` 链式）
+   - **噪声**：s/e1/e2 = `pq_sample_poly_cbd`(PRF(r, N))；ŝ = `pq_ntt`
+   - **u/v**：`pq_ntt_mul` 点乘 + `pq_poly_add` 累加 → `pq_intt`；μ = Decompress(ByteDecode1(m))
+   - **c1/c2**：`pq_compress`(d=10/4) → `pq_byte_encode` → concat
+3. **生成代码**：点击「▶」选择 Python 或 JavaScript
+4. **验证**：`node dist-verify/verify-demo.js demos/procedures/ML-KEM-Encaps.json --exec` → c（768B）‖K（32B）与 FIPS 203 参考一致
+
+### 涉及块
+| 块 | 功能 |
+|----|------|
+| `pq_sample_ntt` / `pq_sample_poly_cbd` | SampleNTT / SamplePolyCBD |
+| `pq_ntt` / `pq_intt` / `pq_ntt_mul` | NTT / 逆 NTT / 点乘 |
+| `pq_poly_add` / `pq_compress` / `pq_byte_encode` | 多项式加 / 压缩 / 编码 |
+| `pq_seed_with_nonce` / `pq_prf` / `pq_xof` | 非扩展种子 / PRF / SHAKE |
+| sponge 系列 | SHA3-256/512 哈希 |
+
+---
+
+## 官方向量验证（场景 6-9 通用）
+
+全部 4 个 demo 的生成代码（Python + JavaScript）经 headless harness 实测通过官方测试向量：
 
 ```bash
 npx vite build --config vite.verify.config.ts   # 构建 headless harness
+node dist-verify/verify-demo.js demos/procedures/SM4-Sbox.json --exec
+node dist-verify/verify-demo.js demos/procedures/SM3-Hash.json --exec
+node dist-verify/verify-demo.js demos/procedures/SM2-PointMul.json --exec
 node dist-verify/verify-demo.js demos/procedures/ML-KEM-Encaps.json --exec
 ```
 

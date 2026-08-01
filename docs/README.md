@@ -68,10 +68,12 @@ DEVELOPMENT.md         ← 开发操作指南（引用 RULES.md）
     ▼
 ARCHITECTURE.md        ← 系统架构说明
     │
+    ├── DEMO.md                  ← 演示指南索引（按算法，见 demos/）
     ├── IMPLEMENTATION-PLAN.md   ← 实施路线图（引用 ARCHITECTURE）
-    ├── AUDIT-REPORT.md          ← 原语覆盖审计
-    └── SYNC-PLAN.md             ← 跨项目同步
+    └── AUDIT-REPORT.md          ← 原语覆盖审计
 ```
+
+跨项目同步计划沉淀于 `.codestable/compound/sync-plan.md`（CodeStable 产物，脚本 `scripts/sync-to-metacrypt.sh`）。
 
 ---
 

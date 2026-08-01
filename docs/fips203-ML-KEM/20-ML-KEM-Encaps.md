@@ -38,14 +38,14 @@ Alg 14 内部调用 Alg 7 (SampleNTT)、Alg 8 (SamplePolyCBD)、Alg 9 (NTT)、Al
 
 ### CipherCat
 
-已实现。完整搭建路径见 `test/ML-KEM-768-Encaps-build-guide.md`。
+已实现。完整搭建路径见 `guides/ML-KEM-768-Encaps-搭建指南.md`。
 
 **两种搭建方式**:
 
 | 方式 | 块数 | 耗时 | 适用 | 详见 |
 |------|:---:|------|------|------|
-| 高级复合块 | ~45 | ~10 min | 快速原型 | `ML-KEM-768-Encaps-build-guide.md` |
-| 纯基础原语块 | ~120 | ~45 min | 教学验证 | `ML-KEM-768-Encaps-纯基础块.md` |
+| 高级复合块 | ~45 | ~10 min | 快速原型 | `guides/ML-KEM-768-Encaps-搭建指南.md` |
+| 纯基础原语块 | ~120 | ~45 min | 教学验证 | `guides/ML-KEM-768-Encaps-纯基础块.md` |
 
 **涉及块清单** (高级方式):
 - 哈希: Keccak Init, SHA-3 Pad, Absorb, Squeeze

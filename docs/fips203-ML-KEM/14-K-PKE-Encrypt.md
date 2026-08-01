@@ -59,7 +59,7 @@ ML-KEM-768: ŷ nonces 0,1,2; e₁ nonces 3,4,5; e₂ nonce 6。
 
 已实现，提供两种搭建方式。
 
-**方式一：高级复合块** (~45 块, 见 `test/ML-KEM-768-Encaps-build-guide.md`):
+**方式一：高级复合块** (~45 块, 见 `guides/ML-KEM-768-Encaps-搭建指南.md`):
 
 | 步骤 | 复合块 | Blockly ID |
 |:----:|--------|-----------|
@@ -70,7 +70,7 @@ ML-KEM-768: ŷ nonces 0,1,2; e₁ nonces 3,4,5; e₂ nonce 6。
 | 21 | TrINTTAddE2Mu(k=3, η=2) | `pq_tr_intt_add_e2_mu` |
 | 22–23 | VecCompressEncode(d=10/4) | `pq_vec_compress_encode` |
 
-**方式二：纯基础原语块** (~120 块, 见 `test/ML-KEM-768-Encaps-纯基础块.md`):
+**方式二：纯基础原语块** (~120 块, 见 `guides/ML-KEM-768-Encaps-纯基础块.md`):
 
 每个复合块展开为基础操作：SampleNTT ×9, SamplePolyCBD ×7, NTT ×6, INTT ×4, NTTMul ×12, PolyAdd ×15, SeedWithNonce ×26。
 

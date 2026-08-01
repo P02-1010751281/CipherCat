@@ -62,4 +62,8 @@
 
 ---
 
+**相关指南**：ML-KEM-768（k=3）的复合块/纯基础块搭建见 [fips203-ML-KEM/guides/](../fips203-ML-KEM/guides/ML-KEM-768-Encaps-搭建指南.md)。
+
+---
+
 **官方向量验证**：`node dist-verify/verify-demo.js demos/procedures/ML-KEM-Encaps.json --exec` → `=== ALL VECTORS PASS ===`

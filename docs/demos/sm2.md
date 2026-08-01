@@ -1,6 +1,8 @@
 # SM2 演示
 
-场景 8（点乘），对应 `docs/DEMO.md` 索引。
+> [← 返回索引](../DEMO.md) · [demo 文件清单](../../demos/README.md)
+>
+> 场景 8（点乘），对应 `docs/DEMO.md` 索引。
 
 ---
 

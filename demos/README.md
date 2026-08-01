@@ -2,6 +2,8 @@
 
 预构建的 Blockly 工作区示例，全部使用**原子块**（无便利封装），展示密码学底层原语。
 
+> 搭建步骤教程（按算法）：[docs/demos/](../docs/demos/)，索引 [docs/DEMO.md](../docs/DEMO.md)。本文件为文件清单 + 验证命令。
+
 ## 原子块 Demo
 
 | Demo | 文件 | 原子块 |

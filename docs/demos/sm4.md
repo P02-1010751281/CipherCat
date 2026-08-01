@@ -1,6 +1,8 @@
 # SM4 演示
 
-场景 1（轮函数）+ 场景 6（S-box 查表），对应 `docs/DEMO.md` 索引。
+> [← 返回索引](../DEMO.md) · [demo 文件清单](../../demos/README.md)
+>
+> 场景 1（轮函数）+ 场景 6（S-box 查表），对应 `docs/DEMO.md` 索引。
 
 ---
 

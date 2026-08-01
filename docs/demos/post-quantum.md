@@ -1,6 +1,8 @@
 # 后量子演示
 
-场景 4（ML-KEM 底层）+ 场景 9（ML-KEM.Encaps），对应 `docs/DEMO.md` 索引。
+> [← 返回索引](../DEMO.md) · [demo 文件清单](../../demos/README.md)
+>
+> 场景 4（ML-KEM 底层）+ 场景 9（ML-KEM.Encaps），对应 `docs/DEMO.md` 索引。
 
 ---
 

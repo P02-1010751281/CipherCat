@@ -55,7 +55,7 @@ Blockly.Blocks['pq_compress'] = {
       .appendField(new Blockly.FieldDropdown([['3329', '3329']]), 'MODULUS');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
-    this.setOutput(true, TYPE_BYTES);
+    this.setOutput(true, TYPE_INT_LIST);
     this.setColour(230);
     this.setTooltip(
       'Compress_q(x, d): Compress integer(s) modulo q to d bits. Compress(x,d) = round((2^d/q)·x) mod 2^d (FIPS 203 §4.2.1)',
@@ -69,7 +69,7 @@ Blockly.Blocks['pq_compress'] = {
 // 实现: (y · q + 2^{d-1}) / 2^d  (整数运算等效)
 Blockly.Blocks['pq_decompress'] = {
   init: function () {
-    this.appendValueInput('INPUT').setCheck(TYPE_BYTES).appendField('Decompress(');
+    this.appendValueInput('INPUT').setCheck(TYPE_INT_LIST).appendField('Decompress(');
     this.appendDummyInput()
       .appendField(', d=')
       .appendField(

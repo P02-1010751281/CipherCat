@@ -31,14 +31,16 @@ export function generateDefreturnPy(block: Block): string {
     const pyType = TYPE_MAP_PY[type] || type;
     params.push(name + ': ' + pyType);
   });
-  const body = (block.getInput('STACK')
-    ? pythonGenerator.statementToCode(block, 'STACK')
+  // statementToCode 已按 generator.INDENT（Blockly 12 = 2 空格）缩进；
+  // 函数体需 4 空格，故再补一层 INDENT（不能硬编码 '    '，否则 2+4=6 缩进错乱）
+  const body = (block.getInput('STACK') && block.getInputTargetBlock('STACK')
+    ? pythonGenerator.prefixLines(pythonGenerator.statementToCode(block, 'STACK'), pythonGenerator.INDENT)
     : '') ||
-    '# TODO: implement ' + funcName + ' algorithm\\n';
+    '    # TODO: implement ' + funcName + ' algorithm\n';
   const returnValue =
     pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) || (params[0]?.split(':')[0] || 'None');
   const firstType = argNodes.length ? (TYPE_MAP_PY[argNodes[0].getAttribute('type') || 'bytes'] || 'bytes') : 'bytes';
-  const bodyIndented = pythonGenerator.prefixLines(body, '    ');
+  const bodyIndented = body;
   return [
     '',
     'def ' + funcName + '(' + params.join(', ') + ') -> ' + firstType + ':',
@@ -48,7 +50,7 @@ export function generateDefreturnPy(block: Block): string {
     bodyIndented,
     '    return ' + returnValue,
     '',
-  ].join('\\n');
+  ].join('\n');
 }
 
 /** Generate Python for crypto_callreturn. */

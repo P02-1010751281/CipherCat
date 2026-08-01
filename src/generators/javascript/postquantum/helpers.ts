@@ -194,56 +194,15 @@ export function registerNttMul(): string {
 }
 
 export function registerSampleCbdEta(eta: number): string {
-  const keccakFName = registerKeccakF1600();
-
-  const shake256Name = javascriptGenerator.provideFunction_('shake256once', [
-    'function ' +
-      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
-      '(inp, outBytes) {',
-    '  if (typeof inp === "string") inp = new TextEncoder().encode(inp);',
-    '  else if (Array.isArray(inp)) inp = Uint8Array.from(inp);',
-    '  let rate = 136;',
-    '  let state = new Array(25).fill(0n);',
-    '  let padLen = rate - (inp.length % rate);',
-    '  if (padLen === 1) padLen += rate;',
-    '  let padded = new Uint8Array(inp.length + padLen);',
-    '  padded.set(inp);',
-    '  padded[inp.length] = 0x1F;',
-    '  padded[padded.length - 1] ^= 0x80;',
-    '  let absorb = 0;',
-    '  while (absorb < padded.length) {',
-    '    for (let j = 0; j < rate; j += 8) {',
-    '      let w = 0n;',
-    '      for (let b = 0; b < 8 && (absorb + j + b) < padded.length; b++) {',
-    '        w |= BigInt(padded[absorb + j + b]) << BigInt(8 * b);',
-    '      }',
-    '      state[j / 8] ^= w;',
-    '    }',
-    '    state = ' + keccakFName + '(state);',
-    '    absorb += rate;',
-    '  }',
-    '  let out = new Uint8Array(outBytes);',
-    '  let cursor = 0;',
-    '  while (cursor < outBytes) {',
-    '    for (let j = 0; j < rate && cursor < outBytes; j += 8) {',
-    '      let w1 = state[j / 8];',
-    '      for (let b = 0; b < 8 && cursor < outBytes; b++) {',
-    '        out[cursor++] = Number((w1 >> BigInt(8 * b)) & 0xFFn);',
-    '      }',
-    '    }',
-    '    if (cursor < outBytes) state = ' + keccakFName + '(state);',
-    '  }',
-    '  return out;',
-    '}',
-  ]);
-
+  // FIPS 203 Alg 8：SamplePolyCBD_η 直接消费 PRF 输出（64η 字节），不做二次哈希
   return javascriptGenerator.provideFunction_('sampleCbdEta' + eta, [
     'function ' +
       javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
-      '(seed, q) {',
+      '(prfOut, q) {',
     '  q = q || 3329;',
     '  let eta = ' + eta + ';',
-    '  let prfOut = ' + shake256Name + '(seed, 64 * eta);',
+    '  if (typeof prfOut === "string") prfOut = new TextEncoder().encode(prfOut);',
+    '  else if (Array.isArray(prfOut)) prfOut = Uint8Array.from(prfOut);',
     '  let bit = function(pos) { return (prfOut[pos >> 3] >> (pos & 7)) & 1; };',
     '  let coeffs = new Array(256);',
     '  for (let i = 0; i < 256; i++) {',

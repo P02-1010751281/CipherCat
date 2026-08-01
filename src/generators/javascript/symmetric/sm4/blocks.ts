@@ -31,6 +31,21 @@ function registerSm4Sbox(): string {
   ]);
 }
 
+function registerSm4SboxLookup(): string {
+  return javascriptGenerator.provideFunction_('sm4SboxLookup', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(x) {',
+    '  return ' + registerSm4Sbox() + '[x & 0xFF];',
+    '}',
+  ]);
+}
+
+javascriptGenerator.forBlock['sm4_sbox'] = function (block: Block): [string, number] {
+  const input =
+    javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '0';
+  const fn = registerSm4SboxLookup();
+  return [fn + '(' + input + ')', Order.ATOMIC];
+};
+
 javascriptGenerator.forBlock['sm4_round_func'] = function (block: Block): [string, number] {
   const x0 = javascriptGenerator.valueToCode(block, 'X0', Order.ATOMIC) || '[0,0,0,0]';
   const x1 = javascriptGenerator.valueToCode(block, 'X1', Order.ATOMIC) || '[0,0,0,0]';

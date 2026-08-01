@@ -119,13 +119,13 @@ export function registerNttMul(): string {
 }
 
 export function registerSampleCbdEta(eta: number): string {
+  // FIPS 203 Alg 8：SamplePolyCBD_η 直接消费 PRF 输出（64η 字节），不做二次哈希
   return pythonGenerator.provideFunction_('sample_poly_cbd_eta' + eta, [
-    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed, q=3329):',
-    '    import hashlib',
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(prf_out, q=3329):',
     '    eta = ' + eta,
-    '    if isinstance(seed, str):',
-    '        seed = seed.encode("utf-8")',
-    '    buf = hashlib.shake_256(bytes(seed)).digest(64 * eta)',
+    '    if isinstance(prf_out, str):',
+    '        prf_out = prf_out.encode("utf-8")',
+    '    buf = bytes(prf_out)',
     '    def _bit(pos):',
     '        return (buf[pos // 8] >> (pos % 8)) & 1',
     '    coeffs = [0] * 256',

@@ -30,11 +30,13 @@ javascriptGenerator.forBlock['sponge_pad'] = function (
 ): [string, number] {
   const input =
     javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '[]';
-  const rate = block.getFieldValue('RATE') || '136';
+  const rateBits = parseInt(block.getFieldValue('RATE') || '1088');
+  // 下拉值是比特（1088/576/1152...），pad 需要字节（/8）——与 absorb/squeeze 一致
+  const rateBytes = Math.floor(rateBits / 8);
   const suffix = block.getFieldValue('SUFFIX') || '0x06';
   const padFn = registerSha3Pad();
   return [
-    padFn + '(' + input + ', ' + rate + ', ' + suffix + ')',
+    padFn + '(' + input + ', ' + rateBytes + ', ' + suffix + ')',
     Order.ATOMIC,
   ];
 };

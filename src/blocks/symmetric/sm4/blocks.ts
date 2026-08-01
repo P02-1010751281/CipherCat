@@ -8,10 +8,25 @@ import * as Blockly from 'blockly/core';
 import { TYPE_BYTES, TYPE_INT_LIST, TYPE_NUMBER } from '@/constants/block-types';
 
 export const SM4_BLOCK_TYPES = [
+  'sm4_sbox',
   'sm4_round_func',
   'sm4_linear_transform',
 ] as const;
 export type Sm4BlockType = (typeof SM4_BLOCK_TYPES)[number];
+
+Blockly.Blocks['sm4_sbox'] = {
+  init: function () {
+    this.appendValueInput('INPUT')
+      .setCheck(TYPE_NUMBER)
+      .appendField('SM4 Sbox(');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_NUMBER);
+    this.setColour(180);
+    this.setTooltip('SM4 8×8 S-box 查找 (GM/T 0002-2012)：输入 0-255 字节，输出 S-box 值');
+    this.setHelpUrl('');
+  },
+};
 
 Blockly.Blocks['sm4_round_func'] = {
   init: function () {

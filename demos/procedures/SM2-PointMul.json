@@ -1,0 +1,104 @@
+{
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "procedures_defreturn",
+    "id": "demo_sm2_def_0001",
+    "x": 100,
+    "y": 100,
+    "extraState": {
+     "params": [],
+     "hasStatements": true
+    },
+    "fields": {
+     "NAME": "SM2_PointMul"
+    },
+    "inputs": {
+     "STACK": {
+      "block": {
+       "type": "ecc_load_curve_params",
+       "id": "demo_sm2_curve_0002",
+       "fields": {
+        "a": "0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC",
+        "b": "0x28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93",
+        "p": "0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF"
+       },
+       "next": {
+        "block": {
+         "type": "ecc_load_point",
+         "id": "demo_sm2_point_0003",
+         "fields": {
+          "x": "0x32C4AE2C1F1981195F9904466A39C9948FE30BBFF2660BE1715A4589334C74C7",
+          "y": "0xBC3736A2F4F6779C59BDCEE36B692153D0A9877CC62A474002DF32E52139F0A0"
+         },
+         "inputs": {
+          "point": {
+           "block": {
+            "type": "variables_get",
+            "id": "demo_sm2_vp_0004",
+            "fields": {
+             "VAR": {
+              "id": "demo_sm2_vp_0004",
+              "name": "P"
+             }
+            }
+           }
+          }
+         },
+         "next": {
+          "block": {
+           "type": "ecc_multiply",
+           "id": "demo_sm2_mul_0005",
+           "fields": {
+            "times": "0x59276E27D506861A16680F3AD9C02DCCEF3CC1FA3CDBE4CE6D54B80DEAC1BC21"
+           },
+           "inputs": {
+            "value2": {
+             "block": {
+              "type": "variables_get",
+              "id": "demo_sm2_vr_0006",
+              "fields": {
+               "VAR": {
+                "id": "demo_sm2_vr_0006",
+                "name": "R"
+               }
+              }
+             }
+            },
+            "value1": {
+             "block": {
+              "type": "variables_get",
+              "id": "demo_sm2_vp_0007",
+              "fields": {
+               "VAR": {
+                "id": "demo_sm2_vp_0007",
+                "name": "P"
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "RETURN": {
+      "block": {
+       "type": "variables_get",
+       "id": "demo_sm2_vr_0008",
+       "fields": {
+        "VAR": {
+         "id": "demo_sm2_vr_0008",
+         "name": "R"
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+}

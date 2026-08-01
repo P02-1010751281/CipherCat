@@ -139,6 +139,28 @@ SHA-256("abc") = `ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61
 | `crypto_return` | 显式返回语句 |
 
 ---
+
+## 场景 6-9：官方向量验证的 Procedure Demo（2026-08-01 新增）
+
+用 `procedures_defreturn` 封装**原子块链**（不用 `proc_*` 模板块），生成代码经 `scripts/verify-demo.ts --exec` 实测通过官方测试向量（Python + JavaScript 双语言）。文件在 `demos/procedures/`，期望值在 `demos/tests.json`。
+
+| 场景 | 文件 | 封装内容 | 官方向量 |
+|------|------|----------|----------|
+| 6. SM4 S-box | `SM4-Sbox.json` | `sm4_sbox(x)` 查表 | GM/T 0002-2012（S(0x01)=0x90） |
+| 7. SM3 哈希 | `SM3-Hash.json` | `hash_sm3_pad` → `hash_sm3_compress`（IV 常量） | GB/T 32905-2016（SM3("abc")） |
+| 8. SM2 点乘 | `SM2-PointMul.json` | `ecc_load_curve_params`/`load_point`/`multiply` | GB/T 32918.5-2017（k·G） |
+| 9. ML-KEM.Encaps | `ML-KEM-Encaps.json` | SampleNTT/CBD/NTT/INTT/ntt_mul/compress/encode 全链 | FIPS 203（ML-KEM-512 encaps） |
+
+### 验证方法
+
+```bash
+npx vite build --config vite.verify.config.ts   # 构建 headless harness
+node dist-verify/verify-demo.js demos/procedures/ML-KEM-Encaps.json --exec
+```
+
+`--exec` 模式加载工作区 → 生成 Python/JS → 追加测试 driver 执行 → 与 `demos/tests.json` 期望值比对。全部 PASS 输出 `=== ALL VECTORS PASS ===`。
+
+---
 ## 进阶：自我探索
 
 ### 原子块串联

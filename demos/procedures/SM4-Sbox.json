@@ -1,0 +1,47 @@
+{
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "procedures_defreturn",
+    "id": "demo_sm4_sbox_def_0001",
+    "x": 100,
+    "y": 100,
+    "extraState": {
+     "params": [
+      {
+       "name": "x",
+       "id": "param_x",
+       "type": "int"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "SM4_Sbox"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "sm4_sbox",
+       "id": "demo_sm4_sbox_blk_0002",
+       "inputs": {
+        "INPUT": {
+         "block": {
+          "type": "variables_get",
+          "id": "demo_sm4_sbox_var_0003",
+          "fields": {
+           "VAR": {
+            "id": "param_x"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+}

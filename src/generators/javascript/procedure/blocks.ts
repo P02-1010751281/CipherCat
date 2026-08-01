@@ -36,14 +36,14 @@ export function generateDefreturnJS(block: Block): string {
   const body = (block.getInput('STACK')
     ? javascriptGenerator.statementToCode(block, 'STACK')
     : '') ||
-    '  // TODO: implement ' + funcName + ' algorithm\\n';
+    '  // TODO: implement ' + funcName + ' algorithm\n';
   const returnValue =
     javascriptGenerator.valueToCode(block, 'RETURN', Order.NONE) || params[0] || 'undefined';
   const firstType = argNodes.length ? (TYPE_MAP_JS[argNodes[0].getAttribute('type') || 'bytes'] || 'Uint8Array') : 'Uint8Array';
   return [
     '/**',
     ' * Crypto function: ' + funcName,
-    jsdoc.join('\\n'),
+    jsdoc.join('\n'),
     ' * @returns {' + firstType + '} 算法输出',
     ' */',
     'function ' + funcName + '(' + params.join(', ') + ') {',
@@ -51,7 +51,7 @@ export function generateDefreturnJS(block: Block): string {
     '  return ' + returnValue + ';',
     '}',
     '',
-  ].join('\\n');
+  ].join('\n');
 }
 
 /** Generate JS for crypto_callreturn. */

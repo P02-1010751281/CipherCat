@@ -1,47 +1,64 @@
 {
-  "blocks": {
-    "languageVersion": 0,
-    "blocks": [
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "procedures_defreturn",
+    "id": "demo_sm3_def_0001",
+    "x": 100,
+    "y": 100,
+    "extraState": {
+     "params": [
       {
-        "type": "procedures_defreturn",
-        "id": "50670960e74afa08d72e",
-        "x": 100,
-        "y": 100,
-        "extraState": {
-          "params": [
-            {
-              "name": "msg",
-              "id": "param_msg",
-              "type": "bytes"
-            }
-          ],
-          "hasStatements": false
-        },
-        "fields": {
-          "NAME": "SM3_Hash"
-        },
-        "inputs": {
-          "RETURN": {
-            "block": {
-              "type": "hash_sm3_pad",
-              "id": "8f2a4e73f95d1be731c6",
-              "inputs": {
-                "INPUT": {
-                  "block": {
-                    "type": "variables_get",
-                    "id": "5c1256b9e43ab1887160",
-                    "fields": {
-                      "VAR": {
-                        "id": "param_msg"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+       "name": "msg",
+       "id": "param_msg",
+       "type": "message"
       }
-    ]
-  }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "SM3_Hash"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "hash_sm3_compress",
+       "id": "demo_sm3_comp_0002",
+       "inputs": {
+        "V": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_sm3_iv_0003",
+          "fields": {
+           "NUM": "[0x7380166f,0x4914b2b9,0x172442d7,0xda8a0600,0xa96f30bc,0x163138aa,0xe38dee4d,0xb0fb0e4e]"
+          }
+         }
+        },
+        "W": {
+         "block": {
+          "type": "hash_sm3_pad",
+          "id": "demo_sm3_pad_0004",
+          "inputs": {
+           "INPUT": {
+            "block": {
+             "type": "variables_get",
+             "id": "demo_sm3_var_0005",
+             "fields": {
+              "VAR": {
+               "id": "param_msg"
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
 }

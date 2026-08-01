@@ -1,5 +1,7 @@
 # 哈希演示
 
+> [English](./hash.en.md) · [中文](./hash.md)
+
 > [← 返回索引](../DEMO.md) · [demo 文件清单](../../demos/README.md)
 >
 > 场景 3（SHA-256）+ 场景 7（SM3），对应 `docs/DEMO.md` 索引。

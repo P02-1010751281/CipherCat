@@ -1,5 +1,7 @@
 # AES 演示
 
+> [English](./aes.en.md) · [中文](./aes.md)
+
 > [← 返回索引](../DEMO.md) · [demo 文件清单](../../demos/README.md)
 >
 > 场景 2（单轮加密）+ 场景 5（函数封装），对应 `docs/DEMO.md` 索引。

@@ -1,10 +1,10 @@
-# 数论 + 大数块参考
+# Number Theory + Big Integer Block Reference
 
-> [English](./numtheory.en.md) · [中文](./numtheory.md)
+> [中文](./numtheory.md)
 
-## 域运算 + NTT
+## Field Ops + NTT
 
-| 块 | 层 | 连接 | 输入→输出 |
+| Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `nt_field_add` | 1 | value(→) | null&null&null→null |
 | `nt_mod_inverse` | 1 | stmt(→→) | null&null&null→— |
@@ -19,17 +19,17 @@
 | `pq_ntt_mul` | 1 | value(→) | IntList&IntList→IntList |
 | `pq_ntt_butterfly` | 1 | value(→) | null&null&null→null |
 
-## 大数运算
+## Big Integer Ops
 
-| 块 | 层 | 连接 | 输入→输出 |
+| Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `bn_add` | 1 | value(→) | IntList&IntList→IntList |
 | `bn_sub` | 1 | value(→) | IntList&IntList→IntList |
 | `bn_mul` | 1 | value(→) | IntList&IntList→IntList |
 | `bn_div` | 1 | value(→) | IntList&IntList→IntList |
 
-## GF(2⁸) 域 (FIPS 197)
+## GF(2⁸) Field (FIPS 197)
 
-| 块 | 层 | 连接 | 输入→输出 |
+| Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `gf2m_mul` | 1 | value(→) | Number&Number→Number |

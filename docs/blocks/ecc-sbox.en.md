@@ -1,10 +1,10 @@
-# ECC + S-Box 块参考
+# ECC + S-Box Block Reference
 
-> [English](./ecc-sbox.en.md) · [中文](./ecc-sbox.md)
+> [中文](./ecc-sbox.md)
 
-## 椭圆曲线 (SEC 2)
+## Elliptic Curves (SEC 2)
 
-| 块 | 层 | 连接 | 输入→输出 |
+| Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `ecc_load_curve_params` | 1 | stmt(→→) | —→— |
 | `ecc_load_point` | 1 | stmt(→→) | null→— |
@@ -12,24 +12,24 @@
 | `ecc_add` | 1 | stmt(→→) | null&null&null→— |
 | `ecc_multiply` | 1 | stmt(→→) | null&null→— |
 
-## S-Box (通用)
+## S-Box (generic)
 
-| 块 | 层 | 连接 | 输入→输出 |
+| Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `sbox` | 1 | value(→) | —→SBox |
 | `sbox_sub` | 1 | stmt(→→) | null&SBox&null→— |
 | `sbox_variables_get` | 1 | value(→) | —→SBox |
 | `sbox_variables_set` | 1 | stmt(→→) | SBox→— |
 
-## 控制流
+## Control Flow
 
-| 块 | 层 | 连接 | 输入→输出 |
+| Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `ctrl_iterate` | 1 | stmt(→→) | —→— |
 
-## 函数封装
+## Function Wrapping
 
-| 块 | 层 | 连接 | 输入→输出 |
+| Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `crypto_return` | 1 | stmt(→→) | null→— |
 | `procedures_defreturn` | 1 | stmt(→→) | —→— |

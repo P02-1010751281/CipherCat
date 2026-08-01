@@ -1,5 +1,7 @@
 # 哈希块参考 (SHA + SM3 + Keccak + XOF)
 
+> [English](./hash.en.md) · [中文](./hash.md)
+
 ## SHA-256 (FIPS 180-4)
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |

@@ -1,10 +1,10 @@
-# 位运算 + 逻辑块参考
+# Bit Operations + Logic Block Reference
 
-> [English](./bitwise-logic.en.md) · [中文](./bitwise-logic.md)
+> [中文](./bitwise-logic.md)
 
-## 位运算
+## Bit Operations
 
-| 块 | 层 | 连接 | 输入→输出 |
+| Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `bit_operation` | 1 | value(→) | Number&Number→Number |
 | `bit_not32` | 1 | value(→) | Number→Number |
@@ -15,9 +15,9 @@
 | `bit_rotate_right_op` | 1 | stmt(→→) | Number→— |
 | `bit_byte_substitute` | 1 | stmt(→→) | null→— |
 
-## 逻辑运算
+## Logic Operations
 
-| 块 | 层 | 连接 | 输入→输出 |
+| Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `lgc_operation` | 1 | stmt(→→) | null&null&null→— |
 | `lgc_compound` | 1 | stmt(→→) | null&null&null→— |

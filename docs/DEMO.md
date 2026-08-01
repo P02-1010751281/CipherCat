@@ -1,5 +1,7 @@
 # CipherCat 演示指南
 
+> [English](./DEMO.en.md)
+
 预构建的 Blockly 工作区示例，**全部使用原子块**（无便利封装），理解每个密码学原语的底层实现。按算法拆分独立文档，对应 demo 文件见 [demos/README.md](../demos/README.md) 文件清单：
 
 | 算法 | 搭建步骤 | 对应 demo 文件 |

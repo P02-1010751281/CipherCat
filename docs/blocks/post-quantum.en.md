@@ -1,10 +1,10 @@
-# 后量子密码块参考 (ML-KEM)
+# Post-Quantum Block Reference (ML-KEM)
 
-> [English](./post-quantum.en.md) · [中文](./post-quantum.md)
+> [中文](./post-quantum.md)
 
-## FIPS 203 编码/压缩 (§4.2.1)
+## FIPS 203 Encoding/Compression (§4.2.1)
 
-| 块 | 层 | 连接 | 输入→输出 | FIPS 203 |
+| Block | Layer | Connection | Input→Output | FIPS 203 |
 |----|----|------|----------|----------|
 | `pq_bytes_to_bits` | 1 | value(→) | Bytes→Bits | Alg 4 |
 | `pq_bits_to_bytes` | 1 | value(→) | Bits→Bytes | Alg 3 |
@@ -16,19 +16,18 @@
 | `pq_bytes_slice` | 1 | value(→) | Bytes→Bytes | — |
 | `pq_seed_with_nonce` | 1 | value(→) | Bytes→Bytes | — |
 
-## FIPS 203 采样 (§4.2.2)
+## FIPS 203 Sampling (§4.2.2)
 
-| 块 | 层 | 连接 | 输入→输出 | FIPS 203 |
+| Block | Layer | Connection | Input→Output | FIPS 203 |
 |----|----|------|----------|----------|
 | `pq_sample_ntt` | 1 | value(→) | Bytes→IntList | Alg 7 |
 | `pq_sample_poly_cbd` | 1 | value(→) | Bytes→IntList | Alg 8 |
 
-## FIPS 203 NTT 变换 (§4.3)
+## FIPS 203 NTT Transform (§4.3)
 
-| 块 | 层 | 连接 | 输入→输出 |
+| Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `pq_ntt` | 1 | value(→) | IntList→IntList |
 | `pq_intt` | 1 | value(→) | IntList→IntList |
 | `pq_ntt_mul` | 1 | value(→) | IntList&IntList→IntList |
 | `pq_ntt_butterfly` | 1 | value(→) | null&null&null→null |
-

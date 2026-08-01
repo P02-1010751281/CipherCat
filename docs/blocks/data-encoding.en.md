@@ -1,10 +1,10 @@
-# 数据 + 编码块参考
+# Data + Encoding Block Reference
 
-> [English](./data-encoding.en.md) · [中文](./data-encoding.md)
+> [中文](./data-encoding.md)
 
-## 数据
+## Data
 
-| 块 | 层 | 连接 | 输入→输出 |
+| Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `data_value` | 1 | value(→) | —→null |
 | `seed_bytes` | 1 | value(→) | —→Bytes |
@@ -13,26 +13,26 @@
 | `data_bit_length` | 1 | value(→) | null→Number |
 | `data_byte_length` | 1 | value(→) | null→Number |
 
-## 数据转换
+## Data Conversion
 
-| 块 | 层 | 连接 | 输入→输出 |
+| Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `data_convert_to_int` | 1 | stmt(→→) | null→— |
 | `data_convert_bits_to_bytes` | 1 | stmt(→→) | null&null→— |
 | `data_convert_bytes_to_bits` | 1 | stmt(→→) | null&null→— |
 
-## 数组
+## Arrays
 
-| 块 | 层 | 连接 | 输入→输出 |
+| Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `arr_partition_to_array` | 1 | stmt(→→) | null&null&null→— |
 
-## 编码转换
+## Encoding Conversion
 
-| 块 | 层 | 连接 | 输入→输出 | 标准 |
+| Block | Layer | Connection | Input→Output | Standard |
 |----|----|------|----------|------|
 | `base64_encode` | 3 | value(→) | Bytes→String | RFC 4648 |
 | `base64_decode` | 3 | value(→) | String→Bytes | RFC 4648 |
-| `hex_to_bytes` | 3 | value(→) | String→Bytes | 通用 |
-| `bytes_to_hex` | 3 | value(→) | Bytes→String | 通用 |
-| `endian_swap` | 3 | value(→) | IntList→IntList | 通用 |
+| `hex_to_bytes` | 3 | value(→) | String→Bytes | generic |
+| `bytes_to_hex` | 3 | value(→) | Bytes→String | generic |
+| `endian_swap` | 3 | value(→) | IntList→IntList | generic |

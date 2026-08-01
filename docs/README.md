@@ -12,7 +12,7 @@
 
 | 文档 | 受众 | 说明 |
 |------|------|------|
-| [DEMO.md](./DEMO.md) | 用户/开发者 | 演示指南：4 个实战场景快速上手 |
+| [DEMO.md](./DEMO.md) | 用户/开发者 | 演示指南索引（按算法拆分：SM4/AES/哈希/SM2/后量子，含官方向量验证） |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | 开发者 | 系统架构、数据流、模块组织、类型系统 |
 | [DEVELOPMENT.md](./DEVELOPMENT.md) | 开发者 | 环境搭建、添加积木块步骤、i18n、代码风格 |
 

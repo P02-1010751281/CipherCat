@@ -112,9 +112,6 @@ Blockly.Blocks['keccak_f'] = {
       .appendField(
         new Blockly.FieldDropdown([
           ['1600', '1600'],
-          ['800', '800'],
-          ['400', '400'],
-          ['200', '200'],
         ]),
         'WIDTH',
       )

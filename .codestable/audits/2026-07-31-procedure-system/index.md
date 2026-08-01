@@ -3,7 +3,8 @@ doc_type: audit-index
 audit: 2026-07-31-procedure-system
 scope: "src/ + src-tauri/ + configs，四维全扫 + 旧审计关闭核对"
 created: 2026-07-31
-status: active
+status: superseded
+superseded-by: 2026-08-01-full-project
 total_findings: 18
 ---
 

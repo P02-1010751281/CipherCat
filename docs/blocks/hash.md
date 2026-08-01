@@ -29,7 +29,6 @@
 | `hash_sm3_pad_text` | 1 | value(→) | null→Bytes | UTF-8填充 |
 | `hash_sm3_pad_hex` | 1 | value(→) | null→Bytes | Hex填充 |
 | `hash_sm3_compress` | 1 | value(→) | null&null→null | 64轮压缩函数 |
-| `sm3_hash` | 3 | value(→) | Bytes→Bytes | 一键完整哈希 |
 
 ## XOF / PRF (FIPS 202 §6)
 
@@ -38,19 +37,8 @@
 | `pq_xof` | 1 | value(→) | Bytes&Number→Bytes | SHAKE XOF |
 | `pq_prf` | 1 | value(→) | Bytes&Number&Number→Bytes | SHAKE PRF |
 
-## 便利块
+## HMAC (FIPS 198-1)
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
 | `hash_hmac` | 1 | value(→) | Bytes&Bytes→Bytes | HMAC(SHA-256/SM3可选) |
-| `md_iterate` | 2 | value(→) | IntList&IntList→IntList | Merkle-Damgård迭代(SHA-256/SM3可选) |
-| `sponge_duplex` | 2 | value(→) | IntList&Bytes→Bytes | 海绵双工(Keccak-f可选) |
-| `sm3_hmac` | 3 | value(→) | Bytes&Bytes→Bytes | HMAC-SM3一键 |
-| `hmac_sha256` | 3 | value(→) | Bytes&Bytes→Bytes | HMAC-SHA256一键 |
-
-## KDF
-
-| 块 | 层 | 连接 | 输入→输出 | 标准 |
-|----|----|------|----------|------|
-| `kdf_pbkdf2` | 3 | value(→) | Bytes&Bytes→Bytes | NIST SP 800-132 |
-| `kdf_hkdf` | 3 | value(→) | Bytes&Bytes→Bytes | RFC 5869 |

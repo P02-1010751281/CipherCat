@@ -1,6 +1,6 @@
-# Metacrypto 积木块标准依据参考
+# CipherCat 积木块标准依据参考
 
-**版本**: 2.1 | **日期**: 2026-07-30 | **总块数**: 118
+**版本**: 2.1 | **日期**: 2026-07-30 | **总块数**: 98（另有 27 个函数模板）
 
 ## 图例
 
@@ -39,15 +39,17 @@
 
 | 类目 | 文档 | 块数 |
 |------|------|------|
-| 对称密码 (AES+SM4) | [symmetric.md](symmetric.md) | 11 |
+| 对称密码 (AES+SM4) | [symmetric.md](symmetric.md) | 6 |
 | 模式 + 填充 | [symmetric.md](symmetric.md) | 6 |
-| 哈希 (SHA-2/SM3/SHA-3) | [hash.md](hash.md) | 25 |
-| 后量子 (ML-KEM) | [post-quantum.md](post-quantum.md) | 19 |
-| 数论 + 大数 | [numtheory.md](numtheory.md) | 15 |
+| 哈希 (SHA-2/SM3/SHA-3/HMAC) | [hash.md](hash.md) | 18 |
+| 后量子 (ML-KEM) | [post-quantum.md](post-quantum.md) | 15 |
+| 数论 + 大数 | [numtheory.md](numtheory.md) | 17 |
 | 位运算 + 逻辑 | [bitwise-logic.md](bitwise-logic.md) | 11 |
 | 数据 + 编码 | [data-encoding.md](data-encoding.md) | 14 |
 | ECC | [ecc-sbox.md](ecc-sbox.md) | 5 |
 | S-Box | [ecc-sbox.md](ecc-sbox.md) | 4 |
 | 数组 | — | 1 |
-| 控制流 | — | 2 |
-| 函数封装 | — | 5 |
+| 控制流 | — | 1 |
+| 函数封装 | [ecc-sbox.md](ecc-sbox.md) | 5 |
+
+> 注：NTT 变换块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`）在「数论 + 大数」与「后量子」文档中各列一次，去重后合计 98 个自定义积木块（见 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`）。

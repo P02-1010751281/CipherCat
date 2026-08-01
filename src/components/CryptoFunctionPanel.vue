@@ -65,46 +65,49 @@ function L(type: string): string {
   return (msg as Record<string, string>)[key] || type;
 }
 
-/** 模板项显示文案（cosmetic，与类型清单无关；缺省 '1 param'）。 */
-const PANEL_PARAM: Record<string, string> = {
-  proc_mode_ecb: '1 param: data:Bytes',
-  proc_mode_cbc: '1 param: data:Bytes',
-  proc_mode_ctr: '1 param: data:Bytes',
-  proc_mode_gcm: '1 param: data:Bytes',
-  proc_md_iterate: '1 param: iv:IntList',
-  proc_sponge_duplex: '1 param: state:IntList',
-  proc_mlkem_keygen: '1 param: seed:Seed',
-  proc_ntt_vec: '1 param: vec:IntList',
-  proc_pq_cbd: '1 param: seed:Seed',
-  proc_pq_mat_mul: '1 param: mat:IntList',
-  proc_pq_sample: '1 param: seed:Seed',
-  proc_pq_vec_add: '1 param: a:IntList',
-  proc_pq_vec_sub: '1 param: a:IntList',
+/** 模板项显示文案：从注册表派生（`1 param: ${paramName}:${paramType}`），缺省兜底。 */
+
+/** 类目标题 locale 键：注册表 category → CRYPTO_SUBCAT_* 键。 */
+const SUBCAT_LABEL_KEYS: Record<string, string> = {
+  base: 'CRYPTO_SUBCAT_BASE',
+  symmetric: 'CRYPTO_SUBCAT_SYMMETRIC',
+  hash: 'CRYPTO_SUBCAT_HASH_MAC_KDF',
+  mode: 'CRYPTO_SUBCAT_MODE',
+  pqc: 'CRYPTO_SUBCAT_ITERATE_SPONGE_PQC',
 };
 
 function buildCategories(): SubCategory[] {
-  const categories: SubCategory[] = [
-    { key: 'base', label: msg.CRYPTO_SUBCAT_BASE || 'Base', templates: [] },
-    { key: 'symmetric', label: msg.CRYPTO_SUBCAT_SYMMETRIC || 'Symmetric', templates: [] },
-    { key: 'hash', label: msg.CRYPTO_SUBCAT_HASH_MAC_KDF || 'Hash / MAC / KDF', templates: [] },
-    { key: 'mode', label: msg.CRYPTO_SUBCAT_MODE || 'Mode', templates: [] },
-    { key: 'pqc', label: msg.CRYPTO_SUBCAT_ITERATE_SPONGE_PQC || 'PQC', templates: [] },
-  ];
-  // 模板清单从注册表派生（单一数据源），显示文案保持原样
+  // 类目键从注册表 info.category 派生（去重保留顺序），标题经 CRYPTO_SUBCAT_* 键查 locale
+  const seen = new Set<string>();
+  const categories: SubCategory[] = [];
+  for (const info of Object.values(TEMPLATE_REGISTRY)) {
+    if (seen.has(info.category)) continue;
+    seen.add(info.category);
+    const labelKey = SUBCAT_LABEL_KEYS[info.category];
+    categories.push({
+      key: info.category,
+      label: (labelKey && msg[labelKey]) || info.category,
+      templates: [],
+    });
+  }
+  // 模板清单从注册表派生（单一数据源）
   for (const [type, info] of Object.entries(TEMPLATE_REGISTRY)) {
     const group = categories.find((c) => c.key === info.category);
     if (!group) continue;
     group.templates.push({
       type,
       label: L(type),
-      param: PANEL_PARAM[type] || '1 param',
+      param: '1 param: ' + info.paramName + ':' + info.paramType,
     });
   }
   // base 类目额外项（非注册表模板，固定在前）
-  categories[0].templates.unshift(
-    { type: 'crypto_return', label: L('crypto_return'), param: 'value' },
-    { type: 'procedures_ifreturn', label: L('procedures_ifreturn'), param: 'condition' },
-  );
+  const base = categories.find((c) => c.key === 'base');
+  if (base) {
+    base.templates.unshift(
+      { type: 'crypto_return', label: L('crypto_return'), param: 'value' },
+      { type: 'procedures_ifreturn', label: L('procedures_ifreturn'), param: 'condition' },
+    );
+  }
   return categories;
 }
 

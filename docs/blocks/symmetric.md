@@ -8,9 +8,6 @@
 | `aes_shift_rows` | 1 | value(→) | IntList→IntList | 行循环左移 |
 | `aes_mix_columns` | 1 | value(→) | IntList→IntList | GF(2⁸)列混合 |
 | `aes_add_round_key` | 1 | value(→) | IntList&IntList→IntList | ⊕轮密钥 |
-| `aes_round` | 2 | value(→) | IntList&IntList→IntList | SubBytes→ShiftRows→MixColumns→AddRoundKey |
-| `aes_last_round` | 2 | value(→) | IntList&IntList→IntList | 同上跳过MixColumns |
-| `aes_key_schedule` | 2 | value(→) | Bytes→IntList | 128/192/256密钥扩展 |
 
 ## SM4 (GM/T 0002)
 
@@ -18,17 +15,15 @@
 |----|----|------|----------|------|
 | `sm4_round_func` | 1 | value(→) | IntList&Number→IntList | 轮函数F |
 | `sm4_linear_transform` | 1 | value(→) | IntList→IntList | L(B)线性变换 |
-| `sm4_round` | 2 | value(→) | IntList&Number→IntList | 完整轮(含密钥异或) |
-| `sm4_key_schedule` | 2 | value(→) | Bytes→IntList | 32轮密钥生成 |
 
-## 分组模式 (NIST SP 800-38)
+## 分组模式 (NIST SP 800-38A)
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
-| `mode_ecb` | 2 | value(→) | Bytes&Bytes→Bytes | 电子密码本 |
-| `mode_cbc` | 2 | value(→) | Bytes&Bytes&Bytes→Bytes | 密码块链接(需IV) |
-| `mode_ctr` | 2 | value(→) | Bytes&Bytes&Bytes→Bytes | 计数器模式(需IV) |
-| `mode_gcm` | 2 | value(→) | Bytes&Bytes&Bytes→Bytes | 认证加密(需IV) |
+| `mode_ecb_encrypt` | 2 | value(→) | Bytes&Bytes→Bytes | AES-ECB 加密（仅教学） |
+| `mode_ecb_decrypt` | 2 | value(→) | Bytes&Bytes→Bytes | AES-ECB 解密 |
+| `mode_cbc_encrypt` | 2 | value(→) | Bytes&Bytes&Bytes→Bytes | AES-CBC 加密(需IV) |
+| `mode_ctr_encrypt` | 2 | value(→) | Bytes&Bytes&Bytes→Bytes | AES-CTR 加密(需nonce) |
 
 ## 填充
 

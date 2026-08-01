@@ -63,7 +63,8 @@ pythonGenerator.forBlock['keccak_f'] = function (
     pythonGenerator.valueToCode(block, 'STATE', Order.ATOMIC) || 'state';
   const width = block.getFieldValue('WIDTH') || '1600';
   if (width !== '1600') {
-    return ['keccak_f' + width + '(' + state + ')', Order.ATOMIC];
+    // 下拉已收窄为 1600；旧工作区可能残留其他宽度，诚实降级为 1600 位置换
+    console.warn(`[sha3] keccak_f width ${width} not supported; generating 1600-bit permutation.`);
   }
   const funcName = registerKeccakF1600();
   return [funcName + '(' + state + ')', Order.ATOMIC];

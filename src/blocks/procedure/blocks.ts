@@ -209,8 +209,9 @@ function makeDefBlock(hasReturn: boolean): AnyBlock {
         this.arguments_.push(name);
         this.paramTypes_.push(type);
         this.paramIds_.push(block.id);
-        const v = this.workspace.getVariableMap().getVariable(name, '') as unknown as Blockly.VariableModel | null;
-        this.argumentVarModels_.push(v as unknown as Blockly.VariableModel);
+        const v = Blockly.Variables.getOrCreateVariablePackage(this.workspace, block.id, name, '') as unknown as Blockly.VariableModel | null;
+        if (v) this.argumentVarModels_.push(v);
+        else console.warn(`Failed to create variable "${name}", ignoring.`);
         block = block.getNextBlock();
       }
       this.updateParams_();
@@ -381,11 +382,19 @@ function syncCallParams(block: AnyBlock, funcName: string) {
     args = Array.isArray(defRec.arguments_) ? (defRec.arguments_ as string[]) : [];
     types = Array.isArray(defRec.paramTypes_) ? (defRec.paramTypes_ as string[]) : [];
   } else {
-    // 模板函数：用注册表参数
-    const tpl = Object.values(TEMPLATE_REGISTRY).find(function (t) { return t.name === funcName; });
-    if (tpl) {
-      args = [tpl.paramName];
-      types = [tpl.paramType];
+    // 模板函数：优先按工作区中模板块的实际字段（支持 FUNC_NAME 改名后按新名查找），再查注册表
+    const wsTemplate = ws.getAllBlocks(false).find(function (b: Blockly.Block) {
+      return b.getField('FUNC_NAME') !== null && (b.getFieldValue('FUNC_NAME') as string) === funcName;
+    });
+    if (wsTemplate) {
+      args = [(wsTemplate.getFieldValue('PARAM_NAME') as string) || 'param'];
+      types = [(wsTemplate.getFieldValue('PARAM_TYPE') as string) || 'bytes'];
+    } else {
+      const tpl = Object.values(TEMPLATE_REGISTRY).find(function (t) { return t.name === funcName; });
+      if (tpl) {
+        args = [tpl.paramName];
+        types = [tpl.paramType];
+      }
     }
   }
   block.arguments_ = args;
@@ -910,7 +919,33 @@ function _makeTemplateBlock(
       this.setTooltip(msg.CRYPTO_PROCEDURES_TEMPLATE_TOOLTIP || 'Pre-configured crypto function template.');
       this.setHelpUrl('');
     },
-    onchange: function () {
+    onchange: function (event: Blockly.Events.Abstract) {
+      // 改名联动：模板 FUNC_NAME 变更 → 同步引用 call 块（与 def 改名同路径）。
+      // 模板参数在注册表存默认名，改名后按新名查不到，必须按模板块实际 PARAM_NAME/PARAM_TYPE 重建。
+      const evt = event as unknown as {
+        blockId?: string; element?: string; name?: string; oldValue?: string; newValue?: string;
+      };
+      if (
+        evt.blockId === this.id &&
+        event.type === Blockly.Events.BLOCK_CHANGE &&
+        evt.element === 'field' &&
+        evt.name === 'FUNC_NAME' &&
+        evt.oldValue && evt.newValue && evt.oldValue !== evt.newValue
+      ) {
+        try {
+          for (const b of (this as unknown as Blockly.Block).workspace.getAllBlocks(false)) {
+            if ((b.type === 'procedures_callreturn' || b.type === 'procedures_callnoreturn') &&
+                (b.getFieldValue('NAME') as string) === evt.oldValue) {
+              // 刷新下拉选项缓存（getOptions(true) 走缓存，不刷则拒绝新选项）
+              const nameField = b.getField('NAME') as unknown as { getOptions?: (u: boolean) => unknown };
+              if (nameField && typeof nameField.getOptions === 'function') nameField.getOptions(false);
+              b.setFieldValue(evt.newValue, 'NAME');
+              syncCallParams(b as AnyBlock, evt.newValue);
+            }
+          }
+        } catch (e) { console.warn('[procedure] template rename propagation failed:', e); }
+        return;
+      }
       // 拖出到主 workspace 后注入预填内容（flyout 预览不展开，保持紧凑）
       const self = this as unknown as { __prefilled?: boolean; isInFlyout?: boolean };
       if (self.isInFlyout) return;

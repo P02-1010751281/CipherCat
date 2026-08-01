@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {
   getProject,
@@ -95,7 +95,11 @@ export function useEditorProject(deps: EditorProjectDeps) {
       projectId.value = null;
       projectName.value = '';
       updateSaveStatus('saved');
-      router.push(`/editor/${newId}`);
+      await router.push(`/editor/${newId}`);
+      // 同路由复用不重挂载：/editor/:id → /editor/:newId 复用同一组件实例，onMounted 不再执行。
+      // push 后 route.params.id 已更新，显式加载新项目，否则 projectId 恒为 null 导致保存静默失败。
+      await nextTick();
+      await loadProject();
     } catch (e) {
       console.debug('[useEditorProject] handleNewWorkspace failed:', e);
     }

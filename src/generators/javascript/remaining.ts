@@ -19,12 +19,13 @@ javascriptGenerator.forBlock['nt_mod'] = function(b: Block): [string, number] {
 javascriptGenerator.forBlock['nt_mod_pow'] = function(b: Block): [string, number] {
   const a = javascriptGenerator.valueToCode(b,'A',Order.ATOMIC)||'0';
   const e = javascriptGenerator.valueToCode(b,'B',Order.ATOMIC)||'0';
+  const m = b.getFieldValue('MODULUS')||'1';
   const fn = javascriptGenerator.provideFunction_('powMod', [
     'function '+javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_+'(b,e,m){',
     '  var r=1;b=b%m;while(e>0){if(e&1)r=(r*b)%m;e>>=1;b=(b*b)%m;}return r;',
     '}',
   ]);
-  return [fn+'('+a+','+e+',1)', Order.ATOMIC];
+  return [fn+'('+a+','+e+','+m+')', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['nt_div_rem'] = function(b: Block): [string, number] {

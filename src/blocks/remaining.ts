@@ -10,7 +10,23 @@ const _math = (t: string, l: string, tip: string) => { Blockly.Blocks[t] = { ini
   this.appendDummyInput().appendField(')'); this.setInputsInline(true);
   this.setOutput(true, TYPE_NUMBER); this.setColour(20); this.setTooltip(tip);
 }};};
-_math('nt_mod','Mod','a mod n'); _math('nt_mod_pow','ModPow','a^b mod n'); _math('nt_div_rem','DivRem','除余');
+_math('nt_mod','Mod','a mod n'); _math('nt_div_rem','DivRem','除余');
+
+// ModPow — 带模数下拉（生成器读取 MODULUS 字段，避免硬编码模数）
+Blockly.Blocks['nt_mod_pow'] = { init: function(this: B) {
+  this.appendValueInput('A').setCheck(TYPE_NUMBER).appendField('ModPow(');
+  this.appendValueInput('B').setCheck(TYPE_NUMBER).appendField(',');
+  this.appendDummyInput()
+    .appendField(', mod ')
+    .appendField(new Blockly.FieldDropdown([
+      ['3329 (Kyber)', '3329'],
+      ['12289 (NewHope)', '12289'],
+      ['65537', '65537'],
+      ['1000000007', '1000000007'],
+    ]), 'MODULUS');
+  this.appendDummyInput().appendField(')'); this.setInputsInline(true);
+  this.setOutput(true, TYPE_NUMBER); this.setColour(20); this.setTooltip('a^b mod n');
+}};
 
 const _bn = (t: string, l: string) => { Blockly.Blocks[t] = { init: function(this: B) {
   this.appendValueInput('A').setCheck(TYPE_INT_LIST).appendField(l + '(');

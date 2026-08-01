@@ -30,20 +30,3 @@
 | `pq_ntt_mul` | 1 | value(→) | IntList&IntList→IntList |
 | `pq_ntt_butterfly` | 1 | value(→) | null&null&null→null |
 
-## 后量子便利层 (M2.5)
-
-| 块 | 层 | 连接 | 输入→输出 | FIPS 203 |
-|----|----|------|----------|----------|
-| `pq_ntt_vec` | 2 | value(→) | IntList→IntList | Alg 14 step 6 |
-| `pq_intt_vec` | 2 | value(→) | IntList→IntList | Alg 14 step 12 |
-| `pq_cbd_ntt_vec` | 2 | value(→) | Bytes→IntList | Alg 14 step 5-6 |
-| `pq_mat_vec_mul_ntt` | 2 | value(→) | IntList→IntList | Alg 14 step 8-9 |
-| `pq_vec_add` | 2 | value(→) | IntList→IntList | Alg 14 step 10 |
-| `pq_vec_sub` | 2 | value(→) | IntList→IntList | — |
-| `pq_sample_ntt_mat` | 2 | value(→) | Bytes→IntList | Alg 14 step 4 |
-
-## 一键封装 (M4)
-
-| 块 | 层 | 连接 | 输入→输出 | FIPS 203 |
-|----|----|------|----------|----------|
-| `ml_kem_keygen` | 3 | value(→) | Bytes→Bytes | Alg 14 |

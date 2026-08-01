@@ -12,7 +12,10 @@ pythonGenerator.forBlock['nt_mod'] = function(b: Block): [string, number] {
   return ['('+a+' % '+n+')', Order.ATOMIC];
 };
 pythonGenerator.forBlock['nt_mod_pow'] = function(b: Block): [string, number] {
-  return ['pow('+(pythonGenerator.valueToCode(b,'A',Order.ATOMIC)||'0')+','+(pythonGenerator.valueToCode(b,'B',Order.ATOMIC)||'0')+',1)', Order.ATOMIC];
+  const a = pythonGenerator.valueToCode(b,'A',Order.ATOMIC)||'0';
+  const e = pythonGenerator.valueToCode(b,'B',Order.ATOMIC)||'0';
+  const m = b.getFieldValue('MODULUS')||'1';
+  return ['pow('+a+','+e+','+m+')', Order.ATOMIC];
 };
 pythonGenerator.forBlock['nt_div_rem'] = function(b: Block): [string, number] {
   return ['divmod('+(pythonGenerator.valueToCode(b,'A',Order.ATOMIC)||'0')+','+(pythonGenerator.valueToCode(b,'B',Order.ATOMIC)||'1')+')', Order.ATOMIC];

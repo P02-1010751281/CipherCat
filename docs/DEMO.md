@@ -62,7 +62,7 @@
 
 1. **加载 demo**：导入 `demos/SHA256-Atomic-Hash.json`
 2. **观察结构**：
-   - `data_text`："abc"（SHA-256 最经典测试向量）
+   - `data_value`："abc"（SHA-256 最经典测试向量）
    - `hash_sha256_pad`：填充（追加 1+0*+64-bit 长度），输出 512-bit 块列表
    - `hash_sha256_compress`：64 轮压缩（σ0 σ1 Σ0 Σ1 Ch Maj 位运算）
 3. **生成代码**：点击「▶」选择 JavaScript
@@ -90,32 +90,31 @@ SHA-256("abc") = `ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61
 1. **加载 demo**：导入 `demos/ML-KEM-Atomic.json`
 2. **观察结构**：
    - 32-byte seed（ρ/σ 的 SHAKE-256 输出）
-   - `pq_cbd_ntt_vec`（K=2）：CBD(η₂) 采样 + NTT 变换 → 秘密向量 ŝ/ê
-   - `pq_ntt_vec`（K=2）：对向量做 NTT 变换
-   - `pq_sample_ntt_mat`（K=2）：从 seed 采样 NTT 矩阵 A ∈ Z_q^{K×K×256}
-   - `pq_mat_vec_mul_ntt`（K=2）：A × ŝ 在 NTT 域
-3. **调节 K**：K 下拉可选 2/3/4，对应 Kyber-512/768/1024
-4. **生成代码**：点击「▶」选择 JavaScript
+   - `pq_sample_poly_cbd`：CBD(η₂) 采样 → 秘密向量 ŝ/ê
+   - `pq_sample_ntt`：从 seed 采样 NTT 矩阵 A ∈ Z_q^{K×K×256}
+   - `pq_ntt`：对向量做 NTT 变换
+   - `pq_mat_vec_mul`：A × ŝ 在 NTT 域
+3. **生成代码**：点击「▶」选择 JavaScript
 
 ### 涉及原子块
 | 块 | 功能 | 标准 |
 |----|------|------|
-| `pq_cbd_ntt_vec` | CBD(η₂) 采样 + NTT | FIPS 203 §8.2 |
-| `pq_ntt_vec` | 向量 NTT 域变换 | FIPS 203 §9.1 |
-| `pq_sample_ntt_mat` | 伪随机 NTT 矩阵 A | FIPS 203 §9.3 |
-| `pq_mat_vec_mul_ntt` | NTT 域矩阵×向量 | FIPS 203 §9.2 |
+| `pq_sample_poly_cbd` | CBD(η₂) 采样 | FIPS 203 §4.2.2 |
+| `pq_sample_ntt` | 伪随机 NTT 矩阵 A | FIPS 203 §4.2.2 |
+| `pq_ntt` | 向量 NTT 域变换 | FIPS 203 §4.3 |
+| `pq_mat_vec_mul` | NTT 域矩阵×向量 | FIPS 203 §4.3 |
 
 
 ## 场景 5：函数封装（5 分钟）
 
 ### 目标
-用 `crypto_func_def` 将原子块链封装为可复用函数——密码学教学的最终目标：**一次搭建，到处调用**。
+用 `procedures_defreturn`（Blockly 原生函数定义）将原子块链封装为可复用函数——密码学教学的最终目标：**一次搭建，到处调用**。
 
 ### 步骤
 
 1. **加载 demo**：导入 `demos/Procedure-AES-Round.json`
 2. **观察结构**：
-   - `crypto_func_def` 块：函数名 `AES_Round`，参数 `state: int_list` + `round_key: int_list`
+   - `procedures_defreturn` 块：函数名 `AES_Round`，参数 `state: int_list` + `round_key: int_list`（经齿轮 ⚙ mutator 添加）
    - 函数体内：`aes_sub_bytes` → `aes_shift_rows` → `aes_mix_columns` → `aes_add_round_key`
 3. **生成代码**：点击「▶」选择 Python
 4. **观察输出**：
@@ -134,7 +133,7 @@ SHA-256("abc") = `ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61
 ### 涉及块
 | 块 | 功能 |
 |----|------|
-| `crypto_func_def` | 定义带密码学类型参数的函数 |
+| `procedures_defreturn` | 定义带密码学类型参数的函数 |
 | `crypto_encrypt_func`（模板） | 预置加密函数模板 |
 | `crypto_decrypt_func`（模板） | 预置解密函数模板 |
 | `crypto_return` | 显式返回语句 |
@@ -142,14 +141,14 @@ SHA-256("abc") = `ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61
 ---
 ## 进阶：自我探索
 
-### 展开原子块
-右键→展开 可将高频块展开为其子块：
-- `aes_round` 展开为 SubBytes→ShiftRows→MixColumns→AddRoundKey
-- `sm4_round_func` 展开为 S-box + L 变换细节
+### 原子块串联
+所有轮函数均为原子块直接串联（便利组合块已移除）：
+- AES 单轮 = `aes_sub_bytes` → `aes_shift_rows` → `aes_mix_columns` → `aes_add_round_key`
+- SM4 轮函数 = `sm4_round_func`（含 S-box + L 变换细节）
 
 ### 自定义函数封装
 1. 选中你搭建好的密码学流程
-2. 用 `crypto_func_def` 模板封装为可复用函数
+2. 用 `procedures_defreturn` 封装为可复用函数
 3. 设置参数类型（bytes / int_list / poly / seed）
 4. 其他项目 → 右键导出 → 导入复用
 
@@ -164,7 +163,7 @@ Blockly 自动检查连接类型——不匹配的连接会被阻止。
 
 ## 相关文档
 
-- [积木块索引](./blocks/INDEX.md) — 全部 118 个块的完整列表（12 类目）
+- [积木块索引](./blocks/INDEX.md) — 全部 98 个自定义积木块的完整列表（13 类目，另有 27 个函数模板）
 - [架构文档](./ARCHITECTURE.md) — 系统架构与数据流
 - [开发指南](./DEVELOPMENT.md) — 环境搭建、添加新块
 - [类型系统](./TYPE-SYSTEM.md) — 数据类型规范与转换规则

@@ -48,10 +48,6 @@ const BLOCK_TYPE_MIGRATION_MAP: Record<string, string> = {
   hash_sha3_state_init: 'keccak_state_init',
 };
 
-export function migrateBlockType(oldType: string): string {
-  return BLOCK_TYPE_MIGRATION_MAP[oldType] || oldType;
-}
-
 export function migrateXmlText(xmlText: string): string {
   if (!xmlText || !xmlText.trim()) return xmlText;
 

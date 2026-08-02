@@ -10,6 +10,7 @@ import './ecc';
 import './zuc';
 import './cmac';
 import './ccm';
+import './xts';
 import './postquantum';
 import './procedure';
 import './symmetric';

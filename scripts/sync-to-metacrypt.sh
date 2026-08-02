@@ -47,6 +47,7 @@ fix_imports() {
 fix_imports_blocks() {
   sed -i \
     -e "s|@/constants/block-types|@/features/blockly/core/constants/block-types|g" \
+    -e "s|@/constants/sbox-presets|@/features/blockly/core/constants/sbox-presets|g" \
     -e "s|@/blocks/procedure/blocks|@/features/blockly/core/blocks/procedure/blocks|g" \
     -e "s|@/utils/migration|@/features/blockly/core/utils/migration|g" \
     "$1"

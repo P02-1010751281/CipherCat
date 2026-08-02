@@ -2,7 +2,7 @@
 
 > [English](./INDEX.en.md) · [中文](./INDEX.md)
 
-**版本**: 2.9 | **日期**: 2026-08-02 | **总块数**: 110（另有 27 个函数模板）
+**版本**: 2.10 | **日期**: 2026-08-02 | **总块数**: 111（另有 27 个函数模板）
 
 ## 图例
 
@@ -56,4 +56,4 @@
 | 控制流 | — | 1 |
 | 函数封装 | [ecc-sbox.md](ecc-sbox.md) | 5 |
 
-> 注：NTT 变换块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`）在「数论 + 大数」与「后量子」文档中各列一次，去重后合计 110 个自定义积木块（见 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`）。ZUC 6 块 + CMAC/CCM/XTS/X25519/ASCON/HKDF/PBKDF2 各 1 块（`cmac_mac`/`ccm_encrypt`/`xts_encrypt`/`x25519`/`ascon_encrypt`/`hkdf`/`pbkdf2`）为 2026-08-02 新增（GB/T 33133 + SP 800-38B/C/E + RFC 7748 + SP 800-232 + RFC 5869 + RFC 8018）。
+> 注：NTT 变换块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`）在「数论 + 大数」与「后量子」文档中各列一次，去重后合计 111 个自定义积木块（见 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`）。ZUC 6 块 + CMAC/CCM/XTS/GCM/X25519/ASCON/HKDF/PBKDF2 各 1 块（`cmac_mac`/`ccm_encrypt`/`xts_encrypt`/`gcm_encrypt`/`x25519`/`ascon_encrypt`/`hkdf`/`pbkdf2`）为 2026-08-02 新增（GB/T 33133 + SP 800-38B/C/D/E + RFC 7748 + SP 800-232 + RFC 5869/8018）。

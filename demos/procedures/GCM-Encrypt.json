@@ -1,0 +1,66 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "demo_gcm_def_0001",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "GCM_Encrypt"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "gcm_encrypt",
+              "id": "demo_gcm_0002",
+              "inputs": {
+                "KEY": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_gcm_k_0003",
+                    "fields": {
+                      "NUM": "[0xfe,0xff,0xe9,0x92,0x86,0x65,0x73,0x1c,0x6d,0x6a,0x8f,0x94,0x67,0x30,0x83,0x08]"
+                    }
+                  }
+                },
+                "IV": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_gcm_iv_0004",
+                    "fields": {
+                      "NUM": "[0xca,0xfe,0xba,0xbe,0xfa,0xce,0xdb,0xad,0xde,0xca,0xf8,0x88]"
+                    }
+                  }
+                },
+                "AAD": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_gcm_aad_0005",
+                    "fields": {
+                      "NUM": "[]"
+                    }
+                  }
+                },
+                "MSG": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_gcm_m_0006",
+                    "fields": {
+                      "NUM": "[0xd9,0x31,0x32,0x25,0xf8,0x84,0x06,0xe5,0xa5,0x59,0x09,0xc5,0xaf,0xf5,0x26,0x9a,0x86,0xa7,0xa9,0x53,0x15,0x34,0xf7,0xda,0x2e,0x4c,0x30,0x3d,0x8a,0x31,0x8a,0x72,0x1c,0x3c,0x0c,0x95,0x95,0x68,0x09,0x53,0x2f,0xcf,0x0e,0x24,0x49,0xa6,0xb5,0x25,0xb1,0x6a,0xed,0xf5,0xaa,0x0d,0xe6,0x57,0xba,0x63,0x7b,0x39,0x1a,0xaf,0xd2,0x55]"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -2,7 +2,7 @@
 
 > [中文](./INDEX.md)
 
-**Version**: 2.9 | **Date**: 2026-08-02 | **Total blocks**: 110 (plus 27 function templates)
+**Version**: 2.10 | **Date**: 2026-08-02 | **Total blocks**: 111 (plus 27 function templates)
 
 ## Legend
 

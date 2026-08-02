@@ -50,7 +50,7 @@
 | 优先级 | 原语 | 说明 |
 |--------|------|------|
 | **P0** | RSA | 大数 + 模幂基础已具备，缺密钥生成/加解密封装 |
-| P1 | AEAD 族 | GCM 原子化（SP 800-38D 仅有文档）；CMAC 已于 2026-08-02 补齐（`cmac_mac`，AES-128 官方向量 + SM4 双模式），CCM 同日补齐（`ccm_encrypt`，SP 800-38C 附录 C Example 1-3 官方向量双语言通过），XTS 同日补齐（`xts_encrypt`，SP 800-38E，IEEE 1619-2007 向量 + cryptography 交叉验证），ASCON 同日补齐（`ascon_encrypt`，SP 800-232 Ascon-AEAD128，ascon-c 仓 LWC KAT 1089 例全过） |
+| P1 | AEAD 族 | 已全部补齐：CMAC（`cmac_mac`，SP 800-38B）、CCM（`ccm_encrypt`，SP 800-38C）、XTS（`xts_encrypt`，SP 800-38E）、GCM（`gcm_encrypt`，SP 800-38D）、ASCON（`ascon_encrypt`，SP 800-232）——均官方向量双语言通过 |
 | P1 | DRBG | SP 800-90A 仅有文档，无块 |
 | P2 | Argon2 / BLAKE2 / SHA-1 / MD5 | 教材常见，低优先 |
 | P3 | SM9 | 双线性对，实现难度极高 |
@@ -83,4 +83,4 @@
 
 - **v2.0 最大缺口（对称密码）已闭环**：AES/SM4/模式/填充/HMAC/KDF 全齐，且 4 个核心算法通过官方测试向量双语言验证。
 - 最强项：ML-KEM 全套底层 + 官方向量验证（国内可视化编程平台领先）。
-- 剩余缺口：RSA、协议封装（ECDH/ECDSA/SM2）、AEAD 族（GCM 原子化）、DRBG——均为 P1/P2 级，不影响密码学课程 90% 教学主线。ZUC 序列密码原子块已于 2026-08-02 补齐（S0/S1/L1/L2/F/Keystream，官方向量验证通过）；CMAC 同日补齐（SP 800-38B，AES-128 官方向量 + SM4 双模式）；CCM 同日补齐（SP 800-38C，AES-128 官方向量 Example 1-3 双语言通过）；XTS 同日补齐（SP 800-38E，IEEE 1619-2007 向量 + cryptography 交叉验证）；X25519 同日补齐（RFC 7748，§5.2 官方向量 V1/V2 双语言通过）；ASCON 同日补齐（SP 800-232 Ascon-AEAD128，LWC KAT 1089 例双语言全过）。
+- 剩余缺口：RSA、协议封装（ECDH/ECDSA/SM2）、DRBG——均为 P1/P2 级，不影响密码学课程 90% 教学主线。ZUC 序列密码原子块已于 2026-08-02 补齐（S0/S1/L1/L2/F/Keystream，官方向量验证通过）；CMAC 同日补齐（SP 800-38B，AES-128 官方向量 + SM4 双模式）；CCM 同日补齐（SP 800-38C，AES-128 官方向量 Example 1-3 双语言通过）；XTS 同日补齐（SP 800-38E，IEEE 1619-2007 向量 + cryptography 交叉验证）；X25519 同日补齐（RFC 7748，§5.2 官方向量 V1/V2 双语言通过）；ASCON 同日补齐（SP 800-232 Ascon-AEAD128，LWC KAT 1089 例双语言全过）；HKDF 同日补齐（RFC 5869）；PBKDF2 同日补齐（RFC 8018，SHA-256 官方向量 + SM3 国密同构）；GCM 同日补齐（SP 800-38D，TC2/TC3/TC16 官方向量 + pycryptodome 交叉）——AEAD 族全部闭环。

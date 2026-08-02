@@ -57,3 +57,9 @@
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
 | `ascon_encrypt` | 1 | value(→) | Bytes&IntList&IntList&Bytes→Bytes | Ascon-AEAD128(key, nonce, ad, msg) → 密文‖128 位标签；320 位置换（rate 128 位，12/8 轮），little-endian；官方向量（ascon-c 仓 LWC KAT 1089 例全过） |
+
+## 认证加密 GCM (NIST SP 800-38D)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `gcm_encrypt` | 1 | value(→) | Bytes&IntList&IntList&Bytes→Bytes | GCM-Encrypt(key, iv, aad, msg) → 密文‖128 位标签；GHASH（GF(2^128)，R=0xE1‖0^120）+ GCTR；iv 12 字节时 J0 = iv‖0^31‖1 否则 GHASH 派生；官方向量（SP 800-38D TC2/TC3/TC16）+ pycryptodome 交叉 |

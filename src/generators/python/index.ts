@@ -15,6 +15,7 @@ import './x25519';
 import './ascon';
 import './hkdf';
 import './pbkdf2';
+import './gcm';
 import './postquantum';
 import './procedure';
 import './symmetric';

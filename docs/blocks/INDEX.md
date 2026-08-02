@@ -2,7 +2,7 @@
 
 > [English](./INDEX.en.md) · [中文](./INDEX.md)
 
-**版本**: 2.1 | **日期**: 2026-07-30 | **总块数**: 98（另有 27 个函数模板）
+**版本**: 2.2 | **日期**: 2026-08-02 | **总块数**: 103（另有 27 个函数模板）
 
 ## 图例
 
@@ -14,16 +14,17 @@
 
 ## 标准映射
 
-| 标准号 | 简称 | 文档目录 |
+|| 标准号 | 简称 | 文档目录 |
 |--------|------|---------|
-| FIPS 197 | FIPS 197 (AES) | `fips197-AES/` |
-| FIPS 180-4 | FIPS 180-4 (SHA-2) | `fips180-4-SHA2/` |
-| FIPS 202 | FIPS 202 (SHA-3) | `fips202-SHA3/` |
-| FIPS 203 | FIPS 203 (ML-KEM) | `fips203-ML-KEM/` |
-| FIPS 204 | FIPS 204 (ML-DSA) | `fips204-ML-DSA/` |
-| GM/T 0002 | GB/T 32907 (SM4) | `gbt32907-SM4/` |
-| GM/T 0004 | GB/T 32905 (SM3) | `gbt32905-SM3/` |
-| NIST SP 800-38 | SP 800-38 (分组模式) | — |
+|| FIPS 197 | FIPS 197 (AES) | `fips197-AES/` |
+|| FIPS 180-4 | FIPS 180-4 (SHA-2) | `fips180-4-SHA2/` |
+|| FIPS 202 | FIPS 202 (SHA-3) | `fips202-SHA3/` |
+|| FIPS 203 | FIPS 203 (ML-KEM) | `fips203-ML-KEM/` |
+|| FIPS 204 | FIPS 204 (ML-DSA) | `fips204-ML-DSA/` |
+|| GM/T 0002 | GB/T 32907 (SM4) | `gbt32907-SM4/` |
+|| GM/T 0004 | GB/T 32905 (SM3) | `gbt32905-SM3/` |
+|| GB/T 33133 | GB/T 33133 (ZUC) | `gbt33133-ZUC/` |
+|| NIST SP 800-38 | SP 800-38 (分组模式) | — |
 | RFC 4648 | RFC 4648 (Base64) | — |
 | RFC 2315 | RFC 2315 (PKCS#7) | — |
 | RFC 5869 | RFC 5869 (HKDF) | — |
@@ -48,10 +49,11 @@
 | 数论 + 大数 | [numtheory.md](numtheory.md) | 17 |
 | 位运算 + 逻辑 | [bitwise-logic.md](bitwise-logic.md) | 11 |
 | 数据 + 编码 | [data-encoding.md](data-encoding.md) | 14 |
-| ECC | [ecc-sbox.md](ecc-sbox.md) | 5 |
-| S-Box | [ecc-sbox.md](ecc-sbox.md) | 4 |
-| 数组 | — | 1 |
+|| ECC | [ecc-sbox.md](ecc-sbox.md) | 5 |
+|| S-Box | [ecc-sbox.md](ecc-sbox.md) | 4 |
+|| ZUC 序列密码 | [zuc.md](zuc.md) | 5 |
+|| 数组 | — | 1 |
 | 控制流 | — | 1 |
 | 函数封装 | [ecc-sbox.md](ecc-sbox.md) | 5 |
 
-> 注：NTT 变换块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`）在「数论 + 大数」与「后量子」文档中各列一次，去重后合计 98 个自定义积木块（见 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`）。
+> 注：NTT 变换块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`）在「数论 + 大数」与「后量子」文档中各列一次，去重后合计 103 个自定义积木块（见 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`）。ZUC 5 块（`zuc_s0`/`zuc_s1`/`zuc_l1`/`zuc_l2`/`zuc_f`）为 2026-08-02 新增（GB/T 33133 原子块）。

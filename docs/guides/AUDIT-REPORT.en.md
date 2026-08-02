@@ -43,7 +43,7 @@
 | SHA-3 family | Keccak primitives + template | standalone SHA3-xxx wrapper blocks |
 | ECC | curve ops | ECDH/ECDSA protocol wrappers |
 | SM2 | point-mul / curve params (template) | signature / encryption / key-exchange wrappers |
-| ZUC | — | LFSR / bit recombination / nonlinear F blocks |
+| ZUC | S0/S1 atomic + L1/L2 + nonlinear F (2026-08-02) | full keystream assembly (LFSR/BR chain + work-mode template) |
 
 ### ❌ Missing (by priority)
 
@@ -62,7 +62,7 @@
 | **SM3** | GM/T 0004 / GB/T 32905 | ✅ pad+compress | ✅ + HMAC-SM3 + one-click hash (template) |
 | **SM4** | GM/T 0002 / GB/T 32907 | ❌ P0 | ✅ full rounds + 32-round template + official vector |
 | **SM2** | GM/T 0003 / GB/T 32918 | ⚠️ composable | ⚠️ point-mul vector PASS; sig/enc/KEX pending |
-| **ZUC** | GM/T 0001 / GB/T 33133 | ❌ | ❌ (stream cipher, hard) |
+| **ZUC** | GM/T 0001 / GB/T 33133 | ❌ | ✅ S0/S1/L1/L2/F atomic blocks (official vectors PASS ×2), keystream assembly pending template |
 | **SM9** | GM/T 0044 / GB/T 38635 | ❌ | ❌ (bilinear pairing, extremely hard) |
 | SM1 / SM7 | — | N/A | N/A (undisclosed algorithms) |
 
@@ -83,4 +83,4 @@ Domestic PQC: CAC post-quantum working group in progress; CipherCat's full ML-KE
 
 - **v2.0's biggest gap (symmetric crypto) is closed**: AES/SM4/modes/padding/HMAC/KDF all present, with 4 core algorithms passing official test vectors in both languages.
 - Strongest: full ML-KEM primitive set + official-vector verification (leading among visual programming platforms).
-- Remaining gaps: RSA, protocol wrappers (ECDH/ECDSA/SM2), stream cipher (ZUC), AEAD family (ASCON/CMAC/CCM/XTS), DRBG — all P1/P2, not affecting the 90% teaching core.
+- Remaining gaps: RSA, protocol wrappers (ECDH/ECDSA/SM2), AEAD family (ASCON/CMAC/CCM/XTS), DRBG — all P1/P2, not affecting the 90% teaching core. ZUC stream-cipher atomic blocks added 2026-08-02 (S0/S1/L1/L2/F, official vectors PASS).

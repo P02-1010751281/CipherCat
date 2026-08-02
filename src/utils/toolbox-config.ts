@@ -9,6 +9,7 @@ import { BIT_BLOCK_TYPES } from '@/blocks/bitwise';
 import { ALL_BLOCK_TYPES as HASH_BLOCK_TYPES } from '@/blocks/hash';
 import { NT_BLOCK_TYPES } from '@/blocks/numtheory';
 import { ECC_BLOCK_TYPES } from '@/blocks/ecc';
+import { ZUC_BLOCK_TYPES } from '@/blocks/zuc';
 import {
   PQ_BASIC_BLOCK_TYPES,
   PQ_ADVANCED_BLOCK_TYPES,
@@ -179,6 +180,13 @@ export function createToolboxConfig() {
     contents: ECC_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
   };
 
+  const zuc = {
+    kind: 'category',
+    name: msg.CRYPTO_CATEGORY_ZUC || 'ZUC Stream Cipher',
+    colour: '#8E44AD',
+    contents: ZUC_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+  };
+
   const postquantumBasic = {
     kind: 'category',
     name: msg.CRYPTO_CATEGORY_POSTQUANTUM_BASIC || 'Post-Quantum Basic',
@@ -217,7 +225,7 @@ export function createToolboxConfig() {
     kind: 'categoryToolbox' as const,
     contents: [
       ctrl, variable, math, array, data, bit, logicUnit, sbox, hash, symmetric,
-      numtheory, ecc, postquantumBasic, postquantumAdvanced,
+      numtheory, ecc, zuc, postquantumBasic, postquantumAdvanced,
       procedureNative, cryptoTemplates,
     ],
   };

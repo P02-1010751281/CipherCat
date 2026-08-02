@@ -2,7 +2,7 @@
 
 > [中文](./INDEX.md)
 
-**Version**: 2.1 | **Date**: 2026-07-30 | **Total blocks**: 98 (plus 27 function templates)
+**Version**: 2.2 | **Date**: 2026-08-02 | **Total blocks**: 103 (plus 27 function templates)
 
 ## Legend
 
@@ -23,6 +23,7 @@
 | FIPS 204 | FIPS 204 (ML-DSA) | `fips204-ML-DSA/` |
 | GM/T 0002 | GB/T 32907 (SM4) | `gbt32907-SM4/` |
 | GM/T 0004 | GB/T 32905 (SM3) | `gbt32905-SM3/` |
+| GB/T 33133 | GB/T 33133 (ZUC) | `gbt33133-ZUC/` |
 | NIST SP 800-38 | SP 800-38 (block modes) | — |
 | RFC 4648 | RFC 4648 (Base64) | — |
 | RFC 2315 | RFC 2315 (PKCS#7) | — |
@@ -48,8 +49,9 @@
 | Data + encoding | [data-encoding.md](data-encoding.en.md) | 14 |
 | ECC | [ecc-sbox.md](ecc-sbox.en.md) | 5 |
 | S-Box | [ecc-sbox.md](ecc-sbox.en.md) | 4 |
+| ZUC stream cipher | [zuc.md](zuc.en.md) | 5 |
 | Arrays | — | 1 |
 | Control flow | — | 1 |
 | Function wrapping | [ecc-sbox.md](ecc-sbox.en.md) | 5 |
 
-> Note: NTT blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`) are listed once in both "Number theory + big int" and "Post-quantum" docs; after dedup the total is 98 custom blocks (see `ALL_BLOCK_TYPES` in `src/blocks/index.ts`).
+> Note: NTT blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`) are listed once in both "Number theory + big int" and "Post-quantum" docs; after dedup the total is 103 custom blocks (see `ALL_BLOCK_TYPES` in `src/blocks/index.ts`). ZUC 5 blocks (`zuc_s0`/`zuc_s1`/`zuc_l1`/`zuc_l2`/`zuc_f`) added 2026-08-02 (GB/T 33133 atomic blocks).

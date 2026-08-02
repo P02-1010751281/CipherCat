@@ -7,6 +7,7 @@ import './sbox';
 import './hash';
 import './numtheory';
 import './ecc';
+import './zuc';
 import './postquantum';
 import './procedure';
 import './symmetric';

@@ -13,6 +13,7 @@
 
 | Doc | Audience | Description |
 |------|------|------|
+| [BLOCKLY-GUIDE.en.md](./guides/BLOCKLY-GUIDE.en.md) | Users/Devs | Blockly usage guide: editor ops, type system, function templates, algorithm assembly examples |
 | [DEMO.md](./guides/DEMO.en.md) | Users/Devs | Demo guide index (per algorithm: SM4/AES/hash/SM2/post-quantum, with official-vector verification) |
 | [ARCHITECTURE.md](./guides/ARCHITECTURE.en.md) | Devs | System architecture, data flow, module organization, type system |
 | [DEVELOPMENT.md](./guides/DEVELOPMENT.en.md) | Devs | Environment setup, adding blocks, i18n, code style |

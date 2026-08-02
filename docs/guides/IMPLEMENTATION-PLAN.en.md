@@ -3,6 +3,8 @@
 > [中文](./IMPLEMENTATION-PLAN.md)
 
 > Version v2.0 | 2026-07-18 | Three-layer primitive system + complete milestones
+>
+> **Implementation status: COMPLETED (2026-08-02)** — historical design record. Milestones M1-M4 fully delivered (symmetric crypto, HMAC/KDF, ML-KEM wrappers, 28 templates, 4 official-vector PASS). Current state: [AUDIT-REPORT.en.md](./AUDIT-REPORT.en.md) v3.0.
 
 ## 1. Current Baseline
 

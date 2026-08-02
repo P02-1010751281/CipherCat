@@ -15,6 +15,9 @@
       </button>
       <h1 class="docs-title">{{ ui("docsTitle") }}</h1>
       <div class="header-spacer" />
+      <button class="header-btn lang-toggle" @click="toggleLocale">
+        {{ currentLocale === 'zh' ? 'EN' : '中文' }}
+      </button>
     </header>
 
     <div class="docs-body">
@@ -116,7 +119,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
-import { ui, uiLocaleRef } from '@/composables/locale';
+import { ui, uiLocaleRef, useBlocklyLocale } from '@/composables/locale';
 import {
   renderMarkdown,
   getCategoryLabel,
@@ -272,6 +275,12 @@ async function renderMermaid() {
 
 function goBack() {
   router.push('/');
+}
+
+// 文档语言切换（同步全局 locale，触达 buildCategories 重建）
+const { setLocale } = useBlocklyLocale();
+function toggleLocale() {
+  setLocale(currentLocale.value === 'zh' ? 'en' : 'zh-hans');
 }
 
 function rebuildCategories() {

@@ -13,6 +13,7 @@
 
 | 文档 | 受众 | 说明 |
 |------|------|------|
+| [BLOCKLY-GUIDE.md](./guides/BLOCKLY-GUIDE.md) | 用户/开发者 | Blockly 使用指南：编辑器操作、类型系统、函数模板、算法拼装样例 |
 | [DEMO.md](./guides/DEMO.md) | 用户/开发者 | 演示指南索引（按算法拆分：SM4/AES/哈希/SM2/后量子，含官方向量验证） |
 | [ARCHITECTURE.md](./guides/ARCHITECTURE.md) | 开发者 | 系统架构、数据流、模块组织、类型系统 |
 | [DEVELOPMENT.md](./guides/DEVELOPMENT.md) | 开发者 | 环境搭建、添加积木块步骤、i18n、代码风格 |
@@ -69,9 +70,10 @@ DEVELOPMENT.md         ← 开发操作指南（引用 RULES.md）
     ▼
 ARCHITECTURE.md        ← 系统架构说明
     │
+    ├── BLOCKLY-GUIDE.md         ← Blockly 使用指南（用户操作 + 拼装样例）
     ├── DEMO.md                  ← 演示指南索引（按算法，见 demos/）
-    ├── IMPLEMENTATION-PLAN.md   ← 实施路线图（引用 ARCHITECTURE）
-    └── AUDIT-REPORT.md          ← 原语覆盖审计
+    ├── IMPLEMENTATION-PLAN.md   ← 实施路线图（已实施完成，历史记录）
+    └── AUDIT-REPORT.md          ← 原语覆盖审计（v3.0 现状）
 ```
 
 跨项目同步计划沉淀于 `.codestable/compound/sync-plan.md`（CodeStable 产物，脚本 `scripts/sync-to-metacrypt.sh`）。

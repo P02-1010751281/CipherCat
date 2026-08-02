@@ -30,7 +30,7 @@
 - ★ **SM4 全轮**：S-box（独立 `sm4_sbox` 块）/轮函数/密钥扩展 + 32 轮模板
 - ★ **分组模式**：ECB/CBC/CTR（原子块 + 模板）+ PKCS#7/Zero 填充
 - ★ **HMAC**：HMAC-SHA256 / HMAC-SM3（JS/Python 双生成器）
-- ★ **KDF**：PBKDF2 / HKDF（模板，PBKDF2 1000 轮）
+- ★ **KDF**：PBKDF2（模板，1000 轮）/ HKDF（原子块 `hkdf`，RFC 5869 §A.1 官方向量双语言通过 + 模板）
 - ★ **ML-KEM 一键封装**：KeyGen / Encaps 模板（FIPS 203 原子链）
 - ★ **官方向量验证**：SM4-Sbox（GM/T 0002）/ SM3（GB/T 32905）/ SM2 点乘（GB/T 32918.5）/ ML-KEM-512 Encaps（FIPS 203）双语言 PASS（`scripts/verify-demo.ts` harness）
 - 原有：位运算全系列 / CSV 自定义 S-box / SHA-256 / Keccak-SHA-3 海绵 / SM3 pad+compress / SHAKE / 模运算 / NTT-INTT / ECC 点运算 / ML-KEM 底层原语 / 类型约束系统

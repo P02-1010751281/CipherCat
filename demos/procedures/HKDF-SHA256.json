@@ -1,0 +1,66 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "demo_hkdf_def_0001",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "HKDF_Sha256"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "hkdf",
+              "id": "demo_hkdf_0002",
+              "inputs": {
+                "SALT": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_hkdf_salt_0003",
+                    "fields": {
+                      "NUM": "[0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c]"
+                    }
+                  }
+                },
+                "IKM": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_hkdf_ikm_0004",
+                    "fields": {
+                      "NUM": "[0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b]"
+                    }
+                  }
+                },
+                "INFO": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_hkdf_info_0005",
+                    "fields": {
+                      "NUM": "[0xf0,0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,0xf9]"
+                    }
+                  }
+                },
+                "LEN": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_hkdf_len_0006",
+                    "fields": {
+                      "NUM": "42"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

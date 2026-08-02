@@ -32,6 +32,12 @@
 | `hash_sm3_pad_hex` | 1 | value(→) | null→Bytes | Hex填充 |
 | `hash_sm3_compress` | 1 | value(→) | null&null→null | 64轮压缩函数 |
 
+## 密钥派生 HKDF (RFC 5869)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `hkdf` | 1 | value(→) | IntList&Bytes&IntList&Number→Bytes | HKDF(salt, ikm, info, keyLen) → 派生密钥；Extract = HMAC-SHA256(salt, IKM)，Expand = HMAC(PRK, T‖info‖i) 串联截断；salt 空按 32 零字节兜底；官方向量（RFC 5869 §A.1） |
+
 ## XOF / PRF (FIPS 202 §6)
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |

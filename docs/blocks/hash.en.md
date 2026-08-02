@@ -32,6 +32,12 @@
 | `hash_sm3_pad_hex` | 1 | value(→) | null→Bytes | hex padding |
 | `hash_sm3_compress` | 1 | value(→) | null&null→null | 64-round compression |
 
+## Key Derivation HKDF (RFC 5869)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `hkdf` | 1 | value(→) | IntList&Bytes&IntList&Number→Bytes | HKDF(salt, ikm, info, keyLen) → derived key; Extract = HMAC-SHA256(salt, IKM), Expand = HMAC(PRK, T‖info‖i) concat-truncate; empty salt → 32 zero bytes; official vectors (RFC 5869 §A.1) |
+
 ## XOF / PRF (FIPS 202 §6)
 
 | Block | Layer | Connection | Input→Output | Description |

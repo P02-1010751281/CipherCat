@@ -13,6 +13,7 @@ export * from './ccm';
 export * from './xts';
 export * from './x25519';
 export * from './ascon';
+export * from './hkdf';
 export * from './post-quantum';
 export * from './procedure';
 export * from './symmetric';
@@ -36,6 +37,7 @@ import { CCM_BLOCK_TYPES, type CcmBlockType } from './ccm';
 import { XTS_BLOCK_TYPES, type XtsBlockType } from './xts';
 import { X25519_BLOCK_TYPES, type X25519BlockType } from './x25519';
 import { ASCON_BLOCK_TYPES, type AsconBlockType } from './ascon';
+import { HKDF_BLOCK_TYPES, type HkdfBlockType } from './hkdf';
 import { PQ_BLOCK_TYPES, type PostQuantumBlockType } from './post-quantum';
 import {
   PROCEDURE_BLOCK_TYPES,
@@ -66,6 +68,7 @@ export const ALL_BLOCK_TYPES = [
   ...XTS_BLOCK_TYPES,
   ...X25519_BLOCK_TYPES,
   ...ASCON_BLOCK_TYPES,
+  ...HKDF_BLOCK_TYPES,
   ...PQ_BLOCK_TYPES,
   ...PROCEDURE_BLOCK_TYPES,
   ...SYMMETRIC_BLOCK_TYPES,
@@ -88,6 +91,7 @@ export type AllBlockType =
   | XtsBlockType
   | X25519BlockType
   | AsconBlockType
+  | HkdfBlockType
   | PostQuantumBlockType
   | ProcedureBlockType
   | SymmetricBlockType

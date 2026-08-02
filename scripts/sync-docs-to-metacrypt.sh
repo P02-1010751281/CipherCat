@@ -96,9 +96,11 @@ for ext in md en.md; do
 done
 
 echo "== 同步部署副本 backend/docs（容器 DOCS_ROOT=/app/docs 读取） =="
+# 注意：用 metacrypt 自身 docs/ 全量（共享文档已在上方同步进来 + 平台文档 USAGE/DEPLOYMENT/API 等），
+# 不能用 CipherCat docs 覆盖（会丢平台文档）
 rm -rf "$MC_ROOT/backend/docs"
-cp -r "$CC_ROOT/docs" "$MC_ROOT/backend/docs"
-echo "  backend/docs/ ($(find "$CC_ROOT/docs" -type f | wc -l) files)"
+cp -r "$MC_ROOT/docs" "$MC_ROOT/backend/docs"
+echo "  backend/docs/ ($(find "$MC_ROOT/docs" -type f | wc -l) files)"
 
 echo "== 同步完成 =="
 echo "提示：同步后需更新 metacrypt docs/INDEX.md、重启 mc-backend 容器并运行死链检查（见脚本头部约定）。"

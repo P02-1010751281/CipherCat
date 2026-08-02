@@ -26,11 +26,18 @@ renderer.code = ({ text, lang }) => {
   return `<pre><code class="hljs language-${language}">${highlighted}</code></pre>`;
 };
 
-renderer.table = (token) => {
-  const header = token.header.map((h) => `<th>${h.text}</th>`).join('');
+renderer.table = function (token) {
+  // 单元格用子 token 渲染（保留表格内的链接/行内格式），而不是 c.text 纯文本
+  const renderCell = (c: { text: string; tokens?: unknown[] }) =>
+    c.tokens && c.tokens.length
+      ? (this as Renderer).parser.parseInline(c.tokens as Parameters<
+          Renderer['parser']['parseInline']
+        >[0])
+      : c.text;
+  const header = token.header.map((h) => `<th>${renderCell(h)}</th>`).join('');
   const rows = token.rows
     .map((row) => {
-      const cells = row.map((c) => `<td>${c.text}</td>`).join('');
+      const cells = row.map((c) => `<td>${renderCell(c)}</td>`).join('');
       return `<tr>${cells}</tr>`;
     })
     .join('');

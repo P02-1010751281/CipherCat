@@ -8,7 +8,9 @@
 ## 特性
 
 - 🔮 **后量子密码** — NTT/INTT、编码压缩、SampleNTT 等全套后量子原语（最核心特色）
-- 🔐 **密码学全覆盖** — 对称密码（S-Box、位运算）、哈希函数（SM3/SHA）、数论运算
+- 🔐 **密码学全覆盖** — 对称密码（AES/SM4 全轮 + 模式）、哈希函数（SM3/SHA/HMAC）、数论运算
+- 🧮 **算法模板** — 28 个密码算法模板（拖出即用，自动预填原子链）
+- ✅ **官方向量验证** — SM4/SM3/SM2/ML-KEM 双语言通过官方测试向量
 - 🧩 **可视化编程** — 拖拽积木块，像搭乐高一样写密码学代码
 - 🌐 **多语言** — 中英文界面，Blockly 积木块同步切换
 - 💻 **代码生成** — 一键生成 JavaScript / Python 可执行代码
@@ -40,6 +42,7 @@ npm run tauri:build  # 打包
 | 前端框架 | Vue 3 (Composition API + TypeScript) |
 | 可视化编程 | Blockly 12.x |
 | 代码高亮 | highlight.js |
+| 文档渲染 | marked + mermaid |
 | 桌面封装 | Tauri 2.x |
 | 构建工具 | Vite + vue-tsc |
 | 代码规范 | ESLint 9.x |
@@ -77,6 +80,8 @@ src/
 ├── utils/                      # 工具函数（toolbox-config / migration / markdown）
 ├── styles/                     # 全局样式 / CSS 变量
 └── assets/                     # 静态资源
+docs/                           # 文档体系（guides/ 核心 + blocks/ 索引 + demos/ + standards/ 33 算法规范）
+demos/                          # Blockly 工作区示例（含官方向量期望）
 ```
 
 ## 支持的密码学模块（98 个自定义积木块，13 类目）

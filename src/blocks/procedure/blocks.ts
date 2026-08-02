@@ -762,6 +762,11 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'pq_sample_poly_cbd', 'pq_ntt'],
     paramVarName: 'seed',
   },
+  // ZUC 密钥流：Keystream(key, iv, len) — key 连参数，iv/len 留空
+  proc_zuc_keystream: {
+    returnChain: ['variables_get', 'zuc_keystream'],
+    paramVarName: 'key',
+  },
   // AES 密钥扩展：10 轮迭代循环骨架
   proc_aes_key_schedule: {
     bodyState: iterateState(10),
@@ -994,6 +999,7 @@ _makeTemplateBlock('proc_hkdf', 'ikm', 'bytes', MSG.PROC_HKDF_LABEL || '🔧 HKD
 _makeTemplateBlock('proc_md_iterate', 'iv', 'int_list', MSG.PROC_MD_ITERATE_LABEL || '🔧 MD_Iterate', 'pqc');
 _makeTemplateBlock('proc_sponge_duplex', 'state', 'int_list', MSG.PROC_SPONGE_DUPLEX_LABEL || '🔧 Sponge_Duplex', 'pqc');
 _makeTemplateBlock('proc_mlkem_keygen', 'seed', 'seed', MSG.PROC_MLKEM_KEYGEN_LABEL || '🔧 ML_KEM_KeyGen', 'pqc');
+_makeTemplateBlock('proc_zuc_keystream', 'key', 'bytes', MSG.PROC_ZUC_KEYSTREAM_LABEL || '🔧 ZUC_Keystream', 'pqc');
 _makeTemplateBlock('proc_mode_ecb', 'data', 'bytes', MSG.PROC_MODE_ECB_LABEL || '🔧 ECB', 'mode');
 _makeTemplateBlock('proc_mode_cbc', 'data', 'bytes', MSG.PROC_MODE_CBC_LABEL || '🔧 CBC', 'mode');
 _makeTemplateBlock('proc_mode_ctr', 'data', 'bytes', MSG.PROC_MODE_CTR_LABEL || '🔧 CTR', 'mode');

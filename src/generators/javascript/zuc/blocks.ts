@@ -169,3 +169,68 @@ javascriptGenerator.forBlock['zuc_f'] = function (block: Block): [string, number
     Order.ATOMIC,
   ];
 };
+
+/**
+ * ZUC 完整密钥流生成 (GB/T 33133 §5.6)。
+ *
+ * 实现：16 字 LFSR（31-bit，模 2^31-1 加法）+ 比特重组 BR + 非线性函数 F。
+ * 流程：密钥装入 → 32 轮初始化（LFSRWithInitialisationMode）→ 丢弃一轮 → 工作模式逐字输出。
+ */
+javascriptGenerator.forBlock['zuc_keystream'] = function (block: Block): [string, number] {
+  const key = javascriptGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
+  const iv = javascriptGenerator.valueToCode(block, 'IV', Order.ATOMIC) || '[]';
+  const len = javascriptGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '1';
+  const zucF = javascriptGenerator.provideFunction_('zucF', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(X0, X1, X2, R1, R2) {',
+    '  var rotl = ' + registerZucRotl() + ';',
+    '  var S = ' + registerZucS32() + ';',
+    '  var L1 = function (x) { x = x >>> 0; return (x ^ rotl(x, 2) ^ rotl(x, 10) ^ rotl(x, 18) ^ rotl(x, 24)) >>> 0; };',
+    '  var L2 = function (x) { x = x >>> 0; return (x ^ rotl(x, 8) ^ rotl(x, 14) ^ rotl(x, 22) ^ rotl(x, 30)) >>> 0; };',
+    '  var W = ((X0 ^ R1) + R2) >>> 0;',
+    '  var W1 = (R1 + X1) >>> 0;',
+    '  var W2 = (R2 ^ X2) >>> 0;',
+    '  var u = L1(((W1 << 16) | (W2 >>> 16)) >>> 0);',
+    '  var v = L2(((W2 << 16) | (W1 >>> 16)) >>> 0);',
+    '  var R1n = S(u);',
+    '  var R2n = S(v);',
+    '  return { W: W >>> 0, R1: R1n >>> 0, R2: R2n >>> 0 };',
+    '}',
+  ]);
+  const D = '[' + [0x44D7,0x26BC,0x626B,0x135E,0x5789,0x35E2,0x7135,0x09AF,0x4D78,0x2F13,0x6BC4,0x1AF1,0x5E26,0x3C4D,0x789A,0x47AC].join(',') + ']';
+  const fn = javascriptGenerator.provideFunction_('zucKeystream', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, iv, len) {',
+    '  var M = 0x7FFFFFFF;',
+    '  var addm = function (a, b) { var c = (a >>> 0) + (b >>> 0); return ((c & M) + (c >>> 31)) >>> 0; };',
+    '  var mulByPow2 = function (x, k) { x = x >>> 0; return ((x << k) | (x >>> (31 - k))) & M; };',
+    '  var D = ' + D + ';',
+    '  var S = [];',
+    '  for (var i = 0; i < 16; i++) S[i] = ((key[i] << 23) | (D[i] << 8) | iv[i]) >>> 0;',
+    '  var R1 = 0, R2 = 0, X = [0, 0, 0, 0];',
+    '  var br = function () {',
+    '    X[0] = ((((S[15] & 0x7FFF8000) >>> 0) << 1) | (S[14] & 0xFFFF)) >>> 0;',
+    '    X[1] = ((((S[11] & 0xFFFF) >>> 0) << 16) | (S[9] >>> 15)) >>> 0;',
+    '    X[2] = ((((S[7] & 0xFFFF) >>> 0) << 16) | (S[5] >>> 15)) >>> 0;',
+    '    X[3] = ((((S[2] & 0xFFFF) >>> 0) << 16) | (S[0] >>> 15)) >>> 0;',
+    '  };',
+    '  var f = function () {',
+    '    var r = ' + zucF + '(X[0], X[1], X[2], R1, R2);',
+    '    R1 = r.R1; R2 = r.R2;',
+    '    return r.W;',
+    '  };',
+    '  var lfsr = function (u) {',
+    '    var fv = S[0];',
+    '    var pairs = [[0,8],[4,20],[10,21],[13,17],[15,15]];',
+    '    for (var j = 0; j < 5; j++) fv = addm(fv, mulByPow2(S[pairs[j][0]], pairs[j][1]));',
+    '    fv = addm(fv, u);',
+    '    var next = []; for (var k = 1; k < 16; k++) next.push(S[k]); next.push(fv);',
+    '    S = next;',
+    '  };',
+    '  for (var t = 0; t < 32; t++) { br(); var w = f(); lfsr(w >>> 1); }',
+    '  br(); f(); lfsr(0);',
+    '  var out = [];',
+    '  for (var u2 = 0; u2 < len; u2++) { br(); out.push((f() ^ X[3]) >>> 0); lfsr(0); }',
+    '  return out;',
+    '}',
+  ]);
+  return [fn + '(' + key + ', ' + iv + ', ' + len + ')', Order.ATOMIC];
+};

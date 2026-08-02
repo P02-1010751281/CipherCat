@@ -156,3 +156,73 @@ pythonGenerator.forBlock['zuc_f'] = function (block: Block): [string, number] {
     Order.ATOMIC,
   ];
 };
+
+/**
+ * ZUC 完整密钥流生成 (GB/T 33133 §5.6)。
+ * 实现：16 字 LFSR（31-bit，模 2^31-1 加法）+ 比特重组 BR + 非线性函数 F。
+ */
+pythonGenerator.forBlock['zuc_keystream'] = function (block: Block): [string, number] {
+  const key = pythonGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
+  const iv = pythonGenerator.valueToCode(block, 'IV', Order.ATOMIC) || '[]';
+  const len = pythonGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '1';
+  const rotl = registerZucRotl();
+  const s32 = registerZucS32();
+
+  const fn = pythonGenerator.provideFunction_('zuc_keystream', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, iv, length):',
+    '    M = 0x7FFFFFFF',
+    '    def addm(a, b):',
+    '        c = (a & 0xFFFFFFFF) + (b & 0xFFFFFFFF)',
+    '        return ((c & M) + (c >> 31)) & 0xFFFFFFFF',
+    '    def mul_by_pow2(x, k):',
+    '        x &= 0xFFFFFFFF',
+    '        return ((x << k) | (x >> (31 - k))) & M',
+    '    D = ' + JSON.stringify([0x44D7,0x26BC,0x626B,0x135E,0x5789,0x35E2,0x7135,0x09AF,0x4D78,0x2F13,0x6BC4,0x1AF1,0x5E26,0x3C4D,0x789A,0x47AC]),
+    '    S = [((key[i] << 23) | (D[i] << 8) | iv[i]) & 0xFFFFFFFF for i in range(16)]',
+    '    R1 = 0',
+    '    R2 = 0',
+    '    X = [0, 0, 0, 0]',
+    '    def br():',
+    '        X[0] = ((((S[15] & 0x7FFF8000) << 1) | (S[14] & 0xFFFF)) & 0xFFFFFFFF)',
+    '        X[1] = ((((S[11] & 0xFFFF) << 16) | (S[9] >> 15)) & 0xFFFFFFFF)',
+    '        X[2] = ((((S[7] & 0xFFFF) << 16) | (S[5] >> 15)) & 0xFFFFFFFF)',
+    '        X[3] = ((((S[2] & 0xFFFF) << 16) | (S[0] >> 15)) & 0xFFFFFFFF)',
+    '    def f_step(X0, X1, X2, R1, R2):',
+    '        rotl = ' + rotl,
+    '        s32 = ' + s32,
+    '        def L1(x):',
+    '            x &= 0xFFFFFFFF',
+    '            return (x ^ rotl(x, 2) ^ rotl(x, 10) ^ rotl(x, 18) ^ rotl(x, 24)) & 0xFFFFFFFF',
+    '        def L2(x):',
+    '            x &= 0xFFFFFFFF',
+    '            return (x ^ rotl(x, 8) ^ rotl(x, 14) ^ rotl(x, 22) ^ rotl(x, 30)) & 0xFFFFFFFF',
+    '        W = ((X0 ^ R1) + R2) & 0xFFFFFFFF',
+    '        W1 = (R1 + X1) & 0xFFFFFFFF',
+    '        W2 = (R2 ^ X2) & 0xFFFFFFFF',
+    '        u = L1(((W1 << 16) | (W2 >> 16)) & 0xFFFFFFFF)',
+    '        v = L2(((W2 << 16) | (W1 >> 16)) & 0xFFFFFFFF)',
+    '        return (W & 0xFFFFFFFF, s32(u) & 0xFFFFFFFF, s32(v) & 0xFFFFFFFF)',
+    '    def f():',
+    '        r = f_step(X[0], X[1], X[2], R1, R2)',
+    '        return r',
+    '    def lfsr(u):',
+    '        fv = S[0]',
+    '        for i, k in [(0,8),(4,20),(10,21),(13,17),(15,15)]:',
+    '            fv = addm(fv, mul_by_pow2(S[i], k))',
+    '        fv = addm(fv, u)',
+    '        S[:] = S[1:] + [fv]',
+    '    for _ in range(32):',
+    '        br()',
+    '        w, R1, R2 = f()',
+    '        lfsr(w >> 1)',
+    '    br(); _, R1, R2 = f(); lfsr(0)',
+    '    out = []',
+    '    for _ in range(length):',
+    '        br()',
+    '        w, R1, R2 = f()',
+    '        out.append((w ^ X[3]) & 0xFFFFFFFF)',
+    '        lfsr(0)',
+    '    return out',
+  ]);
+  return [fn + '(' + key + ', ' + iv + ', ' + len + ')', Order.ATOMIC];
+};

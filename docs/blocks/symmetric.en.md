@@ -33,3 +33,9 @@
 |----|----|------|----------|------|
 | `pad_pkcs7` | 1 | value(→) | Bytes→Bytes | RFC 2315 §10.3 |
 | `pad_zero` | 1 | value(→) | Bytes→Bytes | generic |
+
+## Block MAC (NIST SP 800-38B)
+
+| Block | Layer | Connection | Input→Output | Description |
+|----|----|------|----------|------|
+| `cmac_mac` | 1 | value(→) | Bytes&Bytes→Bytes | CMAC(key, msg) → 16-byte tag; CIPHER dropdown AES-128 (official vectors) / SM4 (GB/T 15852 counterpart) |

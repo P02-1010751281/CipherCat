@@ -2,7 +2,7 @@
 
 > [English](./INDEX.en.md) · [中文](./INDEX.md)
 
-**版本**: 2.2 | **日期**: 2026-08-02 | **总块数**: 103（另有 27 个函数模板）
+**版本**: 2.3 | **日期**: 2026-08-02 | **总块数**: 104（另有 27 个函数模板）
 
 ## 图例
 
@@ -42,7 +42,7 @@
 
 | 类目 | 文档 | 块数 |
 |------|------|------|
-| 对称密码 (AES+SM4) | [symmetric.md](symmetric.md) | 6 |
+|| 对称密码 (AES+SM4+CMAC) | [symmetric.md](symmetric.md) | 7 |
 | 模式 + 填充 | [symmetric.md](symmetric.md) | 6 |
 | 哈希 (SHA-2/SM3/SHA-3/HMAC) | [hash.md](hash.md) | 18 |
 | 后量子 (ML-KEM) | [post-quantum.md](post-quantum.md) | 15 |
@@ -56,4 +56,4 @@
 | 控制流 | — | 1 |
 | 函数封装 | [ecc-sbox.md](ecc-sbox.md) | 5 |
 
-> 注：NTT 变换块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`）在「数论 + 大数」与「后量子」文档中各列一次，去重后合计 103 个自定义积木块（见 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`）。ZUC 5 块（`zuc_s0`/`zuc_s1`/`zuc_l1`/`zuc_l2`/`zuc_f`）为 2026-08-02 新增（GB/T 33133 原子块）。
+> 注：NTT 变换块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`）在「数论 + 大数」与「后量子」文档中各列一次，去重后合计 104 个自定义积木块（见 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`）。ZUC 6 块 + CMAC 1 块（`cmac_mac`）为 2026-08-02 新增（GB/T 33133 + SP 800-38B）。

@@ -33,3 +33,9 @@
 |----|----|------|----------|------|
 | `pad_pkcs7` | 1 | value(→) | Bytes→Bytes | RFC 2315 §10.3 |
 | `pad_zero` | 1 | value(→) | Bytes→Bytes | 通用 |
+
+## 分组 MAC (NIST SP 800-38B)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `cmac_mac` | 1 | value(→) | Bytes&Bytes→Bytes | CMAC(key, msg) → 16 字节认证标签；CIPHER 下拉 AES-128（官方向量）/ SM4（GB/T 15852 同类） |

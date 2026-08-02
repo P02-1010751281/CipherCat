@@ -32,6 +32,7 @@ set -e
 fix_imports() {
   sed -i \
     -e "s|@/constants/block-types|@/features/blockly/core/constants/block-types|g" \
+    -e "s|@/constants/sbox-presets|@/features/blockly/core/constants/sbox-presets|g" \
     -e "s|@/blocks/procedure/blocks|@/features/blockly/core/blocks/procedure/blocks|g" \
     -e "s|@/utils/migration|@/features/blockly/core/utils/migration|g" \
     -e "s|'\./bit'|'./bitwise'|g" \
@@ -92,15 +93,17 @@ for gen in python javascript; do
   done)
 done
 
-# ─── 3. constants/block-types.ts 镜像（保留 metacrypt 专属 mcl-highlight.ts）───
-echo "[3/4] constants/block-types.ts"
+# ─── 3. constants/ 镜像（保留 metacrypt 专属 mcl-highlight.ts）───
+echo "[3/4] constants/"
 cp "$CIPHER/src/constants/block-types.ts" "$CORE/constants/block-types.ts"
 fix_imports_blocks "$CORE/constants/block-types.ts"
+cp "$CIPHER/src/constants/sbox-presets.ts" "$CORE/constants/sbox-presets.ts"
+fix_imports_blocks "$CORE/constants/sbox-presets.ts"
 
 # ─── 4. 核对清单 ───
 echo "[4/4] 核对"
 echo ""
-echo "已同步（自动）：blocks/ 全部、generators/{python,javascript}/ 全部、constants/block-types.ts"
+echo "已同步（自动）：blocks/ 全部、generators/{python,javascript}/ 全部、constants/block-types.ts + sbox-presets.ts"
 echo ""
 
 # ─── 手工核对项（同步后需检查）───

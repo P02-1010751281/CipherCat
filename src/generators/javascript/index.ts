@@ -11,6 +11,7 @@ import './zuc';
 import './cmac';
 import './ccm';
 import './xts';
+import './x25519';
 import './postquantum';
 import './procedure';
 import './symmetric';

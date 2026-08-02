@@ -12,6 +12,12 @@
 | `ecc_add` | 1 | stmt(→→) | null&null&null→— |
 | `ecc_multiply` | 1 | stmt(→→) | null&null→— |
 
+## Montgomery 曲线 (RFC 7748)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `x25519` | 1 | value(→) | IntList&IntList→Bytes | X25519(k, u) → 共享密钥 32 字节；k 自动 clamp，u 坐标清位 255；Montgomery ladder p=2^255-19；官方向量（RFC 7748 §5.2 V1/V2） |
+
 ## S-Box (通用)
 
 | 块 | 层 | 连接 | 输入→输出 |

@@ -83,4 +83,4 @@
 
 - **v2.0 最大缺口（对称密码）已闭环**：AES/SM4/模式/填充/HMAC/KDF 全齐，且 4 个核心算法通过官方测试向量双语言验证。
 - 最强项：ML-KEM 全套底层 + 官方向量验证（国内可视化编程平台领先）。
-- 剩余缺口：RSA、协议封装（ECDH/ECDSA/SM2）、AEAD 族（ASCON/GCM 原子化）、DRBG——均为 P1/P2 级，不影响密码学课程 90% 教学主线。ZUC 序列密码原子块已于 2026-08-02 补齐（S0/S1/L1/L2/F/Keystream，官方向量验证通过）；CMAC 同日补齐（SP 800-38B，AES-128 官方向量 + SM4 双模式）；CCM 同日补齐（SP 800-38C，AES-128 官方向量 Example 1-3 双语言通过）；XTS 同日补齐（SP 800-38E，IEEE 1619-2007 向量 + cryptography 交叉验证）。
+- 剩余缺口：RSA、协议封装（ECDH/ECDSA/SM2）、AEAD 族（ASCON/GCM 原子化）、DRBG——均为 P1/P2 级，不影响密码学课程 90% 教学主线。ZUC 序列密码原子块已于 2026-08-02 补齐（S0/S1/L1/L2/F/Keystream，官方向量验证通过）；CMAC 同日补齐（SP 800-38B，AES-128 官方向量 + SM4 双模式）；CCM 同日补齐（SP 800-38C，AES-128 官方向量 Example 1-3 双语言通过）；XTS 同日补齐（SP 800-38E，IEEE 1619-2007 向量 + cryptography 交叉验证）；X25519 同日补齐（RFC 7748，§5.2 官方向量 V1/V2 双语言通过）。

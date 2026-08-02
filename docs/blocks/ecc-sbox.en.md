@@ -12,6 +12,12 @@
 | `ecc_add` | 1 | stmt(→→) | null&null&null→— |
 | `ecc_multiply` | 1 | stmt(→→) | null&null→— |
 
+## Montgomery Curves (RFC 7748)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `x25519` | 1 | value(→) | IntList&IntList→Bytes | X25519(k, u) → 32-byte shared secret; k auto-clamped, u bit-255 cleared; Montgomery ladder p=2^255-19; official vectors (RFC 7748 §5.2 V1/V2) |
+
 ## S-Box (generic)
 
 | Block | Layer | Connection | Input→Output |

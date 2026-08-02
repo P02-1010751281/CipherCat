@@ -20,6 +20,7 @@ import { SYMMETRIC_BLOCK_TYPES } from '@/blocks/symmetric';
 import { CMAC_BLOCK_TYPES } from '@/blocks/cmac';
 import { CCM_BLOCK_TYPES } from '@/blocks/ccm';
 import { XTS_BLOCK_TYPES } from '@/blocks/xts';
+import { X25519_BLOCK_TYPES } from '@/blocks/x25519';
 
 export function createToolboxConfig() {
   const msg = Blockly.Msg as Record<string, string>;
@@ -194,7 +195,10 @@ export function createToolboxConfig() {
     kind: 'category',
     name: msg.CRYPTO_CATEGORY_ECC || 'Elliptic Curve',
     colour: '#16A085',
-    contents: ECC_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+    contents: [
+      ...ECC_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...X25519_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+    ],
   };
 
   const zuc = {

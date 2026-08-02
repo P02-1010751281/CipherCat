@@ -49,7 +49,7 @@
 
 | 优先级 | 原语 | 说明 |
 |--------|------|------|
-| **P0** | RSA | 大数 + 模幂基础已具备，缺密钥生成/加解密封装 |
+|| **P0** | RSA | ✅ 已补 5 块（`rsa_keygen`/`rsa_encrypt`/`rsa_decrypt`/`rsa_sign`/`rsa_verify`，FIPS 186-4 + PKCS#1 v1.5，cryptography 双向交叉验证） |
 | P1 | AEAD 族 | 已全部补齐：CMAC（`cmac_mac`，SP 800-38B）、CCM（`ccm_encrypt`，SP 800-38C）、XTS（`xts_encrypt`，SP 800-38E）、GCM（`gcm_encrypt`，SP 800-38D）、ASCON（`ascon_encrypt`，SP 800-232）——均官方向量双语言通过 |
 || P1 | DRBG | ✅ 已补 `drbg_generate`（SP 800-90A HMAC-DRBG SHA-256，NIST CAVP 480 例双语言通过） |
 || P2 | Argon2 / BLAKE2 / SHA-1 / MD5 | ✅ Argon2 已补（`argon2_hash`，RFC 9106 三组官方向量含中间块双语言通过）；SHA-1/MD5 仍缺（低优先） |
@@ -82,11 +82,12 @@
 | **M2: 对称密码** | 85 | AES + SM4 + 模式 + 填充 | ✅ |
 | **M3: 数学+辅助** | 94 | 模幂 / GF(2^m) / HMAC | ✅ |
 | **M4: 协议封装** | 111 | ML-KEM 封装 / KDF / 编码 | ✅ |
-|| **M5: 扩展** | ~130 | RSA / ZUC / ML-DSA / AEAD 族 | ✅ 主体完成（126 块；RSA 仍缺） |
+|| **M5: 扩展** | ~130 | RSA / ZUC / ML-DSA / AEAD 族 | ✅ 完成（131 块，standards 缺口全部清零） |
 
 ## 五、核心结论
 
 - **v2.0 最大缺口（对称密码）已闭环**：AES/SM4/模式/填充/HMAC/KDF 全齐，且 4 个核心算法通过官方测试向量双语言验证。
 - 最强项：ML-KEM 全套底层 + 官方向量验证（国内可视化编程平台领先）。
-- 剩余缺口：**RSA 仅剩**（大数 + 模幂基础已具备，缺密钥生成/加解密封装）。ZUC 序列密码原子块已于 2026-08-02 补齐（S0/S1/L1/L2/F/Keystream，官方向量验证通过）；CMAC 同日补齐（SP 800-38B）；CCM 同日补齐（SP 800-38C）；XTS 同日补齐（SP 800-38E）；X25519 同日补齐（RFC 7748）；ASCON 同日补齐（SP 800-232）；HKDF 同日补齐（RFC 5869）；PBKDF2 同日补齐（RFC 8018）；GCM 同日补齐（SP 800-38D）——AEAD 族全部闭环。
-- **2026-08-02 第二波补齐（签名/KDF/DRBG 族）**：EdDSA（RFC 8032）、ECDSA（RFC 6979 确定性 P-256）、SM2 签名（GB/T 32918.2）、ML-DSA（FIPS 204 ACVP 30/30）、SM9 4 块（GB/T 38635.2 双线性对）、DRBG（SP 800-90A CAVP 480 例）、Argon2（RFC 9106）、国密 RNG（GM/T 0103 + SM3-HMAC-DRBG）——全部官方向量双语言通过，standards 缺口清零（仅 RSA 与协议封装 ECDH/加密 待排）。
+- **standards 缺口全部清零**（131 块，仅剩协议封装 ECDH/加密/KEX 待排）。ZUC 序列密码原子块已于 2026-08-02 补齐（S0/S1/L1/L2/F/Keystream，官方向量验证通过）；CMAC 同日补齐（SP 800-38B）；CCM 同日补齐（SP 800-38C）；XTS 同日补齐（SP 800-38E）；X25519 同日补齐（RFC 7748）；ASCON 同日补齐（SP 800-232）；HKDF 同日补齐（RFC 5869）；PBKDF2 同日补齐（RFC 8018）；GCM 同日补齐（SP 800-38D）——AEAD 族全部闭环。
+- **2026-08-02 第二波补齐（签名/KDF/DRBG 族）**：EdDSA（RFC 8032）、ECDSA（RFC 6979 确定性 P-256）、SM2 签名（GB/T 32918.2）、ML-DSA（FIPS 204 ACVP 30/30）、SM9 4 块（GB/T 38635.2 双线性对）、DRBG（SP 800-90A CAVP 480 例）、Argon2（RFC 9106）、国密 RNG（GM/T 0103 + SM3-HMAC-DRBG）——全部官方向量双语言通过。
+- **RSA 收官（2026-08-02）**：5 块（FIPS 186-4 密钥生成 + PKCS#1 v1.5 加解密/签名），cryptography 双向交叉验证（1024 位生成代码被 cryptography 接受）——**standards 缺口全部清零**。

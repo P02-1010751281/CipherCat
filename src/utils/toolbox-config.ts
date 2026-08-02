@@ -33,6 +33,7 @@ import { ARGON2_BLOCK_TYPES } from '@/blocks/argon2';
 import { GMDRBG_BLOCK_TYPES } from '@/blocks/gmdrbg';
 import { MLDSA_BLOCK_TYPES } from '@/blocks/mldsa';
 import { SM9_BLOCK_TYPES } from '@/blocks/sm9';
+import { RSA_BLOCK_TYPES } from '@/blocks/rsa';
 
 export function createToolboxConfig() {
   const msg = Blockly.Msg as Record<string, string>;
@@ -221,7 +222,10 @@ export function createToolboxConfig() {
     kind: 'category',
     name: msg.CRYPTO_CATEGORY_NUMTHEORY || 'Number Theory',
     colour: '#D35400',
-    contents: NT_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+    contents: [
+      ...NT_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...RSA_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+    ],
   };
 
   const ecc = {

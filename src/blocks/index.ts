@@ -28,6 +28,7 @@ export * from './argon2';
 export * from './gmdrbg';
 export * from './mldsa';
 export * from './sm9';
+export * from './rsa';
 
 import { CTRL_BLOCK_TYPES, type CtrlBlockType } from './ctrl';
 import { DATA_BLOCK_TYPES, type DataBlockType } from './data';
@@ -71,6 +72,7 @@ import { ARGON2_BLOCK_TYPES, type Argon2BlockType } from './argon2';
 import { GMDRBG_BLOCK_TYPES, type GmDrbgBlockType } from './gmdrbg';
 import { MLDSA_BLOCK_TYPES, type MldsaBlockType } from './mldsa';
 import { SM9_BLOCK_TYPES, type Sm9BlockType } from './sm9';
+import { RSA_BLOCK_TYPES, type RsaBlockType } from './rsa';
 
 export const ALL_BLOCK_TYPES = [
   ...CTRL_BLOCK_TYPES,
@@ -103,6 +105,7 @@ export const ALL_BLOCK_TYPES = [
   ...GMDRBG_BLOCK_TYPES,
   ...MLDSA_BLOCK_TYPES,
   ...SM9_BLOCK_TYPES,
+  ...RSA_BLOCK_TYPES,
 ] as const;
 
 export type AllBlockType =
@@ -135,4 +138,5 @@ export type AllBlockType =
   | Argon2BlockType
   | GmDrbgBlockType
   | MldsaBlockType
-  | Sm9BlockType;
+  | Sm9BlockType
+  | RsaBlockType;

@@ -26,6 +26,7 @@ import './drbg';
 import './argon2';
 import './gmdrbg';
 import './mldsa';
+import './rsa';
 import './sm9';
 
 import { Block } from 'blockly/core';

@@ -51,3 +51,9 @@
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
 | `xts_encrypt` | 1 | value(→) | Bytes&IntList&Bytes→Bytes | XTS-Encrypt(key‖K1K2, tweak, data) → 密文；key 32 字节（两个 AES-128），tweak 16 字节（数据单元号），data 须为 16 字节倍数；T = E_K2(tweak)·α^i；官方向量（IEEE 1619-2007）+ cryptography 交叉验证 |
+
+## 轻量认证加密 ASCON (NIST SP 800-232)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `ascon_encrypt` | 1 | value(→) | Bytes&IntList&IntList&Bytes→Bytes | Ascon-AEAD128(key, nonce, ad, msg) → 密文‖128 位标签；320 位置换（rate 128 位，12/8 轮），little-endian；官方向量（ascon-c 仓 LWC KAT 1089 例全过） |

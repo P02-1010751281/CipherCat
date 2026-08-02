@@ -21,6 +21,7 @@ import { CMAC_BLOCK_TYPES } from '@/blocks/cmac';
 import { CCM_BLOCK_TYPES } from '@/blocks/ccm';
 import { XTS_BLOCK_TYPES } from '@/blocks/xts';
 import { X25519_BLOCK_TYPES } from '@/blocks/x25519';
+import { ASCON_BLOCK_TYPES } from '@/blocks/ascon';
 
 export function createToolboxConfig() {
   const msg = Blockly.Msg as Record<string, string>;
@@ -178,6 +179,10 @@ export function createToolboxConfig() {
         type,
       })),
       ...XTS_BLOCK_TYPES.map((type) => ({
+        kind: 'block' as const,
+        type,
+      })),
+      ...ASCON_BLOCK_TYPES.map((type) => ({
         kind: 'block' as const,
         type,
       })),

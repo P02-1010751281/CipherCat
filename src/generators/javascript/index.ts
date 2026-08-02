@@ -14,6 +14,7 @@ import './xts';
 import './x25519';
 import './ascon';
 import './hkdf';
+import './pbkdf2';
 import './postquantum';
 import './procedure';
 import './symmetric';

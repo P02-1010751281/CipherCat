@@ -38,6 +38,12 @@
 |----|----|------|----------|------|
 | `hkdf` | 1 | value(→) | IntList&Bytes&IntList&Number→Bytes | HKDF(salt, ikm, info, keyLen) → derived key; Extract = HMAC-SHA256(salt, IKM), Expand = HMAC(PRK, T‖info‖i) concat-truncate; empty salt → 32 zero bytes; official vectors (RFC 5869 §A.1) |
 
+## Password KDF PBKDF2 (RFC 8018 / SP 800-132)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `pbkdf2` | 1 | value(→) | Bytes&IntList&Number&Number→Bytes | PBKDF2(password, salt, iter, keyLen, HASH) → derived key; U1 = PRF(P, S‖INT(i)), Uc = PRF(P, U_{c-1}) concat-truncate; HASH dropdown SHA-256 (RFC 8018) / SM3 (GM/T 0091 equivalent, JS/Python cross-checked); official vectors (RFC 6070 / hashlib cross) |
+
 ## XOF / PRF (FIPS 202 §6)
 
 | Block | Layer | Connection | Input→Output | Description |

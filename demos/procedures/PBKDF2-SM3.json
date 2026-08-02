@@ -1,0 +1,69 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "demo_pbkdf2sm3_def_0001",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "PBKDF2_Sm3"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "pbkdf2",
+              "id": "demo_pbkdf2sm3_0002",
+              "fields": {
+                "HASH": "sm3"
+              },
+              "inputs": {
+                "PASSWORD": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_pbkdf2sm3_pw_0003",
+                    "fields": {
+                      "NUM": "[0x70,0x61,0x73,0x73,0x77,0x6f,0x72,0x64]"
+                    }
+                  }
+                },
+                "SALT": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_pbkdf2sm3_salt_0004",
+                    "fields": {
+                      "NUM": "[0x73,0x61,0x6c,0x74]"
+                    }
+                  }
+                },
+                "ITER": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_pbkdf2sm3_iter_0005",
+                    "fields": {
+                      "NUM": "2"
+                    }
+                  }
+                },
+                "KEYLEN": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_pbkdf2sm3_len_0006",
+                    "fields": {
+                      "NUM": "32"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

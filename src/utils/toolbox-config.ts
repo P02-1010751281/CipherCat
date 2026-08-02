@@ -23,6 +23,7 @@ import { XTS_BLOCK_TYPES } from '@/blocks/xts';
 import { X25519_BLOCK_TYPES } from '@/blocks/x25519';
 import { ASCON_BLOCK_TYPES } from '@/blocks/ascon';
 import { HKDF_BLOCK_TYPES } from '@/blocks/hkdf';
+import { PBKDF2_BLOCK_TYPES } from '@/blocks/pbkdf2';
 
 export function createToolboxConfig() {
   const msg = Blockly.Msg as Record<string, string>;
@@ -162,6 +163,10 @@ export function createToolboxConfig() {
         type,
       })),
       ...HKDF_BLOCK_TYPES.map((type) => ({
+        kind: 'block' as const,
+        type,
+      })),
+      ...PBKDF2_BLOCK_TYPES.map((type) => ({
         kind: 'block' as const,
         type,
       })),

@@ -38,6 +38,12 @@
 |----|----|------|----------|------|
 | `hkdf` | 1 | value(→) | IntList&Bytes&IntList&Number→Bytes | HKDF(salt, ikm, info, keyLen) → 派生密钥；Extract = HMAC-SHA256(salt, IKM)，Expand = HMAC(PRK, T‖info‖i) 串联截断；salt 空按 32 零字节兜底；官方向量（RFC 5869 §A.1） |
 
+## 口令密钥派生 PBKDF2 (RFC 8018 / SP 800-132)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `pbkdf2` | 1 | value(→) | Bytes&IntList&Number&Number→Bytes | PBKDF2(password, salt, iter, keyLen, HASH) → 派生密钥；U1 = PRF(P, S‖INT(i))，Uc = PRF(P, U_{c-1}) 串联截断；HASH 下拉 SHA-256（RFC 8018）/ SM3（GM/T 0091 同构，JS/Python 交叉一致）；官方向量（RFC 6070 / hashlib 交叉） |
+
 ## XOF / PRF (FIPS 202 §6)
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |

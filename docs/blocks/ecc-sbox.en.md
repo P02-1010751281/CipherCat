@@ -12,6 +12,21 @@
 | `ecc_add` | 1 | stmt(→→) | null&null&null→— |
 | `ecc_multiply` | 1 | stmt(→→) | null&null→— |
 
+## Digital Signatures (EdDSA / ECDSA / SM2 / SM9)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `eddsa_sign` | 1 | value(→) | Bytes&Bytes→Bytes | Ed25519 sign (RFC 8032): sk 32B + msg → 64B signature; official vectors TEST 1/2/3 |
+| `eddsa_verify` | 1 | value(→) | Bytes&Bytes&Bytes→Boolean | Ed25519 verify: pk 32B + msg + sig → true/false |
+| `ecdsa_sign` | 1 | value(→) | Bytes&String→Bytes | ECDSA P-256 deterministic sign (RFC 6979): sk 32B + msg → r‖s 64B |
+| `ecdsa_verify` | 1 | value(→) | String&Bytes&Bytes→Boolean | ECDSA verify: msg + pk 65B + r‖s → true/false |
+| `sm2_sign` | 1 | value(→) | String&String&Bytes&String→Bytes | SM2 sign (GB/T 32918.2): da + id + msg + k → r‖s 64B; empty k = random |
+| `sm2_verify` | 1 | value(→) | String&String&Bytes&String&String→Boolean | SM2 verify: pax/pay + id + msg + r + s → true/false |
+| `sm9_master_key` | 1 | value(→) | Bytes→Bytes | SM9 signature master public key (GB/T 38635.2): ks → Ppub 128B (G2) |
+| `sm9_user_key` | 1 | value(→) | Bytes&Bytes&Number→Bytes | SM9 user signing key: ks + id + hid → ds 64B (G1) |
+| `sm9_sign` | 1 | value(→) | Bytes&Bytes&Bytes&Bytes→Bytes | SM9 sign: msg + ds + Ppub + r → h‖S 97B |
+| `sm9_verify` | 1 | value(→) | Bytes&Bytes&Bytes&Bytes&Bytes&Number→Boolean | SM9 verify: msg + id + h + S + Ppub + hid → true/false |
+
 ## Montgomery Curves (RFC 7748)
 
 | Block | Layer | Connection | Input→Output | Notes |

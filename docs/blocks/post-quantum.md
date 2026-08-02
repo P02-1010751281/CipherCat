@@ -1,6 +1,13 @@
-# 后量子密码块参考 (ML-KEM)
+# 后量子密码块参考 (ML-KEM + ML-DSA)
 
 > [English](./post-quantum.en.md) · [中文](./post-quantum.md)
+
+## FIPS 204 ML-DSA 签名
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `mldsa_sign` | 1 | value(→) | Bytes&Bytes→Bytes | ML-DSA-44 签名（FIPS 204）：sk 2560B + msg → 签名 2420B（确定性，rnd=0 空 ctx）；NIST ACVP 30/30 双语言通过 |
+| `mldsa_verify` | 1 | value(→) | Bytes&Bytes&Bytes→Boolean | ML-DSA-44 验签：pk 1312B + msg + sig → true/false |
 
 ## FIPS 203 编码/压缩 (§4.2.1)
 

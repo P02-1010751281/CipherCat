@@ -1,0 +1,66 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "demo_gmrng_def_0001",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "GM_Rng"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "gm_rng",
+              "id": "demo_gmrng_0002",
+              "inputs": {
+                "ENTROPY": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_gmrng_ent_0003",
+                    "fields": {
+                      "NUM": "[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff]"
+                    }
+                  }
+                },
+                "NONCE": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_gmrng_non_0004",
+                    "fields": {
+                      "NUM": "[0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08]"
+                    }
+                  }
+                },
+                "PERSO": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_gmrng_per_0005",
+                    "fields": {
+                      "NUM": "[0x0f,0x0e,0x0d,0x0c,0x0b,0x0a,0x09,0x08]"
+                    }
+                  }
+                },
+                "LEN": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_gmrng_len_0006",
+                    "fields": {
+                      "NUM": "32"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

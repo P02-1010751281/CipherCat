@@ -1,0 +1,105 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "demo_argon2_def_0001",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "Argon2_Hash"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "argon2_hash",
+              "id": "demo_argon2_0002",
+              "fields": {
+                "VARIANT": "2"
+              },
+              "inputs": {
+                "PASSWORD": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_argon2_pwd_0003",
+                    "fields": {
+                      "NUM": "[0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01]"
+                    }
+                  }
+                },
+                "SALT": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_argon2_salt_0004",
+                    "fields": {
+                      "NUM": "[0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02]"
+                    }
+                  }
+                },
+                "SECRET": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_argon2_secret_0005",
+                    "fields": {
+                      "NUM": "[0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03]"
+                    }
+                  }
+                },
+                "AD": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_argon2_ad_0006",
+                    "fields": {
+                      "NUM": "[0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04]"
+                    }
+                  }
+                },
+                "M_COST": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_argon2_m_0007",
+                    "fields": {
+                      "NUM": "32"
+                    }
+                  }
+                },
+                "T_COST": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_argon2_t_0008",
+                    "fields": {
+                      "NUM": "3"
+                    }
+                  }
+                },
+                "LANES": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_argon2_lanes_0009",
+                    "fields": {
+                      "NUM": "4"
+                    }
+                  }
+                },
+                "TAGLEN": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_argon2_taglen_0010",
+                    "fields": {
+                      "NUM": "32"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

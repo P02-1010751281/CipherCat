@@ -1,0 +1,57 @@
+{
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "procedures_defreturn",
+    "id": "demo_eea3_def_0001",
+    "x": 100,
+    "y": 100,
+    "extraState": {
+     "params": [],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "EEA3_Encrypt"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "zuc_keystream",
+       "id": "demo_eea3_ks_0002",
+       "inputs": {
+        "KEY": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_eea3_k_0003",
+          "fields": {
+           "NUM": "[0x17,0x3d,0x14,0xba,0x50,0x03,0x73,0x1d,0x7a,0x60,0x04,0x94,0x70,0xf0,0x0a,0x29]"
+          }
+         }
+        },
+        "IV": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_eea3_iv_0004",
+          "fields": {
+           "NUM": "[0x66,0x03,0x54,0x92,0x78,0x00,0x00,0x00,0x66,0x03,0x54,0x92,0x78,0x00,0x00,0x00]"
+          }
+         }
+        },
+        "LEN": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_eea3_len_0005",
+          "fields": {
+           "NUM": "7"
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+}

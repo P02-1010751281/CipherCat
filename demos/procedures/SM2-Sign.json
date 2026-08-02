@@ -1,0 +1,66 @@
+{
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "procedures_defreturn",
+    "id": "demo_sm2sig_def_0001",
+    "x": 100,
+    "y": 100,
+    "extraState": {
+     "params": [],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "SM2_Sign"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "sm2_sign",
+       "id": "demo_sm2sig_sign_0002",
+       "inputs": {
+        "DA": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_sm2sig_da_0003",
+          "fields": {
+           "NUM": "\"128b2fa8bd433c6c068c8d803dff79792a519a55171b1b650c23661d15897263\""
+          }
+         }
+        },
+        "IDA": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_sm2sig_ida_0004",
+          "fields": {
+           "NUM": "\"ALICE123@YAHOO.COM\""
+          }
+         }
+        },
+        "MSG": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_sm2sig_msg_0005",
+          "fields": {
+           "NUM": "[0x6d,0x65,0x73,0x73,0x61,0x67,0x65,0x20,0x64,0x69,0x67,0x65,0x73,0x74]"
+          }
+         }
+        },
+        "K": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_sm2sig_k_0006",
+          "fields": {
+           "NUM": "\"6cb28d99385c175c94f94e934817663fc176d925dd72b727260dbaae1fb2f96f\""
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+}

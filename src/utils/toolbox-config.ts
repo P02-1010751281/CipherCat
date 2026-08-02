@@ -25,6 +25,14 @@ import { ASCON_BLOCK_TYPES } from '@/blocks/ascon';
 import { HKDF_BLOCK_TYPES } from '@/blocks/hkdf';
 import { PBKDF2_BLOCK_TYPES } from '@/blocks/pbkdf2';
 import { GCM_BLOCK_TYPES } from '@/blocks/gcm';
+import { EDDSA_BLOCK_TYPES } from '@/blocks/eddsa';
+import { ECDSA_BLOCK_TYPES } from '@/blocks/ecdsa';
+import { SM2SIG_BLOCK_TYPES } from '@/blocks/sm2sig';
+import { DRBG_BLOCK_TYPES } from '@/blocks/drbg';
+import { ARGON2_BLOCK_TYPES } from '@/blocks/argon2';
+import { GMDRBG_BLOCK_TYPES } from '@/blocks/gmdrbg';
+import { MLDSA_BLOCK_TYPES } from '@/blocks/mldsa';
+import { SM9_BLOCK_TYPES } from '@/blocks/sm9';
 
 export function createToolboxConfig() {
   const msg = Blockly.Msg as Record<string, string>;
@@ -171,6 +179,9 @@ export function createToolboxConfig() {
         kind: 'block' as const,
         type,
       })),
+      ...DRBG_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...ARGON2_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...GMDRBG_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
     ],
   };
 
@@ -220,6 +231,10 @@ export function createToolboxConfig() {
     contents: [
       ...ECC_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
       ...X25519_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...EDDSA_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...ECDSA_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...SM2SIG_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...SM9_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
     ],
   };
 
@@ -244,10 +259,13 @@ export function createToolboxConfig() {
     kind: 'category',
     name: msg.CRYPTO_CATEGORY_POSTQUANTUM_ADVANCED || 'Post-Quantum Advanced',
     colour: '#7C5CA6',
-    contents: PQ_ADVANCED_BLOCK_TYPES.map((type) => ({
-      kind: 'block' as const,
-      type,
-    })),
+    contents: [
+      ...PQ_ADVANCED_BLOCK_TYPES.map((type) => ({
+        kind: 'block' as const,
+        type,
+      })),
+      ...MLDSA_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+    ],
   };
 
   const procedureNative = {

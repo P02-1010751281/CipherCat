@@ -20,6 +20,14 @@ export * from './post-quantum';
 export * from './procedure';
 export * from './symmetric';
 export * from './remaining';
+export * from './eddsa';
+export * from './ecdsa';
+export * from './sm2sig';
+export * from './drbg';
+export * from './argon2';
+export * from './gmdrbg';
+export * from './mldsa';
+export * from './sm9';
 
 import { CTRL_BLOCK_TYPES, type CtrlBlockType } from './ctrl';
 import { DATA_BLOCK_TYPES, type DataBlockType } from './data';
@@ -55,6 +63,14 @@ import {
   REMAINING_BLOCK_TYPES,
   type RemainingBlockType,
 } from './remaining';
+import { EDDSA_BLOCK_TYPES, type EddsaBlockType } from './eddsa';
+import { ECDSA_BLOCK_TYPES, type EcdsaBlockType } from './ecdsa';
+import { SM2SIG_BLOCK_TYPES, type Sm2SigBlockType } from './sm2sig';
+import { DRBG_BLOCK_TYPES, type DrbgBlockType } from './drbg';
+import { ARGON2_BLOCK_TYPES, type Argon2BlockType } from './argon2';
+import { GMDRBG_BLOCK_TYPES, type GmDrbgBlockType } from './gmdrbg';
+import { MLDSA_BLOCK_TYPES, type MldsaBlockType } from './mldsa';
+import { SM9_BLOCK_TYPES, type Sm9BlockType } from './sm9';
 
 export const ALL_BLOCK_TYPES = [
   ...CTRL_BLOCK_TYPES,
@@ -79,6 +95,14 @@ export const ALL_BLOCK_TYPES = [
   ...PROCEDURE_BLOCK_TYPES,
   ...SYMMETRIC_BLOCK_TYPES,
   ...REMAINING_BLOCK_TYPES,
+  ...EDDSA_BLOCK_TYPES,
+  ...ECDSA_BLOCK_TYPES,
+  ...SM2SIG_BLOCK_TYPES,
+  ...DRBG_BLOCK_TYPES,
+  ...ARGON2_BLOCK_TYPES,
+  ...GMDRBG_BLOCK_TYPES,
+  ...MLDSA_BLOCK_TYPES,
+  ...SM9_BLOCK_TYPES,
 ] as const;
 
 export type AllBlockType =
@@ -103,4 +127,12 @@ export type AllBlockType =
   | PostQuantumBlockType
   | ProcedureBlockType
   | SymmetricBlockType
-  | RemainingBlockType;
+  | RemainingBlockType
+  | EddsaBlockType
+  | EcdsaBlockType
+  | Sm2SigBlockType
+  | DrbgBlockType
+  | Argon2BlockType
+  | GmDrbgBlockType
+  | MldsaBlockType
+  | Sm9BlockType;

@@ -1,6 +1,13 @@
-# Post-Quantum Block Reference (ML-KEM)
+# Post-Quantum Block Reference (ML-KEM + ML-DSA)
 
 > [中文](./post-quantum.md)
+
+## FIPS 204 ML-DSA Signature
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `mldsa_sign` | 1 | value(→) | Bytes&Bytes→Bytes | ML-DSA-44 sign (FIPS 204): sk 2560B + msg → 2420B signature (deterministic, rnd=0 empty ctx); NIST ACVP 30/30 dual-language pass |
+| `mldsa_verify` | 1 | value(→) | Bytes&Bytes&Bytes→Boolean | ML-DSA-44 verify: pk 1312B + msg + sig → true/false |
 
 ## FIPS 203 Encoding/Compression (§4.2.1)
 

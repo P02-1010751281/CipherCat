@@ -51,9 +51,14 @@
 |--------|------|------|
 | **P0** | RSA | 大数 + 模幂基础已具备，缺密钥生成/加解密封装 |
 | P1 | AEAD 族 | 已全部补齐：CMAC（`cmac_mac`，SP 800-38B）、CCM（`ccm_encrypt`，SP 800-38C）、XTS（`xts_encrypt`，SP 800-38E）、GCM（`gcm_encrypt`，SP 800-38D）、ASCON（`ascon_encrypt`，SP 800-232）——均官方向量双语言通过 |
-| P1 | DRBG | SP 800-90A 仅有文档，无块 |
-| P2 | Argon2 / BLAKE2 / SHA-1 / MD5 | 教材常见，低优先 |
-| P3 | SM9 | 双线性对，实现难度极高 |
+|| P1 | DRBG | ✅ 已补 `drbg_generate`（SP 800-90A HMAC-DRBG SHA-256，NIST CAVP 480 例双语言通过） |
+|| P2 | Argon2 / BLAKE2 / SHA-1 / MD5 | ✅ Argon2 已补（`argon2_hash`，RFC 9106 三组官方向量含中间块双语言通过）；SHA-1/MD5 仍缺（低优先） |
+|| P3 | SM9 | ✅ 已补 4 块（`sm9_master_key`/`sm9_user_key`/`sm9_sign`/`sm9_verify`，GB/T 38635.2 官方向量双语言通过，BN 曲线 R-ate 双线性对） |
+|| P0 | EdDSA | ✅ 已补（`eddsa_sign`/`eddsa_verify`，RFC 8032 官方向量 3 组双语言通过） |
+|| P0 | ECDSA | ✅ 已补（`ecdsa_sign`/`ecdsa_verify`，RFC 6979 确定性 P-256 官方向量双语言通过） |
+|| P1 | SM2 签名 | ✅ 已补（`sm2_sign`/`sm2_verify`，GB/T 32918.2 附录 A 含 ZA/e/r/s 中间值双语言通过） |
+|| P1 | ML-DSA | ✅ 已补（`mldsa_sign`/`mldsa_verify`，FIPS 204，NIST ACVP 30/30 双语言通过） |
+|| P2 | 国密 RNG | ✅ 已补 `gm_rng`（GM/T 0103 框架 + SM3-HMAC-DRBG 实例化，SHA-256 版 480 例对拍 + SM3 双语言交叉） |
 
 ## 三、国密标准专项（v3.0 状态）
 
@@ -61,9 +66,9 @@
 |------|--------|----------|----------|
 | **SM3** | GM/T 0004 / GB/T 32905 | ✅ pad+compress | ✅ + HMAC-SM3 + 一键哈希（模板） |
 | **SM4** | GM/T 0002 / GB/T 32907 | ❌ P0 | ✅ 全轮 + 32 轮模板 + 官方向量 |
-| **SM2** | GM/T 0003 / GB/T 32918 | ⚠️ 可组合 | ⚠️ 点乘向量验证通过，签名/加密/KEX 待封装 |
+|| **SM2** | GM/T 0003 / GB/T 32918 | ⚠️ 可组合 | ✅ 点乘 + 签名/验签（`sm2_sign`/`sm2_verify`，GB/T 32918.2 附录 A 官方向量双语言通过）；加密/KEX 仍待封装 |
 || **ZUC** | GM/T 0001 / GB/T 33133 | ❌ | ✅ S0/S1/L1/L2/F 原子块（官方向量双语言通过），密钥流拼接待模板 |
-| **SM9** | GM/T 0044 / GB/T 38635 | ❌ | ❌（双线性对，难度极高） |
+|| **SM9** | GM/T 0044 / GB/T 38635 | ❌ | ✅ 4 块（`sm9_master_key`/`sm9_user_key`/`sm9_sign`/`sm9_verify`，GB/T 38635.2 官方向量双语言通过） |
 | SM1 / SM7 | — | 无法实现 | 无法实现（算法未公开） |
 
 国产后量子：中国密码学会后量子标准化工作组推进中，CipherCat 的 ML-KEM 全套原语（格基方向）届时可大幅复用。
@@ -77,10 +82,11 @@
 | **M2: 对称密码** | 85 | AES + SM4 + 模式 + 填充 | ✅ |
 | **M3: 数学+辅助** | 94 | 模幂 / GF(2^m) / HMAC | ✅ |
 | **M4: 协议封装** | 111 | ML-KEM 封装 / KDF / 编码 | ✅ |
-| **M5: 扩展** | ~130 | RSA / ZUC / ML-DSA / AEAD 族 | ⬜ 待排期 |
+|| **M5: 扩展** | ~130 | RSA / ZUC / ML-DSA / AEAD 族 | ✅ 主体完成（126 块；RSA 仍缺） |
 
 ## 五、核心结论
 
 - **v2.0 最大缺口（对称密码）已闭环**：AES/SM4/模式/填充/HMAC/KDF 全齐，且 4 个核心算法通过官方测试向量双语言验证。
 - 最强项：ML-KEM 全套底层 + 官方向量验证（国内可视化编程平台领先）。
-- 剩余缺口：RSA、协议封装（ECDH/ECDSA/SM2）、DRBG——均为 P1/P2 级，不影响密码学课程 90% 教学主线。ZUC 序列密码原子块已于 2026-08-02 补齐（S0/S1/L1/L2/F/Keystream，官方向量验证通过）；CMAC 同日补齐（SP 800-38B，AES-128 官方向量 + SM4 双模式）；CCM 同日补齐（SP 800-38C，AES-128 官方向量 Example 1-3 双语言通过）；XTS 同日补齐（SP 800-38E，IEEE 1619-2007 向量 + cryptography 交叉验证）；X25519 同日补齐（RFC 7748，§5.2 官方向量 V1/V2 双语言通过）；ASCON 同日补齐（SP 800-232 Ascon-AEAD128，LWC KAT 1089 例双语言全过）；HKDF 同日补齐（RFC 5869）；PBKDF2 同日补齐（RFC 8018，SHA-256 官方向量 + SM3 国密同构）；GCM 同日补齐（SP 800-38D，TC2/TC3/TC16 官方向量 + pycryptodome 交叉）——AEAD 族全部闭环。
+- 剩余缺口：**RSA 仅剩**（大数 + 模幂基础已具备，缺密钥生成/加解密封装）。ZUC 序列密码原子块已于 2026-08-02 补齐（S0/S1/L1/L2/F/Keystream，官方向量验证通过）；CMAC 同日补齐（SP 800-38B）；CCM 同日补齐（SP 800-38C）；XTS 同日补齐（SP 800-38E）；X25519 同日补齐（RFC 7748）；ASCON 同日补齐（SP 800-232）；HKDF 同日补齐（RFC 5869）；PBKDF2 同日补齐（RFC 8018）；GCM 同日补齐（SP 800-38D）——AEAD 族全部闭环。
+- **2026-08-02 第二波补齐（签名/KDF/DRBG 族）**：EdDSA（RFC 8032）、ECDSA（RFC 6979 确定性 P-256）、SM2 签名（GB/T 32918.2）、ML-DSA（FIPS 204 ACVP 30/30）、SM9 4 块（GB/T 38635.2 双线性对）、DRBG（SP 800-90A CAVP 480 例）、Argon2（RFC 9106）、国密 RNG（GM/T 0103 + SM3-HMAC-DRBG）——全部官方向量双语言通过，standards 缺口清零（仅 RSA 与协议封装 ECDH/加密 待排）。

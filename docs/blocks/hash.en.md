@@ -44,6 +44,24 @@
 |----|----|------|----------|------|
 | `pbkdf2` | 1 | value(→) | Bytes&IntList&Number&Number→Bytes | PBKDF2(password, salt, iter, keyLen, HASH) → derived key; U1 = PRF(P, S‖INT(i)), Uc = PRF(P, U_{c-1}) concat-truncate; HASH dropdown SHA-256 (RFC 8018) / SM3 (GM/T 0091 equivalent, JS/Python cross-checked); official vectors (RFC 6070 / hashlib cross) |
 
+## Random Number Generation DRBG (SP 800-90A)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `drbg_generate` | 1 | value(→) | Bytes&Bytes&Bytes&Number→Bytes | HMAC-DRBG SHA-256 (SP 800-90A): entropy + nonce + perso → deterministic bytes; NIST CAVP 480 cases dual-language pass |
+
+## National Crypto RNG GM-RNG (GM/T 0103 framework)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `gm_rng` | 1 | value(→) | Bytes&Bytes&Bytes&Number→Bytes | SM3-instantiated HMAC-DRBG (GM/T 0103 framework + GM/T 0105 SW RNG guide): deterministic teaching semantics; SHA-256 variant cross-checked 480 cases + SM3 dual-language |
+
+## Memory-Hard KDF Argon2 (RFC 9106)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `argon2_hash` | 1 | value(→) | Bytes&Bytes&Bytes&Bytes&Number&Number&Number&Number&Number→Bytes | Argon2d/i/id v1.3: password + salt + secret + ad + mCost + tCost + lanes + tagLen + variant → derived key; official vectors (RFC 9106 §5 incl. pre-hash + intermediate blocks) |
+
 ## XOF / PRF (FIPS 202 §6)
 
 | Block | Layer | Connection | Input→Output | Description |

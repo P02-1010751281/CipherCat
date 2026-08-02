@@ -44,6 +44,24 @@
 |----|----|------|----------|------|
 | `pbkdf2` | 1 | value(→) | Bytes&IntList&Number&Number→Bytes | PBKDF2(password, salt, iter, keyLen, HASH) → 派生密钥；U1 = PRF(P, S‖INT(i))，Uc = PRF(P, U_{c-1}) 串联截断；HASH 下拉 SHA-256（RFC 8018）/ SM3（GM/T 0091 同构，JS/Python 交叉一致）；官方向量（RFC 6070 / hashlib 交叉） |
 
+## 随机数生成 DRBG (SP 800-90A)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `drbg_generate` | 1 | value(→) | Bytes&Bytes&Bytes&Number→Bytes | HMAC-DRBG SHA-256（SP 800-90A）：entropy + nonce + perso → 请求位数的确定字节；NIST CAVP 480 例双语言通过 |
+
+## 国密随机数 GM-RNG (GM/T 0103 框架)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `gm_rng` | 1 | value(→) | Bytes&Bytes&Bytes&Number→Bytes | SM3 实例化 HMAC-DRBG（GM/T 0103 框架 + GM/T 0105 软件 RNG 指南精神）：同输入同输出，确定性教学语义；SHA-256 版 480 例对拍 + SM3 双语言交叉 |
+
+## 内存困难 KDF Argon2 (RFC 9106)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `argon2_hash` | 1 | value(→) | Bytes&Bytes&Bytes&Bytes&Number&Number&Number&Number&Number→Bytes | Argon2d/i/id v1.3：password + salt + secret + ad + mCost + tCost + lanes + tagLen + variant → 派生密钥；官方向量三组（RFC 9106 §5，含 pre-hash 与中间块） |
+
 ## XOF / PRF (FIPS 202 §6)
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |

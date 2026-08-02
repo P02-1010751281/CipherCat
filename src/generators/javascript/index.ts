@@ -19,6 +19,14 @@ import './gcm';
 import './postquantum';
 import './procedure';
 import './symmetric';
+import './eddsa';
+import './ecdsa';
+import './sm2sig';
+import './drbg';
+import './argon2';
+import './gmdrbg';
+import './mldsa';
+import './sm9';
 
 import { Block } from 'blockly/core';
 import { javascriptGenerator, Order } from 'blockly/javascript';

@@ -9,6 +9,7 @@ export * from './numtheory';
 export * from './ecc';
 export * from './zuc';
 export * from './cmac';
+export * from './ccm';
 export * from './post-quantum';
 export * from './procedure';
 export * from './symmetric';
@@ -28,6 +29,7 @@ import { NT_BLOCK_TYPES, type NtBlockType } from './numtheory';
 import { ECC_BLOCK_TYPES, type EccBlockType } from './ecc';
 import { ZUC_BLOCK_TYPES, type ZucBlockType } from './zuc';
 import { CMAC_BLOCK_TYPES, type CmacBlockType } from './cmac';
+import { CCM_BLOCK_TYPES, type CcmBlockType } from './ccm';
 import { PQ_BLOCK_TYPES, type PostQuantumBlockType } from './post-quantum';
 import {
   PROCEDURE_BLOCK_TYPES,
@@ -54,6 +56,7 @@ export const ALL_BLOCK_TYPES = [
   ...ECC_BLOCK_TYPES,
   ...ZUC_BLOCK_TYPES,
   ...CMAC_BLOCK_TYPES,
+  ...CCM_BLOCK_TYPES,
   ...PQ_BLOCK_TYPES,
   ...PROCEDURE_BLOCK_TYPES,
   ...SYMMETRIC_BLOCK_TYPES,
@@ -72,6 +75,7 @@ export type AllBlockType =
   | EccBlockType
   | ZucBlockType
   | CmacBlockType
+  | CcmBlockType
   | PostQuantumBlockType
   | ProcedureBlockType
   | SymmetricBlockType

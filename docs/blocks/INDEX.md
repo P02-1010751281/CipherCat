@@ -2,7 +2,7 @@
 
 > [English](./INDEX.en.md) · [中文](./INDEX.md)
 
-**版本**: 2.3 | **日期**: 2026-08-02 | **总块数**: 104（另有 27 个函数模板）
+**版本**: 2.4 | **日期**: 2026-08-02 | **总块数**: 105（另有 27 个函数模板）
 
 ## 图例
 
@@ -56,4 +56,4 @@
 | 控制流 | — | 1 |
 | 函数封装 | [ecc-sbox.md](ecc-sbox.md) | 5 |
 
-> 注：NTT 变换块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`）在「数论 + 大数」与「后量子」文档中各列一次，去重后合计 104 个自定义积木块（见 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`）。ZUC 6 块 + CMAC 1 块（`cmac_mac`）为 2026-08-02 新增（GB/T 33133 + SP 800-38B）。
+> 注：NTT 变换块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`）在「数论 + 大数」与「后量子」文档中各列一次，去重后合计 105 个自定义积木块（见 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`）。ZUC 6 块 + CMAC 1 块 + CCM 1 块（`ccm_encrypt`）为 2026-08-02 新增（GB/T 33133 + SP 800-38B/C）。

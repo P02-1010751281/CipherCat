@@ -18,6 +18,7 @@ import { getSboxCategoryKey } from '@/blocks/sbox/category';
 import { toolboxTemplates } from '@/blocks/procedure/toolbox-state';
 import { SYMMETRIC_BLOCK_TYPES } from '@/blocks/symmetric';
 import { CMAC_BLOCK_TYPES } from '@/blocks/cmac';
+import { CCM_BLOCK_TYPES } from '@/blocks/ccm';
 
 export function createToolboxConfig() {
   const msg = Blockly.Msg as Record<string, string>;
@@ -167,6 +168,10 @@ export function createToolboxConfig() {
         type,
       })),
       ...CMAC_BLOCK_TYPES.map((type) => ({
+        kind: 'block' as const,
+        type,
+      })),
+      ...CCM_BLOCK_TYPES.map((type) => ({
         kind: 'block' as const,
         type,
       })),

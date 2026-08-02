@@ -9,6 +9,7 @@ import './numtheory';
 import './ecc';
 import './zuc';
 import './cmac';
+import './ccm';
 import './postquantum';
 import './procedure';
 import './symmetric';

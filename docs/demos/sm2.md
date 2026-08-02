@@ -35,4 +35,16 @@
 
 ---
 
+## 手动拼装：SM2 点乘 k·G（从零拖块）
+
+1. **曲线参数**：工具箱「ECC」→ 拖 `ecc_load_curve_params`，填 SM2 推荐曲线参数（p/a/b/G/n，见 `gbt32918-SM2/` 标准目录）
+2. **基点**：拖 `ecc_load_point` 填 G 的 x/y 坐标
+3. **标量乘**：拖 `ecc_multiply`，把曲线、基点、标量 k（`data_value`）依次连接
+4. **生成代码**：▶ Generate（JS 生成器已用 BigInt——256-bit 域算术不会溢出）
+5. **验证**：k·G 的 x 坐标 = `0x04ebfc71...`（GB/T 32918.5 官方向量）
+
+> 对比：`demos/procedures/SM2-PointMul.json` 用函数封装同一链路；手拼版直接在工作区连线。
+
+---
+
 **官方向量验证**：`node dist-verify/verify-demo.js demos/procedures/SM2-PointMul.json --exec` → `=== ALL VECTORS PASS ===`

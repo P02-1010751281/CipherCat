@@ -68,4 +68,18 @@
 
 ---
 
+## 手动拼装：ML-KEM 多项式采样（从零拖块）
+
+1. **种子**：拖 `data_value` 填 32 字节 rho（seed）
+2. **非扩展**：拖 `pq_seed_with_nonce`，把 rho + nonce（j‖i，链式拼接成 34 字节）连进去
+3. **采样**：拖 `pq_sample_ntt`（SampleNTT），MODULUS 下拉选 `3329`
+4. **CBD 采样**（可选）：`pq_sample_poly_cbd` + `pq_prf`，η 下拉 2/3（FIPS 203 Alg 8 直接消费 PRF 输出）
+5. **NTT**：拖 `pq_ntt`（q=3329, n=256）——注意 t̂ 已是 NTT 域，**不可再过 NTT**
+6. **生成代码**：▶ Generate
+7. **验证**：系数 ∈ [0, 3329)，与 FIPS 203 参考实现一致
+
+> 完整 Encaps 链（SampleNTT→CBD→INTT→Compress→ByteEncode）见 `demos/procedures/ML-KEM-Encaps.json` 与 ML-KEM-768 搭建指南。
+
+---
+
 **官方向量验证**：`node dist-verify/verify-demo.js demos/procedures/ML-KEM-Encaps.json --exec` → `=== ALL VECTORS PASS ===`

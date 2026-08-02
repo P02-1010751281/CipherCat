@@ -56,4 +56,21 @@ Wrap the `sm4_sbox` atomic block with `procedures_defreturn`; verify the GM/T 00
 
 ---
 
+## Manual Assembly: SM4 Round Function (from scratch)
+
+No demo import — build scenario 1's round function from the toolbox:
+
+1. **Drag**: toolbox "Symmetric" category → drag out `sm4_round_func` (round function F)
+2. **Wire state words**: `sm4_round_func` has 4 state-word inputs (X0-X3) + round key rk:
+   - Drag 4 `data_value` blocks ("Data" category), fill 32-bit hex words (e.g. `0x01234567` / `0x89ABCDEF` / `0xFEDCBA98` / `0x76543210`), connect to X0..X3
+   - Drag one more `data_value` for round key rk (e.g. `0x01234567`)
+3. **Connection check**: X0..X3/rk are all Number type — plugs turn green when connectable
+4. **Linear transform** (optional): drag `sm4_linear_transform` onto F's output to see L(B) rotate-xor composition
+5. **Generate**: ▶ Generate → JavaScript / Python
+6. **Verify**: output is a 4-word integer list (round output = new state)
+
+> Compare: identical block topology to `demos/SM4-Atomic-Round.json` (demo stores intermediates in variables_set; manual uses direct data_value inputs).
+
+---
+
 **Official-vector verification**: `node dist-verify/verify-demo.js demos/procedures/SM4-Sbox.json --exec` → `=== ALL VECTORS PASS ===`

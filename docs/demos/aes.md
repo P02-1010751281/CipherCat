@@ -65,3 +65,15 @@
 | `crypto_encrypt_func`（模板） | 预置加密函数模板 |
 | `crypto_decrypt_func`（模板） | 预置解密函数模板 |
 | `crypto_return` | 显式返回语句 |
+---
+
+## 手动拼装：AES 单轮加密（从零拖块）
+
+1. **拖块**：工具箱「对称密码」→ 拖出 `aes_sub_bytes`（字节替换）
+2. **连链**：依次把 `aes_shift_rows` 接到 SubBytes 输出 → `aes_mix_columns` → `aes_add_round_key`，得到 `AddRoundKey(MixColumns(ShiftRows(SubBytes(state))))`
+3. **状态输入**：拖 `data_value` 填 16 字节状态（IntList，如 `[0x00,0x01,...,0x0F]`）连到 `aes_sub_bytes`
+4. **轮密钥**：`aes_add_round_key` 的 ROUND_KEY 输入拖 `data_value` 填 16 字节轮密钥
+5. **生成代码**：▶ Generate
+6. **验证**：输出 16 字节列表；单轮中间态与 FIPS-197 C.1 附录向量一致
+
+> 完整 AES-128 = 10 轮 + 密钥扩展——用函数管理里的 AES 模板（自动注入 ctrl_iterate 循环）或手动拖 `ctrl_iterate` 展开。

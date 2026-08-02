@@ -63,4 +63,16 @@ SHA-256("abc") = `ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61
 
 ---
 
+## 手动拼装：SM3 哈希（从零拖块）
+
+1. **拖块**：工具箱「哈希」→ 拖 `hash_sm3_pad`（消息填充 1‖0*‖64-bit 长度）
+2. **消息输入**：拖 `data_value` 填消息（如文本 `"abc"`）连到 pad 输入
+3. **压缩**：拖 `hash_sm3_compress`，把 pad 输出连到其输入；IV 输入拖 `data_value` 填 SM3 初始值（`0x7380166F` `0x4914B2B9` `0x172442D7` `0xDA8A0600` `0xA96F30BC` `0x163138AA` `0xE38DEE4D` `0xB0FB0E4E`）
+4. **生成代码**：▶ Generate → `sm3_compress(IV, hash_sm3_pad(msg))`
+5. **验证**：`SM3("abc") = 66c7f0f462eeedd9d1f2d46bdc10e4e24167c4875cf2f7a2297da02b8f4ba8e0`（GB/T 32905 A.1 官方向量）
+
+> 注意：单块消息（≤55 字节）走直链；多块消息需 `ctrl_iterate` 循环逐块压缩（demo 留作扩展）。
+
+---
+
 **官方向量验证**：`node dist-verify/verify-demo.js demos/procedures/SM3-Hash.json --exec` → `=== ALL VECTORS PASS ===`

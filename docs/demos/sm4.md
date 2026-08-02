@@ -56,4 +56,21 @@
 
 ---
 
+## 手动拼装：SM4 轮函数（从零拖块）
+
+不导入 demo，从工具箱手动搭出场景 1 的轮函数：
+
+1. **拖块**：工具箱「对称密码」类目 → 拖出 `sm4_round_func`（轮函数 F）
+2. **连接状态字**：`sm4_round_func` 有 4 个状态字输入（X0-X3）+ 轮密钥 rk：
+   - 拖 4 个 `data_value`（「数据」类目），分别填 32-bit 十六进制字（如 `0x01234567` / `0x89ABCDEF` / `0xFEDCBA98` / `0x76543210`）连到 X0..X3
+   - 再拖 1 个 `data_value` 填轮密钥 rk（如 `0x01234567`）
+3. **连接检查**：X0..X3/rk 均为 Number 类型，插头绿色即可连接
+4. **线性变换**（可选）：拖 `sm4_linear_transform` 接到 F 输出，观察 L(B) 循环移位组合
+5. **生成代码**：▶ Generate → JavaScript / Python
+6. **验证**：输出为 4-word 整数列表（轮函数输出 = 新状态字）
+
+> 对照：与 `demos/SM4-Atomic-Round.json` 块拓扑一致（demo 用 variables_set 存中间态，手拼用 data_value 直连）。
+
+---
+
 **官方向量验证**：`node dist-verify/verify-demo.js demos/procedures/SM4-Sbox.json --exec` → `=== ALL VECTORS PASS ===`

@@ -65,3 +65,15 @@ Use `procedures_defreturn` (native Blockly function definition) to wrap an atomi
 | `crypto_encrypt_func` (template) | preset encrypt function template |
 | `crypto_decrypt_func` (template) | preset decrypt function template |
 | `crypto_return` | explicit return statement |
+---
+
+## Manual Assembly: AES Single Round (from scratch)
+
+1. **Drag**: toolbox "Symmetric" → drag out `aes_sub_bytes` (byte substitution)
+2. **Chain**: connect `aes_shift_rows` to SubBytes output → `aes_mix_columns` → `aes_add_round_key`, yielding `AddRoundKey(MixColumns(ShiftRows(SubBytes(state))))`
+3. **State input**: drag `data_value` with a 16-byte state (IntList, e.g. `[0x00,0x01,...,0x0F]`) into `aes_sub_bytes`
+4. **Round key**: drag `data_value` with a 16-byte round key into `aes_add_round_key`'s ROUND_KEY input
+5. **Generate**: ▶ Generate
+6. **Verify**: 16-byte list output; single-round intermediate matches FIPS-197 C.1 appendix vector
+
+> Full AES-128 = 10 rounds + key schedule — use the AES template in Function Manager (auto-injects ctrl_iterate loops) or unroll `ctrl_iterate` manually.

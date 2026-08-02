@@ -68,4 +68,18 @@ Build the full ML-KEM-512 Encaps chain (k=2) with post-quantum atomic blocks; ve
 
 ---
 
+## Manual Assembly: ML-KEM Polynomial Sampling (from scratch)
+
+1. **Seed**: drag `data_value` with a 32-byte rho (seed)
+2. **Nonce extension**: drag `pq_seed_with_nonce`, chain rho + nonce (j‖i) into a 34-byte input
+3. **Sample**: drag `pq_sample_ntt` (SampleNTT), set MODULUS dropdown to `3329`
+4. **CBD sample** (optional): `pq_sample_poly_cbd` + `pq_prf`, η dropdown 2/3 (FIPS 203 Alg 8 consumes PRF output directly)
+5. **NTT**: drag `pq_ntt` (q=3329, n=256) — note t̂ from ek is already in NTT domain, **do NOT NTT again**
+6. **Generate**: ▶ Generate
+7. **Verify**: coefficients ∈ [0, 3329), matching the FIPS 203 reference implementation
+
+> Full Encaps chain (SampleNTT→CBD→INTT→Compress→ByteEncode): see `demos/procedures/ML-KEM-Encaps.json` and the ML-KEM-768 build guide.
+
+---
+
 **Official-vector verification**: `node dist-verify/verify-demo.js demos/procedures/ML-KEM-Encaps.json --exec` → `=== ALL VECTORS PASS ===`

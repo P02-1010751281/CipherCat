@@ -291,9 +291,52 @@ function rebuildCategories() {
   }
 }
 
+// 应用内文档相对链接导航：markdown 渲染后 <a href="*.md"> 是相对路径，
+// 拦截点击 → 解析为 docs/ 内路径 → selectDoc 应用内切换（否则浏览器跳转 404/异常）
+async function setupDocLinks() {
+  await nextTick();
+  const container = document.querySelector('.docs-content');
+  if (!container) return;
+  container.addEventListener('click', (ev: Event) => {
+    const target = ev.target as HTMLElement;
+    const a = target.closest?.('a[href]') as HTMLAnchorElement | null;
+    if (!a) return;
+    const href = a.getAttribute('href') || '';
+    if (
+      !href.endsWith('.md') ||
+      href.startsWith('http') ||
+      href.startsWith('/') ||
+      href.startsWith('#')
+    )
+      return;
+    ev.preventDefault();
+    // 相对当前文档所在目录解析
+    const base = activeDoc.value
+      .replace(/^\/docs\//, '')
+      .split('/')
+      .slice(0, -1);
+    const parts = [...base, ...href.split('/')].filter(
+      (p) => p && p !== '.',
+    );
+    const resolved: string[] = [];
+    for (const p of parts) {
+      if (p === '..') resolved.pop();
+      else resolved.push(p);
+    }
+    const targetPath = resolved.join('/');
+    if ('/docs/' + targetPath in docLoaders) {
+      void selectDoc('/docs/' + targetPath);
+    } else {
+      console.warn('Doc link outside docs/:', targetPath);
+    }
+  });
+}
+
 onMounted(rebuildCategories);
 // 语言切换后重建类目（guides/ 按 locale 过滤中英版本）
 watch(currentLocale, rebuildCategories);
+// 文档链接拦截（v-html 渲染后绑定，容器级事件委托）
+void setupDocLinks();
 </script>
 
 <style scoped>

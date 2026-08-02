@@ -63,4 +63,16 @@ Build SM3 padding + compression with atomic blocks, wrap as `SM3_Hash(msg)`, ver
 
 ---
 
+## Manual Assembly: SM3 Hash (from scratch)
+
+1. **Drag**: toolbox "Hash" → drag `hash_sm3_pad` (message padding 1‖0*‖64-bit length)
+2. **Message**: drag `data_value` with the message (e.g. text `"abc"`) into pad input
+3. **Compress**: drag `hash_sm3_compress`; connect pad output to its input; fill IV input with `data_value` — SM3 initial values (`0x7380166F` `0x4914B2B9` `0x172442D7` `0xDA8A0600` `0xA96F30BC` `0x163138AA` `0xE38DEE4D` `0xB0FB0E4E`)
+4. **Generate**: ▶ Generate → `sm3_compress(IV, hash_sm3_pad(msg))`
+5. **Verify**: `SM3("abc") = 66c7f0f462eeedd9d1f2d46bdc10e4e24167c4875cf2f7a2297da02b8f4ba8e0` (GB/T 32905 A.1 official vector)
+
+> Note: single-block messages (≤55 bytes) use the direct chain; multi-block needs a `ctrl_iterate` loop compressing block by block (left as an extension in the demo).
+
+---
+
 **Official-vector verification**: `node dist-verify/verify-demo.js demos/procedures/SM3-Hash.json --exec` → `=== ALL VECTORS PASS ===`

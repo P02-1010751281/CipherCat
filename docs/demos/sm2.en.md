@@ -35,4 +35,16 @@ Build scalar multiplication on the sm2p256v1 curve with ECC statement blocks; ve
 
 ---
 
+## Manual Assembly: SM2 Point Multiplication k·G (from scratch)
+
+1. **Curve params**: toolbox "ECC" → drag `ecc_load_curve_params`, fill SM2 recommended curve parameters (p/a/b/G/n; see `gbt32918-SM2/` standards dir)
+2. **Base point**: drag `ecc_load_point` with G's x/y coordinates
+3. **Scalar multiply**: drag `ecc_multiply`, connect curve, base point and scalar k (`data_value`) in order
+4. **Generate**: ▶ Generate (JS generator uses BigInt — no overflow in 256-bit field arithmetic)
+5. **Verify**: k·G x-coordinate = `0x04ebfc71...` (GB/T 32918.5 official vector)
+
+> Compare: `demos/procedures/SM2-PointMul.json` wraps the same chain in a function; the manual version wires it directly on the workspace.
+
+---
+
 **Official-vector verification**: `node dist-verify/verify-demo.js demos/procedures/SM2-PointMul.json --exec` → `=== ALL VECTORS PASS ===`

@@ -1,5 +1,6 @@
 import * as Blockly from 'blockly/core';
 import { TYPE_SBOX } from '@/constants/block-types';
+import { SBOX_PRESETS } from '@/constants/sbox-presets';
 
 export const SBOX_BLOCK_TYPES = ['sbox', 'sbox_sub'] as const;
 
@@ -50,12 +51,40 @@ Blockly.Blocks['sbox'] = {
       [Blockly.Msg.CRYPTO_SBOX_ARRAY_1D || '1D Array', '1d'],
       [Blockly.Msg.CRYPTO_SBOX_ARRAY_2D || '2D Array', '2d'],
     ]);
+    const presetDropdown = new Blockly.FieldDropdown(() => [
+      [Blockly.Msg.CRYPTO_SBOX_PRESET_NONE || 'Custom (CSV)', ''],
+      [Blockly.Msg.CRYPTO_SBOX_PRESET_AES || 'AES S-box (FIPS 197)', 'aes'],
+      [Blockly.Msg.CRYPTO_SBOX_PRESET_SM4 || 'SM4 S-box (GM/T 0002)', 'sm4'],
+      [Blockly.Msg.CRYPTO_SBOX_PRESET_ZUC_S0 || 'ZUC S0 (GB/T 33133)', 'zuc_s0'],
+      [Blockly.Msg.CRYPTO_SBOX_PRESET_ZUC_S1 || 'ZUC S1 (GB/T 33133)', 'zuc_s1'],
+    ]);
+    presetDropdown.setValidator((newValue) => {
+      if (newValue && newValue !== '') {
+        const preset = SBOX_PRESETS[newValue];
+        if (preset) {
+          // 预设填充：16×16 网格 + 数据
+          Blockly.Events.disable();
+          try {
+            this.setFieldValue('16', 'ROW');
+            this.setFieldValue('16', 'COL');
+            this.gridData = preset.slice();
+            this.updateShape();
+          } finally {
+            Blockly.Events.enable();
+          }
+        }
+      }
+      return newValue;
+    });
     this.appendDummyInput()
       .appendField(Blockly.Msg.CRYPTO_SBOX_SIZE || 'S-box Size')
       .appendField(new Blockly.FieldNumber(4, 1, 32), 'ROW')
       .appendField('x')
       .appendField(new Blockly.FieldNumber(4, 1, 32), 'COL')
-      .appendField(dropdown, 'OUTPUT_FORMAT')
+      .appendField(dropdown, 'OUTPUT_FORMAT');
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.CRYPTO_SBOX_PRESET || 'Preset')
+      .appendField(presetDropdown, 'PRESET')
       .appendField(
         new Blockly.FieldImage(iconLoad, 16, 16, '导入CSV', () => {
           this.openCsvImportDialog();
@@ -117,6 +146,8 @@ Blockly.Blocks['sbox'] = {
     state.row = this.getFieldValue('ROW') || 4;
     state.col = this.getFieldValue('COL') || 4;
     state.output_format = this.getFieldValue('OUTPUT_FORMAT') || '2d';
+    const preset = this.getFieldValue('PRESET') || '';
+    if (preset) state.preset = preset;
     if (this.gridData && this.gridData.length > 0) {
       state.data = this.gridData.join(',');
     }
@@ -130,12 +161,16 @@ Blockly.Blocks['sbox'] = {
     const colA = String(state.col || 4);
     const fmt = String(state.output_format || '2d');
     const dataStr = typeof state.data === 'string' ? state.data : undefined;
+    const preset = typeof state.preset === 'string' ? state.preset : '';
     if (rowA) this.setFieldValue(rowA, 'ROW');
     if (colA) this.setFieldValue(colA, 'COL');
     if (fmt) this.setFieldValue(fmt, 'OUTPUT_FORMAT');
+    if (preset) this.setFieldValue(preset, 'PRESET');
 
     if (dataStr) {
       this.gridData = dataStr.split(',');
+    } else if (preset && SBOX_PRESETS[preset]) {
+      this.gridData = SBOX_PRESETS[preset].slice();
     } else {
       console.warn('[sbox] loadExtraState: no data in state');
     }
@@ -152,6 +187,8 @@ Blockly.Blocks['sbox'] = {
       'output_format',
       String(this.getFieldValue('OUTPUT_FORMAT') || '2d'),
     );
+    const preset = this.getFieldValue('PRESET') || '';
+    if (preset) c.setAttribute('preset', preset);
     if (this.gridData && this.gridData.length > 0) {
       c.setAttribute('data', this.gridData.join(','));
     }
@@ -164,12 +201,16 @@ Blockly.Blocks['sbox'] = {
     const colA = xmlElement.getAttribute('col');
     const fmt = xmlElement.getAttribute('output_format');
     const dataStr = xmlElement.getAttribute('data');
+    const preset = xmlElement.getAttribute('preset') || '';
     if (rowA) this.setFieldValue(rowA, 'ROW');
     if (colA) this.setFieldValue(colA, 'COL');
     if (fmt) this.setFieldValue(fmt, 'OUTPUT_FORMAT');
+    if (preset) this.setFieldValue(preset, 'PRESET');
 
     if (dataStr) {
       this.gridData = dataStr.split(',');
+    } else if (preset && SBOX_PRESETS[preset]) {
+      this.gridData = SBOX_PRESETS[preset].slice();
     } else if (xmlElement.parentElement) {
       const r = Number(rowA) || 4,
         c = Number(colA) || 4;

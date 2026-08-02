@@ -6,6 +6,8 @@ nature: docs-api
 severity: P2
 confidence: high
 suggested_action: cs-issue
+status: closed
+closed_by: 88619d47
 ---
 
 # Finding 20：docs/blocks/ 层2 便利块清单全部失效（9+ 已删块）

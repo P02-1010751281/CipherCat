@@ -6,6 +6,8 @@ nature: bug
 severity: P1
 confidence: high
 suggested_action: cs-issue
+status: closed
+closed_by: 88619d47
 ---
 
 # Finding 01：nt_mod_pow 双生成器硬编码模数 1 → 恒输出 0

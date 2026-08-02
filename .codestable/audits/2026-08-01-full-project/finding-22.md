@@ -6,6 +6,8 @@ nature: docs-api
 severity: P2
 confidence: high
 suggested_action: cs-issue
+status: closed
+closed_by: 88619d47
 ---
 
 # Finding 22：块数统计三处文档三个数字（118/110+/71）全与代码不符

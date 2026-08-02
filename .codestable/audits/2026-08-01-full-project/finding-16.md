@@ -6,6 +6,8 @@ nature: maintainability
 severity: P2
 confidence: high
 suggested_action: cs-refactor
+status: closed
+closed_by: 88619d47
 ---
 
 # Finding 16：buildCategories 类目键与 blocks.ts 注册类目双份硬编码（第 5 份）

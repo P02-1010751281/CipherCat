@@ -6,6 +6,8 @@ nature: bug
 severity: P2
 confidence: high
 suggested_action: cs-issue
+status: closed
+closed_by: 88619d47
 ---
 
 # Finding 04：keccak_f 非 1600 宽度双语言生成坏代码

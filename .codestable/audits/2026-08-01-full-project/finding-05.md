@@ -6,6 +6,8 @@ nature: bug
 severity: P2
 confidence: medium
 suggested_action: cs-issue
+status: closed
+closed_by: 88619d47
 ---
 
 # Finding 05：def 块 compose() 无条件 push 可能为 null 的 VariableModel

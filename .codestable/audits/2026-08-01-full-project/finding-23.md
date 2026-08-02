@@ -6,6 +6,8 @@ nature: docs-api
 severity: P2
 confidence: medium
 suggested_action: cs-issue
+status: closed
+closed_by: 88619d47
 ---
 
 # Finding 23：根 README 目录结构/技术栈过时（core/、SHA-1 等）

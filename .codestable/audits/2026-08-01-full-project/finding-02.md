@@ -6,6 +6,8 @@ nature: bug
 severity: P1
 confidence: high
 suggested_action: cs-issue
+status: closed
+closed_by: 88619d47
 ---
 
 # Finding 02：编辑器内"新建工作区"同路由复用 → 保存静默全失败

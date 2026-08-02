@@ -6,6 +6,8 @@ nature: docs-api
 severity: P2
 confidence: medium
 suggested_action: cs-issue
+status: closed
+closed_by: 88619d47
 ---
 
 # Finding 24：Metacrypto 品牌残留侵入 CipherCat 文档与源码头注释

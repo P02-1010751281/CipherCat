@@ -6,6 +6,8 @@ nature: maintainability
 severity: P2
 confidence: high
 suggested_action: cs-refactor
+status: closed
+closed_by: 88619d47
 ---
 
 # Finding 19：migrateBlockType 死导出

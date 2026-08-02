@@ -6,6 +6,8 @@ nature: docs-api
 severity: P2
 confidence: high
 suggested_action: cs-issue
+status: closed
+closed_by: 88619d47
 ---
 
 # Finding 21：DEMO.md / ecc-sbox.md 引用不存在的 crypto_func_def

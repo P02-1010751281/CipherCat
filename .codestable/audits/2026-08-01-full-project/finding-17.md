@@ -6,6 +6,8 @@ nature: maintainability
 severity: P2
 confidence: high
 suggested_action: cs-issue
+status: closed
+closed_by: 88619d47
 ---
 
 # Finding 17：i18n 缺 CRYPTO_CATEGORY_CRYPTO_TEMPLATES + POSTQUANTUM 死键

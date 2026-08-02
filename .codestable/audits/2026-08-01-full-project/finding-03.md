@@ -6,6 +6,8 @@ nature: bug
 severity: P2
 confidence: medium
 suggested_action: cs-issue
+status: closed
+closed_by: 88619d47
 ---
 
 # Finding 03：模板函数改名后 call 块参数同步失效

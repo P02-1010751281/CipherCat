@@ -58,6 +58,12 @@ total_findings: 24
 | 23 | 根 README 目录结构/技术栈过时（core/、SHA-1 等） | docs-api | P2 | medium | cs-issue |
 | 24 | Metacrypto 品牌残留侵入 CipherCat 文档与源码头注释 | docs-api | P2 | medium | cs-issue |
 
+## 修复进度（2026-08-02 回写）
+
+- **closed=14 / open=10**（修复 commit `88619d47`，2026-08-01 会话）
+- closed：01/02/03/04/05（bug 全维）、15/16/17/19（maintainability）、20/21/22/23/24（docs-api 全维）
+- open：06/07/08/09（security 纵深加固）、10/11/12/13/14（performance）、18（makeDefBlock/makeCallBlock 重复逻辑）——待后续专项
+
 ## 建议下一步
 
 - **P1 共 2 条**（finding-01/02）：建议立刻开 cs-issue 修——模幂块是教学主线，保存失败是主流程静默丢数据

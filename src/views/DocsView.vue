@@ -114,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { ui, uiLocaleRef } from '@/composables/locale';
 import {
@@ -141,32 +141,46 @@ const docLoaders = import.meta.glob('/docs/**/*.md', {
 // Parse modules into categories (from file paths only, no content loading)
 function buildCategories(): DocCategory[] {
   const catMap = new Map<string, DocFile[]>();
+  const locale = currentLocale.value;
 
   for (const path of Object.keys(docLoaders)) {
-    // path looks like: /docs/standards/fips202-SHA3/01-Theta.md
+    // path looks like: /docs/guides/ARCHITECTURE.md | /docs/standards/fips202-SHA3/01-Theta.md
     const parts = path.replace(/^\/docs\//, '').split('/');
     if (parts.length < 2) continue;
 
-    // 标准规范目录现位于 standards/ 下：category 取第二层（fips202-SHA3 等）
-    const category = parts[0] === 'standards' ? parts[1] : parts[0];
-    const filename = parts[parts.length - 1];
+    const top = parts[0];
 
-    // 只收 standards/<cat>/<file>（3 层）——guides/blocks/demos 暂不在此视图展示
-    if (parts[0] === 'standards' && parts.length !== 3) continue;
-    if (parts[0] !== 'standards') continue;
+    // guides/：核心文档平铺（guides/<file>），按 locale 过滤中英版本
+    if (top === 'guides' && parts.length === 2) {
+      const filename = parts[1];
+      const isEn = filename.endsWith('.en.md');
+      if ((locale === 'zh') === isEn) continue; // zh 只收 .md，en 只收 .en.md
 
-    const file: DocFile = {
-      path,
-      category,
-      filename,
-      title: parseDocTitle(filename),
-      order: parseOrder(filename),
-    };
-
-    if (!catMap.has(category)) {
-      catMap.set(category, []);
+      const file: DocFile = {
+        path,
+        category: 'guides',
+        filename,
+        title: parseDocTitle(filename),
+        order: parseOrder(filename),
+      };
+      if (!catMap.has('guides')) catMap.set('guides', []);
+      catMap.get('guides')!.push(file);
+      continue;
     }
-    catMap.get(category)!.push(file);
+
+    // standards/：算法规范（standards/<cat>/<file> 3 层），category 取第二层
+    if (top === 'standards' && parts.length === 3) {
+      const category = parts[1];
+      const file: DocFile = {
+        path,
+        category,
+        filename: parts[2],
+        title: parseDocTitle(parts[2]),
+        order: parseOrder(parts[2]),
+      };
+      if (!catMap.has(category)) catMap.set(category, []);
+      catMap.get(category)!.push(file);
+    }
   }
 
   // Sort files within each category by order
@@ -175,7 +189,7 @@ function buildCategories(): DocCategory[] {
   }
 
   // Define display order of categories
-  const categoryOrder = ['fips202-SHA3', 'fips203-ML-KEM', 'fips204-ML-DSA'];
+  const categoryOrder = ['guides', 'fips202-SHA3', 'fips203-ML-KEM', 'fips204-ML-DSA'];
 
   return categoryOrder
     .filter((id) => catMap.has(id))
@@ -240,13 +254,17 @@ function goBack() {
   router.push('/');
 }
 
-onMounted(() => {
+function rebuildCategories() {
   categories.value = buildCategories();
   // Expand all categories by default
   for (const cat of categories.value) {
     expandedCategories.value.add(cat.id);
   }
-});
+}
+
+onMounted(rebuildCategories);
+// 语言切换后重建类目（guides/ 按 locale 过滤中英版本）
+watch(currentLocale, rebuildCategories);
 </script>
 
 <style scoped>

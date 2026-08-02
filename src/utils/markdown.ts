@@ -54,6 +54,7 @@ export interface DocCategory {
 }
 
 const CATEGORY_LABELS: Record<string, { zh: string; en: string }> = {
+  guides: { zh: '核心文档', en: 'Core Documentation' },
   'fips202-SHA3': { zh: 'FIPS 202 — SHA-3 哈希函数', en: 'FIPS 202 — SHA-3 Hash' },
   'fips203-ML-KEM': { zh: 'FIPS 203 — ML-KEM 密钥封装', en: 'FIPS 203 — ML-KEM Key Encapsulation' },
   'fips204-ML-DSA': { zh: 'FIPS 204 — ML-DSA 数字签名', en: 'FIPS 204 — ML-DSA Digital Signature' },
@@ -69,9 +70,10 @@ export function parseDocTitle(filename: string, content?: string): string {
     const match = content.match(/^#\s+(.+)$/m) || content.match(/^##\s+(.+)$/m);
     if (match) return match[1].trim();
   }
-  // Fallback: extract from filename, removing number prefix and .md
+  // Fallback: extract from filename, removing number prefix and .md / .en.md
   return filename
     .replace(/^\d{2}-/, '')
+    .replace(/\.en\.md$/, '')
     .replace(/\.md$/, '')
     .replace(/-/g, ' ');
 }

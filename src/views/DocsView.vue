@@ -326,8 +326,21 @@ async function setupDocLinks() {
 }
 
 onMounted(rebuildCategories);
-// 语言切换后重建类目（guides/ 按 locale 过滤中英版本）
-watch(currentLocale, rebuildCategories);
+// 语言切换：重建类目（guides/ 按 locale 过滤中英版本）+ 当前打开文档同步切换到对应语言版本
+//（存在 .en.md/.md 对应文件则重载内容，否则保持现状——standards 仅中文）
+watch(currentLocale, async (newLocale) => {
+  rebuildCategories();
+  const rel = activeDoc.value.replace(/^\/docs\//, '');
+  if (!rel) return;
+  const isEn = rel.endsWith('.en.md');
+  if (isEn === (newLocale === 'en')) return;
+  const counterpart = isEn
+    ? rel.slice(0, -'.en.md'.length) + '.md'
+    : rel.slice(0, -'.md'.length) + '.en.md';
+  if ('/docs/' + counterpart in docLoaders) {
+    await selectDoc('/docs/' + counterpart);
+  }
+});
 // 文档链接拦截（v-html 渲染后绑定，容器级事件委托）
 void setupDocLinks();
 </script>

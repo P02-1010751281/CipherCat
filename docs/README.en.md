@@ -22,7 +22,6 @@
 
 | Doc | Audience | Description |
 |------|------|------|
-| [IMPLEMENTATION-PLAN.md](./guides/IMPLEMENTATION-PLAN.en.md) | Devs/PM | Full implementation plan: 7 milestones 77→140 blocks |
 | [AUDIT-REPORT.md](./guides/AUDIT-REPORT.en.md) | Devs | Cryptographic primitive completeness audit (incl. Chinese national standards) |
 | [TYPE-SYSTEM.md](./guides/TYPE-SYSTEM.en.md) | Devs | Data type spec: definitions, value ranges, conversion rules, compatibility matrix |
 
@@ -71,7 +70,6 @@ DEVELOPMENT.md         ← development operations guide (references RULES.md)
 ARCHITECTURE.md        ← system architecture
     │
     ├── DEMO.md                  ← demo guide index (per algorithm, see demos/)
-    ├── IMPLEMENTATION-PLAN.md   ← roadmap (references ARCHITECTURE)
     └── AUDIT-REPORT.md          ← primitive coverage audit
 ```
 

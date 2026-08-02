@@ -70,7 +70,6 @@ Domestic PQC: CAC post-quantum working group in progress; CipherCat's full ML-KE
 
 ## 4. Roadmap Status
 
-Detailed plan in [IMPLEMENTATION-PLAN.md](./IMPLEMENTATION-PLAN.en.md) (implemented).
 
 | Milestone | Planned blocks | Content | Status |
 |-----------|------|---------|--------|

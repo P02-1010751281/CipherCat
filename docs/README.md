@@ -22,7 +22,6 @@
 
 | 文档 | 受众 | 说明 |
 |------|------|------|
-| [IMPLEMENTATION-PLAN.md](./guides/IMPLEMENTATION-PLAN.md) | 开发者/PM | 完整实施计划：7 里程碑 77→140 块 |
 | [AUDIT-REPORT.md](./guides/AUDIT-REPORT.md) | 开发者 | 密码原语完整性审计（含国密专项） |
 | [TYPE-SYSTEM.md](./guides/TYPE-SYSTEM.md) | 开发者 | 数据类型规范：定义、值域、转换规则、兼容矩阵 |
 
@@ -72,7 +71,6 @@ ARCHITECTURE.md        ← 系统架构说明
     │
     ├── BLOCKLY-GUIDE.md         ← Blockly 使用指南（用户操作 + 拼装样例）
     ├── DEMO.md                  ← 演示指南索引（按算法，见 demos/）
-    ├── IMPLEMENTATION-PLAN.md   ← 实施路线图（已实施完成，历史记录）
     └── AUDIT-REPORT.md          ← 原语覆盖审计（v3.0 现状）
 ```
 

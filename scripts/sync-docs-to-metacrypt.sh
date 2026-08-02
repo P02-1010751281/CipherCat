@@ -3,7 +3,7 @@
 # sync-docs-to-metacrypt.sh — 通用文档单源同步（CipherCat → metacrypt_server）
 #
 # 两项目共享 Blockly 核心，以下文档在 CipherCat 维护、同步到 metacrypt：
-#   docs/guides/{TYPE-SYSTEM,IMPLEMENTATION-PLAN,BLOCKLY-GUIDE,AUDIT-REPORT,DEMO}.md(+en)
+#   docs/guides/{TYPE-SYSTEM,BLOCKLY-GUIDE,AUDIT-REPORT,DEMO}.md(+en)
 #   docs/blocks/（8 份块文档，双语）
 #   docs/standards/（33 算法规范目录，纯知识库）
 #   docs/demos/（5 份算法搭建文档，双语）
@@ -26,7 +26,7 @@ fi
 
 echo "== 同步 guides/ 通用文档 =="
 mkdir -p "$MC_ROOT/docs/guides"
-for f in TYPE-SYSTEM IMPLEMENTATION-PLAN BLOCKLY-GUIDE AUDIT-REPORT; do
+for f in TYPE-SYSTEM BLOCKLY-GUIDE AUDIT-REPORT; do
   for ext in md en.md; do
     src="$CC_ROOT/docs/guides/$f.$ext"
     if [ -f "$src" ]; then
@@ -101,6 +101,10 @@ echo "== 同步部署副本 backend/docs（容器 DOCS_ROOT=/app/docs 读取） 
 rm -rf "$MC_ROOT/backend/docs"
 cp -r "$MC_ROOT/docs" "$MC_ROOT/backend/docs"
 echo "  backend/docs/ ($(find "$MC_ROOT/docs" -type f | wc -l) files)"
+
+echo "== metacrypt 文档去 CipherCat 化（平台名替换） =="
+find "$MC_ROOT/docs" "$MC_ROOT/demos" -name '*.md' -print0 | xargs -0 sed -i 's/CipherCat/Metacrypto/g'
+echo "  CipherCat → Metacrypto 替换完成"
 
 echo "== 同步完成 =="
 echo "提示：同步后需更新 metacrypt docs/INDEX.md、重启 mc-backend 容器并运行死链检查（见脚本头部约定）。"

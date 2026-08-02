@@ -8,6 +8,7 @@ import './hash';
 import './numtheory';
 import './ecc';
 import './zuc';
+import './cmac';
 import './postquantum';
 import './procedure';
 import './symmetric';

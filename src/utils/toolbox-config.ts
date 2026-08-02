@@ -17,6 +17,7 @@ import {
 import { getSboxCategoryKey } from '@/blocks/sbox/category';
 import { toolboxTemplates } from '@/blocks/procedure/toolbox-state';
 import { SYMMETRIC_BLOCK_TYPES } from '@/blocks/symmetric';
+import { CMAC_BLOCK_TYPES } from '@/blocks/cmac';
 
 export function createToolboxConfig() {
   const msg = Blockly.Msg as Record<string, string>;
@@ -160,10 +161,16 @@ export function createToolboxConfig() {
     kind: 'category',
     name: msg.CRYPTO_CATEGORY_SYMMETRIC || 'Symmetric Cipher',
     colour: '#34A853',
-    contents: SYMMETRIC_BLOCK_TYPES.map((type) => ({
-      kind: 'block' as const,
-      type,
-    })),
+    contents: [
+      ...SYMMETRIC_BLOCK_TYPES.map((type) => ({
+        kind: 'block' as const,
+        type,
+      })),
+      ...CMAC_BLOCK_TYPES.map((type) => ({
+        kind: 'block' as const,
+        type,
+      })),
+    ],
   };
 
   const numtheory = {

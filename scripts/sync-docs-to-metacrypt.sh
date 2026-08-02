@@ -95,5 +95,10 @@ for ext in md en.md; do
   echo "  demos/README.$ext"
 done
 
+echo "== 同步部署副本 backend/docs（容器 DOCS_ROOT=/app/docs 读取） =="
+rm -rf "$MC_ROOT/backend/docs"
+cp -r "$CC_ROOT/docs" "$MC_ROOT/backend/docs"
+echo "  backend/docs/ ($(find "$CC_ROOT/docs" -type f | wc -l) files)"
+
 echo "== 同步完成 =="
-echo "提示：同步后需更新 metacrypt docs/INDEX.md 并运行死链检查（见脚本头部约定）。"
+echo "提示：同步后需更新 metacrypt docs/INDEX.md、重启 mc-backend 容器并运行死链检查（见脚本头部约定）。"

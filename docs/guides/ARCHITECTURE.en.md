@@ -4,54 +4,49 @@
 
 ## Overall Architecture
 
-```
-┌──────────────────────────────────────────────────────────┐
-│                     Tauri 桌面壳层                         │
-│  ┌────────────────────────────────────────────────────┐  │
-│  │                 Vue 3 前端应用                       │  │
-│  │                                                     │  │
-│  │  ┌──────────────┐  ┌────────────┐  ┌────────────┐  │  │
-│  │  │  ProjectList  │  │   Editor   │  │  Views /   │  │  │
-│  │  │  (项目管理)    │  │  (编辑器)   │  │  App.vue   │  │  │
-│  │  └──────┬───────┘  └─────┬──────┘  └────────────┘  │  │
-│  │         │                │                          │  │
-│  │  ┌──────┴───────┐  ┌─────┴──────────────────────┐  │  │
-│  │  │   Composables  │  │      Components           │  │  │
-│  │  │  · locale.ts   │  │  ┌──────────────────┐    │  │  │
-│  │  │  · generator.ts│  │  │ BlocklyEditor.vue │    │  │  │
-│  │  │  · useEditor   │  │  │ (封装 Blockly      │    │  │  │
-│  │  │    Project.ts  │  │  │  工作区生命周期)    │    │  │  │
-│  │  │  · useProject  │  │  └────────┬─────────┘    │  │  │
-│  │  │    DB.ts       │  │  ┌────────┴─────────┐    │  │  │
-│  │  └──────┬───────┘  │  │ CodePreviewer.vue │    │  │  │
-│  │         │          │  │ (代码预览/高亮)    │    │  │  │
-│  │         │          │  └──────────────────┘    │  │  │
-│  │  ┌──────┴────────────────────────┐             │  │  │
-│  │  │         Utils                 │             │  │  │
-│  │  │  ┌────────┐ ┌──────────────┐ │             │  │  │
-│  │  │  │workspace│ │ toolbox-     │ │             │  │  │
-│  │  │  │/core.ts │ │ config.ts   │ │             │  │  │
-│  │  │  │/serial- │ └──────────────┘ │             │  │  │
-│  │  │  │ization  │ ┌──────────────┐ │             │  │  │
-│  │  │  │/theme.ts│ │ migration.ts │ │             │  │  │
-│  │  │  └────────┘ └──────────────┘ │             │  │  │
-│  │  └───────────────────────────────┘             │  │  │
-│  │                                                  │  │
-│  │  ┌────────────────────────────────────────┐      │  │
-│  │  │   Blockly 核心                           │      │  │
-│  │  │  ┌──────────┐  ┌──────────────────┐    │      │  │
-│  │  │  │  Blocks   │  │   Generators     │    │      │  │
-│  │  │  │  (积木块) │  │  · JavaScript    │    │      │  │
-│  │  │  │  10 类目  │  │  · Python        │    │      │  │
-│  │  │  └──────────┘  └──────────────────┘    │      │  │
-│  │  └────────────────────────────────────────┘      │  │
-│  └────────────────────────────────────────────────────┘  │
-│                                                            │
-│  ┌────────────────────────────────────────────────────┐  │
-│  │                IndexedDB (useProjectDB.ts)          │  │
-│  │  存储: 项目记录 (workspace XML/JSON + 元数据)       │  │
-│  └────────────────────────────────────────────────────┘  │
-└──────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    TAURI["Tauri Desktop Shell"]
+    subgraph VUE["Vue 3 Frontend"]
+        PL["ProjectList (Project Management)"]
+        ED["Editor"]
+        VA["Views / App.vue"]
+        subgraph COMP["Components"]
+            BEV["BlocklyEditor.vue<br/>(wraps Blockly workspace lifecycle)"]
+            CPV["CodePreviewer.vue<br/>(code preview / highlighting)"]
+        end
+        subgraph CMPO["Composables"]
+            LC["locale.ts"]
+            GT["generator.ts"]
+            UEP["useEditorProject.ts"]
+            UPD["useProjectDB.ts"]
+        end
+        subgraph UTL["Utils"]
+            WC["workspace/core.ts"]
+            TC["toolbox-config.ts"]
+            SZ["serialization"]
+            TH["theme.ts"]
+            MG["migration.ts"]
+        end
+        subgraph BLK["Blockly Core"]
+            BKS["Blocks · 10 categories"]
+            GNS["Generators · JavaScript / Python"]
+        end
+        PL --> CMPO
+        ED --> CMPO
+        VA --> CMPO
+        PL --> COMP
+        ED --> COMP
+        VA --> COMP
+        PL --> UTL
+        ED --> UTL
+        VA --> UTL
+        CMPO --> BLK
+        COMP --> BLK
+        UTL --> BLK
+    end
+    TAURI --> VUE
+    VUE --> IDB["IndexedDB (useProjectDB.ts)<br/>project records: workspace XML/JSON + metadata"]
 ```
 
 ---

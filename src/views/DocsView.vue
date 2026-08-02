@@ -114,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { ui, uiLocaleRef } from '@/composables/locale';
 import {
@@ -247,6 +247,26 @@ async function selectDoc(path: string) {
     error.value = `Failed to render document: ${err}`;
   } finally {
     loading.value = false;
+    // loading=false 后内容区才渲染，mermaid 需在 DOM 就绪后执行
+    await renderMermaid();
+  }
+}
+
+// 渲染文档中的 mermaid 图（动态加载，避免增大首屏包体）
+// 渲染文档中的 mermaid 图（动态加载，避免增大首屏包体）
+async function renderMermaid() {
+  // 等待 renderedHtml 写入 DOM（loading=false 后才渲染内容区）
+  await nextTick();
+  const nodes = Array.from(
+    document.querySelectorAll('.docs-content pre.mermaid'),
+  ) as HTMLElement[];
+  if (nodes.length === 0) return;
+  try {
+    const { default: mermaid } = await import('mermaid');
+    mermaid.initialize({ startOnLoad: false });
+    await mermaid.run({ nodes });
+  } catch (err) {
+    console.warn('Mermaid render failed:', err);
   }
 }
 

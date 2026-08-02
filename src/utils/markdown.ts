@@ -13,6 +13,10 @@ const renderer = new Renderer();
 
 renderer.code = ({ text, lang }) => {
   const language = lang || 'plaintext';
+  // mermaid 块保留原始文本，渲染后由 mermaid.run 替换为 SVG
+  if (language === 'mermaid') {
+    return `<pre class="mermaid">${text}</pre>`;
+  }
   let highlighted: string;
   try {
     highlighted = hljs.highlight(text, { language }).value;

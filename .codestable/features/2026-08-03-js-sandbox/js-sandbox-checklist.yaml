@@ -1,0 +1,51 @@
+steps:
+  - id: run-js-api
+    title: run-code.ts 新增 runJavaScriptInBrowser
+    checks:
+      - id: worker-blob
+        title: Worker 经 Blob URL 创建，用完 terminate + revokeObjectURL
+      - id: console-capture
+        title: worker preamble 重定义 console.log/error/warn → postMessage output
+      - id: async-awaits
+        title: onmessage async + await Promise（HMAC-SHA256 用例）
+      - id: timeout
+        title: 默认 10s 超时 → terminate → { ok:false, errorCode:'timeout' }
+      - id: message-contract
+        title: 消息白名单 output/done/error + settled guard + clearTimeout
+      - id: flood-cap
+        title: 输出累计 1000 行上限后丢弃并提示
+      - id: error-paths
+        title: worker error 事件与 type:error 消息统一归 error
+  - id: editor-branch
+    title: EditorView onRunCode 三语言分支
+    checks:
+      - id: js-branch
+        title: lang=javascript → runJavaScriptInBrowser
+      - id: mcl-keeps-hint
+        title: lang=mcl 保留 runJsNotSupported 提示（不喂 JS eval）
+      - id: timeout-i18n
+        title: errorCode=timeout → ui('runTimeout') 展示
+  - id: i18n
+    title: i18n 键
+    checks:
+      - id: run-timeout-key
+        title: runTimeout zh/en 双键存在且被使用
+      - id: no-dead-key
+        title: grep runJsNotSupported 仅 locale 定义 + MCL 分支引用
+  - id: verify
+    title: 验证
+    checks:
+      - id: build
+        title: vue-tsc features 域 0 errors + vite build ✓
+      - id: browser-js
+        title: 浏览器 JS 运行正常（console.log 输出逐行）
+      - id: browser-timeout
+        title: 死循环 10s 超时提示 + 再次运行可用
+      - id: browser-error
+        title: 异常代码 [Error] 显示
+      - id: browser-async
+        title: HMAC-SHA256 async 块正常输出摘要
+      - id: browser-mcl
+        title: MCL 模式运行显示提示
+      - id: browser-python
+        title: Python 路径回归（print/错误/超时）

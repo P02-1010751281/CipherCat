@@ -19,19 +19,9 @@
           </svg>
           <span>{{ ui("docs") }}</span>
         </button>
-        <select
-          v-model="selectedLocale"
-          class="locale-select"
-          @change="changeLocale"
-        >
-          <option
-            v-for="(info, locale) in BLOCKLY_LOCALES"
-            :key="locale"
-            :value="locale"
-          >
-            {{ info.label }}
-          </option>
-        </select>
+        <button class="toolbar-btn lang-btn" @click="toggleLocale">
+          {{ blocklyLocale.getCurrentLocale() === 'zh-hans' ? 'EN' : '中文' }}
+        </button>
         <button class="toolbar-btn primary" @click="createProject">
           <svg
             viewBox="0 0 24 24"
@@ -111,18 +101,17 @@ import {
 import {
   ui,
   useBlocklyLocale,
-  BLOCKLY_LOCALES,
-  type BlocklyLocale,
 } from '@/composables/locale';
 
 const router = useRouter();
 const projects = ref<ProjectRecord[]>([]);
 
 const blocklyLocale = useBlocklyLocale();
-const selectedLocale = ref<BlocklyLocale>(blocklyLocale.getCurrentLocale());
 
-function changeLocale() {
-  blocklyLocale.setLocale(selectedLocale.value);
+function toggleLocale() {
+  blocklyLocale.setLocale(
+    blocklyLocale.getCurrentLocale() === 'zh-hans' ? 'en' : 'zh-hans',
+  );
 }
 
 async function loadProjects() {

@@ -69,19 +69,9 @@
           </button>
           <div class="toolbar-divider" />
 
-          <select
-            v-model="selectedBlocklyLocale"
-            class="toolbar-select"
-            @change="changeBlocklyLocale"
-          >
-            <option
-              v-for="(info, locale) in BLOCKLY_LOCALES"
-              :key="locale"
-              :value="locale"
-            >
-              {{ info.label }}
-            </option>
-          </select>
+          <button class="toolbar-btn lang-btn" @click="toggleBlocklyLocale">
+            {{ blocklyLocale.getCurrentLocale() === 'zh-hans' ? 'EN' : '中文' }}
+          </button>
 
           <div class="toolbar-divider" />
 
@@ -272,19 +262,16 @@ import {
 } from '@/constants/code-languages';
 import {
   useBlocklyLocale,
-  BLOCKLY_LOCALES,
-  type BlocklyLocale,
   ui,
 } from '@/composables/locale';
 import { useEditorProject } from '@/composables/useEditorProject';
 
 const blocklyLocale = useBlocklyLocale();
-const selectedBlocklyLocale = ref<BlocklyLocale>(
-  blocklyLocale.getCurrentLocale(),
-);
 
-const changeBlocklyLocale = (): void => {
-  blocklyLocale.setLocale(selectedBlocklyLocale.value);
+const toggleBlocklyLocale = (): void => {
+  blocklyLocale.setLocale(
+    blocklyLocale.getCurrentLocale() === 'zh-hans' ? 'en' : 'zh-hans',
+  );
   blocklyEditor.value?.updateToolbox();
   blocklyEditor.value?.refreshBlocks();
   // 显示切换提示（延迟到中文覆盖生效后；外层定时器纳入 toastTimer 统一清理）

@@ -12,7 +12,8 @@ metacrypt 编辑器三语言（python/javascript/mcl）。MCL（Meta Crypto Lang
 - **修复（metacrypt 35b7256）**：
   1. `argon2_hash` 正确生成器（`mcl/hash/argon2.ts`，RFC 9106 伪代码 `ARGON2_HASH(pwd, salt, secret, ad, mCost, tCost, lanes, tagLen, variant)`）
   2. `MCLGenerator.blockToCode` 兜底：未覆盖块生成 `UNSUPPORTED_OP("块名")` 占位而非抛错——73 个缺口不再阻断整段生成，其余块照常输出。
-- **缺口清单（73 块）**：aes_*（4）、ascon_encrypt、base64_*、bytes_to_hex、ccm/cmac/gcm/xts_encrypt、crypto_return、data_value、drbg_generate、ecdh/ecdsa/eddsa、endian_swap、gf2m_mul、gm_rng、hash_hmac/sha512_*、hkdf、keccak_*、mldsa、mode_*、nt_mod_pow、pad_*、pbkdf2、pq_*、rsa_*、sm2_*、sm4_*、sm9_*、sponge_*、x25519、zuc_*。
+- **全量补完（metacrypt 后续批次）**：6 组并行 agent + 主线程补 ecdsa/eddsa，**73 缺口全部补齐**（argon2 已在首轮）——hash 13 / symmetric 15（新建目录）/ data 8 / ecc 15（含 ecdsa/eddsa）/ numtheory+pq 16 / zuc+ascon 8。语法契约见 `.codestable/compound/2026-08-03-mcl-generator-syntax.md`（双参签名 `(block, generator)`、大写指令、`UNSUPPORTED_OP` 兜底）。验证：vue-tsc 0、vite build ✓、浏览器 76 块全量生成 0 失败 0 UNSUPPORTED_OP。
+- **剩余非缺口**：`procedures_mutatorarg`/`procedures_mutatorcontainer` 是 procedure mutator 内部 UI 块，不出现在主 workspace 生成链，正确无需生成器。
 
 ## 待办建议
 

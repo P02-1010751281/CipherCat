@@ -1,44 +1,69 @@
 {
-  "blocks": {
-    "languageVersion": 0,
-    "blocks": [
-      {
-        "type": "procedures_defreturn",
-        "id": "496fd6864329dd6cfd36",
-        "x": 100,
-        "y": 100,
-        "extraState": {
-          "params": [
-            {
-              "name": "password",
-              "id": "param_password",
-              "type": "bytes"
-            },
-            {
-              "name": "salt",
-              "id": "param_salt",
-              "type": "bytes"
-            }
-          ],
-          "hasStatements": false
-        },
-        "fields": {
-          "NAME": "PBKDF2"
-        },
-        "inputs": {
-          "RETURN": {
-            "block": {
-              "type": "variables_get",
-              "id": "12b27137da225c4a7fe2",
-              "fields": {
-                "VAR": {
-                  "id": "param_password"
-                }
-              }
-            }
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "procedures_defreturn",
+    "id": "demo_pbkdf2_def_0001",
+    "x": 100,
+    "y": 100,
+    "extraState": {
+     "params": [],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "PBKDF2"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "pbkdf2",
+       "id": "demo_pbkdf2_0002",
+       "fields": {
+        "HASH": "sha256"
+       },
+       "inputs": {
+        "PASSWORD": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_pbkdf2_pw_0003",
+          "fields": {
+           "NUM": "[0x70,0x61,0x73,0x73,0x77,0x6f,0x72,0x64]"
           }
+         }
+        },
+        "SALT": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_pbkdf2_salt_0004",
+          "fields": {
+           "NUM": "[0x73,0x61,0x6c,0x74]"
+          }
+         }
+        },
+        "ITER": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_pbkdf2_iter_0005",
+          "fields": {
+           "NUM": "2"
+          }
+         }
+        },
+        "KEYLEN": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_pbkdf2_len_0006",
+          "fields": {
+           "NUM": "32"
+          }
+         }
         }
+       }
       }
-    ]
-  }
+     }
+    }
+   }
+  ]
+ }
 }

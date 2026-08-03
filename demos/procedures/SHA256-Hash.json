@@ -4,9 +4,9 @@
   "blocks": [
    {
     "type": "procedures_defreturn",
-    "id": "852bf80a6b001179b4d0",
-    "x": 100,
-    "y": 100,
+    "id": "demo_sha256hash_def_0001",
+    "x": 80,
+    "y": 80,
     "extraState": {
      "params": [
       {
@@ -23,16 +23,33 @@
     "inputs": {
      "RETURN": {
       "block": {
-       "type": "hash_sha256_pad",
-       "id": "2672ed383197192ee7e8",
+       "type": "hash_sha256_compress",
+       "id": "demo_sha256hash_cmp_0002",
        "inputs": {
-        "INPUT": {
+        "V": {
          "block": {
-          "type": "variables_get",
-          "id": "c676829480fc3a4dfd6a",
+          "type": "data_value",
+          "id": "demo_sha256hash_iv_0003",
           "fields": {
-           "VAR": {
-            "id": "param_msg"
+           "NUM": "[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]"
+          }
+         }
+        },
+        "W": {
+         "block": {
+          "type": "hash_sha256_pad",
+          "id": "demo_sha256hash_pad_0004",
+          "inputs": {
+           "INPUT": {
+            "block": {
+             "type": "variables_get",
+             "id": "demo_sha256hash_var_0005",
+             "fields": {
+              "VAR": {
+               "id": "param_msg"
+              }
+             }
+            }
            }
           }
          }

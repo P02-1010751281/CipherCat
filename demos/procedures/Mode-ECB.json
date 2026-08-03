@@ -1,44 +1,48 @@
 {
-  "blocks": {
-    "languageVersion": 0,
-    "blocks": [
-      {
-        "type": "procedures_defreturn",
-        "id": "86dd7a15ad60e2eb7ff4",
-        "x": 100,
-        "y": 100,
-        "extraState": {
-          "params": [
-            {
-              "name": "data",
-              "id": "param_data",
-              "type": "bytes"
-            },
-            {
-              "name": "key",
-              "id": "param_key",
-              "type": "bytes"
-            }
-          ],
-          "hasStatements": false
-        },
-        "fields": {
-          "NAME": "ECB"
-        },
-        "inputs": {
-          "RETURN": {
-            "block": {
-              "type": "variables_get",
-              "id": "7bd4bf10d2dfb5dc7213",
-              "fields": {
-                "VAR": {
-                  "id": "param_data"
-                }
-              }
-            }
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "procedures_defreturn",
+    "id": "demo_ecb_def_0001",
+    "x": 100,
+    "y": 100,
+    "extraState": {
+     "params": [],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "ECB"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "mode_ecb_encrypt",
+       "id": "demo_ecb_0002",
+       "inputs": {
+        "DATA": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_ecb_data_0003",
+          "fields": {
+           "NUM": "[0x6b,0xc1,0xbe,0xe2,0x2e,0x40,0x9f,0x96,0xe9,0x3d,0x7e,0x11,0x73,0x93,0x17,0x2a]"
           }
+         }
+        },
+        "KEY": {
+         "block": {
+          "type": "data_value",
+          "id": "demo_ecb_key_0004",
+          "fields": {
+           "NUM": "[0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c]"
+          }
+         }
         }
+       }
       }
-    ]
-  }
+     }
+    }
+   }
+  ]
+ }
 }

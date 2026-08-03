@@ -55,10 +55,13 @@ javascriptGenerator.forBlock['sm4_round_func'] = function (block: Block): [strin
   const sboxName = registerSm4Sbox();
   const fn = javascriptGenerator.provideFunction_('sm4RoundFunc', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(x0, x1, x2, x3, rk) {',
-    '  var b = ((x0[0]^x1[0]^x2[0]^x3[0]^rk) >>> 24) & 0xFF;',
-    '  var c = ((x0[1]^x1[1]^x2[1]^x3[1]^rk) >>> 16) & 0xFF;',
-    '  var d = ((x0[2]^x1[2]^x2[2]^x3[2]^rk) >>> 8) & 0xFF;',
-    '  var e = (x0[3]^x1[3]^x2[3]^x3[3]^rk) & 0xFF;',
+    '  // SM4 轮函数 F = X0 ⊕ T(X1⊕X2⊕X3⊕rk)：X1..X3⊕rk 进 S-box+L，X0 最后异或',
+    '  function w(b) { return ((b[0] << 24) | (b[1] << 16) | (b[2] << 8) | b[3]) >>> 0; }',
+    '  var t = (w(x1) ^ w(x2) ^ w(x3) ^ rk) >>> 0;',
+    '  var b = (t >>> 24) & 0xFF;',
+    '  var c = (t >>> 16) & 0xFF;',
+    '  var d = (t >>> 8) & 0xFF;',
+    '  var e = t & 0xFF;',
     '  var sbox = ' + sboxName + ';',
     '  var sb = sbox[b], sc = sbox[c], sd = sbox[d], se = sbox[e];',
     '  var word = ((sb << 24) | (sc << 16) | (sd << 8) | se) >>> 0;',
@@ -68,6 +71,7 @@ javascriptGenerator.forBlock['sm4_round_func'] = function (block: Block): [strin
     '  var rot18 = ((word << 18) | (word >>> 14)) >>> 0;',
     '  var rot24 = ((word << 24) | (word >>> 8)) >>> 0;',
     '  var l = (word ^ rot2 ^ rot10 ^ rot18 ^ rot24) >>> 0;',
+    '  l = (w(x0) ^ l) >>> 0;',
     '  return [(l >>> 24) & 0xFF, (l >>> 16) & 0xFF, (l >>> 8) & 0xFF, l & 0xFF];',
     '}',
   ]);

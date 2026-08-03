@@ -268,14 +268,15 @@ Blockly.Blocks['sbox'] = {
     const { maxRow, maxCol } = getSboxRowCol.call(this);
     const popup = document.createElement('div');
     popup.style.cssText =
-      'position:fixed;z-index:10000;background:#fff;' +
-      'border:2px solid #4a90d9;border-radius:8px;padding:12px;' +
+      'position:fixed;z-index:10000;background:var(--el-bg-color-overlay,#fff);' +
+      'border:2px solid var(--el-color-primary,#4a90d9);border-radius:8px;padding:12px;' +
+      'color:var(--el-text-color-primary,#333);' +
       'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
       'font-family:monospace;max-height:420px;overflow:auto;';
 
     const title = document.createElement('div');
     title.style.cssText =
-      'font-size:14px;font-weight:bold;margin-bottom:8px;color:#333;';
+      'font-size:14px;font-weight:bold;margin-bottom:8px;color:var(--el-text-color-primary,#333);';
     title.textContent = 'S-box ' + maxRow + 'x' + maxCol;
     popup.appendChild(title);
 
@@ -284,12 +285,12 @@ Blockly.Blocks['sbox'] = {
     const tr = document.createElement('tr');
     const empty = document.createElement('th');
     empty.style.cssText =
-      'border:1px solid #bbb;padding:3px 6px;background:#e8f4fd;text-align:center;min-width:28px;';
+      'border:1px solid var(--el-border-color,#bbb);padding:3px 6px;background:var(--el-fill-color-light,#e8f4fd);text-align:center;min-width:28px;';
     tr.appendChild(empty);
     for (let c = 0; c < maxCol; c++) {
       const th = document.createElement('th');
       th.style.cssText =
-        'border:1px solid #bbb;padding:3px 6px;background:#e8f4fd;text-align:center;font-weight:bold;';
+        'border:1px solid var(--el-border-color,#bbb);padding:3px 6px;background:var(--el-fill-color-light,#e8f4fd);text-align:center;font-weight:bold;';
       th.textContent = 'x' + c.toString(16).toUpperCase();
       tr.appendChild(th);
     }
@@ -298,13 +299,13 @@ Blockly.Blocks['sbox'] = {
       const tr2 = document.createElement('tr');
       const rh = document.createElement('td');
       rh.style.cssText =
-        'border:1px solid #bbb;padding:3px 6px;background:#e8f4fd;text-align:center;font-weight:bold;';
+        'border:1px solid var(--el-border-color,#bbb);padding:3px 6px;background:var(--el-fill-color-light,#e8f4fd);text-align:center;font-weight:bold;';
       rh.textContent = r.toString(16).toUpperCase();
       tr2.appendChild(rh);
       for (let c = 0; c < maxCol; c++) {
         const td = document.createElement('td');
         td.style.cssText =
-          'border:1px solid #bbb;padding:3px 6px;text-align:center;font-family:monospace;';
+          'border:1px solid var(--el-border-color,#bbb);padding:3px 6px;text-align:center;font-family:monospace;';
         td.textContent =
           this.gridData && r * maxCol + c < this.gridData.length
             ? this.gridData[r * maxCol + c]

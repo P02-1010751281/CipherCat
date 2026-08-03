@@ -94,11 +94,17 @@ function configureTextPrintBlock() {
 configureTextPrintBlock();
 
 const _origFinish = pythonGenerator.finish;
+// print 过滤开关：默认开启（生成代码给后端 exec 用，保持整洁）；
+// 浏览器沙箱「运行」需要 text_print 块的 print 输出，运行时临时关闭（见 CodePreview.generateRawCode）
+let pythonPrintFilterEnabled = true;
+export function setPythonPrintFilter(enabled: boolean): void {
+  pythonPrintFilterEnabled = enabled;
+}
 pythonGenerator.finish = function (code: string) {
   const lines = (code || '').split('\n');
   const filtered: string[] = [];
   for (let i = 0; i < lines.length; i++) {
-    if (/^\s*print\(/.test(lines[i].trim())) {
+    if (pythonPrintFilterEnabled && /^\s*print\(/.test(lines[i].trim())) {
       const prev = i > 0 ? lines[i - 1] : '';
       const prevTrimmed = prev.trimEnd();
       if (prevTrimmed.endsWith(':')) {

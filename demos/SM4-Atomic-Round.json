@@ -1,219 +1,198 @@
 {
-  "blocks": {
-    "languageVersion": 0,
-    "blocks": [
-      {
-        "type": "variables_set",
-        "id": "b4c2ce0635234bb19188",
-        "x": 80,
-        "y": 80,
-        "fields": {
-          "VAR": {
-            "id": "965fcadff19d47b5bc51"
-          }
-        },
-        "inputs": {
-          "VALUE": {
-            "block": {
-              "type": "data_value",
-              "id": "25fd52d64a164c7ca83d",
-              "x": 80,
-              "y": 160,
-              "fields": {
-                "NUM": "0xA3B1BAC6"
-              }
-            }
-          }
-        }
-      },
-      {
-        "type": "variables_set",
-        "id": "82495998244b46659adf",
-        "x": 300,
-        "y": 80,
-        "fields": {
-          "VAR": {
-            "id": "a42334adadb043aa9e1c"
-          }
-        },
-        "inputs": {
-          "VALUE": {
-            "block": {
-              "type": "data_value",
-              "id": "1831d585ba03426cb5a5",
-              "x": 300,
-              "y": 160,
-              "fields": {
-                "NUM": "0x01234567"
-              }
-            }
-          }
-        }
-      },
-      {
-        "type": "variables_set",
-        "id": "46a0ba11357b43f590d0",
-        "x": 520,
-        "y": 80,
-        "fields": {
-          "VAR": {
-            "id": "ca96b6e148a546aeafff"
-          }
-        },
-        "inputs": {
-          "VALUE": {
-            "block": {
-              "type": "data_value",
-              "id": "09924528cd2c4c929c00",
-              "x": 520,
-              "y": 160,
-              "fields": {
-                "NUM": "0x89ABCDEF"
-              }
-            }
-          }
-        }
-      },
-      {
-        "type": "variables_set",
-        "id": "1f68a9076c29405590a0",
-        "x": 740,
-        "y": 80,
-        "fields": {
-          "VAR": {
-            "id": "b17ec8c7bfcd419ba802"
-          }
-        },
-        "inputs": {
-          "VALUE": {
-            "block": {
-              "type": "data_value",
-              "id": "d9cc3fd971c4469091be",
-              "x": 740,
-              "y": 160,
-              "fields": {
-                "NUM": "0xFEDCBA98"
-              }
-            }
-          }
-        }
-      },
-      {
-        "type": "variables_set",
-        "id": "a2be0b88634f41198061",
-        "x": 960,
-        "y": 80,
-        "fields": {
-          "VAR": {
-            "id": "0f6389d6271a43f58da1"
-          }
-        },
-        "inputs": {
-          "VALUE": {
-            "block": {
-              "type": "data_value",
-              "id": "658e23642e0847ad8b45",
-              "x": 960,
-              "y": 160,
-              "fields": {
-                "NUM": "0x76543210"
-              }
-            }
-          }
-        }
-      },
-      {
-        "type": "sm4_round_func",
-        "id": "04f30aa2d57347229789",
-        "x": 300,
-        "y": 280,
-        "inputs": {
-          "X0": {
-            "block": {
-              "type": "variables_get",
-              "id": "b382fd56221a4b6ba38b",
-              "x": 260,
-              "y": 240,
-              "fields": {
-                "VAR": {
-                  "id": "965fcadff19d47b5bc51"
-                }
-              }
-            }
-          },
-          "X1": {
-            "block": {
-              "type": "variables_get",
-              "id": "972a3fdc6c504b17811f",
-              "x": 560,
-              "y": 240,
-              "fields": {
-                "VAR": {
-                  "id": "965fcadff19d47b5bc51"
-                }
-              }
-            }
-          },
-          "X2": {
-            "block": {
-              "type": "variables_get",
-              "id": "858c04f31f144cb79a30",
-              "x": 860,
-              "y": 240,
-              "fields": {
-                "VAR": {
-                  "id": "965fcadff19d47b5bc51"
-                }
-              }
-            }
-          },
-          "X3": {
-            "block": {
-              "type": "variables_get",
-              "id": "bc3e76614b2c454bac23",
-              "x": 1160,
-              "y": 240,
-              "fields": {
-                "VAR": {
-                  "id": "965fcadff19d47b5bc51"
-                }
-              }
-            }
-          },
-          "RK": {
-            "block": {
-              "type": "data_value",
-              "id": "dcfbb5be52404245a548",
-              "x": 1400,
-              "y": 240,
-              "fields": {
-                "NUM": "0xF12186F9"
-              }
-            }
-          }
-        }
-      },
-      {
-        "type": "sm4_linear_transform",
-        "id": "d211173e640d4650abc0",
-        "x": 500,
-        "y": 400,
-        "inputs": {
-          "B": {
-            "block": {
-              "type": "variables_get",
-              "id": "ed9fb17205144c53a1cc",
-              "x": 460,
-              "y": 360,
-              "fields": {
-                "VAR": {
-                  "id": "bcc15f624bf2450481fb"
-                }
-              }
-            }
-          }
-        }
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "variables_set",
+    "id": "b4c2ce0635234bb19188",
+    "x": 80,
+    "y": 80,
+    "fields": {
+     "VAR": {
+      "id": "965fcadff19d47b5bc51"
+     }
+    },
+    "inputs": {
+     "VALUE": {
+      "block": {
+       "type": "data_value",
+       "id": "25fd52d64a164c7ca83d",
+       "x": 80,
+       "y": 160,
+       "fields": {
+        "NUM": "[0x01,0x23,0x45,0x67]"
+       }
       }
-    ]
-  }
+     }
+    }
+   },
+   {
+    "type": "variables_set",
+    "id": "82495998244b46659adf",
+    "x": 300,
+    "y": 80,
+    "fields": {
+     "VAR": {
+      "id": "a42334adadb043aa9e1c"
+     }
+    },
+    "inputs": {
+     "VALUE": {
+      "block": {
+       "type": "data_value",
+       "id": "1831d585ba03426cb5a5",
+       "x": 300,
+       "y": 160,
+       "fields": {
+        "NUM": "[0x89,0xab,0xcd,0xef]"
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "variables_set",
+    "id": "46a0ba11357b43f590d0",
+    "x": 520,
+    "y": 80,
+    "fields": {
+     "VAR": {
+      "id": "ca96b6e148a546aeafff"
+     }
+    },
+    "inputs": {
+     "VALUE": {
+      "block": {
+       "type": "data_value",
+       "id": "09924528cd2c4c929c00",
+       "x": 520,
+       "y": 160,
+       "fields": {
+        "NUM": "[0xfe,0xdc,0xba,0x98]"
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "variables_set",
+    "id": "1f68a9076c29405590a0",
+    "x": 740,
+    "y": 80,
+    "fields": {
+     "VAR": {
+      "id": "b17ec8c7bfcd419ba802"
+     }
+    },
+    "inputs": {
+     "VALUE": {
+      "block": {
+       "type": "data_value",
+       "id": "d9cc3fd971c4469091be",
+       "x": 740,
+       "y": 160,
+       "fields": {
+        "NUM": "[0x76,0x54,0x32,0x10]"
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "variables_set",
+    "id": "a2be0b88634f41198061",
+    "x": 960,
+    "y": 80,
+    "fields": {
+     "VAR": {
+      "id": "0f6389d6271a43f58da1"
+     }
+    },
+    "inputs": {
+     "VALUE": {
+      "block": {
+       "type": "data_value",
+       "id": "658e23642e0847ad8b45",
+       "x": 960,
+       "y": 160,
+       "fields": {
+        "NUM": "[0x00,0x00,0x00,0x00]"
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "sm4_round_func",
+    "id": "04f30aa2d57347229789",
+    "x": 300,
+    "y": 280,
+    "inputs": {
+     "X0": {
+      "block": {
+       "type": "variables_get",
+       "id": "b382fd56221a4b6ba38b",
+       "x": 260,
+       "y": 240,
+       "fields": {
+        "VAR": {
+         "id": "965fcadff19d47b5bc51"
+        }
+       }
+      }
+     },
+     "X1": {
+      "block": {
+       "type": "variables_get",
+       "id": "972a3fdc6c504b17811f",
+       "x": 560,
+       "y": 240,
+       "fields": {
+        "VAR": {
+         "id": "a42334adadb043aa9e1c"
+        }
+       }
+      }
+     },
+     "X2": {
+      "block": {
+       "type": "variables_get",
+       "id": "858c04f31f144cb79a30",
+       "x": 860,
+       "y": 240,
+       "fields": {
+        "VAR": {
+         "id": "ca96b6e148a546aeafff"
+        }
+       }
+      }
+     },
+     "X3": {
+      "block": {
+       "type": "variables_get",
+       "id": "bc3e76614b2c454bac23",
+       "x": 1160,
+       "y": 240,
+       "fields": {
+        "VAR": {
+         "id": "b17ec8c7bfcd419ba802"
+        }
+       }
+      }
+     },
+     "RK": {
+      "block": {
+       "type": "data_value",
+       "id": "dcfbb5be52404245a548",
+       "x": 1400,
+       "y": 240,
+       "fields": {
+        "NUM": "0xF12186F9"
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
 }

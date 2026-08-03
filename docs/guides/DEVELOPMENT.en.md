@@ -1,6 +1,5 @@
 # CipherCat Development Guide
 
-> [中文](./DEVELOPMENT.md)
 
 ## Environment Setup
 

@@ -1,6 +1,5 @@
 # 后量子演示
 
-> [English](./post-quantum.en.md) · [中文](./post-quantum.md)
 
 > [← 返回索引](../guides/DEMO.md) · [demo 文件清单](../../demos/README.md)
 >

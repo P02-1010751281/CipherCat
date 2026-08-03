@@ -1,6 +1,5 @@
 # Block Standard-Basis Reference
 
-> [中文](./INDEX.md)
 
 **Version**: 2.13 | **Date**: 2026-08-03 | **Total blocks**: 134 (plus 28 function templates)
 

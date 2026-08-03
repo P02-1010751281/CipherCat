@@ -1,6 +1,5 @@
 # SM4 演示
 
-> [English](./sm4.en.md) · [中文](./sm4.md)
 
 > [← 返回索引](../guides/DEMO.md) · [demo 文件清单](../../demos/README.md)
 >

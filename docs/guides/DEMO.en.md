@@ -1,6 +1,5 @@
 # Demo Guide
 
-> [中文](./DEMO.md)
 
 Pre-built Blockly workspace examples, **all using atomic blocks** (no convenience wrappers), to understand the low-level implementation of each cryptographic primitive. Split into per-algorithm docs; corresponding demo files are listed in the [demos/README.md](../../demos/README.en.md) file index:
 

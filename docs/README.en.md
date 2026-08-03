@@ -1,6 +1,5 @@
 # CipherCat Documentation Center
 
-> [中文](./README.md)
 
 🐱 **Post-Quantum Cryptography Visual Programming Platform** — built on Blockly 12.x and Vue 3 (Composition API + TypeScript).
 

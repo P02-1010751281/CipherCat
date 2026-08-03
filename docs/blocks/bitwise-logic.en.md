@@ -1,6 +1,5 @@
 # Bit Operations + Logic Block Reference
 
-> [中文](./bitwise-logic.md)
 
 ## Bit Operations
 

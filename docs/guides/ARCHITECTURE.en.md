@@ -1,6 +1,5 @@
 # CipherCat System Architecture
 
-> [中文](./ARCHITECTURE.md)
 
 ## Overall Architecture
 

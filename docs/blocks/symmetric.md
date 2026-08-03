@@ -1,6 +1,5 @@
 # 对称密码块参考 (AES + SM4 + 模式 + 填充)
 
-> [English](./symmetric.en.md) · [中文](./symmetric.md)
 
 ## AES (FIPS 197)
 

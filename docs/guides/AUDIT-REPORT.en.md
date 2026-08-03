@@ -1,6 +1,5 @@
 # Primitive Completeness Audit Report
 
-> [中文](./AUDIT-REPORT.md)
 >
 > Audit date: 2026-08-02 | Version: v3.0 (current-state reconciliation) | Previous: v2.0 (2026-07-18, pre-symmetric era)
 

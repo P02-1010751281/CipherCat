@@ -1,6 +1,5 @@
 # AES 演示
 
-> [English](./aes.en.md) · [中文](./aes.md)
 
 > [← 返回索引](../guides/DEMO.md) · [demo 文件清单](../../demos/README.md)
 >

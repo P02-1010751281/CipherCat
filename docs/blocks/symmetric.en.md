@@ -1,6 +1,5 @@
 # Symmetric Crypto Block Reference (AES + SM4 + Modes + Padding)
 
-> [中文](./symmetric.md)
 
 ## AES (FIPS 197)
 

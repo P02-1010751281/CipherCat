@@ -1,6 +1,5 @@
 # SM2 演示
 
-> [English](./sm2.en.md) · [中文](./sm2.md)
 
 > [← 返回索引](../guides/DEMO.md) · [demo 文件清单](../../demos/README.md)
 >

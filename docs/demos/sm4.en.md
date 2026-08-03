@@ -1,6 +1,5 @@
 # SM4 Demos
 
-> [中文](./sm4.md)
 
 > [← Back to index](../guides/DEMO.en.md) · [demo file index](../../demos/README.en.md)
 >

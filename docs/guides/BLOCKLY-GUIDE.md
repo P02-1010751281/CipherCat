@@ -1,6 +1,5 @@
 # Blockly 使用指南
 
-> [English](./BLOCKLY-GUIDE.en.md)
 
 使用 Blockly 12 可视化编程编辑器搭建密码算法：拖拽积木块、按类型连接、一键生成 Python / JavaScript 代码。本指南覆盖编辑器操作、类型系统、函数模板与算法拼装样例。
 

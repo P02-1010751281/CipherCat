@@ -1,6 +1,5 @@
 # Hash Demos
 
-> [中文](./hash.md)
 
 > [← Back to index](../guides/DEMO.en.md) · [demo file index](../../demos/README.en.md)
 >

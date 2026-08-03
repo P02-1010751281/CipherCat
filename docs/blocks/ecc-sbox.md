@@ -1,6 +1,5 @@
 # ECC + S-Box 块参考
 
-> [English](./ecc-sbox.en.md) · [中文](./ecc-sbox.md)
 
 ## 椭圆曲线 (SEC 2)
 

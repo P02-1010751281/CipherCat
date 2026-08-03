@@ -1,6 +1,5 @@
 # 位运算 + 逻辑块参考
 
-> [English](./bitwise-logic.en.md) · [中文](./bitwise-logic.md)
 
 ## 位运算
 

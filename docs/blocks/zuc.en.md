@@ -1,6 +1,5 @@
 # ZUC Stream Cipher Block Reference (GB/T 33133)
 
-> [English](./zuc.en.md) · [中文](./zuc.md)
 
 ZUC is a Chinese national stream cipher, core component of 3GPP 128-EEA3/EIA3. Atomic blocks follow the algorithm structure: two 8×8 S-boxes + two 32-bit linear transforms + the non-linear function F.
 

@@ -1,6 +1,5 @@
 # 哈希块参考 (SHA + SM3 + Keccak + XOF)
 
-> [English](./hash.en.md) · [中文](./hash.md)
 
 ## SHA-256 (FIPS 180-4)
 

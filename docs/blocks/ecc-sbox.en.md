@@ -1,6 +1,5 @@
 # ECC + S-Box Block Reference
 
-> [中文](./ecc-sbox.md)
 
 ## Elliptic Curves (SEC 2)
 

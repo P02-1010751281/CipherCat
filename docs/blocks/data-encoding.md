@@ -1,6 +1,5 @@
 # 数据 + 编码块参考
 
-> [English](./data-encoding.en.md) · [中文](./data-encoding.md)
 
 ## 数据
 

@@ -1,6 +1,5 @@
 # 🧪 Demo Workspaces
 
-> [中文](./README.md) · [English](./README.en.md)
 
 Pre-built Blockly workspace examples, all using **atomic blocks** (no convenience wrappers), showcasing low-level crypto primitives.
 

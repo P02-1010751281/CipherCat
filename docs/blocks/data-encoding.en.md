@@ -1,6 +1,5 @@
 # Data + Encoding Block Reference
 
-> [中文](./data-encoding.md)
 
 ## Data
 

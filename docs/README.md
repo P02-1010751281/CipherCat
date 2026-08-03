@@ -1,6 +1,5 @@
 # CipherCat 文档中心
 
-> [English](./README.en.md)
 
 🐱 **后量子密码学可视化编程平台** — 基于 Blockly 12.x 和 Vue 3 (Composition API + TypeScript)。
 

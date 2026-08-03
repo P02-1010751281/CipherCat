@@ -1,6 +1,5 @@
 # Post-Quantum Block Reference (ML-KEM + ML-DSA)
 
-> [中文](./post-quantum.md)
 
 ## FIPS 204 ML-DSA Signature
 

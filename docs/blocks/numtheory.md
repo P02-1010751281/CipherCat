@@ -1,6 +1,5 @@
 # 数论 + 大数块参考
 
-> [English](./numtheory.en.md) · [中文](./numtheory.md)
 
 ## 域运算 + NTT
 

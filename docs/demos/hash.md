@@ -1,6 +1,5 @@
 # 哈希演示
 
-> [English](./hash.en.md) · [中文](./hash.md)
 
 > [← 返回索引](../guides/DEMO.md) · [demo 文件清单](../../demos/README.md)
 >

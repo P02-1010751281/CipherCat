@@ -1,6 +1,5 @@
 # 后量子密码块参考 (ML-KEM + ML-DSA)
 
-> [English](./post-quantum.en.md) · [中文](./post-quantum.md)
 
 ## FIPS 204 ML-DSA 签名
 

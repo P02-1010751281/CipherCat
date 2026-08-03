@@ -1,6 +1,5 @@
 # Hash Block Reference (SHA + SM3 + Keccak + XOF)
 
-> [中文](./hash.md)
 
 ## SHA-256 (FIPS 180-4)
 

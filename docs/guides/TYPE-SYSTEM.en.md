@@ -1,6 +1,5 @@
 # Data Type Specification
 
-> [中文](./TYPE-SYSTEM.md)
 
 > Version v1.0 | 2026-07-18 | The type reference standard for all block implementations
 

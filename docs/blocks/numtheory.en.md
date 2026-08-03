@@ -1,6 +1,5 @@
 # Number Theory + Big Integer Block Reference
 
-> [中文](./numtheory.md)
 
 ## Field Ops + NTT
 

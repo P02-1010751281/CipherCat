@@ -343,7 +343,13 @@ async function setupDocLinks() {
     const target = ev.target as HTMLElement;
     const a = target.closest?.('a[href]') as HTMLAnchorElement | null;
     if (!a) return;
-    const href = a.getAttribute('href') || '';
+    // markdown-it normalizeLink 会把非 ASCII（中文文件名）percent-encode，而 docLoaders 是原始文件名 → 先解码再解析
+    let href = a.getAttribute('href') || '';
+    try {
+      href = decodeURIComponent(href);
+    } catch {
+      // 非法百分号序列：保留原值
+    }
     if (
       !href.endsWith('.md') ||
       href.startsWith('http') ||

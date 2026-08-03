@@ -17,7 +17,7 @@ function getSha256PadFn(): string {
       '  padded.set(msg);',
       '  padded[mLen] = 0x80;',
       '  for (var i = 0; i < 8; i++) {',
-      '    padded[padded.length - 1 - i] = (mLenBits >>> (8 * i)) & 0xFF;',
+      '    padded[padded.length - 1 - i] = Math.floor(mLenBits / Math.pow(2, 8 * i)) & 0xFF;',
       '  }',
       '  return padded;',
       '}',
@@ -71,7 +71,7 @@ javascriptGenerator.forBlock['hash_sha256_compress'] = function (
     '           0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];',
     '  var a=state[0],b=state[1],c=state[2],d=state[3],e=state[4],f=state[5],g=state[6],h=state[7];',
     '  var w = new Array(64);',
-    '  for (var i=0;i<16;i++) w[i] = block[i]||0;',
+    '  for (var i=0;i<16;i++) w[i] = ((block[i*4]||0)<<24 | (block[i*4+1]||0)<<16 | (block[i*4+2]||0)<<8 | (block[i*4+3]||0)) | 0;',
     '  for (var i=16;i<64;i++) {',
     '    var s0 = ((w[i-15]>>>7)|(w[i-15]<<25)) ^ ((w[i-15]>>>18)|(w[i-15]<<14)) ^ (w[i-15]>>>3);',
     '    var s1 = ((w[i-2]>>>17)|(w[i-2]<<15)) ^ ((w[i-2]>>>19)|(w[i-2]<<13)) ^ (w[i-2]>>>10);',
@@ -86,7 +86,7 @@ javascriptGenerator.forBlock['hash_sha256_compress'] = function (
     '    var t2 = (S0 + maj) | 0;',
     '    h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;',
     '  }',
-    '  return [a,b,c,d,e,f,g,h];',
+    '  return [a,b,c,d,e,f,g,h].map(function(x, i) { return (x + state[i]) | 0; });',
     '}',
   ]);
 

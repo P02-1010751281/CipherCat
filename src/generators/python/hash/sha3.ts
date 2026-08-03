@@ -1,6 +1,6 @@
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
-import { registerSha3Pad, registerKeccakF1600 } from './helpers';
+import { registerSha3Pad, registerKeccakF1600, registerSha3Absorb, registerSha3Squeeze } from './helpers';
 
 /** SHA-3 padding (pad10*1) — text input → returns padded bytes. */
 pythonGenerator.forBlock['hash_sha3_pad_text'] = function (
@@ -81,23 +81,7 @@ pythonGenerator.forBlock['sponge_absorb'] = function (
   const rateBits = block.getFieldValue('RATE') || '1088';
   const rateBytes = Math.floor(parseInt(rateBits) / 8);
 
-  const keccakName = registerKeccakF1600();
-  const absorbName = pythonGenerator.provideFunction_('sha3_absorb', [
-    'def ' +
-      pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ +
-      '(state, block, rate_bytes=136):',
-    '    rate_lanes = rate_bytes // 8',
-    '    s = list(state)',
-    '    for offset in range(0, len(block), rate_bytes):',
-    '        chunk = block[offset:offset + rate_bytes]',
-    '        for i in range(rate_lanes):',
-    '            lane = 0',
-    '            for j in range(8):',
-    '                lane |= (chunk[i*8+j] if i*8+j < len(chunk) else 0) << (j*8)',
-    '            s[i] ^= lane',
-    '        s = ' + keccakName + '(s)',
-    '    return s',
-  ]);
+  const absorbName = registerSha3Absorb();
   return [
     absorbName +
       '(' +
@@ -122,26 +106,7 @@ pythonGenerator.forBlock['sponge_squeeze'] = function (
   const rateBits = block.getFieldValue('RATE') || '1088';
   const rateBytes = Math.floor(parseInt(rateBits) / 8);
 
-  const keccakName = registerKeccakF1600();
-  const squeezeName = pythonGenerator.provideFunction_('sha3_squeeze', [
-    'def ' +
-      pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ +
-      '(state, out_len, rate_bytes=136):',
-    '    rate_lanes = rate_bytes // 8',
-    '    s = list(state)',
-    '    output = bytearray()',
-    '    while len(output) < out_len:',
-    '        for i in range(rate_lanes):',
-    '            for j in range(8):',
-    '                if len(output) >= out_len:',
-    '                    break',
-    '                output.append((s[i] >> (j*8)) & 0xFF)',
-    '            if len(output) >= out_len:',
-    '                break',
-    '        if len(output) < out_len:',
-    '            s = ' + keccakName + '(s)',
-    '    return bytes(output[:out_len])',
-  ]);
+  const squeezeName = registerSha3Squeeze();
   return [
     squeezeName +
       '(' +
@@ -161,4 +126,33 @@ pythonGenerator.forBlock['keccak_state_init'] = function (
 ): [string, number] {
   void _block;
   return ['[0] * 25', Order.ATOMIC];
+};
+
+/** 独立 SHA3-224/256/384/512 封装（FIPS 202）——组合 pad(0x06)/absorb/squeeze */
+pythonGenerator.forBlock['sha3_hash'] = function (
+  block: Block,
+): [string, number] {
+  const msg =
+    pythonGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || "''";
+  const size = block.getFieldValue('SIZE') || '256';
+  const sizeBits = parseInt(size, 10);
+  // FIPS 202 Table 3: r = 1152/1088/832/576（224/256/384/512）
+  const rateBits = sizeBits === 224 ? 1152 : sizeBits === 256 ? 1088 : sizeBits === 384 ? 832 : 576;
+  const rateBytes = Math.floor(rateBits / 8);
+
+  const padFn = registerSha3Pad();
+  const absorbName = registerSha3Absorb();
+  const squeezeName = registerSha3Squeeze();
+  const hashName = pythonGenerator.provideFunction_('sha3_hash', [
+    'def ' +
+      pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(msg, size_bits, rate_bytes):',
+    '    data = ' + padFn + '(msg, rate_bytes=rate_bytes, suffix=0x06)',
+    '    st = ' + absorbName + '([0] * 25, data, rate_bytes=rate_bytes)',
+    '    return ' + squeezeName + '(st, size_bits // 8, rate_bytes=rate_bytes)',
+  ]);
+  return [
+    hashName + '(' + msg + ', ' + size + ', ' + rateBytes + ')',
+    Order.ATOMIC,
+  ];
 };

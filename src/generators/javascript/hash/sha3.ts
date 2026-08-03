@@ -1,7 +1,7 @@
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly';
 import { registerHexToBytes } from '../data/helpers';
-import { registerKeccakF1600, registerSha3Pad } from './helpers';
+import { registerKeccakF1600, registerSha3Pad, registerSha3Absorb, registerSha3Squeeze } from './helpers';
 
 /** SHA-3 padding — text input → returns padded bytes. */
 javascriptGenerator.forBlock['hash_sha3_pad_text'] = function (
@@ -67,28 +67,7 @@ javascriptGenerator.forBlock['sponge_absorb'] = function (
   const rateBits = parseInt(block.getFieldValue('RATE') || '1088');
   const rateBytes = Math.floor(rateBits / 8);
 
-  const keccakName = registerKeccakF1600();
-  const absorbName = javascriptGenerator.provideFunction_('sha3Absorb', [
-    'function ' +
-      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
-      '(state, block, rateBytes) {',
-    '  let s = state.slice();',
-    '  let lanes = rateBytes >> 3;',
-    '  for (let offset = 0; offset < block.length; offset += rateBytes) {',
-    '    let chunk = block.slice(offset, offset + rateBytes);',
-    '    for (let i = 0; i < lanes; i++) {',
-    '      let lane = 0n;',
-    '      for (let j = 0; j < 8; j++) {',
-    '        let idx = i * 8 + j;',
-    '        if (idx < chunk.length) lane |= BigInt(chunk[idx]) << BigInt(j * 8);',
-    '      }',
-    '      s[i] ^= lane;',
-    '    }',
-    '    s = ' + keccakName + '(s);',
-    '  }',
-    '  return s;',
-    '}',
-  ]);
+  const absorbName = registerSha3Absorb();
   return [
     absorbName + '(' + state + ', ' + blockVal + ', ' + rateBytes + ')',
     Order.ATOMIC,
@@ -106,26 +85,7 @@ javascriptGenerator.forBlock['sponge_squeeze'] = function (
   const rateBits = parseInt(block.getFieldValue('RATE') || '1088');
   const rateBytes = Math.floor(rateBits / 8);
 
-  const keccakName = registerKeccakF1600();
-  const squeezeName = javascriptGenerator.provideFunction_('sha3Squeeze', [
-    'function ' +
-      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
-      '(state, outLen, rateBytes) {',
-    '  let s = state.slice();',
-    '  let lanes = rateBytes >> 3;',
-    '  let out = new Uint8Array(outLen);',
-    '  let cursor = 0;',
-    '  while (cursor < outLen) {',
-    '    for (let i = 0; i < lanes && cursor < outLen; i++) {',
-    '      for (let j = 0; j < 8 && cursor < outLen; j++) {',
-    '        out[cursor++] = Number((s[i] >> BigInt(j * 8)) & 0xFFn);',
-    '      }',
-    '    }',
-    '    if (cursor < outLen) s = ' + keccakName + '(s);',
-    '  }',
-    '  return out;',
-    '}',
-  ]);
+  const squeezeName = registerSha3Squeeze();
   return [
     squeezeName + '(' + state + ', ' + outLen + ', ' + rateBytes + ')',
     Order.ATOMIC,
@@ -138,4 +98,33 @@ javascriptGenerator.forBlock['keccak_state_init'] = function (
 ): [string, number] {
   void _block;
   return ['new Array(25).fill(0n)', Order.ATOMIC];
+};
+
+/** 独立 SHA3-224/256/384/512 封装（FIPS 202）——组合 pad(0x06)/absorb/squeeze */
+javascriptGenerator.forBlock['sha3_hash'] = function (
+  block: Block,
+): [string, number] {
+  const msg =
+    javascriptGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || "''";
+  const size = block.getFieldValue('SIZE') || '256';
+  const sizeBits = parseInt(size, 10);
+  const rateBits = sizeBits === 224 ? 1152 : sizeBits === 256 ? 1088 : sizeBits === 384 ? 832 : 576;
+  const rateBytes = Math.floor(rateBits / 8);
+
+  const padFn = registerSha3Pad();
+  const absorbName = registerSha3Absorb();
+  const squeezeName = registerSha3Squeeze();
+  const hashName = javascriptGenerator.provideFunction_('sha3Hash', [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(msg, sizeBits, rateBytes) {',
+    '  let data = ' + padFn + '(msg, rateBytes, 0x06);',
+    '  let st = ' + absorbName + '(new Array(25).fill(0n), data, rateBytes);',
+    '  return ' + squeezeName + '(st, sizeBits >> 3, rateBytes);',
+    '}',
+  ]);
+  return [
+    hashName + '(' + msg + ', ' + size + ', ' + rateBytes + ')',
+    Order.ATOMIC,
+  ];
 };

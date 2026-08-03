@@ -5,6 +5,7 @@ import './bit';
 import './logic';
 import './sbox';
 import './hash';
+import './sha512';
 import './numtheory';
 import './ecc';
 import './zuc';

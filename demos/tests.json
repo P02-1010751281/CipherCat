@@ -248,5 +248,45 @@
       "driver": "console.log(ecdhSharedSecret('6c7cf735485ec76607fb91ef9c33101cc62c3e3e2bd80483e49242b4939f6195', 'beb3df748695ae7171115ac6bf126cedd64b97535eabd01954c72bc3df37c8f0', '29aca2d51a714413b812f000b49139cd9e2720b77b3db0cb95f40cd70f3fbcea'));\nconsole.log(ecdhSharedSecret('c88f01f510d9ac3f70a292daa2316de544e9aab8afe84049c62a9c57862d1433', 'd12dfb5289c8d4f81208b70270398c342296970a0bccb74c736fc7554494bf63', '56fbf3ca366cc23e8157854c13c58d6aac23f046ada30f8353e74f33039872ab'));",
       "expect": "9fc6f647b167c1fee49c830432fe6e7a298e274606f67d4c07f5395c82523405\nd6840f6b42f6edafd13116e0e12565202fef8e9ece7dce03812464d04b9442de"
     }
+  },
+  "procedures/SHA224-Hash.json": {
+    "py": {
+      "driver": "print(''.join('%08x' % x for x in SHA224_Hash(b'abc')[:7]))",
+      "expect": "23097d223405d8228642a477bda255b32aadbce4bda0b3f7e36c9da7"
+    },
+    "js": {
+      "driver": "console.log(SHA224_Hash(new TextEncoder().encode('abc')).slice(0,7).map(x => (x >>> 0).toString(16).padStart(8,'0')).join(''));",
+      "expect": "23097d223405d8228642a477bda255b32aadbce4bda0b3f7e36c9da7"
+    }
+  },
+  "procedures/SHA384-Hash.json": {
+    "py": {
+      "driver": "print(''.join('%02x' % b for b in SHA384_Hash(b'abc')))",
+      "expect": "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7"
+    },
+    "js": {
+      "driver": "console.log(Buffer.from(SHA384_Hash(new TextEncoder().encode('abc'))).toString('hex'));",
+      "expect": "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7"
+    }
+  },
+  "procedures/SHA512-Hash.json": {
+    "py": {
+      "driver": "print(''.join('%02x' % b for b in SHA512_Hash(b'abc')))",
+      "expect": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
+    },
+    "js": {
+      "driver": "console.log(Buffer.from(SHA512_Hash(new TextEncoder().encode('abc'))).toString('hex'));",
+      "expect": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
+    }
+  },
+  "procedures/SHA3-Hash.json": {
+    "py": {
+      "driver": "print(''.join('%02x' % b for b in SHA3_Hash(b'abc')))",
+      "expect": "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532"
+    },
+    "js": {
+      "driver": "console.log(Buffer.from(SHA3_Hash(new TextEncoder().encode('abc'))).toString('hex'));",
+      "expect": "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532"
+    }
   }
 }

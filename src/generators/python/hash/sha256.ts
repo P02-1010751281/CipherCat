@@ -60,7 +60,17 @@ pythonGenerator.forBlock['hash_sha256_compress'] = function (
   const v = pythonGenerator.valueToCode(block, 'V', Order.ATOMIC) || '[]';
   const w = pythonGenerator.valueToCode(block, 'W', Order.ATOMIC) || '[]';
   const fn = pythonGenerator.provideFunction_('sha256_compress', [
-    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(v, w):',
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(v, block):',
+    '    # W 输入为填充后的 512-bit 块（与 sm3_compress/JS 语义对齐），消息调度在内部扩展',
+    '    if isinstance(block, (bytes, bytearray)):',
+    '        block = list(block)',
+    '    W = [0] * 64',
+    '    for j in range(16):',
+    '        W[j] = ((block[4*j] << 24) | (block[4*j+1] << 16) | (block[4*j+2] << 8) | block[4*j+3]) & 0xFFFFFFFF',
+    '    for j in range(16, 64):',
+    '        s0 = (((W[j-15] >> 7) | (W[j-15] << 25)) ^ ((W[j-15] >> 18) | (W[j-15] << 14)) ^ (W[j-15] >> 3)) & 0xFFFFFFFF',
+    '        s1 = (((W[j-2] >> 17) | (W[j-2] << 15)) ^ ((W[j-2] >> 19) | (W[j-2] << 13)) ^ (W[j-2] >> 10)) & 0xFFFFFFFF',
+    '        W[j] = (W[j-16] + s0 + W[j-7] + s1) & 0xFFFFFFFF',
     '    K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,',
     '         0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,',
     '         0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,',
@@ -73,7 +83,7 @@ pythonGenerator.forBlock['hash_sha256_compress'] = function (
     '    for i in range(64):',
     '        s1 = (((h[4]>>6)|(h[4]<<26))&0xFFFFFFFF)^(((h[4]>>11)|(h[4]<<21))&0xFFFFFFFF)^(((h[4]>>25)|(h[4]<<7))&0xFFFFFFFF)',
     '        ch = ((h[4]&h[5])^((~h[4]&0xFFFFFFFF)&h[6]))&0xFFFFFFFF',
-    '        temp1 = (h[7]+s1+ch+K[i]+w[i])&0xFFFFFFFF',
+    '        temp1 = (h[7]+s1+ch+K[i]+W[i])&0xFFFFFFFF',
     '        s0 = (((h[0]>>2)|(h[0]<<30))&0xFFFFFFFF)^(((h[0]>>13)|(h[0]<<19))&0xFFFFFFFF)^(((h[0]>>22)|(h[0]<<10))&0xFFFFFFFF)',
     '        maj = ((h[0]&h[1])^(h[0]&h[2])^(h[1]&h[2]))&0xFFFFFFFF',
     '        temp2 = (s0+maj)&0xFFFFFFFF',

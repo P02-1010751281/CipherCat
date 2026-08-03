@@ -4,9 +4,9 @@
   "blocks": [
    {
     "type": "procedures_defreturn",
-    "id": "852bf80a6b001179b4d0",
-    "x": 100,
-    "y": 100,
+    "id": "demo_sha3_def_0001",
+    "x": 80,
+    "y": 80,
     "extraState": {
      "params": [
       {
@@ -18,18 +18,21 @@
      "hasStatements": false
     },
     "fields": {
-     "NAME": "SHA256_Hash"
+     "NAME": "SHA3_Hash"
     },
     "inputs": {
      "RETURN": {
       "block": {
-       "type": "hash_sha256_pad",
-       "id": "2672ed383197192ee7e8",
+       "type": "sha3_hash",
+       "id": "demo_sha3_cmp_0002",
+       "fields": {
+        "SIZE": "256"
+       },
        "inputs": {
-        "INPUT": {
+        "MSG": {
          "block": {
           "type": "variables_get",
-          "id": "c676829480fc3a4dfd6a",
+          "id": "demo_sha3_var_0003",
           "fields": {
            "VAR": {
             "id": "param_msg"

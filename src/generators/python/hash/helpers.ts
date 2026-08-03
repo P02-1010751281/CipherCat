@@ -51,3 +51,42 @@ export function registerKeccakF1600(): string {
     '    return s',
   ]);
 }
+
+export function registerSha3Absorb(): string {
+  const keccakName = registerKeccakF1600();
+  return pythonGenerator.provideFunction_('sha3_absorb', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(state, block, rate_bytes=136):',
+    '    rate_lanes = rate_bytes // 8',
+    '    s = list(state)',
+    '    for offset in range(0, len(block), rate_bytes):',
+    '        chunk = block[offset:offset + rate_bytes]',
+    '        for i in range(rate_lanes):',
+    '            lane = 0',
+    '            for j in range(8):',
+    '                lane |= (chunk[i*8+j] if i*8+j < len(chunk) else 0) << (j*8)',
+    '            s[i] ^= lane',
+    '        s = ' + keccakName + '(s)',
+    '    return s',
+  ]);
+}
+
+export function registerSha3Squeeze(): string {
+  const keccakName = registerKeccakF1600();
+  return pythonGenerator.provideFunction_('sha3_squeeze', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(state, out_len, rate_bytes=136):',
+    '    rate_lanes = rate_bytes // 8',
+    '    s = list(state)',
+    '    output = bytearray()',
+    '    while len(output) < out_len:',
+    '        for i in range(rate_lanes):',
+    '            for j in range(8):',
+    '                if len(output) >= out_len:',
+    '                    break',
+    '                output.append((s[i] >> (j*8)) & 0xFF)',
+    '            if len(output) >= out_len:',
+    '                break',
+    '        if len(output) < out_len:',
+    '            s = ' + keccakName + '(s)',
+    '    return bytes(output[:out_len])',
+  ]);
+}

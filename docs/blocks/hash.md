@@ -73,3 +73,19 @@
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
 | `hash_hmac` | 1 | value(→) | Bytes&Bytes→Bytes | HMAC(SHA-256/SM3可选) |
+
+## SHA-512 / SHA-384 (FIPS 180-4，64 位字)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `hash_sha512_pad` | 1 | value(→) | Bytes→Bytes | SHA-512 填充：1024-bit 块 + 128-bit 长度字段 |
+| `hash_sha512_compress` | 1 | value(→) | IntList&Bytes→IntList | 64 位字压缩函数（80 轮），W 输入为填充块（内部扩展调度） |
+| `hash_sha512_hash` | 1 | value(→) | Bytes→Bytes | 独立 SHA-384/512 封装（SIZE 下拉）：内嵌正确 IV + 截断；官方向量 FIPS 180-4（"abc"）双语言 PASS |
+
+## 独立 SHA3-xxx 封装 (FIPS 202)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `sha3_hash` | 1 | value(→) | Bytes→Bytes | SHA3-224/256/384/512 一键哈希（SIZE 下拉）：pad10*1(0x06) + absorb + squeeze；官方向量 FIPS 202（"abc" 四档）双语言 PASS |
+
+> 补齐说明（2026-08-03）：SHA-224 复用 `hash_sha256_compress`（不同 IV + 截断，见 demo `SHA224-Hash.json`）；SHA-384/512 用 64 位核（`hash_sha512_*`）；SHA-3 系列新增独立封装块。SHA-256 compress 语义统一为「收填充块、内部扩展调度」（原 JS 侧按字读 + 漏 feed-forward，均修复）。

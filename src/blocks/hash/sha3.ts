@@ -27,6 +27,7 @@ export const SHA3_BLOCK_TYPES = [
   'hash_sha3_pad_hex',
   'sponge_absorb',
   'sponge_squeeze',
+  'sha3_hash',
 ] as const;
 
 export type Sha3BlockType = (typeof SHA3_BLOCK_TYPES)[number];
@@ -199,6 +200,34 @@ Blockly.Blocks['keccak_state_init'] = {
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(200);
     this.setTooltip('Initialize Keccak-f[1600] state as 25 zero lanes.');
+    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
+  },
+};
+
+// 独立 SHA3-224/256/384/512 封装块（FIPS 202）：msg + SIZE 下拉 → 摘要字节
+// 组合既有海绵原语（pad10*1 0x06 + absorb + squeeze），按 SIZE 选 rate/输出长度
+Blockly.Blocks['sha3_hash'] = {
+  init: function () {
+    this.appendValueInput('MSG')
+      .setCheck(TYPE_BYTES)
+      .appendField('SHA3-Hash( msg:');
+    this.appendDummyInput().appendField(' size:').appendField(
+      new Blockly.FieldDropdown(
+        ['224', '256', '384', '512'].map((s) => [s + ' bits', s]),
+        (v: string) => {
+          this.size = v;
+          return v;
+        },
+      ),
+      'SIZE',
+    );
+    this.appendDummyInput().appendField(')');
+    this.setOutput(true, TYPE_BYTES);
+    this.setColour(200);
+    this.setTooltip(
+      Blockly.Msg.CRYPTO_SHA3_HASH_TOOLTIP ||
+        'SHA3-224/256/384/512 one-shot hash (FIPS 202): sponge with 0x06 padding, output size/8 bytes',
+    );
     this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
   },
 };

@@ -5,6 +5,7 @@ export * from './logic';
 export * from './bitwise';
 export * from './sbox';
 export * from './hash';
+export * from './sha512';
 export * from './numtheory';
 export * from './ecc';
 export * from './zuc';
@@ -42,6 +43,7 @@ import {
   ALL_BLOCK_TYPES as HASH_BLOCK_TYPES,
   type HashBlockType,
 } from './hash';
+import { SHA512_BLOCK_TYPES, type Sha512BlockType } from './sha512';
 import { NT_BLOCK_TYPES, type NtBlockType } from './numtheory';
 import { ECC_BLOCK_TYPES, type EccBlockType } from './ecc';
 import { ZUC_BLOCK_TYPES, type ZucBlockType } from './zuc';
@@ -86,6 +88,7 @@ export const ALL_BLOCK_TYPES = [
   ...BIT_BLOCK_TYPES,
   ...ALL_SBOX_BLOCK_TYPES,
   ...HASH_BLOCK_TYPES,
+  ...SHA512_BLOCK_TYPES,
   ...NT_BLOCK_TYPES,
   ...ECC_BLOCK_TYPES,
   ...ZUC_BLOCK_TYPES,
@@ -122,6 +125,7 @@ export type AllBlockType =
   | BitBlockType
   | AllSBoxBlockType
   | HashBlockType
+  | Sha512BlockType
   | NtBlockType
   | EccBlockType
   | ZucBlockType

@@ -7,6 +7,7 @@ import { type ArrayBlockType } from '@/blocks/array';
 import { type LogicBlockType } from '@/blocks/logic';
 import { BIT_BLOCK_TYPES } from '@/blocks/bitwise';
 import { ALL_BLOCK_TYPES as HASH_BLOCK_TYPES } from '@/blocks/hash';
+import { SHA512_BLOCK_TYPES } from '@/blocks/sha512';
 import { NT_BLOCK_TYPES } from '@/blocks/numtheory';
 import { ECC_BLOCK_TYPES } from '@/blocks/ecc';
 import { ZUC_BLOCK_TYPES } from '@/blocks/zuc';
@@ -174,6 +175,7 @@ export function createToolboxConfig() {
         kind: 'block' as const,
         type,
       })),
+      ...SHA512_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
       ...HKDF_BLOCK_TYPES.map((type) => ({
         kind: 'block' as const,
         type,

@@ -1,7 +1,7 @@
 # Block Standard-Basis Reference
 
 
-**Version**: 2.13 | **Date**: 2026-08-03 | **Total blocks**: 134 (plus 28 function templates)
+**Version**: 2.14 | **Date**: 2026-08-03 | **Total blocks**: 138 (plus 28 function templates)
 
 ## Legend
 
@@ -44,7 +44,7 @@
 | Data & Conversion | 20 | [data-encoding.md](data-encoding.en.md) |
 | Bitwise | 8 | [bitwise-logic.md](bitwise-logic.en.md) |
 | S-Box | 4 | [ecc-sbox.md](ecc-sbox.en.md) |
-| Hash & Padding | 22 | [hash.md](hash.en.md) |
+| Hash & Padding | 26 | [hash.md](hash.en.md) |
 | Symmetric Cipher | 18 | [symmetric.md](symmetric.en.md) |
 | Number Theory & KDF | 15 | [numtheory.md](numtheory.en.md) |
 | Elliptic Curve | 19 | [ecc-sbox.md](ecc-sbox.en.md) |
@@ -54,4 +54,4 @@
 | Function Wrapping | 3+ (28 templates) | — |
 | Crypto Templates | dynamic (after Manager add) | — |
 
-> Note: NTT blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`) are listed in both "Number Theory" and "Post-Quantum" block docs; after dedup the toolbox holds **134 custom blocks** across 17 categories (see `ALL_BLOCK_TYPES` in `src/blocks/index.ts`). Counts are flyout-measured on 2026-08-03.
+> Note: NTT blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`) are listed in both "Number Theory" and "Post-Quantum" block docs; after dedup the toolbox holds **138 custom blocks** across 17 categories (see `ALL_BLOCK_TYPES` in `src/blocks/index.ts`). Counts are flyout-measured on 2026-08-03.

@@ -58,3 +58,51 @@ export function registerSha3Pad(): string {
     '}',
   ]);
 }
+
+export function registerSha3Absorb(): string {
+  const keccakName = registerKeccakF1600();
+  return javascriptGenerator.provideFunction_('sha3Absorb', [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(state, block, rateBytes) {',
+    '  let s = state.slice();',
+    '  let lanes = rateBytes >> 3;',
+    '  for (let offset = 0; offset < block.length; offset += rateBytes) {',
+    '    let chunk = block.slice(offset, offset + rateBytes);',
+    '    for (let i = 0; i < lanes; i++) {',
+    '      let lane = 0n;',
+    '      for (let j = 0; j < 8; j++) {',
+    '        let idx = i * 8 + j;',
+    '        if (idx < chunk.length) lane |= BigInt(chunk[idx]) << BigInt(j * 8);',
+    '      }',
+    '      s[i] ^= lane;',
+    '    }',
+    '    s = ' + keccakName + '(s);',
+    '  }',
+    '  return s;',
+    '}',
+  ]);
+}
+
+export function registerSha3Squeeze(): string {
+  const keccakName = registerKeccakF1600();
+  return javascriptGenerator.provideFunction_('sha3Squeeze', [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(state, outLen, rateBytes) {',
+    '  let s = state.slice();',
+    '  let lanes = rateBytes >> 3;',
+    '  let out = new Uint8Array(outLen);',
+    '  let cursor = 0;',
+    '  while (cursor < outLen) {',
+    '    for (let i = 0; i < lanes && cursor < outLen; i++) {',
+    '      for (let j = 0; j < 8 && cursor < outLen; j++) {',
+    '        out[cursor++] = Number((s[i] >> BigInt(j * 8)) & 0xFFn);',
+    '      }',
+    '    }',
+    '    if (cursor < outLen) s = ' + keccakName + '(s);',
+    '  }',
+    '  return out;',
+    '}',
+  ]);
+}

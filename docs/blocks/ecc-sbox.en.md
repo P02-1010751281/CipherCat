@@ -29,6 +29,14 @@
 
 ## Montgomery Curves (RFC 7748)
 
+## Protocol Wrappers (ECDH / SM2 encryption)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|-------|------|-----------|--------------|-------|
+| `ecdh_shared_secret` | 1 | value(→) | String&String&String→String | P-256 ECDH shared secret (RFC 5903 §8.1 vector + cryptography cross-check): d + Qx + Qy → shared point x-coordinate 32B hex; d auto-mod-n |
+| `sm2_encrypt` | 1 | value(→) | Bytes&String&String&String→String | SM2 encryption (GB/T 32918.4): msg + pubkey x/y + k → C1‖C3‖C2 hex (C1=04‖x‖y 65B, C3=SM3(x2‖M‖y2) 32B); official vector Annex A example 2 |
+| `sm2_decrypt` | 1 | value(→) | String&String→Bytes | SM2 decryption: C1‖C3‖C2 + d → plaintext; throws on C3 mismatch |
+
 | Block | Layer | Connection | Input→Output | Notes |
 |----|----|------|----------|------|
 | `x25519` | 1 | value(→) | IntList&IntList→Bytes | X25519(k, u) → 32-byte shared secret; k auto-clamped, u bit-255 cleared; Montgomery ladder p=2^255-19; official vectors (RFC 7748 §5.2 V1/V2) |

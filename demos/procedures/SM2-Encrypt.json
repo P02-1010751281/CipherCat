@@ -1,0 +1,107 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "demo_sm2enc_enc_0001",
+        "x": 80,
+        "y": 80,
+        "extraState": {
+          "params": [],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "SM2_Encrypt"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "sm2_encrypt",
+              "id": "demo_sm2enc_calc_0002",
+              "inputs": {
+                "MSG": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_sm2enc_msg_0003",
+                    "fields": {
+                      "NUM": "[0x65,0x6e,0x63,0x72,0x79,0x70,0x74,0x69,0x6f,0x6e,0x20,0x73,0x74,0x61,0x6e,0x64,0x61,0x72,0x64]"
+                    }
+                  }
+                },
+                "PX": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_sm2enc_px_0004",
+                    "fields": {
+                      "NUM": "\"435b39cca8f3b508c1488afc67be491a0f7ba07e581a0e4849a5cf70628a7e0a\""
+                    }
+                  }
+                },
+                "PY": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_sm2enc_py_0005",
+                    "fields": {
+                      "NUM": "\"75ddba78f15feecb4c7895e2c1cdf5fe01debb2cdbadf45399ccf77bba076a42\""
+                    }
+                  }
+                },
+                "K": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_sm2enc_k_0006",
+                    "fields": {
+                      "NUM": "\"4c62eefd6ecfc2b95b92fd6c3d9575148afa17425546d49018e5388d49dd7b4f\""
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "demo_sm2enc_dec_0007",
+        "x": 80,
+        "y": 260,
+        "extraState": {
+          "params": [],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "SM2_Decrypt"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "sm2_decrypt",
+              "id": "demo_sm2enc_dec_calc_0008",
+              "inputs": {
+                "CT": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_sm2enc_ct_0009",
+                    "fields": {
+                      "NUM": "\"04245c26fb68b1ddddb12c4b6bf9f2b6d5fe60a383b0d18d1c4144abf17f6252e776cb9264c2a7e88e52b19903fdc47378f605e36811f5c07423a24b84400f01b89c3d7360c30156fab7c80a0276712da9d8094a634b766d3a285e07480653426d650053a89b41c418b0c3aad00d886c00286467\""
+                    }
+                  }
+                },
+                "DA": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_sm2enc_da_0010",
+                    "fields": {
+                      "NUM": "\"1649ab77a00637bd5e2efe283fbf353534aa7f7cb89463f208ddbc2920bb0da0\""
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

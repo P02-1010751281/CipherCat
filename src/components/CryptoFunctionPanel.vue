@@ -195,10 +195,16 @@ function insertTemplate(type: string) {
 /** 物化模板块并序列化（事件禁用 + 显式触发预填 → 零活动 workspace 副作用：
  *  预填会向变量表 createVariable（事件禁用只抑制事件，变量表插入无条件），
  *  导出后清理本次新增的变量）。 */
-function serializeTemplate(type: string): Blockly.serialization.blocks.State | null {
+function serializeTemplate(
+  type: string,
+  beforeVarIds?: Set<string>,
+): Blockly.serialization.blocks.State | null {
   const ws = props.workspace; if (!ws) return null;
   const varMap = ws.getVariableMap();
-  const beforeVarIds = new Set(varMap.getAllVariables().map((v) => v.getId()));
+  // 批量导出时由调用方预计算一次快照，避免每个模板一次全量 getAllVariables 扫描
+  const varSnapshot =
+    beforeVarIds ??
+    new Set(varMap.getAllVariables().map((v) => v.getId()));
   let tmpBlock: Blockly.Block | null = null;
   Blockly.Events.disable();
   try {
@@ -214,7 +220,7 @@ function serializeTemplate(type: string): Blockly.serialization.blocks.State | n
     if (tmpBlock) tmpBlock.dispose(false);
     // 清理预填新增的参数变量（仅本次新增；变量作用域在 workspace，不随块销毁）
     for (const v of varMap.getAllVariables()) {
-      if (!beforeVarIds.has(v.getId())) {
+      if (!varSnapshot.has(v.getId())) {
         try { varMap.deleteVariable(v); }
         catch (e) { console.warn('[FunctionManager] prefill variable cleanup failed:', e); }
       }
@@ -250,9 +256,16 @@ function handleImport() {
 async function handleExportAll() {
   const allTypes = categories.value.flatMap(c => c.templates.map(t => t.type));
   const states: unknown[] = [];
+  // 变量快照只算一次（导出 30 个模板免 30 次全量 getAllVariables 扫描）
+  const ws = props.workspace;
+  const beforeVarIds = ws
+    ? new Set(ws.getVariableMap().getAllVariables().map((v) => v.getId()))
+    : undefined;
   for (const type of allTypes) {
-    const s = serializeTemplate(type);
+    const s = serializeTemplate(type, beforeVarIds);
     if (s) states.push(s);
+    // 每模板让出主线程，避免 30 个预填链串行构建数百 ms 卡顿
+    await new Promise((r) => setTimeout(r, 0));
   }
   if (!states.length) return;
   download(JSON.stringify({ blocks: { languageVersion: 0, blocks: states } }, null, 2), 'ciphercat_templates.json');

@@ -1,9 +1,13 @@
 import * as Blockly from 'blockly/core';
 import { migrateXmlText, migrateJsonState } from '@/utils/migration';
+import { closeAllSboxPopups } from '@/blocks/sbox/sbox';
 
 export const jsonTypes = ['.json', '.txt', 'text/json', 'application/json'];
 export const xmlTypes = ['.xml', '.txt', 'text/xml', 'application/xml'];
 export const validTypes = [...jsonTypes, ...xmlTypes];
+
+/** 导入文件大小上限（Blockly 教学工作区通常几 KB；5MB 防超大文件卡死/内存耗尽） */
+export const MAX_IMPORT_SIZE = 5 * 1024 * 1024;
 
 export async function handleFileUpload(
   file: File,
@@ -20,6 +24,11 @@ export async function handleFileUpload(
 
   if (!workspace) {
     console.error('工作空间不存在');
+    return false;
+  }
+
+  if (file.size > MAX_IMPORT_SIZE) {
+    console.error('文件过大，已拒绝导入（上限 5MB）:', file.name, file.size);
     return false;
   }
 
@@ -171,6 +180,7 @@ export function loadXml(
     const migratedXml = migrateXmlText(xmlText);
     const xmlDom = Blockly.utils.xml.textToDom(migratedXml);
 
+    closeAllSboxPopups();
     Blockly.Events.disable();
     workspace.clear();
     Blockly.Events.enable();
@@ -273,56 +283,16 @@ function _applySboxFields(
   }
 }
 
-/** 检测 state 中是否存在旧格式 _sbx_def_ 的 S-box 块 */
-function detectLegacySboxFormat(obj: unknown): boolean {
-  if (Array.isArray(obj)) {
-    for (const item of obj) {
-      if (detectLegacySboxFormat(item)) return true;
-    }
-    return false;
-  }
-  if (typeof obj !== 'object' || obj === null) return false;
-
-  const record = obj as Record<string, unknown>;
-  if (record.type === 'sbox' && record._sbx_def_) return true;
-
-  for (const key of Object.keys(record)) {
-    if (detectLegacySboxFormat(record[key])) return true;
-  }
-  return false;
-}
-
+/** 检测 state 中是否存在旧格式 _sbx_def_ 的 S-box 块（随 collectSboxFieldValues 一次遍历完成） */
 function fixSboxFieldsAfterLoad(
   workspace: Blockly.WorkspaceSvg,
-  state: Record<string, unknown>,
+  sboxFieldValues: Map<string, Map<string, string>>,
 ): void {
-  const sboxFieldValues = collectSboxFieldValues(state);
-
-  console.log(
-    '[fixSboxFieldsAfterLoad] 从 state 中找到的 S-box 数据:',
-    sboxFieldValues.size,
-    '个',
-  );
-
   const allBlocks = workspace.getAllBlocks(false);
   const sboxBlocks = allBlocks.filter((b) => b.type === 'sbox');
-  console.log(
-    '[fixSboxFieldsAfterLoad] workspace 中的 sbox 块:',
-    sboxBlocks.length,
-    '个, 总块数:',
-    allBlocks.length,
-  );
+  if (sboxBlocks.length === 0) return;
 
   sboxBlocks.forEach((block) => {
-    console.log(
-      '[fixSboxFieldsAfterLoad] block id:',
-      block.id,
-      'type:',
-      block.type,
-      'has updateShape:',
-      typeof (block as SBoxLike).updateShape === 'function',
-    );
-
     const fields = sboxFieldValues.get(block.id);
     if (!fields) {
       console.warn(
@@ -332,16 +302,6 @@ function fixSboxFieldsAfterLoad(
       );
       return;
     }
-
-    console.log(
-      '[fixSboxFieldsAfterLoad] block',
-      block.id,
-      '有',
-      fields.size,
-      '个 S-box 字段值, 示例:',
-      [...fields.entries()].slice(0, 3),
-    );
-
     scheduleDeferred(() => _applySboxFields(block, fields));
   });
 }
@@ -362,38 +322,27 @@ function fixSboxFieldsAfterXmlLoad(
 function collectSboxFieldValues(
   obj: unknown,
   result: Map<string, Map<string, string>> = new Map(),
-  _depth: number = 0,
+  legacyFound: { value: boolean } = { value: false },
 ): Map<string, Map<string, string>> {
   if (Array.isArray(obj)) {
-    for (const item of obj) collectSboxFieldValues(item, result, _depth + 1);
+    for (const item of obj)
+      collectSboxFieldValues(item, result, legacyFound);
     return result;
   }
   if (typeof obj !== 'object' || obj === null) return result;
 
   const record = obj as Record<string, unknown>;
   if (record.type === 'sbox' && record.id) {
-    console.log(
-      '[collectSboxFieldValues] 找到 sbox 块 id:',
-      record.id,
-      'has _sbx_def_:',
-      !!record._sbx_def_,
-      'fields keys:',
-      record.fields ? Object.keys(record.fields) : 'null',
-    );
     let fieldMap: Map<string, string> | undefined;
 
     if (record._sbx_def_ && typeof record._sbx_def_ === 'object') {
+      legacyFound.value = true;
       fieldMap = new Map<string, string>();
       for (const [key, val] of Object.entries(
         record._sbx_def_ as Record<string, unknown>,
       )) {
         if (typeof val === 'string') fieldMap.set(key, val);
       }
-      console.log(
-        '[collectSboxFieldValues] 从 _sbx_def_ 提取了',
-        fieldMap.size,
-        '个字段',
-      );
     } else if (record.fields && typeof record.fields === 'object') {
       fieldMap = new Map<string, string>();
       const fieldObj = record.fields as Record<string, unknown>;
@@ -402,33 +351,13 @@ function collectSboxFieldValues(
           fieldMap.set(key, val);
         }
       }
-      console.log(
-        '[collectSboxFieldValues] 从 fields 提取了',
-        fieldMap.size,
-        '个 SBox_ 字段',
-      );
     }
 
-    if (fieldMap && fieldMap.size > 0) {
-      result.set(record.id as string, fieldMap);
-      console.log(
-        '[collectSboxFieldValues] 注册 block',
-        record.id,
-        '共',
-        result.size,
-        '个',
-      );
-    } else {
-      console.warn(
-        '[collectSboxFieldValues] ⚠️ sbox 块',
-        record.id,
-        '没有找到 S-box 数据!',
-      );
-    }
+    if (fieldMap && fieldMap.size > 0) result.set(record.id as string, fieldMap);
   }
 
   for (const key of Object.keys(record))
-    collectSboxFieldValues(record[key], result, _depth + 1);
+    collectSboxFieldValues(record[key], result, legacyFound);
   return result;
 }
 
@@ -480,21 +409,23 @@ export function loadJson(
   console.log('[serialization] 迁移完成，准备加载工作区');
 
   try {
+    closeAllSboxPopups();
     Blockly.Events.disable();
     workspace.clear();
     Blockly.Events.enable();
     Blockly.serialization.workspaces.load(migratedState, workspace);
 
     // 仅对旧格式（_sbx_def_）执行兼容修复；新格式 SBox_* 已在 fields 中由 Blockly 原生加载
-    const hasLegacySbox = detectLegacySboxFormat(
+    // 单次遍历同时完成检测与字段收集（不再 detect + collect 两次全树递归）
+    const legacyFound = { value: false };
+    const sboxFieldValues = collectSboxFieldValues(
       migratedState as Record<string, unknown>,
+      new Map(),
+      legacyFound,
     );
-    if (hasLegacySbox) {
+    if (legacyFound.value) {
       console.log('[serialization] 检测到旧格式 _sbx_def_，执行兼容修复');
-      fixSboxFieldsAfterLoad(
-        workspace,
-        migratedState as Record<string, unknown>,
-      );
+      fixSboxFieldsAfterLoad(workspace, sboxFieldValues);
     }
 
     console.log('JSON 加载成功');

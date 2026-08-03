@@ -29,6 +29,14 @@
 
 ## Montgomery 曲线 (RFC 7748)
 
+## 协议封装 (ECDH / SM2 加密)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `ecdh_shared_secret` | 1 | value(→) | String&String&String→String | P-256 ECDH 共享密钥（RFC 5903 §8.1 向量 + cryptography 交叉）：d + Qx + Qy → 共享点 x 坐标 32B hex；d 自动 mod n |
+| `sm2_encrypt` | 1 | value(→) | Bytes&String&String&String→String | SM2 加密（GB/T 32918.4）：msg + 公钥 x/y + k → C1‖C3‖C2 hex（C1=04‖x‖y 65B，C3=SM3(x2‖M‖y2) 32B）；官方向量附录 A 示例 2 |
+| `sm2_decrypt` | 1 | value(→) | String&String→Bytes | SM2 解密：C1‖C3‖C2 + d → 明文；C3 校验失败抛错 |
+
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
 | `x25519` | 1 | value(→) | IntList&IntList→Bytes | X25519(k, u) → 共享密钥 32 字节；k 自动 clamp，u 坐标清位 255；Montgomery ladder p=2^255-19；官方向量（RFC 7748 §5.2 V1/V2） |

@@ -7,11 +7,7 @@
     "dialog:default",
     {
       "identifier": "fs:allow-write-text-file",
-      "allow": [
-        { "path": "$DOWNLOAD/**" },
-        { "path": "$DESKTOP/**" },
-        { "path": "$DOCUMENT/**" }
-      ]
+      "allow": [{ "path": "$DOWNLOAD/**" }]
     }
   ]
 }

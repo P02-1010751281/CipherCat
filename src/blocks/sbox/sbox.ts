@@ -17,6 +17,23 @@ interface SBoxBlock extends Blockly.Block {
   toggleSboxTable: () => void;
 }
 
+/** 打开着 S-box 表格弹窗的块（workspace.clear/导入/组件卸载时统一关闭，防 listener + DOM 泄漏） */
+const openPopupBlocks = new Set<SBoxBlock>();
+
+export function closeAllSboxPopups(): void {
+  for (const block of openPopupBlocks) {
+    if (block.settingsPopup) {
+      block.settingsPopup.remove();
+      block.settingsPopup = null;
+    }
+    if (block.settingsPopupClickHandler) {
+      document.removeEventListener('click', block.settingsPopupClickHandler);
+      block.settingsPopupClickHandler = null;
+    }
+  }
+  openPopupBlocks.clear();
+}
+
 function hexValidator(newValue: string): string | null {
   if (
     /^0[xX][0-9a-fA-F]{1,2}$/.test(newValue) ||
@@ -262,6 +279,7 @@ Blockly.Blocks['sbox'] = {
         document.removeEventListener('click', this.settingsPopupClickHandler);
         this.settingsPopupClickHandler = null;
       }
+      openPopupBlocks.delete(this);
       return;
     }
 
@@ -271,6 +289,7 @@ Blockly.Blocks['sbox'] = {
       'position:fixed;z-index:10000;background:var(--el-bg-color-overlay,#fff);' +
       'border:2px solid var(--el-color-primary,#4a90d9);border-radius:8px;padding:12px;' +
       'color:var(--el-text-color-primary,#333);' +
+      'max-width:min(90vw,720px);' +
       'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
       'font-family:monospace;max-height:420px;overflow:auto;';
 
@@ -340,6 +359,7 @@ Blockly.Blocks['sbox'] = {
     };
     setTimeout(() => document.addEventListener('click', handler));
     this.settingsPopupClickHandler = handler;
+    openPopupBlocks.add(this);
   },
 
   loadCsvData: function (this: SBoxBlock, file: File) {

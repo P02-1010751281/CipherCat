@@ -6,6 +6,7 @@
 import { ref, shallowRef, onMounted, onUnmounted } from 'vue';
 import * as Blockly from 'blockly/core';
 import { Workspace } from '@/utils/workspace';
+import { closeAllSboxPopups } from '@/blocks/sbox/sbox';
 
 const emit = defineEmits<{
   (_e: 'change'): void;
@@ -54,6 +55,7 @@ onUnmounted(() => {
     cleanupResizeListener = null;
   }
 
+  closeAllSboxPopups();
   workspaceApi.disposeWorkspace();
   workspaceRef.value = null;
   isReadyRef.value = false;

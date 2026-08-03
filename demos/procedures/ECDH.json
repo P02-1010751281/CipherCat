@@ -1,0 +1,57 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "demo_ecdh_def_0001",
+        "x": 100,
+        "y": 100,
+        "extraState": {
+          "params": [],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "ECDH_Shared"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "ecdh_shared_secret",
+              "id": "demo_ecdh_calc_0002",
+              "inputs": {
+                "D": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_ecdh_d_0003",
+                    "fields": {
+                      "NUM": "\"c88f01f510d9ac3f70a292daa2316de544e9aab8afe84049c62a9c57862d1433\""
+                    }
+                  }
+                },
+                "QX": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_ecdh_qx_0004",
+                    "fields": {
+                      "NUM": "\"d12dfb5289c8d4f81208b70270398c342296970a0bccb74c736fc7554494bf63\""
+                    }
+                  }
+                },
+                "QY": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_ecdh_qy_0005",
+                    "fields": {
+                      "NUM": "\"56fbf3ca366cc23e8157854c13c58d6aac23f046ada30f8353e74f33039872ab\""
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -352,8 +352,23 @@ const identifierValidator = (value: string): string | null =>
 
 
 /** 构建 call 块 NAME 下拉选项：工作区函数 + 拖出的模板 + Manager 添加到 toolbox 的模板。 */
+/** 下拉选项缓存：按块缓存 + 模板集合 key；工作区函数变化时由 call 块 onchange 失效（防每次点开下拉全量扫描） */
+const callOptionsCache = new WeakMap<
+  AnyBlock,
+  { key: string; options: Array<[string, string]> }
+>();
+
+function invalidateCallOptions(block: AnyBlock): void {
+  callOptionsCache.delete(block);
+}
+
 function buildCallOptions(block: AnyBlock): Array<[string, string]> {
   try {
+    // Manager 模板集合变化用廉价 key 表达（join 28 个名字 vs 全量扫描）
+    const tplKey = toolboxTemplates.value.join(',');
+    const cached = callOptionsCache.get(block);
+    if (cached && cached.key === tplKey) return cached.options;
+
     const ws = (block.workspace as unknown as { targetWorkspace?: Blockly.Workspace }).targetWorkspace || block.workspace;
     const tuples = Blockly.Procedures.allProcedures(ws);
     const names = tuples[0].concat(tuples[1]).map((t) => t[0]);
@@ -364,8 +379,11 @@ function buildCallOptions(block: AnyBlock): Array<[string, string]> {
     // Manager 添加到 toolbox 的模板
     const toolboxNames = toolboxTemplates.value;
     const all = Array.from(new Set(names.concat(wsTemplateNames, toolboxNames)));
-    if (!all.length) return [[Blockly.Msg.PROCEDURES_UNNAMED || 'unnamed', '']];
-    return all.map((n) => [n, n]);
+    const options: Array<[string, string]> = !all.length
+      ? [[Blockly.Msg.PROCEDURES_UNNAMED || 'unnamed', '']]
+      : all.map((n): [string, string] => [n, n]);
+    callOptionsCache.set(block, { key: tplKey, options });
+    return options;
   } catch {
     return [[Blockly.Msg.PROCEDURES_UNNAMED || 'unnamed', '']];
   }
@@ -483,8 +501,42 @@ function makeCallBlock(hasReturn: boolean): AnyBlock {
     // 删除联动：所引用函数被删除后自清为 unnamed（def 的 change listener 在 dispose 时被移除，
     // BLOCK_DELETE 派发时只能由 call 块侧兜底；事件异步派发，此时 def 已从工作区移除）
     onchange: function (this: AnyBlock, event: Blockly.Events.Abstract) {
+      // 下拉选项缓存失效：函数定义/模板的新建、删除、改名都可能改变可选函数集合
+      const evt0 = event as unknown as { element?: string; name?: string; blockId?: string };
+      if (event.type === Blockly.Events.BLOCK_CREATE || event.type === Blockly.Events.BLOCK_DELETE) {
+        invalidateCallOptions(this);
+      } else if (
+        event.type === Blockly.Events.BLOCK_CHANGE &&
+        evt0.element === 'field'
+      ) {
+        const src = evt0.blockId
+          ? this.workspace.getBlockById(evt0.blockId)
+          : null;
+        if (
+          src &&
+          (src.type === 'procedures_defreturn' ||
+            src.type === 'procedures_defnoreturn' ||
+            src.getField('FUNC_NAME') !== null)
+        ) {
+          invalidateCallOptions(this);
+        }
+      }
       if (event.type !== Blockly.Events.BLOCK_DELETE) return;
       try {
+        // 性能门：仅当被删块是函数定义/模板时才扫描（普通块删除零开销，免 K×M×N 全工作区遍历）
+        const delEvt = event as unknown as {
+          blockId?: string;
+          oldJson?: { type?: string };
+        };
+        if (delEvt.blockId === this.id) return;
+        const deletedType = delEvt.oldJson?.type;
+        if (
+          deletedType !== 'procedures_defreturn' &&
+          deletedType !== 'procedures_defnoreturn' &&
+          !(deletedType && deletedType in TEMPLATE_PREFILL)
+        ) {
+          return;
+        }
         const name = this.getFieldValue('NAME') as string;
         if (!name) return;
         const ws = (this.workspace as unknown as { targetWorkspace?: Blockly.Workspace }).targetWorkspace || this.workspace;

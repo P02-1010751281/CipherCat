@@ -1,3 +1,6 @@
+// 本地项目存储（IndexedDB，浏览器端）。已知设计：workspace 以明文 JSON/XML 落库，
+// 导出 JSON 亦明文——教学场景密钥多为演示值，本地存储对同机用户无额外保护（审计
+// 2026-08-01 finding-09 记录，属已知并接受的本地存储设计；加固价值低，不加密）。
 const DB_NAME = 'blockly-crypto-editor';
 const DB_VERSION = 1;
 const STORE_NAME = 'projects';

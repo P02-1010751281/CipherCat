@@ -28,6 +28,8 @@ import { GCM_BLOCK_TYPES } from '@/blocks/gcm';
 import { EDDSA_BLOCK_TYPES } from '@/blocks/eddsa';
 import { ECDSA_BLOCK_TYPES } from '@/blocks/ecdsa';
 import { SM2SIG_BLOCK_TYPES } from '@/blocks/sm2sig';
+import { SM2ENC_BLOCK_TYPES } from '@/blocks/sm2enc';
+import { ECDH_BLOCK_TYPES } from '@/blocks/ecdh';
 import { DRBG_BLOCK_TYPES } from '@/blocks/drbg';
 import { ARGON2_BLOCK_TYPES } from '@/blocks/argon2';
 import { GMDRBG_BLOCK_TYPES } from '@/blocks/gmdrbg';
@@ -238,6 +240,8 @@ export function createToolboxConfig() {
       ...EDDSA_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
       ...ECDSA_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
       ...SM2SIG_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...SM2ENC_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...ECDH_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
       ...SM9_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
     ],
   };

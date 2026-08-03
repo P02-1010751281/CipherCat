@@ -22,6 +22,8 @@ import './symmetric';
 import './eddsa';
 import './ecdsa';
 import './sm2sig';
+import './sm2enc';
+import './ecdh';
 import './drbg';
 import './argon2';
 import './gmdrbg';

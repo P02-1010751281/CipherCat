@@ -23,6 +23,8 @@ export * from './remaining';
 export * from './eddsa';
 export * from './ecdsa';
 export * from './sm2sig';
+export * from './sm2enc';
+export * from './ecdh';
 export * from './drbg';
 export * from './argon2';
 export * from './gmdrbg';
@@ -67,6 +69,8 @@ import {
 import { EDDSA_BLOCK_TYPES, type EddsaBlockType } from './eddsa';
 import { ECDSA_BLOCK_TYPES, type EcdsaBlockType } from './ecdsa';
 import { SM2SIG_BLOCK_TYPES, type Sm2SigBlockType } from './sm2sig';
+import { SM2ENC_BLOCK_TYPES, type Sm2EncBlockType } from './sm2enc';
+import { ECDH_BLOCK_TYPES, type EcdhBlockType } from './ecdh';
 import { DRBG_BLOCK_TYPES, type DrbgBlockType } from './drbg';
 import { ARGON2_BLOCK_TYPES, type Argon2BlockType } from './argon2';
 import { GMDRBG_BLOCK_TYPES, type GmDrbgBlockType } from './gmdrbg';
@@ -100,6 +104,8 @@ export const ALL_BLOCK_TYPES = [
   ...EDDSA_BLOCK_TYPES,
   ...ECDSA_BLOCK_TYPES,
   ...SM2SIG_BLOCK_TYPES,
+  ...SM2ENC_BLOCK_TYPES,
+  ...ECDH_BLOCK_TYPES,
   ...DRBG_BLOCK_TYPES,
   ...ARGON2_BLOCK_TYPES,
   ...GMDRBG_BLOCK_TYPES,
@@ -134,6 +140,8 @@ export type AllBlockType =
   | EddsaBlockType
   | EcdsaBlockType
   | Sm2SigBlockType
+  | Sm2EncBlockType
+  | EcdhBlockType
   | DrbgBlockType
   | Argon2BlockType
   | GmDrbgBlockType

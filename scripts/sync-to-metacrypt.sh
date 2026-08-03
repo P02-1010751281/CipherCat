@@ -34,6 +34,7 @@ fix_imports() {
     -e "s|@/constants/block-types|@/features/blockly/core/constants/block-types|g" \
     -e "s|@/constants/sbox-presets|@/features/blockly/core/constants/sbox-presets|g" \
     -e "s|@/blocks/procedure/blocks|@/features/blockly/core/blocks/procedure/blocks|g" \
+    -e "s|@/blocks/procedure/toolbox-state|@/features/blockly/core/blocks/procedure/toolbox-state|g" \
     -e "s|@/utils/migration|@/features/blockly/core/utils/migration|g" \
     -e "s|'\./bit'|'./bitwise'|g" \
     -e "s|'\./postquantum'|'./post-quantum'|g" \
@@ -100,6 +101,12 @@ cp "$CIPHER/src/constants/block-types.ts" "$CORE/constants/block-types.ts"
 fix_imports_blocks "$CORE/constants/block-types.ts"
 cp "$CIPHER/src/constants/sbox-presets.ts" "$CORE/constants/sbox-presets.ts"
 fix_imports_blocks "$CORE/constants/sbox-presets.ts"
+
+# ─── 3.5 Function Manager 面板（CipherCat 单源 → metacrypt features/blockly/components）───
+echo "[3.5/4] Function Manager 面板（CryptoFunctionPanel.vue）"
+cp "$CIPHER/src/components/CryptoFunctionPanel.vue" "$META/frontend/src/features/blockly/components/CryptoFunctionPanel.vue"
+fix_imports "$META/frontend/src/features/blockly/components/CryptoFunctionPanel.vue"
+sed -i 's|ciphercat_templates.json|function_templates.json|g' "$META/frontend/src/features/blockly/components/CryptoFunctionPanel.vue"
 
 # ─── 4. 核对清单 ───
 echo "[4/4] 核对"

@@ -168,6 +168,42 @@ function buildCategories(): DocCategory[] {
       continue;
     }
 
+    // demos/：搭建教程（demos/<file>），按 locale 过滤
+    if (top === 'demos' && parts.length === 2) {
+      const filename = parts[1];
+      const isEn = filename.endsWith('.en.md');
+      if ((locale === 'zh') === isEn) continue;
+
+      const file: DocFile = {
+        path,
+        category: 'demos',
+        filename,
+        title: parseDocTitle(filename),
+        order: parseOrder(filename),
+      };
+      if (!catMap.has('demos')) catMap.set('demos', []);
+      catMap.get('demos')!.push(file);
+      continue;
+    }
+
+    // blocks/：积木块参考（blocks/<file>），按 locale 过滤
+    if (top === 'blocks' && parts.length === 2) {
+      const filename = parts[1];
+      const isEn = filename.endsWith('.en.md');
+      if ((locale === 'zh') === isEn) continue;
+
+      const file: DocFile = {
+        path,
+        category: 'blocks',
+        filename,
+        title: parseDocTitle(filename),
+        order: parseOrder(filename),
+      };
+      if (!catMap.has('blocks')) catMap.set('blocks', []);
+      catMap.get('blocks')!.push(file);
+      continue;
+    }
+
     // standards/：算法规范（standards/<cat>/<file> 3 层），category 取第二层
     if (top === 'standards' && parts.length === 3) {
       const category = parts[1];
@@ -188,8 +224,12 @@ function buildCategories(): DocCategory[] {
     files.sort((a, b) => a.order - b.order);
   }
 
-  // Define display order of categories
-  const categoryOrder = ['guides', 'fips202-SHA3', 'fips203-ML-KEM', 'fips204-ML-DSA'];
+  // Define display order of categories：核心/演示/块参考固定在前，其余 = 全部算法规范（按 slug 排序）
+  const pinned = ['guides', 'demos', 'blocks'];
+  const rest = [...catMap.keys()]
+    .filter((id) => !pinned.includes(id))
+    .sort((a, b) => a.localeCompare(b));
+  const categoryOrder = [...pinned, ...rest];
 
   return categoryOrder
     .filter((id) => catMap.has(id))

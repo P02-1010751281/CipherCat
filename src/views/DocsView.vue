@@ -15,6 +15,9 @@
       </button>
       <h1 class="docs-title">{{ ui("docsTitle") }}</h1>
       <div class="header-spacer" />
+      <button class="header-btn lang-btn" @click="toggleLocale">
+        {{ blocklyLocale.getCurrentLocale() === 'zh-hans' ? 'EN' : '中文' }}
+      </button>
     </header>
 
     <div class="docs-body">
@@ -116,7 +119,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
-import { ui, uiLocaleRef } from '@/composables/locale';
+import { ui, uiLocaleRef, useBlocklyLocale } from '@/composables/locale';
 import {
   renderMarkdown,
   getCategoryLabel,
@@ -127,6 +130,12 @@ import {
 } from '@/utils/markdown';
 
 const router = useRouter();
+const blocklyLocale = useBlocklyLocale();
+function toggleLocale() {
+  blocklyLocale.setLocale(
+    blocklyLocale.getCurrentLocale() === 'zh-hans' ? 'en' : 'zh-hans',
+  );
+}
 const currentLocale = computed(() =>
   uiLocaleRef.value === 'zh-hans' ? 'zh' : 'en',
 );

@@ -633,8 +633,10 @@ void setupDocLinks();
 
 .welcome-links {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   margin-top: 8px;
+  max-width: 100%;
 }
 
 .welcome-link {

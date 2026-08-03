@@ -1,51 +1,74 @@
 steps:
   - id: run-js-api
     title: run-code.ts 新增 runJavaScriptInBrowser
+    completed: true
     checks:
       - id: worker-blob
         title: Worker 经 Blob URL 创建，用完 terminate + revokeObjectURL
+        verdict: passed
       - id: console-capture
         title: worker preamble 重定义 console.log/error/warn → postMessage output
+        verdict: passed
       - id: async-awaits
         title: onmessage async + await Promise（HMAC-SHA256 用例）
+        verdict: passed
       - id: timeout
         title: 默认 10s 超时 → terminate → { ok:false, errorCode:'timeout' }
+        verdict: passed
       - id: message-contract
         title: 消息白名单 output/done/error + settled guard + clearTimeout
+        verdict: passed
       - id: flood-cap
         title: 输出累计 1000 行上限后丢弃并提示
+        verdict: passed
       - id: error-paths
         title: worker error 事件与 type:error 消息统一归 error
+        verdict: passed
   - id: editor-branch
     title: EditorView onRunCode 三语言分支
+    completed: true
     checks:
       - id: js-branch
         title: lang=javascript → runJavaScriptInBrowser
+        verdict: passed
       - id: mcl-keeps-hint
         title: lang=mcl 保留 runJsNotSupported 提示（不喂 JS eval）
+        verdict: passed
       - id: timeout-i18n
         title: errorCode=timeout → ui('runTimeout') 展示
+        verdict: passed
   - id: i18n
     title: i18n 键
+    completed: true
     checks:
       - id: run-timeout-key
         title: runTimeout zh/en 双键存在且被使用
+        verdict: passed
       - id: no-dead-key
-        title: grep runJsNotSupported 仅 locale 定义 + MCL 分支引用
+        title: grep runJsNotSupported 仅 locale 定义 + MCL 分支引用（文案已更新为 MCL 专用）
+        verdict: passed
   - id: verify
     title: 验证
+    completed: true
     checks:
       - id: build
         title: vue-tsc features 域 0 errors + vite build ✓
+        verdict: passed
       - id: browser-js
-        title: 浏览器 JS 运行正常（console.log 输出逐行）
+        title: 浏览器 JS 运行正常（console.log 输出逐行；dev 3002 + prod 8080 双实测输出 42）
+        verdict: passed
       - id: browser-timeout
-        title: 死循环 10s 超时提示 + 再次运行可用
+        title: 死循环 10s 超时提示 + 再次运行可用（编辑器保持响应）
+        verdict: passed
       - id: browser-error
-        title: 异常代码 [Error] 显示
+        title: 异常代码 [Error] 显示（模块级 throw/ReferenceError 实测）
+        verdict: passed
       - id: browser-async
-        title: HMAC-SHA256 async 块正常输出摘要
+        title: HMAC-SHA256 async 块正常输出摘要（模块级 crypto.subtle Promise await 实测）
+        verdict: passed
       - id: browser-mcl
-        title: MCL 模式运行显示提示
+        title: MCL 模式运行显示提示（不喂 JS eval）
+        verdict: passed
       - id: browser-python
-        title: Python 路径回归（print/错误/超时）
+        title: Python 路径回归（print 输出 42）
+        verdict: passed

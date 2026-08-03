@@ -1,12 +1,14 @@
 ---
 doc_type: feature-design
 feature: 2026-08-03-js-sandbox
-status: draft
+status: approved
 summary: 编辑器「运行」支持 JavaScript 生成代码——Web Worker + Blob URL 沙箱，console.log 捕获进现有输出面板，执行超时可终止死循环；实现仓库 metacrypt_server
 tags: [metacrypt, blockly, sandbox, javascript, feature]
 ---
 
 # JS 沙箱（浏览器内执行 JS 生成代码）
+
+> design 确认依据：用户指令「处理JS沙箱」（2026-08-03）+ 独立 design-review passed（7 条建议已吸收）→ status: approved，进入实现（metacrypt_server）。
 
 ## 背景与目标
 

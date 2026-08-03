@@ -84,26 +84,26 @@ docs/                           # 文档体系（guides/ 核心 + blocks/ 索引
 demos/                          # Blockly 工作区示例（含官方向量期望）
 ```
 
-## 支持的密码学模块（98 个自定义积木块，13 类目）
+## 支持的密码学模块（134 个自定义积木块，17 类目）
 
 | 类目 | 块数 | 积木块 |
 |------|------|--------|
-| 控制流 | 1 | 循环迭代 |
-| 基础数学 | 7 | 模运算（Mod/ModPow/DivRem）、大数 BN 加减乘除 |
-| 数组 | 1 | 数组分区 |
-| 数据与转换 | 9 | 值输入、种子（bytes/hex）、密钥派生、位/字节长度、类型转换 |
-| 位运算 | 8 | AND/OR/XOR、NOT、移位、循环移位、字节替换、中缀表达式 |
-| 逻辑 | 3 | 逻辑运算、复合运算、NOT |
-| S-Box | 4 | S-Box 定义/替换、S-Box 变量读写 |
-| 哈希 | 18 | SM3 压缩/填充、SHA-256 压缩/填充、SHA-3 Keccak-f/吸收/挤出/填充、SHAKE XOF/PRF、HMAC |
-| 对称密码 | 12 | AES 四步运算、SM4 轮函数/线性变换、ECB/CBC/CTR 模式、PKCS#7/零填充 |
-| 数论 | 10 | NTT/INTT、NTT 蝶形/乘法、域加法、模逆、GF(2⁸) 乘法、多项式加减、矩阵×向量 |
-| 椭圆曲线 | 5 | 曲线参数加载、点加载、倍点、点加、点乘 |
-| 后量子 | 11 | 编码/解码、压缩/解压、字节拼接/切片、SampleNTT、SamplePolyCBD |
-| 编码工具 | 5 | Base64 编解码、Hex↔Bytes、字节序转换 |
-| 函数封装 | 4 | crypto_return、加/解密/哈希函数模板 |
+| 控制流编排 | 12 | 循环迭代（ctrl_iterate） |
+| 数据处理与转换 | 20 | 值输入、种子（bytes/hex）、位/字节长度、类型转换、Base64/Hex 编解码、字节序 |
+| 位运算单元 | 8 | AND/OR/XOR、NOT、移位、循环移位、字节替换、中缀表达式 |
+| 非线性运算单元（S-Box） | 4 | S-Box 定义/替换（CSV 自定义 + AES/SM4/ZUC 预设） |
+| 哈希与填充单元 | 22 | SM3 压缩/填充、SHA-256 压缩/填充、SHA-3 Keccak-f/吸收/挤出/填充、SHAKE XOF/PRF、HMAC、HKDF、PBKDF2、DRBG、Argon2、国密 RNG |
+| 对称密码 | 18 | AES 四步/SM4 轮函数、ECB/CBC/CTR、PKCS#7/零填充、CMAC、CCM、XTS、GCM、ASCON |
+| 数论与密钥推导单元 | 15 | NTT/INTT/蝶形/乘法、GF(2^m)、模逆、模幂、多项式、RSA（keygen/加解密/签名） |
+| 椭圆曲线运算单元 | 19 | 曲线/点加载、倍点/点加/点乘、EdDSA、ECDSA、SM2 签名/加密、SM9、ECDH、X25519 |
+| 祖冲之序列密码 | 6 | ZUC S0/S1/L1/L2/F、密钥流 |
+| 后量子基础块 | 9 | 编码/解码、压缩/解压、SampleNTT、SamplePolyCBD、ML-DSA 底层 |
+| 后量子高级块 | 4 | ML-KEM KeyGen/Encaps、ML-DSA 签名/验签 |
+| 函数封装空间 | 3+ | crypto_return/ifreturn + 函数模板（28 个，见下） |
+| Crypto Templates | 动态 | 函数管理面板添加后出现 |
+| （Blockly 原生） | — | 基础变量 / 基础数学 / 数组空间 / 逻辑运算单元 |
 
-> 合计 98 个自定义积木块（`src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`）；另有 27 个 `proc_*` 函数模板与 Blockly 原生 procedure 块（函数封装类目）。
+> 合计 134 个自定义积木块（`src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`），工具箱 17 类目（含 4 个 Blockly 原生）；另有 28 个函数模板（25 个 `proc_*` 算法模板 + 3 个基础封装）与 Blockly 原生 procedure 块。
 
 ## 代码生成示例
 

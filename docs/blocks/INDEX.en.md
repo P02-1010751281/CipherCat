@@ -2,7 +2,7 @@
 
 > [中文](./INDEX.md)
 
-**Version**: 2.12 | **Date**: 2026-08-02 | **Total blocks**: 131 (plus 27 function templates)
+**Version**: 2.13 | **Date**: 2026-08-03 | **Total blocks**: 134 (plus 28 function templates)
 
 ## Legend
 
@@ -36,22 +36,23 @@
 | SP 800-90A | SP 800-90A (DRBG) | `sp800-90a-drbg/` |
 | SEC 2 | SEC 2 (ECC) | — |
 
-## By Category
+## By Category (browser-measured 2026-08-03, 17 toolbox categories)
 
-| Category | Doc | Blocks |
+| Toolbox Category | Blocks | Doc |
 |------|------|------|
-| Symmetric (AES+SM4) | [symmetric.md](symmetric.en.md) | 6 |
-| Modes + padding | [symmetric.md](symmetric.en.md) | 6 |
-| Hash (SHA-2/SM3/SHA-3/HMAC) | [hash.md](hash.en.md) | 18 |
-| Post-quantum (ML-KEM) | [post-quantum.md](post-quantum.en.md) | 15 |
-| Number theory + big int | [numtheory.md](numtheory.en.md) | 17 |
-| Bit ops + logic | [bitwise-logic.md](bitwise-logic.en.md) | 11 |
-| Data + encoding | [data-encoding.md](data-encoding.en.md) | 14 |
-| ECC | [ecc-sbox.md](ecc-sbox.en.md) | 5 |
-| S-Box | [ecc-sbox.md](ecc-sbox.en.md) | 4 |
-| ZUC stream cipher | [zuc.md](zuc.en.md) | 5 |
-| Arrays | — | 1 |
-| Control flow | — | 1 |
-| Function wrapping | [ecc-sbox.md](ecc-sbox.en.md) | 5 |
+| Control Flow | 12 | — |
+| Variables / Math / Arrays / Logic | Blockly native | — |
+| Data & Conversion | 20 | [data-encoding.md](data-encoding.en.md) |
+| Bitwise | 8 | [bitwise-logic.md](bitwise-logic.en.md) |
+| S-Box | 4 | [ecc-sbox.md](ecc-sbox.en.md) |
+| Hash & Padding | 22 | [hash.md](hash.en.md) |
+| Symmetric Cipher | 18 | [symmetric.md](symmetric.en.md) |
+| Number Theory & KDF | 15 | [numtheory.md](numtheory.en.md) |
+| Elliptic Curve | 19 | [ecc-sbox.md](ecc-sbox.en.md) |
+| ZUC Stream Cipher | 6 | [zuc.md](zuc.en.md) |
+| Post-Quantum Basic | 9 | [post-quantum.md](post-quantum.en.md) |
+| Post-Quantum Advanced | 4 | [post-quantum.md](post-quantum.en.md) |
+| Function Wrapping | 3+ (28 templates) | — |
+| Crypto Templates | dynamic (after Manager add) | — |
 
-> Note: NTT blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`) are listed once in both "Number theory + big int" and "Post-quantum" docs; after dedup the total is 103 custom blocks (see `ALL_BLOCK_TYPES` in `src/blocks/index.ts`). ZUC 5 blocks (`zuc_s0`/`zuc_s1`/`zuc_l1`/`zuc_l2`/`zuc_f`) added 2026-08-02 (GB/T 33133 atomic blocks).
+> Note: NTT blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`) are listed in both "Number Theory" and "Post-Quantum" block docs; after dedup the toolbox holds **134 custom blocks** across 17 categories (see `ALL_BLOCK_TYPES` in `src/blocks/index.ts`). Counts are flyout-measured on 2026-08-03.

@@ -44,6 +44,16 @@ renderer.table = function (token) {
   return `<div class="doc-table-wrapper"><table><thead><tr>${header}</tr></thead><tbody>${rows}</tbody></table></div>`;
 };
 
+renderer.blockquote = function (token) {
+  const inner = this.parser.parse((token as { tokens: unknown[] }).tokens);
+  // 语言切换行（`> [English](./x.en.md) · [中文](./x.md)`）：单段纯链接 →
+  // 渲染为普通链接行（.doc-lang-links），不使用引用框样式
+  if (/^<p>(?:<a [^>]*>.*?<\/a>[\s·]*)+<\/p>$/.test(inner.trim())) {
+    return `<div class="doc-lang-links">${inner.replace(/<\/?p>/g, '').trim()}</div>`;
+  }
+  return `<blockquote>${inner}</blockquote>`;
+};
+
 marked.use({ renderer });
 
 export function renderMarkdown(content: string): string {

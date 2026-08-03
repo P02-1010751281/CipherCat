@@ -6,7 +6,7 @@ Pre-built Blockly workspace examples, all using **atomic blocks** (no convenienc
 
 > Step-by-step tutorials (per algorithm): [docs/demos/](../docs/demos/), index [docs/DEMO.md](../docs/guides/DEMO.en.md). This file is the file index + verification commands.
 
-## Atomic Block Demos
+## Atomic Block Demos (top-level, no function wrappers)
 
 | Demo | File | Atomic blocks |
 |------|------|--------|
@@ -17,26 +17,54 @@ Pre-built Blockly workspace examples, all using **atomic blocks** (no convenienc
 
 ## Procedure-Wrapped Demos (official-vector verified)
 
-The following demos wrap atomic-block chains with `procedures_defreturn` (custom functions), **without using `proc_*` template blocks**; generated code (Python + JavaScript) passes official test vectors via `scripts/verify-demo.ts --exec` (SM4 S-box table / GB/T 32905-2016 SM3 / GB/T 32918.5 SM2 / FIPS 203 ML-KEM-512).
+The demos below wrap atomic-block chains with `procedures_defreturn` (custom functions), **without using `proc_*` template blocks**; generated code (Python + JavaScript) passes official test vectors via `scripts/verify-demo.ts --exec` (25 vectors, see `demos/tests.json`):
 
-| Demo | File | Wrapped content | Official vector |
-|------|------|----------|----------|
-| SM4 S-box | `procedures/SM4-Sbox.json` | `sm4_sbox` lookup → `SM4_Sbox(x)` | GM/T 0002-2012 S-box (S(0x01)=0x90) |
-| SM3 hash | `procedures/SM3-Hash.json` | `hash_sm3_pad` → `hash_sm3_compress` (IV const) → `SM3_Hash(msg)` | GB/T 32905-2016 A.1 (SM3("abc")) |
-| SM2 point mult | `procedures/SM2-PointMul.json` | `ecc_load_curve_params` + `ecc_load_point` + `ecc_multiply` → `SM2_PointMul()` | GB/T 32918.5-2017 (k·G) |
-| ML-KEM.Encaps | `procedures/ML-KEM-Encaps.json` | SampleNTT/CBD/NTT/INTT/ntt_mul/compress/encode full chain → `ML_KEM_Encaps(ek, m)` | FIPS 203 (ML-KEM-512 encaps, c‖K) |
+| Demo | File | Official vector |
+|------|------|----------|
+| SM4 S-box | `procedures/SM4-Sbox.json` | GM/T 0002-2012 (S(0x01)=0x90) |
+| SM3 hash | `procedures/SM3-Hash.json` | GB/T 32905-2016 A.1 (SM3("abc")) |
+| SM2 point mult | `procedures/SM2-PointMul.json` | GB/T 32918.5-2017 (k·G) |
+| SM2 sign/verify | `procedures/SM2-Sign.json` | GB/T 32918.2-2016 Annex A (ZA/e/r/s) |
+| SM2 encrypt/decrypt | `procedures/SM2-Encrypt.json` | GB/T 32918.4-2016 Annex A example 2 |
+| SM9 sign | `procedures/SM9-Sign.json` | GB/T 38635.2-2020 Annex A + Go cross-check |
+| EdDSA | `procedures/EDDSA.json` | RFC 8032 TEST 1-3 |
+| ECDSA | `procedures/ECDSA.json` | RFC 6979 P-256 sample/test |
+| ECDH shared secret | `procedures/ECDH.json` | RFC 5903 §8.1 (IKE P-256) |
+| X25519 | `procedures/X25519.json` | RFC 7748 §5.2 V1/V2 |
+| ML-KEM.Encaps | `procedures/ML-KEM-Encaps.json` | FIPS 203 (ML-KEM-512, c‖K) |
+| ML-DSA sign | `procedures/ML-DSA-Sign.json` | FIPS 204 ACVP sigGen 30/30 |
+| RSA encrypt/decrypt | `procedures/RSA-Encrypt.json` | PKCS#1 v1.5 + cryptography cross-check |
+| RSA sign | `procedures/RSA-Sign.json` | PKCS#1 v1.5 SHA-256 + cryptography cross-check |
+| DRBG | `procedures/DRBG.json` | SP 800-90A CAVP 480/480 |
+| GM RNG | `procedures/GM-RNG.json` | GM/T 0103 (SM3-HMAC-DRBG) |
+| Argon2 | `procedures/ARGON2.json` | RFC 9106 three vectors |
+| HKDF | `procedures/HKDF-SHA256.json` | RFC 5869 |
+| PBKDF2 | `procedures/PBKDF2-SHA256.json` `procedures/PBKDF2-SM3.json` | RFC 8018 / GM/T 0091 (SM3 variant) |
+| ZUC EEA3 stream | `procedures/EEA3.json` | GB/T 33133.2 Annex A.1 |
+| GCM | `procedures/GCM-Encrypt.json` | SP 800-38D TC2/TC3/TC16 |
+| CCM | `procedures/CCM-Encrypt.json` | SP 800-38C Annex C Example 1-3 |
+| XTS | `procedures/XTS-Encrypt.json` | SP 800-38E + IEEE 1619-2007 |
+| ASCON | `procedures/ASCON.json` | SP 800-232 (ascon-c KAT 1089 cases) |
 
-> Verify: `npm run type-check`, then `node dist-verify/verify-demo.js demos/procedures/<file> --exec` (build the harness first with `npx vite build --config vite.verify.config.ts`). Expected values are recorded in `demos/tests.json`.
-
-## Procedure-Wrapped Demos (structure showcase)
+## Procedure-Wrapped Demos (structural / load-verified)
 
 | Demo | File | Wrapped content |
 |------|------|----------|
-| SM4 function | `Procedure-SM4-Round.json` | `procedures_defreturn` wraps `sm4_round_func` → `SM4_Round(state_0..3, rk)` |
-| AES function | `Procedure-AES-Round.json` | `procedures_defreturn` wraps the four steps → `AES_Round(state, round_key)` |
+| SM4 function wrap | `Procedure-SM4-Round.json` | `procedures_defreturn` wrapping `sm4_round_func` → `SM4_Round(state_0..3, rk)` |
+| AES function wrap | `Procedure-AES-Round.json` | `procedures_defreturn` wrapping the four steps → `AES_Round(state, round_key)` |
+| AES round chain | `procedures/AES-Round.json` / `procedures/AES-LastRound.json` | full rounds + last round (no MixColumns) |
+| SHA-256 hash | `procedures/SHA256-Hash.json` | pad + compress chain |
+| HMAC-SHA256 | `procedures/HMAC-SHA256.json` | double-hash HMAC chain |
+| HKDF / PBKDF2 | `procedures/HKDF.json` / `procedures/PBKDF2.json` | KDF chains |
+| ML-KEM KeyGen | `procedures/ML-KEM-KeyGen.json` | keygen chain |
+| Mode encryption | `procedures/Mode-ECB.json` / `Mode-CBC.json` / `Mode-CTR.json` | ECB/CBC/CTR mode chains |
 
-## How to Use
+## Verification
 
-1. Open the editor → Menu "More → Import Workspace" → pick a `.json` file from `demos/`
-2. Inspect the block wiring → "▶ Generate" to view JS/Python output
-3. Procedure demo → see how the wrapped function is called elsewhere
+`npm run type-check`, then `node dist-verify/verify-demo.js demos/procedures/<file> --exec` (build the harness first with `npx vite build --config vite.verify.config.ts`). Expected values live in `demos/tests.json`.
+
+## Usage
+
+1. Open the editor → menu "More → Import Workspace" → pick a `.json` under `demos/`
+2. Inspect the block connections → "Generate" to see JS/Python output
+3. Procedure demos → see how the wrapped function is called elsewhere

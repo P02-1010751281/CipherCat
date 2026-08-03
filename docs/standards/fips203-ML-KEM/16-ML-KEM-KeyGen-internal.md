@@ -18,7 +18,7 @@ Output: encapsulation key ek ∈ 𝔹^{384k+32}
 
 ### 备注
 
-CipherCat 未实现。
+未实现。
 
 ek = ekPKE (直接使用 PKE 加密密钥)。
 dk 包含 PKE 密钥对 + H(ekPKE) 哈希 + 隐式拒绝值 z。

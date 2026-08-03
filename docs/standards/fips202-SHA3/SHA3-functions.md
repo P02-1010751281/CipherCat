@@ -22,7 +22,7 @@ SHA3-512(M) = KECCAK[1024](M ‖ 01, 512)
 | SHA3-384 | 832      | 768      | 104        | 48     |
 | SHA3-512 | 576      | 1024     | 72         | 64     |
 
-### CipherCat
+### 块实现
 
 `hash_sha3_pad` + `hash_sha3_absorb` + `hash_sha3_squeeze`
 

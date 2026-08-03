@@ -21,5 +21,5 @@ Decapsulation key check (§7.3):
 
 ### 备注
 
-CipherCat 未实现。
+未实现。
 

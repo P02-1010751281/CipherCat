@@ -18,6 +18,6 @@ Output: A byte string 𝑧 of length ⌈𝛼/8⌉.
 5: return 𝑧
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

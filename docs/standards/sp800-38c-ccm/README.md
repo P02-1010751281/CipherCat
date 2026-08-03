@@ -13,6 +13,6 @@
 - `full.txt` — PDF 全文提取 (1188 lines)
 - `extracted.md` — pdfplumber 结构化提取
 
-## CipherCat 状态
+## 实现状态
 
 未实现。CCM 结合 CTR 模式的加密和 CBC-MAC 的认证，提供认证加密 (AEAD)。

@@ -1,4 +1,4 @@
-# CipherCat Block Standard-Basis Reference
+# Block Standard-Basis Reference
 
 > [中文](./INDEX.md)
 

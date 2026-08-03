@@ -9,7 +9,7 @@ PDF✅: [sec2-v2.pdf](./sec2-v2.pdf) (6页)
 
 ## 包含曲线
 
-| 曲线 | CipherCat |
+| 曲线 | 块实现 |
 |------|----------|
 | secp256k1 (Bitcoin) | 可用 ECC 块支持 |
 | secp256r1 (NIST P-256) | 同上 |

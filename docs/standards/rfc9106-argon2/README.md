@@ -6,7 +6,7 @@
 
 ## 变体
 
-| 变体 | 用途 | CipherCat |
+| 变体 | 用途 | 块实现 |
 |------|------|----------|
 | Argon2d | 抗 GPU 攻击 (data-dependent) | 未实现 |
 | Argon2i | 抗侧信道 (data-independent) | 未实现 |
@@ -19,4 +19,4 @@
 | 内存硬化 | ❌ | ✅ |
 | 并行硬化 | ❌ | ✅ |
 | 标准化 | SP 800-132 | RFC 9106 |
-| CipherCat | `kdf_pbkdf2` ✅ | 未实现 |
+| 平台 | `kdf_pbkdf2` ✅ | 未实现 |

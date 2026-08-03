@@ -20,6 +20,6 @@ Output: state array A′
 `·` = 整数乘法 = 布尔 AND。
 这是 Keccak 唯一的非线性部分。
 
-### CipherCat
+### 块实现
 
 内嵌于 `keccak_f1600`

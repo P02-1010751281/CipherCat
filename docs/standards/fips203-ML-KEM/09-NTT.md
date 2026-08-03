@@ -30,8 +30,8 @@ Output: array f̂ ∈ ℤ^{256}_q  (NTT evaluation form)
 Cooley-Tukey (CT) 蝶形: (a, b) → (a + ζ·b, a − ζ·b)。
 ζ = 17 是 ℤ_3329 中 256 次本原单位根。BitRev₇(z) 将 z ∈ [0,127] 的 7-bit 表示反转。
 
-CipherCat 实现: Python 用 `pow(17, _brv(zz, 7), 3329)`，JS 用 `powMod(17, brv(zz, 7), 3329)`。
+块实现: Python 用 `pow(17, _brv(zz, 7), 3329)`，JS 用 `powMod(17, brv(zz, 7), 3329)`。
 
-### CipherCat
+### 块实现
 
 `pq_ntt`

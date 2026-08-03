@@ -1,4 +1,4 @@
-# CipherCat 演示指南
+# 演示指南
 
 > [English](./DEMO.en.md)
 
@@ -16,7 +16,7 @@
 
 ## 快速开始
 
-1. 打开 CipherCat → 菜单「More → Import Workspace」→ 选择 `demos/` 下的 `.json` 文件
+1. 打开编辑器 → 菜单「More → Import Workspace」→ 选择 `demos/` 下的 `.json` 文件
 2. 观察块连接 → 「▶ Generate」查看 JS/Python 输出
 3. Procedure demo → 观察函数封装后如何在其他地方调用
 

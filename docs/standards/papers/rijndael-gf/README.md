@@ -14,7 +14,7 @@ PDF✅: [rijndael-ammended.pdf](./rijndael-ammended.pdf) (19页)
 - MixColumns 的数学原理
 - 查表实现 (xtime, Log/Antilog tables)
 
-## CipherCat 对应块
+## 对应块
 
 `gf_mul` — GF(2⁸) 域乘法
 `aes_mix_columns` — 列混合

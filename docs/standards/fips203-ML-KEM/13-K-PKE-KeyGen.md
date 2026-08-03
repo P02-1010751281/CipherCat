@@ -35,7 +35,7 @@ Output: encryption key ekPKE ∈ 𝔹^{384k+32}
 
 ### 备注
 
-CipherCat 未实现 (专注封装路径)。
+未实现 (专注封装路径)。
 
 G = SHA3-512, byte 33 = k 实现参数集域分离。
 ρ 用于生成伪随机矩阵 Â, σ 用于生成秘密向量 s 和噪声 e。

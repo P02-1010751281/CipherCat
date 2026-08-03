@@ -20,6 +20,6 @@ Output: 𝑐 ̂ ∈ 𝑇𝑞 .
 4: return 𝑐 ̂
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

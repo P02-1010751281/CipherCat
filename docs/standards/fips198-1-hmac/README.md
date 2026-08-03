@@ -8,7 +8,7 @@
 
 HMAC(K, text) = H((K₀ ⊕ opad) ‖ H((K₀ ⊕ ipad) ‖ text))
 
-## CipherCat 块
+## 相关块
 
 | 块 | 说明 |
 |----|------|

@@ -20,11 +20,11 @@ pad10*1 确保输出长度对齐 rate x。
 
 通俗理解: 消息后追加 `1`, 再追加 `0` 直到对齐前一组, 最后追加 `1`。
 
-CipherCat 实现:
+块实现:
   q = rate_bytes - (m_len % rate_bytes)
   if q == 1: q += rate_bytes  # 没有空间放两个 '1' bit
   padded = msg + (suffix ^ first_byte) + zeros + (0x80 ^ last_byte)
 
-### CipherCat
+### 块实现
 
 `sha3_pad` — 支持可配置 suffix (SHA-3: 0x06, SHAKE: 0x1F)

@@ -6,7 +6,7 @@
 
 ## 组成
 
-| 部分 | 内容 | CipherCat |
+| 部分 | 内容 | 块实现 |
 |------|------|----------|
 | 第1部分 | 总则 | — |
 | 第2部分 | 数字签名算法 | 底层就绪 (ECC+SM3) |
@@ -25,7 +25,7 @@
 | Gy | 0xBC3736A2 F4F6779C 59BDCEE3 6B692153 D0A9877C C62A4740 02DF32E5 2139F0A0 |
 | n | 0xFFFFFFFE FFFFFFFF FFFFFFFF FFFFFFFF 7203DF6B 21C6052B 53BBF409 39D54123 |
 
-## CipherCat 相关块
+## 相关块
 
 | 块 | 说明 |
 |----|------|
@@ -33,4 +33,4 @@
 | `ecc_multiply` | 标量乘法 k*P |
 | `sm3_hash` | SM3 哈希 (签名/加密需要) |
 | `nt_mod_inverse` | 模逆 (签名需要) |
-⚠️ CipherCat未实现，PDF参考。暂不拆分。
+⚠️ 未实现，PDF参考。暂不拆分。

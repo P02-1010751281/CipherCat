@@ -10,7 +10,7 @@
 
 ## 与国际标准的关系
 
-| 国际标准 | CipherCat | 国产兼容性 |
+| 国际标准 | 块实现 | 国产兼容性 |
 |---------|----------|-----------|
 | ML-KEM (FIPS 203) | ✅ 完整底层 | 格的密码方向一致 |
 | ML-DSA (FIPS 204) | 未实现 | 同上 |
@@ -20,4 +20,4 @@
 - 中国密码学会: https://www.cacrnet.org.cn/
 - 国家密码管理局: https://www.oscca.gov.cn/
 
-> 待国密后量子标准正式发布后，CipherCat 现有的 NTT/CBD/SampleNTT 等 ML-KEM 块可大幅复用。
+> 待国密后量子标准正式发布后，现有的 NTT/CBD/SampleNTT 等 ML-KEM 块可大幅复用。

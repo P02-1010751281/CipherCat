@@ -13,6 +13,6 @@
 - `full.txt` — PDF 全文提取 (297 lines)
 - `extracted.md` — pdfplumber 结构化提取
 
-## CipherCat 状态
+## 实现状态
 
 未实现。XTS 用于磁盘/存储加密，支持任意长度数据且无需填充。

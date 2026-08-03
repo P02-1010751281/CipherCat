@@ -19,6 +19,6 @@ Output: A byte string of length 32 ⋅ bitlen 𝑏.
 5: return BitsToBytes(𝑧)
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

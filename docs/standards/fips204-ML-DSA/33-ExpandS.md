@@ -27,6 +27,6 @@ Output: Vectors 𝐬1 , 𝐬2 of polynomials in 𝑅.
 
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

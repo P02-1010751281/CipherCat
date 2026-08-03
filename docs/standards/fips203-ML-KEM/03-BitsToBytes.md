@@ -20,6 +20,6 @@ Output: byte array B ∈ 𝔹^ℓ
 
 将 bit 数组按小端序组装为字节。这是 ByteEncode (Algorithm 5) 的最后一步。
 
-### CipherCat
+### 块实现
 
 `pq_bits_to_bytes`

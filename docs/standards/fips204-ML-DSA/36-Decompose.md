@@ -23,6 +23,6 @@ Output: Integers (𝑟1 , 𝑟0 ).
 8: return (𝑟1 , 𝑟0 )
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

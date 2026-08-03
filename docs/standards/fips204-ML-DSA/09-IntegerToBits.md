@@ -20,6 +20,6 @@ Output: A bit string 𝑦 of length 𝛼.
 6: return 𝑦
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

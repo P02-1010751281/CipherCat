@@ -25,6 +25,6 @@ PRF = SHAKE256 (rate=136 bytes)。输入 B 来自 PRF(seed, nonce)。
 η₁ = 3 (ML-KEM-512) / 2 (ML-KEM-768, -1024)
 η₂ = 2 (all parameter sets)
 
-### CipherCat
+### 块实现
 
 `pq_sample_poly_cbd` (η ∈ {2,3})

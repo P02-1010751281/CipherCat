@@ -37,7 +37,7 @@ for f in TYPE-SYSTEM BLOCKLY-GUIDE AUDIT-REPORT; do
 done
 
 echo "== 同步 blocks/ 双语块文档 =="
-for f in INDEX bitwise-logic data-encoding ecc-sbox hash numtheory post-quantum symmetric; do
+for f in INDEX bitwise-logic data-encoding ecc-sbox hash numtheory post-quantum symmetric zuc; do
   for ext in md en.md; do
     src="$CC_ROOT/docs/blocks/$f.$ext"
     if [ -f "$src" ]; then
@@ -95,16 +95,18 @@ for ext in md en.md; do
   echo "  demos/README.$ext"
 done
 
-echo "== 同步部署副本 backend/docs（容器 DOCS_ROOT=/app/docs 读取） =="
-# 注意：用 metacrypt 自身 docs/ 全量（共享文档已在上方同步进来 + 平台文档 USAGE/DEPLOYMENT/API 等），
+echo "== metacrypt 文档去 CipherCat 化（平台名替换） =="
+# 先替换再复制部署副本，确保 backend/docs 不含 CipherCat 残留（审计 finding-23）
+find "$MC_ROOT/docs" "$MC_ROOT/demos" -name '*.md' -print0 | xargs -0 sed -i 's/CipherCat/Metacrypto/g'
+echo "  CipherCat → Metacrypto 替换完成"
+
+echo "== 同步冗余副本 backend/docs =="
+# 注意：容器实际 bind mount 仓库根 docs/（docker/docker-compose.yml ../docs），backend/docs 仅为历史冗余副本；
+# 用 metacrypt 自身 docs/ 全量（共享文档已在上方同步进来 + 平台文档 USAGE/DEPLOYMENT/API 等），
 # 不能用 CipherCat docs 覆盖（会丢平台文档）
 rm -rf "$MC_ROOT/backend/docs"
 cp -r "$MC_ROOT/docs" "$MC_ROOT/backend/docs"
-echo "  backend/docs/ ($(find "$MC_ROOT/docs" -type f | wc -l) files)"
-
-echo "== metacrypt 文档去 CipherCat 化（平台名替换） =="
-find "$MC_ROOT/docs" "$MC_ROOT/demos" -name '*.md' -print0 | xargs -0 sed -i 's/CipherCat/Metacrypto/g'
-echo "  CipherCat → Metacrypto 替换完成"
+echo "  backend/docs/ ($(find "$MC_ROOT/backend/docs" -type f | wc -l) files)"
 
 echo "== 同步完成 =="
 echo "提示：同步后需更新 metacrypt docs/INDEX.md、重启 mc-backend 容器并运行死链检查（见脚本头部约定）。"

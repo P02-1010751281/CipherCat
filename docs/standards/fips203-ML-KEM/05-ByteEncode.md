@@ -25,6 +25,6 @@ Output: byte array B ∈ 𝔹^{32·d}
 
 将 256 个 d-bit 系数打包为 32·d 字节。d=12 时输入必须是 mod q 整数 (≤3328)。
 
-### CipherCat
+### 块实现
 
 `pq_byte_encode` (d ∈ {1,4,5,10,11,12})

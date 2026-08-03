@@ -22,6 +22,6 @@ Kyber half-NTT 技巧: 将 256 系数分为 128 对 (even, odd)，
 每对乘以常数 ζ^{2·BitRev₇(i)+1} 实现负缠绕卷积 (NWC)。
 基例 = Algorithm 12 (BaseCaseMultiply)。
 
-### CipherCat
+### 块实现
 
 `pq_ntt_mul`

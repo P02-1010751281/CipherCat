@@ -38,7 +38,7 @@ SHAKE256(M, d) = RawSHAKE256(M ‖ 11, d)
 
 即 `SHAKE(M) = RawSHAKE(M ‖ 11)`，追加了额外的域分离后缀扩展。
 
-### CipherCat
+### 块实现
 
 - `pq_xof` — XOF(seed, outLen) 默认 SHAKE128, 可选 SHAKE256
 - `pq_prf` — PRF(seed, nonce, outLen) 默认 SHAKE256, 可选 SHAKE128

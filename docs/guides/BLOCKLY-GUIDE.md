@@ -1,8 +1,8 @@
-# CipherCat Blockly 使用指南
+# Blockly 使用指南
 
 > [English](./BLOCKLY-GUIDE.en.md)
 
-CipherCat 使用 Blockly 12 可视化编程编辑器搭建密码算法：拖拽积木块、按类型连接、一键生成 Python / JavaScript 代码。本指南覆盖编辑器操作、类型系统、函数模板与算法拼装样例。
+使用 Blockly 12 可视化编程编辑器搭建密码算法：拖拽积木块、按类型连接、一键生成 Python / JavaScript 代码。本指南覆盖编辑器操作、类型系统、函数模板与算法拼装样例。
 
 ---
 
@@ -48,7 +48,7 @@ CipherCat 使用 Blockly 12 可视化编程编辑器搭建密码算法：拖拽�
 
 ## 3. 数据与类型系统
 
-CipherCat 的密码学块带有类型标注，**类型不匹配无法连接**（Blockly 连接检查）：
+密码学块带有类型标注，**类型不匹配无法连接**（Blockly 连接检查）：
 
 | 类型 | 含义 | 典型块 |
 |------|------|--------|

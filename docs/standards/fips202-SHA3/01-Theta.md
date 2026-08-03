@@ -20,8 +20,8 @@ Output: state array A′
 ### 备注
 
 将每列 (x) 的奇偶校验异或到每个 bit。
-CipherCat 实现: 5 条 lane 求和, 旋转后异或回每条 lane。
+块实现: 5 条 lane 求和, 旋转后异或回每条 lane。
 
-### CipherCat
+### 块实现
 
 内嵌于 `keccak_f1600`

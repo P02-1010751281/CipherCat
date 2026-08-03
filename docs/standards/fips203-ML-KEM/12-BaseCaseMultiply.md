@@ -18,5 +18,5 @@ Output: (c₀, c₁) ∈ ℤ_q × ℤ_q
 
 计算 (a₀ + a₁·X)(b₀ + b₁·X) mod (X² − γ)。
 Algorithm 11 的每个偶数/奇数对以此公式在 ℤ_q[X]/(X² − γ) 中相乘。
-CipherCat 无独立块，内嵌于 ntt_mul。
+无独立块，内嵌于 ntt_mul。
 

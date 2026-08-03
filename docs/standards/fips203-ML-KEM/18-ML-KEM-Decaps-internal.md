@@ -26,7 +26,7 @@ Output: shared secret key K ∈ 𝔹^{32}
 
 ### 备注
 
-CipherCat 未实现。
+未实现。
 
 J = SHAKE256 (XOF)。隐式拒绝标志为秘密数据，函数结束前必须销毁。
 

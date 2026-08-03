@@ -1,4 +1,4 @@
-# CipherCat Demo Guide
+# Demo Guide
 
 > [中文](./DEMO.md)
 
@@ -16,7 +16,7 @@ Pre-built Blockly workspace examples, **all using atomic blocks** (no convenienc
 
 ## Quick Start
 
-1. Open CipherCat → Menu "More → Import Workspace" → pick a `.json` file from `demos/`
+1. Open the editor → Menu "More → Import Workspace" → pick a `.json` file from `demos/`
 2. Inspect the block wiring → "▶ Generate" to view JS/Python output
 3. Procedure demo → see how the wrapped function is called elsewhere
 

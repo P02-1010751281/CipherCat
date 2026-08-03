@@ -16,6 +16,6 @@ Output: Integers (𝑟1 , 𝑟0 ).
 3: return ((𝑟+ − 𝑟0 )/2𝑑 , 𝑟0 )
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

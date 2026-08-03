@@ -33,6 +33,6 @@ RejBoundedPoly, which are discussed in Section 7.3.
 
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

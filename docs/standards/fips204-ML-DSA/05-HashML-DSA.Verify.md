@@ -118,6 +118,6 @@ the uncompressed public-key polynomial 𝐭.
 
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

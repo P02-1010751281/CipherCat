@@ -33,8 +33,8 @@ Output: array â ∈ ℤ^{256}_q  (NTT-domain polynomial)
 
 XOF = SHAKE128 (rate=168 bytes)。每 3 字节提取两个 12-bit 候选系数，拒绝 ≥ q (3329) 的值。
 
-附录 B 给出了安全 while-loop 迭代上界。CipherCat 实现中默认起始 out_len=672 字节 (可产 ~448 个候选)，不足时翻倍。
+附录 B 给出了安全 while-loop 迭代上界。块实现中默认起始 out_len=672 字节 (可产 ~448 个候选)，不足时翻倍。
 
-### CipherCat
+### 块实现
 
 `pq_sample_ntt`

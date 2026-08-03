@@ -1,4 +1,4 @@
-# CipherCat Data Type Specification
+# Data Type Specification
 
 > [中文](./TYPE-SYSTEM.md)
 

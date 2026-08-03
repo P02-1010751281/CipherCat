@@ -1,4 +1,4 @@
-# 🧪 CipherCat Demo Workspaces
+# 🧪 Demo Workspaces
 
 > [中文](./README.md) · [English](./README.en.md)
 
@@ -37,6 +37,6 @@ The following demos wrap atomic-block chains with `procedures_defreturn` (custom
 
 ## How to Use
 
-1. Open CipherCat → Menu "More → Import Workspace" → pick a `.json` file from `demos/`
+1. Open the editor → Menu "More → Import Workspace" → pick a `.json` file from `demos/`
 2. Inspect the block wiring → "▶ Generate" to view JS/Python output
 3. Procedure demo → see how the wrapped function is called elsewhere

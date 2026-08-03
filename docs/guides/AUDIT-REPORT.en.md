@@ -1,4 +1,4 @@
-# CipherCat Primitive Completeness Audit Report
+# Primitive Completeness Audit Report
 
 > [中文](./AUDIT-REPORT.md)
 >
@@ -66,7 +66,7 @@
 | **SM9** | GM/T 0044 / GB/T 38635 | ❌ | ❌ (bilinear pairing, extremely hard) |
 | SM1 / SM7 | — | N/A | N/A (undisclosed algorithms) |
 
-Domestic PQC: CAC post-quantum working group in progress; CipherCat's full ML-KEM primitives (lattice direction) will be largely reusable.
+Domestic PQC: CAC post-quantum working group in progress; The full ML-KEM primitive set (lattice direction) will be largely reusable.
 
 ## 4. Roadmap Status
 

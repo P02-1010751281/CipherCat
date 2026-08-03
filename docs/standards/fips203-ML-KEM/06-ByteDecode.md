@@ -23,6 +23,6 @@ Output: integer array F ∈ ℤ^{256}_m,
 
 **重要**: d=12 时 ByteDecode₁₂ 对每个 12-bit 段先还原为 0..4095 的整数再 mod q (3329)，导致部分输入段映射到同一系数。但 ByteEncode₁₂ 输出的字节数组不会产生这种碰撞，这在 §7.2 封装密钥检查中被利用。
 
-### CipherCat
+### 块实现
 
 `pq_byte_decode` (d ∈ {1,4,5,10,11,12})

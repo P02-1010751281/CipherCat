@@ -35,6 +35,6 @@ Output: array f ∈ ℤ^{256}_q   (coefficient form)
 Gentleman-Sande (GS) 蝶形: (a, b) → (a+b, ζ·(b−a))。
 最后乘以 256⁻¹ mod 3329 = pow(256, 3327, 3329)。
 
-### CipherCat
+### 块实现
 
 `pq_intt`

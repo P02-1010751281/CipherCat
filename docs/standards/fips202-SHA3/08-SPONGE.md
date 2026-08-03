@@ -27,8 +27,8 @@ Output: string Z with len(Z) = d
 吸收 (absorb): 将每 r-bit 块异或到状态前 r 位后置换。
 挤出 (squeeze): 从状态前 r 位读取输出，不足时再置换。
 
-CipherCat 的 absorb 和 squeeze 块使用 bytes 而非 bits (rate_bytes = r/8)。
+absorb 和 squeeze 块使用 bytes 而非 bits (rate_bytes = r/8)。
 
-### CipherCat
+### 块实现
 
 `hash_sha3_absorb` + `hash_sha3_squeeze`

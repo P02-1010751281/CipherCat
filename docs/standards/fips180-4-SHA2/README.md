@@ -4,7 +4,7 @@
       https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf
       PDF: [NIST.FIPS.180-4.pdf](./NIST.FIPS.180-4.pdf)
 
-## SHA-256 参数 (CipherCat 实现)
+## SHA-256 参数 (块实现)
 
 | 参数 | 值 |
 |------|-----|
@@ -15,7 +15,7 @@
 
 ## 算法步骤索引
 
-| 序号 | 文件 | 名称 | § | CipherCat |
+| 序号 | 文件 | 名称 | § | 块实现 |
 |:--:|------|------|---|---|
 | 1 | [01-SHA2.md](./01-SHA2.md) | SHA-2 完整算法 | §4–§6 | — |
 

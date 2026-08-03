@@ -28,7 +28,7 @@ Sizes (bytes):
 
 ## 算法清单
 
-| 序号 | 文件 | 名称 | 类别 | CipherCat |
+| 序号 | 文件 | 名称 | 类别 | 块实现 |
 |:--:|------|------|------|:--:|
 | 1 | `01-ML-DSA.KeyGen.md` | ML-DSA.KeyGen() | ML-DSA 公开 API | — |
 | 2 | `02-ML-DSA.Sign.md` | ML-DSA.Sign(𝑠𝑘, 𝑀 , 𝑐𝑡𝑥) | ML-DSA 公开 API | — |
@@ -80,4 +80,4 @@ Sizes (bytes):
 | 48 | `48-MatrixVectorNTT.md` | MatrixVectorNTT(𝐌, | NTT 运算 | — |
 | 49 | `49-MontgomeryReduce.md` | MontgomeryReduce(𝑎) | Montgomery 约简 | — |
 
-CipherCat 尚未实现 ML-DSA。全部 49 个算法仅供参考。
+平台尚未实现 ML-DSA。全部 49 个算法仅供参考。

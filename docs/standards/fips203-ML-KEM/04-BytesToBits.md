@@ -23,6 +23,6 @@ Output: bit array b ∈ {0,1}^{8·ℓ}
 
 将字节数组按小端序拆为 bit 数组。这是 ByteDecode (Algorithm 6) 的第一步。
 
-### CipherCat
+### 块实现
 
 `pq_bytes_to_bits`

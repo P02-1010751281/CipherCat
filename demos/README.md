@@ -1,4 +1,4 @@
-# 🧪 CipherCat Demo Workspaces
+# 🧪 Demo Workspaces
 
 预构建的 Blockly 工作区示例，全部使用**原子块**（无便利封装），展示密码学底层原语。
 
@@ -35,6 +35,6 @@
 
 ## 使用方法
 
-1. 打开 CipherCat → 菜单「More → Import Workspace」→ 选择 `demos/` 下的 `.json` 文件
+1. 打开编辑器 → 菜单「More → Import Workspace」→ 选择 `demos/` 下的 `.json` 文件
 2. 观察块连接 → 「▶ Generate」查看 JS/Python 输出
 3. Procedure demo → 观察函数封装后如何在其他地方调用

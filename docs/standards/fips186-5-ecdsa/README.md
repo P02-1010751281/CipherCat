@@ -4,7 +4,7 @@
       https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
       PDF: [NIST.FIPS.186-5.pdf](./NIST.FIPS.186-5.pdf)
 
-## CipherCat 相关块
+## 相关块
 
 | 块 | 说明 |
 |----|------|

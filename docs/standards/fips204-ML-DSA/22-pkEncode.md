@@ -18,6 +18,6 @@ Output: Public key 𝑝𝑘 ∈ 𝔹32+32𝑘(bitlen (𝑞−1)−𝑑) .
 5: return 𝑝𝑘
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

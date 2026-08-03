@@ -32,6 +32,6 @@ polynomial ∑𝑖=0 𝑏𝑋 𝑖 .
 
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

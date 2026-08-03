@@ -32,7 +32,7 @@ return (y * q + (1 << (d - 1))) // (1 << d)
 | ML-KEM-768  | 10 | 4 |
 | ML-KEM-1024 | 11 | 5 |
 
-### CipherCat
+### 块实现
 
 - `pq_compress`: Compress_d(x, d, q)  — 下拉框选择 d ∈ {1,3,4,5,6,10,11,12}
 - `pq_decompress`: Decompress_d(y, d, q)

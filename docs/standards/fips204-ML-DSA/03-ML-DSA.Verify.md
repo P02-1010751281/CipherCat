@@ -98,6 +98,6 @@ be used with other hash functions or XOFs.
 
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

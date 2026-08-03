@@ -20,7 +20,7 @@ Output: encapsulation key ek ∈ 𝔹^{384k+32}
 
 ### 备注
 
-CipherCat 未实现。
+未实现。
 
 需符合 §3.3 的 RBG 安全强度: 128-bit (ML-KEM-512), 192-bit (768), 256-bit (1024)。
 

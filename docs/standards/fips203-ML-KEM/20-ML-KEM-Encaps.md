@@ -36,7 +36,7 @@ Algorithm 20 在 Algorithm 17 外增加随机数生成 (§3.3 RBG 要求) 和输
 **调用链**: Alg 20 → Alg 17 (Encaps_internal) → Alg 14 (K-PKE.Encrypt)。
 Alg 14 内部调用 Alg 7 (SampleNTT)、Alg 8 (SamplePolyCBD)、Alg 9 (NTT)、Alg 10 (INTT)、Alg 11 (MultiplyNTTs)、Compress/Decompress (§4.2.1)、ByteEncode/ByteDecode (Alg 5/6)。
 
-### CipherCat
+### 块实现
 
 已实现。完整搭建路径见 `guides/ML-KEM-768-Encaps-搭建指南.md`。
 
@@ -55,4 +55,4 @@ Alg 14 内部调用 Alg 7 (SampleNTT)、Alg 8 (SamplePolyCBD)、Alg 9 (NTT)、Al
 
 **Nonce 计算**: `SeedWithNonce(r_seed, k+i)` 可通过 Math 分类的 `math_arithmetic` 块（`+` 运算）在循环内表达。参见纯基础块指南。
 
-**加密密钥检查**: CipherCat 当前实现基于 Alg 17，密钥检查为可选增强。
+**加密密钥检查**: 当前实现基于 Alg 17，密钥检查为可选增强。

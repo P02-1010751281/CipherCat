@@ -27,6 +27,6 @@ Output: Private key 𝑠𝑘 ∈ 𝔹32+32+64+32⋅((𝑘+ℓ)⋅bitlen (2𝜂)+
 11: return 𝑠𝑘
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

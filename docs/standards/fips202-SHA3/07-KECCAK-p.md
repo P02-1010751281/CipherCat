@@ -22,7 +22,7 @@ Output: string S′ of length b
 5 步映射复合: θ → ρ → π → χ → ι, 共 nr 轮。
 KECCAK-f[1600] = KECCAK-p[1600, 24] (nr=24, l=6)。
 
-### CipherCat
+### 块实现
 
 `keccak_f1600` — KECCAK-p[1600, 24] 即 KECCAK-f[1600]
 

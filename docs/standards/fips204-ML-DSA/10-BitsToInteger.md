@@ -18,6 +18,6 @@ Output: A nonnegative integer 𝑥.
 5: return 𝑥
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

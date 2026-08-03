@@ -13,6 +13,6 @@
 - `full.txt` — PDF 全文提取 (4871 lines)
 - `extracted.md` — pdfplumber 结构化提取
 
-## CipherCat 状态
+## 实现状态
 
 未实现。DRBG 是 NIST 推荐的确定性随机数生成器，可用于密钥生成和随机性测试。

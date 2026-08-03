@@ -19,6 +19,6 @@ Output: Signature 𝜎 ∈ 𝔹𝜆/4+ℓ⋅32⋅(1+bitlen (𝛾1 −1))+𝜔+�
 6: return 𝜎
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

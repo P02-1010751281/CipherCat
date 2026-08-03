@@ -1,8 +1,8 @@
-# CipherCat Blockly Usage Guide
+# Blockly Usage Guide
 
 > [中文](./BLOCKLY-GUIDE.md)
 
-CipherCat builds crypto algorithms with the Blockly 12 visual editor: drag blocks, connect by type, generate Python / JavaScript with one click. This guide covers editor operations, the type system, function templates, and algorithm assembly examples.
+Build crypto algorithms with the Blockly 12 visual editor: drag blocks, connect by type, generate Python / JavaScript with one click. This guide covers editor operations, the type system, function templates, and algorithm assembly examples.
 
 ---
 

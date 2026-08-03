@@ -20,6 +20,6 @@ When 𝑏 + 1 is a power of 2, the coefficients are in [0, 𝑏].
 6: return 𝑤
 ```
 
-### CipherCat
+### 块实现
 
 尚未实现。

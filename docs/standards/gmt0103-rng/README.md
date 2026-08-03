@@ -8,7 +8,7 @@
 
 中国随机数发生器 (RNG) 标准，定义确定性随机比特生成器 (DRBG) 框架。
 
-## CipherCat 状态
+## 实现状态
 
 未直接实现。`seed_bytes` 块提供种子输入。
 full.txt available (214 lines)

@@ -23,6 +23,6 @@ Output: state array A′
 
 24 轮常数 (hex): 0x01, 0x8082, 0x808A, 0x80008000, 0x808B, ...
 
-### CipherCat
+### 块实现
 
 内嵌于 `keccak_f1600`

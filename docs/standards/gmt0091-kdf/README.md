@@ -8,7 +8,7 @@
 
 中国版 PBKDF2 标准。定义基于口令的密钥派生函数 (KDF)。
 
-## CipherCat 对应块
+## 对应块
 
 `kdf_pbkdf2` — PBKDF2 密钥派生
 full.txt available (601 lines)

@@ -26,7 +26,7 @@ G 输出 64 字节: K̂ = bytes[0:32], r = bytes[32:64]。
 
 ML-KEM-768: |ek|=1184, |m|=32, |K|=32, |c|=1088。
 
-### CipherCat
+### 块实现
 
 已通过 Blockly 工作区完整实现 (test/ML-KEM-768-Encaps.json)。
 
@@ -37,7 +37,7 @@ ML-KEM-768: |ek|=1184, |m|=32, |K|=32, |c|=1088。
 | G(m‖h) | Squeeze(Absorb(Keccak Init, SHA-3 Pad(BytesConcat(m,h), 576, 0x06), 576), 64, 576) | 同上 + `pq_byte_concat` |
 | K̂ = [0:32] | BytesSlice(output, 0, 32) | `pq_bytes_slice` |
 | r = [32:64] | BytesSlice(output, 32, 64) | `pq_bytes_slice` |
-| K-PKE.Encrypt | (见 Algorithm 14 CipherCat 实现) | |
+| K-PKE.Encrypt | (见 Algorithm 14 块实现) | |
 
 **哈希链嵌套层级**:
 - SHA3-256: 4 层 (Squeeze → Absorb → Init + SHA-3 Pad)

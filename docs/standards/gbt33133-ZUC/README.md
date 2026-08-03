@@ -19,7 +19,7 @@
 | BR | 比特重组 (从 LFSR 提取 4×32-bit) |
 | F | 非线性函数 (含 S-box) |
 
-## CipherCat 状态
+## 实现状态
 
 未实现。需新建 ZUC 相关块 (LFSR/BR/F/S-box)。
-⚠️ CipherCat未实现，PDF参考。暂不拆分。
+⚠️ 未实现，PDF参考。暂不拆分。

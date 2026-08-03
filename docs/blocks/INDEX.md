@@ -1,4 +1,4 @@
-# CipherCat 积木块标准依据参考
+# 积木块标准依据参考
 
 > [English](./INDEX.en.md) · [中文](./INDEX.md)
 

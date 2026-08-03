@@ -70,6 +70,11 @@ total_findings: 24
 - 新 closed：06（Tauri fs scope 收窄 $DOWNLOAD）、07（导入 5MB 门禁）、08（CSP 补 base-uri/object-src 双定义）、09（明文存储设计标注）、10（call 删除类型门：仅函数删除时扫描）、11（sbox 检测+收集合并单次遍历 + 日志清理）、12（call 下拉选项缓存 + 事件失效）、13（sbox 弹窗 listener 泄漏：clear/卸载钩子）、14（批量导出变量快照单次 + 逐模板让步）
 - 仍 open：18（makeDefBlock/makeCallBlock 重复逻辑）——procedure 覆盖系统核心工厂，纯结构重构、零行为收益，需独立 cs-refactor 专项 + 浏览器交互回归，继续待排
 
+## 修复进度（2026-08-03 二回写）
+
+- **closed=24 / open=0**（修复 commit `59f4bb8f`，2026-08-03 会话）
+- 新 closed：18（makeDefBlock/makeCallBlock 去重）——抽共享 helper（parseArgsFromDom/serializeArgsToDom/argsExtraState/loadArgsExtraState/renameVarByIdCommon/updateVarNameCommon/procedureGetVars/procedureGetVarModels），两工厂仅保留 init/渲染差异；验证：vue-tsc 0、29/29 向量 demo 双语言 PASS、46/46 加载 OK、镜像同步 metacrypt 后 harness 29/29 PASS
+
 ## 建议下一步
 
 - **P1 共 2 条**（finding-01/02）：建议立刻开 cs-issue 修——模幂块是教学主线，保存失败是主流程静默丢数据

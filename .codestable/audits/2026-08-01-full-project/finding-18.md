@@ -6,6 +6,8 @@ nature: maintainability
 severity: P2
 confidence: high
 suggested_action: cs-refactor
+status: closed
+closed_by: 59f4bb8f
 ---
 
 # Finding 18：makeDefBlock / makeCallBlock 近 200 行重复逻辑

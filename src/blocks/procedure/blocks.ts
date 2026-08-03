@@ -88,6 +88,126 @@ Blockly.Blocks['procedures_mutatorarg'] = {
 // 完整独立实现，legacy procedure 路径（getProcedureDef + mutateCallers）
 // ─────────────────────────────────────────────────────────
 
+// ─────────────────────────────────────────────────────────
+// procedure 块共享逻辑（makeDefBlock / makeCallBlock 去重，audit finding-18）
+// 两工厂仅 init / 渲染（updateParams_ vs updateShape_）与 statements 处理不同，
+// 参数解析 / 序列化 / 变量联动完全同构 —— 抽为共享 helper + 渲染回调注入。
+// ─────────────────────────────────────────────────────────
+
+/** 从 mutation DOM 解析 args → arguments_ / paramTypes_ / argumentVarModels_。 */
+function parseArgsFromDom(block: AnyBlock, xmlElement: Element): void {
+  block.arguments_ = [];
+  block.argumentVarModels_ = [];
+  block.paramTypes_ = [];
+  const children = Array.from(xmlElement.childNodes);
+  for (const child of children) {
+    if (child.nodeName.toLowerCase() !== 'arg') continue;
+    const argEl = child as Element;
+    const name = argEl.getAttribute('name') || '';
+    const varId = argEl.getAttribute('varid') || argEl.getAttribute('varId') || '';
+    const type = argEl.getAttribute('type') || 'bytes';
+    block.arguments_.push(name);
+    block.paramTypes_.push(type);
+    const v = Blockly.Variables.getOrCreateVariablePackage(block.workspace, varId || null, name, '') as unknown as Blockly.VariableModel | null;
+    if (v) block.argumentVarModels_.push(v);
+    else console.warn(`Failed to create variable "${name}", ignoring.`);
+  }
+}
+
+/** 把 args 序列化到 mutation DOM（def 可带 saveId/paramId，call 不带）。 */
+function serializeArgsToDom(block: AnyBlock, container: Element, includeParamId = false): void {
+  for (let i = 0; i < block.argumentVarModels_.length; i++) {
+    const arg = Blockly.utils.xml.createElement('arg');
+    const v = block.argumentVarModels_[i];
+    arg.setAttribute('name', v.getName());
+    arg.setAttribute('varid', v.getId());
+    if (includeParamId && block.paramIds_) arg.setAttribute('paramId', block.paramIds_[i]);
+    arg.setAttribute('type', block.paramTypes_[i] || 'bytes');
+    container.appendChild(arg);
+  }
+}
+
+/** saveExtraState 的 params 部分（def 额外处理 hasStatements，call 直接返回）。 */
+function argsExtraState(block: AnyBlock): Record<string, unknown> | null {
+  if (!block.argumentVarModels_.length) return null;
+  return {
+    params: block.argumentVarModels_.map((v: Blockly.VariableModel, i: number) => ({
+      name: v.getName(),
+      id: v.getId(),
+      type: block.paramTypes_[i] || 'bytes',
+    })),
+  };
+}
+
+/** loadExtraState 的 name + params 部分（flyout 字符串数组 / 序列化对象数组兼容）。 */
+function loadArgsExtraState(block: AnyBlock, state: Record<string, unknown>): void {
+  // flyout 传 {name, params}：name 应用到 NAME 字段（函数选择）
+  if (typeof state.name === 'string' && state.name) {
+    try { block.setFieldValue(state.name, 'NAME'); } catch { /* noop */ }
+  }
+  const raw = (state.params as Array<{ name: string; id: string; type?: string } | string>) || [];
+  block.arguments_ = [];
+  block.argumentVarModels_ = [];
+  block.paramTypes_ = [];
+  for (const item of raw) {
+    const p = typeof item === 'string' ? { name: item, id: '', type: 'bytes' } : item;
+    block.arguments_.push(p.name);
+    block.paramTypes_.push(p.type || 'bytes');
+    const v = (block.workspace.getVariableMap().getVariable(p.name, '') ||
+      block.workspace.createVariable(p.name, '', p.id || undefined)) as unknown as Blockly.VariableModel;
+    block.argumentVarModels_.push(v);
+  }
+}
+
+/** renameVarById 共享逻辑（afterChange 注入 displayRenamedVar_+mutateCallers / updateShape_）。 */
+function renameVarByIdCommon(
+  block: AnyBlock,
+  oldId: string,
+  newId: string,
+  afterChange: (block: AnyBlock, oldName: string, newName: string) => void,
+): void {
+  const varmap = block.workspace.getVariableMap();
+  const oldVar = varmap.getVariableById(oldId);
+  if (!oldVar || oldVar.getType() !== '') return;
+  const newVar = varmap.getVariableById(newId);
+  if (!newVar) return;
+  const idx = block.argumentVarModels_.findIndex((v: Blockly.VariableModel) => v.getId() === oldId);
+  if (idx === -1) return;
+  const oldName = oldVar.getName();
+  const newName = newVar.getName();
+  block.arguments_[idx] = newName;
+  block.argumentVarModels_[idx] = newVar;
+  afterChange(block, oldName, newName);
+}
+
+/** updateVarName 共享逻辑（afterChange 注入）。 */
+function updateVarNameCommon(
+  block: AnyBlock,
+  variable: Blockly.VariableModel,
+  afterChange: (block: AnyBlock, oldName: string) => void,
+): void {
+  const name = variable.getName();
+  let changed = false;
+  let oldName = '';
+  for (let i = 0; i < block.argumentVarModels_.length; i++) {
+    if (block.argumentVarModels_[i].getId() === variable.getId()) {
+      oldName = block.arguments_[i];
+      block.arguments_[i] = name;
+      changed = true;
+    }
+  }
+  if (changed) afterChange(block, oldName);
+}
+
+/** getVars / getVarModels（def/call 完全相同，直接共享）。 */
+function procedureGetVars(this: AnyBlock): string[] {
+  return this.arguments_;
+}
+
+function procedureGetVarModels(this: AnyBlock): Blockly.VariableModel[] {
+  return this.argumentVarModels_;
+}
+
 function makeDefBlock(hasReturn: boolean): AnyBlock {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const DEF: Record<string, any> = {
@@ -149,35 +269,12 @@ function makeDefBlock(hasReturn: boolean): AnyBlock {
     mutationToDom: function (this: AnyBlock, opt_saveId?: boolean): Element {
       const container = Blockly.utils.xml.createElement('mutation');
       if (opt_saveId) container.setAttribute('name', (this.getFieldValue('NAME') as string) || '');
-      for (let i = 0; i < this.argumentVarModels_.length; i++) {
-        const arg = Blockly.utils.xml.createElement('arg');
-        const v = this.argumentVarModels_[i];
-        arg.setAttribute('name', v.getName());
-        arg.setAttribute('varid', v.getId());
-        if (opt_saveId && this.paramIds_) arg.setAttribute('paramId', this.paramIds_[i]);
-        arg.setAttribute('type', this.paramTypes_[i] || 'bytes');
-        container.appendChild(arg);
-      }
+      serializeArgsToDom(this, container, opt_saveId);
       if (this.hasStatements_ === false) container.setAttribute('statements', 'false');
       return container;
     },
     domToMutation: function (this: AnyBlock, xmlElement: Element) {
-      this.arguments_ = [];
-      this.argumentVarModels_ = [];
-      this.paramTypes_ = [];
-      const children = Array.from(xmlElement.childNodes);
-      for (const child of children) {
-        if (child.nodeName.toLowerCase() !== 'arg') continue;
-        const argEl = child as Element;
-        const name = argEl.getAttribute('name') || '';
-        const varId = argEl.getAttribute('varid') || argEl.getAttribute('varId') || '';
-        const type = argEl.getAttribute('type') || 'bytes';
-        this.arguments_.push(name);
-        this.paramTypes_.push(type);
-        const v = Blockly.Variables.getOrCreateVariablePackage(this.workspace, varId || null, name, '') as unknown as Blockly.VariableModel | null;
-        if (v) this.argumentVarModels_.push(v);
-        else console.warn(`Failed to create variable "${name}", ignoring.`);
-      }
+      parseArgsFromDom(this, xmlElement);
       this.updateParams_();
       Blockly.Procedures.mutateCallers(this);
       this.setStatements_((xmlElement.getAttribute('statements') !== 'false'));
@@ -220,72 +317,30 @@ function makeDefBlock(hasReturn: boolean): AnyBlock {
     saveExtraState: function (this: AnyBlock): Record<string, unknown> | null {
       if (!this.argumentVarModels_.length && this.hasStatements_ !== false) return null;
       const state: Record<string, unknown> = {};
-      if (this.argumentVarModels_.length) {
-        state.params = this.argumentVarModels_.map((v: Blockly.VariableModel, i: number) => ({
-          name: v.getName(),
-          id: v.getId(),
-          type: this.paramTypes_[i] || 'bytes',
-        }));
-      }
+      const paramsState = argsExtraState(this);
+      if (paramsState) state.params = paramsState.params;
       if (this.hasStatements_ === false) state.hasStatements = false;
       return state;
     },
     loadExtraState: function (this: AnyBlock, state: Record<string, unknown>) {
-      // flyout 传 {name, params}：name 应用到 NAME 字段（函数选择）
-      if (typeof state.name === 'string' && state.name) {
-        try { this.setFieldValue(state.name, 'NAME'); } catch { /* noop */ }
-      }
-      const raw = (state.params as Array<{ name: string; id: string; type?: string } | string>) || [];
-      this.arguments_ = [];
-      this.argumentVarModels_ = [];
-      this.paramTypes_ = [];
-      for (const item of raw) {
-        const p = typeof item === 'string' ? { name: item, id: '', type: 'bytes' } : item;
-        this.arguments_.push(p.name);
-        this.paramTypes_.push(p.type || 'bytes');
-        const v = (this.workspace.getVariableMap().getVariable(p.name, '') ||
-          this.workspace.createVariable(p.name, '', p.id || undefined)) as unknown as Blockly.VariableModel;
-        this.argumentVarModels_.push(v);
-      }
+      loadArgsExtraState(this, state);
       this.updateParams_();
       Blockly.Procedures.mutateCallers(this);
       if (state.hasStatements === false) this.setStatements_(false);
     },
-    getVars: function (this: AnyBlock): string[] {
-      return this.arguments_;
-    },
-    getVarModels: function (this: AnyBlock): Blockly.VariableModel[] {
-      return this.argumentVarModels_;
-    },
+    getVars: procedureGetVars,
+    getVarModels: procedureGetVarModels,
     renameVarById: function (this: AnyBlock, oldId: string, newId: string) {
-      const varmap = this.workspace.getVariableMap();
-      const oldVar = varmap.getVariableById(oldId);
-      if (!oldVar || oldVar.getType() !== '') return;
-      const newVar = varmap.getVariableById(newId);
-      if (!newVar) return;
-      const idx = this.argumentVarModels_.findIndex((v: Blockly.VariableModel) => v.getId() === oldId);
-      if (idx === -1) return;
-      const oldName = oldVar.getName();
-      this.arguments_[idx] = newVar.getName();
-      this.argumentVarModels_[idx] = newVar;
-      this.displayRenamedVar_(oldName, newVar.getName());
-      Blockly.Procedures.mutateCallers(this);
+      renameVarByIdCommon(this, oldId, newId, (block, oldName, newName) => {
+        block.displayRenamedVar_(oldName, newName);
+        Blockly.Procedures.mutateCallers(block);
+      });
     },
     updateVarName: function (this: AnyBlock, variable: Blockly.VariableModel) {
-      const name = variable.getName();
-      let changed = false;
-      let oldName = '';
-      for (let i = 0; i < this.argumentVarModels_.length; i++) {
-        if (this.argumentVarModels_[i].getId() === variable.getId()) {
-          oldName = this.arguments_[i];
-          this.arguments_[i] = name;
-          changed = true;
-        }
-      }
-      if (changed) {
-        this.displayRenamedVar_(oldName, name);
-        Blockly.Procedures.mutateCallers(this);
-      }
+      updateVarNameCommon(this, variable, (block, oldName) => {
+        block.displayRenamedVar_(oldName, variable.getName());
+        Blockly.Procedures.mutateCallers(block);
+      });
     },
     displayRenamedVar_: function (this: AnyBlock, oldName: string, newName: string) {
       this.updateParams_();
@@ -570,14 +625,7 @@ function makeCallBlock(hasReturn: boolean): AnyBlock {
     },
     mutationToDom: function (this: AnyBlock): Element {
       const container = Blockly.utils.xml.createElement('mutation');
-      for (let i = 0; i < this.argumentVarModels_.length; i++) {
-        const arg = Blockly.utils.xml.createElement('arg');
-        const v = this.argumentVarModels_[i];
-        arg.setAttribute('name', v.getName());
-        arg.setAttribute('varid', v.getId());
-        arg.setAttribute('type', this.paramTypes_[i] || 'bytes');
-        container.appendChild(arg);
-      }
+      serializeArgsToDom(this, container);
       return container;
     },
     domToMutation: function (this: AnyBlock, xmlElement: Element) {
@@ -591,81 +639,27 @@ function makeCallBlock(hasReturn: boolean): AnyBlock {
         }
         try { this.setFieldValue(mutatedName, 'NAME'); } catch (e) { console.warn('[procedure] call name sync failed:', e); }
       }
-      this.arguments_ = [];
-      this.argumentVarModels_ = [];
-      this.paramTypes_ = [];
-      const children = Array.from(xmlElement.childNodes);
-      for (const child of children) {
-        if (child.nodeName.toLowerCase() !== 'arg') continue;
-        const argEl = child as Element;
-        const name = argEl.getAttribute('name') || '';
-        const varId = argEl.getAttribute('varid') || argEl.getAttribute('varId') || '';
-        const type = argEl.getAttribute('type') || 'bytes';
-        this.arguments_.push(name);
-        this.paramTypes_.push(type);
-        const v = Blockly.Variables.getOrCreateVariablePackage(this.workspace, varId || null, name, '') as unknown as Blockly.VariableModel | null;
-        if (v) this.argumentVarModels_.push(v);
-      }
+      parseArgsFromDom(this, xmlElement);
       this.updateShape_();
     },
     saveExtraState: function (this: AnyBlock): Record<string, unknown> | null {
-      if (!this.argumentVarModels_.length) return null;
-      const state: Record<string, unknown> = {};
-      state.params = this.argumentVarModels_.map((v: Blockly.VariableModel, i: number) => ({
-        name: v.getName(),
-        id: v.getId(),
-        type: this.paramTypes_[i] || 'bytes',
-      }));
-      return state;
+      return argsExtraState(this);
     },
     loadExtraState: function (this: AnyBlock, state: Record<string, unknown>) {
-      // flyout 传 {name, params}：name 应用到 NAME 字段（函数选择）
-      if (typeof state.name === 'string' && state.name) {
-        try { this.setFieldValue(state.name, 'NAME'); } catch { /* noop */ }
-      }
-      const raw = (state.params as Array<{ name: string; id: string; type?: string } | string>) || [];
-      this.arguments_ = [];
-      this.argumentVarModels_ = [];
-      this.paramTypes_ = [];
-      for (const item of raw) {
-        // flyout 传字符串数组 ['key','msg']；序列化存对象数组 [{name,id,type}]
-        const p = typeof item === 'string' ? { name: item, id: '', type: 'bytes' } : item;
-        this.arguments_.push(p.name);
-        this.paramTypes_.push(p.type || 'bytes');
-        const v = (this.workspace.getVariableMap().getVariable(p.name, '') ||
-          this.workspace.createVariable(p.name, '', p.id || undefined)) as unknown as Blockly.VariableModel;
-        this.argumentVarModels_.push(v);
-      }
+      loadArgsExtraState(this, state);
       this.updateShape_();
     },
-    getVars: function (this: AnyBlock): string[] {
-      return this.arguments_;
-    },
-    getVarModels: function (this: AnyBlock): Blockly.VariableModel[] {
-      return this.argumentVarModels_;
-    },
+    getVars: procedureGetVars,
+    getVarModels: procedureGetVarModels,
     renameVarById: function (this: AnyBlock, oldId: string, newId: string) {
-      const varmap = this.workspace.getVariableMap();
-      const oldVar = varmap.getVariableById(oldId);
-      if (!oldVar || oldVar.getType() !== '') return;
-      const newVar = varmap.getVariableById(newId);
-      if (!newVar) return;
-      const idx = this.argumentVarModels_.findIndex((v: Blockly.VariableModel) => v.getId() === oldId);
-      if (idx === -1) return;
-      this.arguments_[idx] = newVar.getName();
-      this.argumentVarModels_[idx] = newVar;
-      this.updateShape_();
+      renameVarByIdCommon(this, oldId, newId, (block) => {
+        block.updateShape_();
+      });
     },
     updateVarName: function (this: AnyBlock, variable: Blockly.VariableModel) {
-      const name = variable.getName();
-      let changed = false;
-      for (let i = 0; i < this.argumentVarModels_.length; i++) {
-        if (this.argumentVarModels_[i].getId() === variable.getId()) {
-          this.arguments_[i] = name;
-          changed = true;
-        }
-      }
-      if (changed) this.updateShape_();
+      updateVarNameCommon(this, variable, (block) => {
+        block.updateShape_();
+      });
     },
   };
   return CALL;

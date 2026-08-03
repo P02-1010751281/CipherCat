@@ -6,6 +6,8 @@ nature: security
 severity: P2
 confidence: low
 suggested_action: cs-refactor
+status: closed
+closed_by: 62e4f90b
 ---
 
 # Finding 08：CSP meta+config 双处重复定义，缺 base-uri/object-src 硬化

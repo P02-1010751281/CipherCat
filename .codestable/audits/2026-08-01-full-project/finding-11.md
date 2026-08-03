@@ -6,6 +6,8 @@ nature: performance
 severity: P2
 confidence: high
 suggested_action: cs-refactor
+status: closed
+closed_by: 62e4f90b
 ---
 
 # Finding 11：加载路径双重全树遍历 + 20+ console.log 诊断残留

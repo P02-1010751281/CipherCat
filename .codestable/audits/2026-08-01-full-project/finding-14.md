@@ -6,6 +6,8 @@ nature: performance
 severity: P2
 confidence: medium
 suggested_action: cs-refactor
+status: closed
+closed_by: 62e4f90b
 ---
 
 # Finding 14：批量模板导出 30× initSvg+render + 每模板两次变量表全量扫描

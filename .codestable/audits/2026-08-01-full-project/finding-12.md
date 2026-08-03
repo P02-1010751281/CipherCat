@@ -6,6 +6,8 @@ nature: performance
 severity: P2
 confidence: high
 suggested_action: cs-refactor
+status: closed
+closed_by: 62e4f90b
 ---
 
 # Finding 12：buildCallOptions 每次下拉打开全量重建函数列表

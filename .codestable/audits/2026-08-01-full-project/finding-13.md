@@ -6,6 +6,8 @@ nature: performance
 severity: P2
 confidence: medium
 suggested_action: cs-issue
+status: closed
+closed_by: 62e4f90b
 ---
 
 # Finding 13：sbox 表格弹窗 document click listener + DOM 在 events-disabled clear/dispose 时泄漏

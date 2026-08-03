@@ -6,6 +6,8 @@ nature: performance
 severity: P2
 confidence: high
 suggested_action: cs-refactor
+status: closed
+closed_by: 62e4f90b
 ---
 
 # Finding 10：call 块 onchange BLOCK_DELETE 触发 O(M×N) 全工作区孤儿扫描

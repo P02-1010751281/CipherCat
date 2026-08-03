@@ -6,6 +6,8 @@ nature: security
 severity: P2
 confidence: medium
 suggested_action: cs-issue
+status: closed
+closed_by: 62e4f90b
 ---
 
 # Finding 07：导入 JSON/XML 零校验直喂 Blockly 反序列化

@@ -6,6 +6,8 @@ nature: security
 severity: P2
 confidence: low
 suggested_action: cs-refactor
+status: closed
+closed_by: 62e4f90b
 ---
 
 # Finding 09：密码学工作区数据明文落盘 IndexedDB 与导出文件

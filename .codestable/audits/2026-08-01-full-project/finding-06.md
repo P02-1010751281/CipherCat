@@ -6,6 +6,8 @@ nature: security
 severity: P2
 confidence: medium
 suggested_action: cs-refactor
+status: closed
+closed_by: 62e4f90b
 ---
 
 # Finding 06：fs:allow-write-text-file 三目录 scope 无用户交互门槛

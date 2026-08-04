@@ -7,3 +7,4 @@ import './mat-vec-mul';
 import './gf2m';
 import './codebased';
 import './multivariate';
+import './gf2mpoly';

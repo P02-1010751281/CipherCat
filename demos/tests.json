@@ -508,5 +508,15 @@
    "driver": "const sk = Uint8Array.from({length: 32}, (_, i) => i);\nvar m = Uint8Array.from([0x3C, 0xA5]);\nvar sig = FORS_Sign(sk, m);\nvar pk = FORS_PkFromSk(sk);\nif (sig.length !== 640) throw new Error('SIG_LEN');\nif (pk.length !== 32) throw new Error('PK_LEN');\nif (!FORS_Verify(pk, m, sig)) throw new Error('ROUNDTRIP');\nif (JSON.stringify(FORS_Sign(sk, m)) !== JSON.stringify(sig)) throw new Error('DETERMINISM');\nconst bad = sig.slice(); bad[0] ^= 1;\nif (FORS_Verify(pk, m, bad)) throw new Error('TAMPER');\nconsole.log('FORS_OK');",
    "expect": "FORS_OK"
   }
+ },
+ "procedures/GF2m-Poly.json": {
+  "py": {
+   "driver": "a = [1, 2, 3]; b = [4, 5]; c = [6, 7]\nassert GA(a, b) == GA(b, a), 'ADD_COMM'\nassert GA(a, a) == [0], 'ADD_ZERO'\nassert GA(GA(a, b), c) == GA(a, GA(b, c)), 'ADD_ASSOC'\nassert GM(a, b) == GM(b, a), 'MUL_COMM'\nassert GM(GM(a, b), c) == GM(a, GM(b, c)), 'MUL_ASSOC'\nassert GMod(GM(a, b), b) == [0], 'MOD_REM'\np = GXGcd(a, b)\nlu, u = p[0], p[1:1 + p[0]]\nlv = p[1 + p[0]]\nv = p[2 + p[0]:2 + p[0] + lv]\ng = p[2 + p[0] + lv:]\nassert GA(GM(u, a), GM(v, b)) == g, 'BEZOUT'\nassert g[-1] == 1, 'MONIC_GCD'\nalpha = 0x5A\nassert GEval([alpha, 1], alpha) == 0, 'EVAL_ROOT'\nalphas = [1, 2, 3, 4]\nG = GP(alphas)\nfor al in alphas:\n    assert GEval(G, al) == 0, 'GOPPA_ROOT'\nassert G[0] == 24 and G[-1] == 1, 'GOPPA_COEF'\nprint('GF2M_POLY_OK')",
+   "expect": "GF2M_POLY_OK"
+  },
+  "js": {
+   "driver": "var a = [1, 2, 3]; var b = [4, 5]; var c = [6, 7];\nconst eq = (x, y) => JSON.stringify(x) === JSON.stringify(y);\nif (!eq(GA(a, b), GA(b, a))) throw new Error('ADD_COMM');\nif (!eq(GA(a, a), [0])) throw new Error('ADD_ZERO');\nif (!eq(GA(GA(a, b), c), GA(a, GA(b, c)))) throw new Error('ADD_ASSOC');\nif (!eq(GM(a, b), GM(b, a))) throw new Error('MUL_COMM');\nif (!eq(GM(GM(a, b), c), GM(a, GM(b, c)))) throw new Error('MUL_ASSOC');\nif (!eq(GMod(GM(a, b), b), [0])) throw new Error('MOD_REM');\nvar p = GXGcd(a, b);\nconst lu = p[0], u = p.slice(1, 1 + lu);\nconst lv = p[1 + lu], v = p.slice(2 + lu, 2 + lu + lv);\nconst g = p.slice(2 + lu + lv);\nif (!eq(GA(GM(u, a), GM(v, b)), g)) throw new Error('BEZOUT');\nif (g[g.length - 1] !== 1) throw new Error('MONIC_GCD');\nconst alpha = 0x5A;\nif (GEval([alpha, 1], alpha) !== 0) throw new Error('EVAL_ROOT');\nvar alphas = [1, 2, 3, 4];\nconst G = GP(alphas);\nfor (const al of alphas) if (GEval(G, al) !== 0) throw new Error('GOPPA_ROOT');\nif (G[0] !== 24 || G[G.length - 1] !== 1) throw new Error('GOPPA_COEF');\nconsole.log('GF2M_POLY_OK');",
+   "expect": "GF2M_POLY_OK"
+  }
  }
 }

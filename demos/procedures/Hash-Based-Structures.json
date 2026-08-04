@@ -1,0 +1,338 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "hb_chain_01",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "msg",
+              "id": "param_msg",
+              "type": "bytes"
+            },
+            {
+              "name": "n",
+              "id": "param_n",
+              "type": "int"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "Chain"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "hash_chain",
+              "id": "hb_chain_01_b",
+              "inputs": {
+                "INPUT": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "hb_chain_01_vi",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_msg"
+                      }
+                    }
+                  }
+                },
+                "ITERATIONS": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "hb_chain_01_vn",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_n"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "hb_leaf_02",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "msg",
+              "id": "param_msg",
+              "type": "bytes"
+            },
+            {
+              "name": "adrs",
+              "id": "param_adrs",
+              "type": "bytes"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "MLeaf"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "merkle_leaf",
+              "id": "hb_leaf_02_b",
+              "inputs": {
+                "MSG": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "hb_leaf_02_vm",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_msg"
+                      }
+                    }
+                  }
+                },
+                "ADRS": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "hb_leaf_02_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_adrs"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "hb_node_03",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "l",
+              "id": "param_l",
+              "type": "bytes"
+            },
+            {
+              "name": "r",
+              "id": "param_r",
+              "type": "bytes"
+            },
+            {
+              "name": "adrs",
+              "id": "param_adrs",
+              "type": "bytes"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "MNode"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "merkle_node",
+              "id": "hb_node_03_b",
+              "inputs": {
+                "LEFT": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "hb_node_03_vl",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_l"
+                      }
+                    }
+                  }
+                },
+                "RIGHT": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "hb_node_03_vr",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_r"
+                      }
+                    }
+                  }
+                },
+                "ADRS": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "hb_node_03_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_adrs"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "hb_root_04",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "leaves",
+              "id": "param_leaves",
+              "type": "bytes"
+            },
+            {
+              "name": "leafLen",
+              "id": "param_leafLen",
+              "type": "int"
+            },
+            {
+              "name": "adrs",
+              "id": "param_adrs",
+              "type": "bytes"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "MRoot"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "merkle_root",
+              "id": "hb_root_04_b",
+              "inputs": {
+                "LEAVES": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "hb_root_04_vl",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_leaves"
+                      }
+                    }
+                  }
+                },
+                "LEAF_LEN": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "hb_root_04_vn",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_leafLen"
+                      }
+                    }
+                  }
+                },
+                "ADRS": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "hb_root_04_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_adrs"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "hb_addr_05",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "layer",
+              "id": "param_layer",
+              "type": "int"
+            },
+            {
+              "name": "tree",
+              "id": "param_tree",
+              "type": "int"
+            },
+            {
+              "name": "leaf",
+              "id": "param_leaf",
+              "type": "int"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "Addr"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "slh_addr",
+              "id": "hb_addr_05_b",
+              "fields": {
+                "TYPE": "0"
+              },
+              "inputs": {
+                "LAYER": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "hb_addr_05_vl",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_layer"
+                      }
+                    }
+                  }
+                },
+                "TREE": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "hb_addr_05_vt",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_tree"
+                      }
+                    }
+                  }
+                },
+                "LEAF": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "hb_addr_05_vf",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_leaf"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

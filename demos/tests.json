@@ -448,5 +448,15 @@
       "driver": "var Q = 8380417;\nfunction mod(x) { return ((x % Q) + Q) % Q; }\nvar r = Array.from({length:256}, (_,i) => (i*7) % Q);\nvar z = Array.from({length:256}, (_,i) => (i*13+1) % Q);\nvar r1 = P2R_High(r), r0 = P2R_Low(r);\nfor (var i = 0; i < 256; i++) if (mod(r1[i]*8192 + r0[i]) !== r[i]) throw new Error('P2R');\nvar h = Make_Hint(z, r);\nvar rsum = r.map((x,i) => mod(x + z[i]));\nif (JSON.stringify(Use_Hint(h, rsum)) !== JSON.stringify(Dec_High(rsum))) throw new Error('HINT');\nvar c = In_Ball([1,2,3,4,5,6,7,8]);\nvar nz = 0; for (var i = 0; i < c.length; i++) if (c[i] !== 0) nz++;\nif (c.length !== 256 || nz !== 39 || !c.every(x => x === -1 || x === 0 || x === 1)) throw new Error('BALL');\nconsole.log('MLDSA_PRIMS_OK');",
       "expect": "MLDSA_PRIMS_OK"
     }
+  },
+  "procedures/Hash-Based-Structures.json": {
+    "py": {
+      "driver": "msg = bytes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])\nadrs = Addr(1, 2, 3)\nassert len(adrs) == 32, 'ADRS len'\nassert Addr(1, 2, 3) == adrs, 'ADRS det'\n# 1. 哈希链：Chain(x, 0) == x；Chain(x, 2) == Chain(Chain(x, 1), 1)\nassert Chain(msg, 0) == msg, 'CHAIN0'\nassert Chain(msg, 2) == Chain(Chain(msg, 1), 1), 'CHAIN'\n# 2. Merkle 一致性：4 叶树 root == 手工组合\nm1, m2, m3, m4 = msg, bytes([9,9,9,9,9]), b'leaf3', b'leaf4'\nl1 = MLeaf(m1, adrs); l2 = MLeaf(m2, adrs); l3 = MLeaf(m3, adrs); l4 = MLeaf(m4, adrs)\nroot_manual = MNode(MNode(l1, l2, adrs), MNode(l3, l4, adrs), adrs)\nleaves = l1 + l2 + l3 + l4\nassert MRoot(leaves, 32, adrs) == root_manual, 'MERKLE'\nprint('HASH_BASED_OK')",
+      "expect": "HASH_BASED_OK"
+    },
+    "js": {
+      "driver": "function toA(a){return Uint8Array.from(a);}\nvar msg = Uint8Array.from([0,1,2,3,4,5,6,7,8,9]);\nvar adrs = Addr(1, 2, 3);\nif (adrs.length !== 32) throw new Error('ADRS len');\nif (JSON.stringify(Addr(1,2,3)) !== JSON.stringify(adrs)) throw new Error('ADRS det');\nif (JSON.stringify(Chain(msg, 0)) !== JSON.stringify(msg)) throw new Error('CHAIN0');\nif (JSON.stringify(Chain(msg, 2)) !== JSON.stringify(Chain(Chain(msg, 1), 1))) throw new Error('CHAIN');\nvar m1 = msg, m2 = Uint8Array.from([9,9,9,9,9]), m3 = toA([108,101,97,102,51]), m4 = toA([108,101,97,102,52]);\nvar l1 = MLeaf(m1, adrs), l2 = MLeaf(m2, adrs), l3 = MLeaf(m3, adrs), l4 = MLeaf(m4, adrs);\nvar rootManual = MNode(MNode(l1, l2, adrs), MNode(l3, l4, adrs), adrs);\nvar leaves = Array.from(l1).concat(Array.from(l2), Array.from(l3), Array.from(l4));\nif (JSON.stringify(MRoot(leaves, 32, adrs)) !== JSON.stringify(rootManual)) throw new Error('MERKLE');\nconsole.log('HASH_BASED_OK');",
+      "expect": "HASH_BASED_OK"
+    }
   }
 }

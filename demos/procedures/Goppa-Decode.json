@@ -1,0 +1,595 @@
+{
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "procedures_defreturn",
+    "id": "gg_01",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "alphas",
+       "id": "goppa_param_alphas",
+       "type": "int_list"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "GOPPA_G"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "goppa_gen_poly",
+       "id": "gg_01_b",
+       "inputs": {
+        "ALPHA": {
+         "block": {
+          "type": "variables_get",
+          "id": "goppa_param_alphas_g",
+          "fields": {
+           "VAR": {
+            "id": "goppa_param_alphas"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "ge_02",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "p",
+       "id": "goppa_param_p",
+       "type": "int_list"
+      },
+      {
+       "name": "x",
+       "id": "goppa_param_x",
+       "type": "int"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "GOPPA_EVAL"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "gf2m_poly_eval",
+       "id": "ge_02_b",
+       "inputs": {
+        "P": {
+         "block": {
+          "type": "variables_get",
+          "id": "goppa_param_p_g",
+          "fields": {
+           "VAR": {
+            "id": "goppa_param_p"
+           }
+          }
+         }
+        },
+        "X": {
+         "block": {
+          "type": "variables_get",
+          "id": "goppa_param_x_g",
+          "fields": {
+           "VAR": {
+            "id": "goppa_param_x"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "ga_03",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "a",
+       "id": "goppa_param_a",
+       "type": "int_list"
+      },
+      {
+       "name": "b",
+       "id": "goppa_param_b",
+       "type": "int_list"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "GA"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "gf2m_poly_add",
+       "id": "ga_03_b",
+       "inputs": {
+        "A": {
+         "block": {
+          "type": "variables_get",
+          "id": "goppa_param_a_g",
+          "fields": {
+           "VAR": {
+            "id": "goppa_param_a"
+           }
+          }
+         }
+        },
+        "B": {
+         "block": {
+          "type": "variables_get",
+          "id": "goppa_param_b_g",
+          "fields": {
+           "VAR": {
+            "id": "goppa_param_b"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "gm_04",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "a",
+       "id": "goppa_param_a",
+       "type": "int_list"
+      },
+      {
+       "name": "b",
+       "id": "goppa_param_b",
+       "type": "int_list"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "GM"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "gf2m_poly_mul",
+       "id": "gm_04_b",
+       "inputs": {
+        "A": {
+         "block": {
+          "type": "variables_get",
+          "id": "goppa_param_a_g",
+          "fields": {
+           "VAR": {
+            "id": "goppa_param_a"
+           }
+          }
+         }
+        },
+        "B": {
+         "block": {
+          "type": "variables_get",
+          "id": "goppa_param_b_g",
+          "fields": {
+           "VAR": {
+            "id": "goppa_param_b"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "gmo_05",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "a",
+       "id": "goppa_param_a",
+       "type": "int_list"
+      },
+      {
+       "name": "b",
+       "id": "goppa_param_b",
+       "type": "int_list"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "GMod"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "gf2m_poly_mod",
+       "id": "gmo_05_b",
+       "inputs": {
+        "A": {
+         "block": {
+          "type": "variables_get",
+          "id": "goppa_param_a_g",
+          "fields": {
+           "VAR": {
+            "id": "goppa_param_a"
+           }
+          }
+         }
+        },
+        "B": {
+         "block": {
+          "type": "variables_get",
+          "id": "goppa_param_b_g",
+          "fields": {
+           "VAR": {
+            "id": "goppa_param_b"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "gi_06",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "a",
+       "id": "goppa_param_a",
+       "type": "int_list"
+      },
+      {
+       "name": "g",
+       "id": "goppa_param_g",
+       "type": "int_list"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "GOPPA_INV"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "arr_slice",
+       "id": "gi_06_c",
+       "inputs": {
+        "LIST": {
+         "block": {
+          "type": "gf2m_poly_xgcd",
+          "id": "gi_06_c_x",
+          "inputs": {
+           "A": {
+            "block": {
+             "type": "variables_get",
+             "id": "goppa_param_a_g",
+             "fields": {
+              "VAR": {
+               "id": "goppa_param_a"
+              }
+             }
+            }
+           },
+           "B": {
+            "block": {
+             "type": "variables_get",
+             "id": "goppa_param_g_g",
+             "fields": {
+              "VAR": {
+               "id": "goppa_param_g"
+              }
+             }
+            }
+           }
+          }
+         }
+        },
+        "START": {
+         "block": {
+          "type": "math_number",
+          "id": "gi_06_c_s1",
+          "fields": {
+           "NUM": 1
+          }
+         }
+        },
+        "LENGTH": {
+         "block": {
+          "type": "math_number",
+          "id": "gi_06_c_s2",
+          "fields": {
+           "NUM": 2
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "gs_07",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "a",
+       "id": "goppa_param_a",
+       "type": "int_list"
+      },
+      {
+       "name": "b",
+       "id": "goppa_param_b",
+       "type": "int_list"
+      },
+      {
+       "name": "g",
+       "id": "goppa_param_g",
+       "type": "int_list"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "GOPPA_SYN"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "gf2m_poly_mod",
+       "id": "gs_07_b",
+       "inputs": {
+        "A": {
+         "block": {
+          "type": "gf2m_poly_add",
+          "id": "gs_07_a",
+          "inputs": {
+           "A": {
+            "block": {
+             "type": "arr_slice",
+             "id": "gs_07_c1",
+             "inputs": {
+              "LIST": {
+               "block": {
+                "type": "gf2m_poly_xgcd",
+                "id": "gs_07_c1_x",
+                "inputs": {
+                 "A": {
+                  "block": {
+                   "type": "variables_get",
+                   "id": "goppa_param_a_g",
+                   "fields": {
+                    "VAR": {
+                     "id": "goppa_param_a"
+                    }
+                   }
+                  }
+                 },
+                 "B": {
+                  "block": {
+                   "type": "variables_get",
+                   "id": "goppa_param_g_g",
+                   "fields": {
+                    "VAR": {
+                     "id": "goppa_param_g"
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "START": {
+               "block": {
+                "type": "math_number",
+                "id": "gs_07_c1_s1",
+                "fields": {
+                 "NUM": 1
+                }
+               }
+              },
+              "LENGTH": {
+               "block": {
+                "type": "math_number",
+                "id": "gs_07_c1_s2",
+                "fields": {
+                 "NUM": 2
+                }
+               }
+              }
+             }
+            }
+           },
+           "B": {
+            "block": {
+             "type": "arr_slice",
+             "id": "gs_07_c2",
+             "inputs": {
+              "LIST": {
+               "block": {
+                "type": "gf2m_poly_xgcd",
+                "id": "gs_07_c2_x",
+                "inputs": {
+                 "A": {
+                  "block": {
+                   "type": "variables_get",
+                   "id": "goppa_param_b_g",
+                   "fields": {
+                    "VAR": {
+                     "id": "goppa_param_b"
+                    }
+                   }
+                  }
+                 },
+                 "B": {
+                  "block": {
+                   "type": "variables_get",
+                   "id": "goppa_param_g_g",
+                   "fields": {
+                    "VAR": {
+                     "id": "goppa_param_g"
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "START": {
+               "block": {
+                "type": "math_number",
+                "id": "gs_07_c2_s1",
+                "fields": {
+                 "NUM": 1
+                }
+               }
+              },
+              "LENGTH": {
+               "block": {
+                "type": "math_number",
+                "id": "gs_07_c2_s2",
+                "fields": {
+                 "NUM": 2
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        },
+        "B": {
+         "block": {
+          "type": "variables_get",
+          "id": "goppa_param_g_g",
+          "fields": {
+           "VAR": {
+            "id": "goppa_param_g"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "gd_08",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "y",
+       "id": "goppa_param_y",
+       "type": "int_list"
+      },
+      {
+       "name": "g",
+       "id": "goppa_param_g",
+       "type": "int_list"
+      },
+      {
+       "name": "L",
+       "id": "goppa_param_L",
+       "type": "int_list"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "GOPPA_DEC"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "goppa_decode",
+       "id": "gd_08_b",
+       "inputs": {
+        "Y": {
+         "block": {
+          "type": "variables_get",
+          "id": "goppa_param_y_g",
+          "fields": {
+           "VAR": {
+            "id": "goppa_param_y"
+           }
+          }
+         }
+        },
+        "G": {
+         "block": {
+          "type": "variables_get",
+          "id": "goppa_param_g_g",
+          "fields": {
+           "VAR": {
+            "id": "goppa_param_g"
+           }
+          }
+         }
+        },
+        "L": {
+         "block": {
+          "type": "variables_get",
+          "id": "goppa_param_L_g",
+          "fields": {
+           "VAR": {
+            "id": "goppa_param_L"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+}

@@ -8,3 +8,4 @@ import './gf2m';
 import './codebased';
 import './multivariate';
 import './gf2mpoly';
+import './goppa';

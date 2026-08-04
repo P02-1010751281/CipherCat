@@ -518,5 +518,15 @@
    "driver": "var a = [1, 2, 3]; var b = [4, 5]; var c = [6, 7];\nconst eq = (x, y) => JSON.stringify(x) === JSON.stringify(y);\nif (!eq(GA(a, b), GA(b, a))) throw new Error('ADD_COMM');\nif (!eq(GA(a, a), [0])) throw new Error('ADD_ZERO');\nif (!eq(GA(GA(a, b), c), GA(a, GA(b, c)))) throw new Error('ADD_ASSOC');\nif (!eq(GM(a, b), GM(b, a))) throw new Error('MUL_COMM');\nif (!eq(GM(GM(a, b), c), GM(a, GM(b, c)))) throw new Error('MUL_ASSOC');\nif (!eq(GMod(GM(a, b), b), [0])) throw new Error('MOD_REM');\nvar p = GXGcd(a, b);\nconst lu = p[0], u = p.slice(1, 1 + lu);\nconst lv = p[1 + lu], v = p.slice(2 + lu, 2 + lu + lv);\nconst g = p.slice(2 + lu + lv);\nif (!eq(GA(GM(u, a), GM(v, b)), g)) throw new Error('BEZOUT');\nif (g[g.length - 1] !== 1) throw new Error('MONIC_GCD');\nconst alpha = 0x5A;\nif (GEval([alpha, 1], alpha) !== 0) throw new Error('EVAL_ROOT');\nvar alphas = [1, 2, 3, 4];\nconst G = GP(alphas);\nfor (const al of alphas) if (GEval(G, al) !== 0) throw new Error('GOPPA_ROOT');\nif (G[0] !== 24 || G[G.length - 1] !== 1) throw new Error('GOPPA_COEF');\nconsole.log('GF2M_POLY_OK');",
    "expect": "GF2M_POLY_OK"
   }
+ },
+ "procedures/Goppa-Decode.json": {
+  "py": {
+   "driver": "g = GOPPA_G([13, 81])\nassert g == [176, 92, 1], 'GOPPA_G'\nassert GOPPA_EVAL(g, 13) == 0 and GOPPA_EVAL(g, 81) == 0, 'GOPPA_ROOT'\nL = [0, 1, 176, 177, 188, 237, 93, 236, 80, 189, 224, 12, 92, 225]\nu3 = GOPPA_INV([177, 1], g)\nassert u3 == [188, 225], 'INV3'\nassert GMod(GM(u3, [177, 1]), g) == [1], 'INV_PROP'\nassert GOPPA_SYN([177, 1], [236, 1], g) == [236, 12], 'SYNDROME_CHAIN'\nc = [1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0]\nassert GOPPA_DEC(c, g, L) == c, 'NO_ERR'\ne2 = [0] * 14; e2[3] = 1; e2[7] = 1\nassert GOPPA_DEC([c[i] ^ e2[i] for i in range(14)], g, L) == c, 'TWO_ERR'\ne1 = [0] * 14; e1[5] = 1\nassert GOPPA_DEC([c[i] ^ e1[i] for i in range(14)], g, L) == c, 'ONE_ERR'\nassert GOPPA_DEC([c[i] ^ e2[i] for i in range(14)], [177, 92, 1], L) != c, 'TAMPER'\nprint('GOPPA_OK')",
+   "expect": "GOPPA_OK"
+  },
+  "js": {
+   "driver": "var g = GOPPA_G([13, 81]);\nconst eq = (x, y) => JSON.stringify(x) === JSON.stringify(y);\nif (!eq(g, [176, 92, 1])) throw new Error('GOPPA_G');\nif (GOPPA_EVAL(g, 13) !== 0 || GOPPA_EVAL(g, 81) !== 0) throw new Error('GOPPA_ROOT');\nvar L = [0, 1, 176, 177, 188, 237, 93, 236, 80, 189, 224, 12, 92, 225];\nconst u3 = GOPPA_INV([177, 1], g);\nif (!eq(u3, [188, 225])) throw new Error('INV3');\nif (!eq(GMod(GM(u3, [177, 1]), g), [1])) throw new Error('INV_PROP');\nif (!eq(GOPPA_SYN([177, 1], [236, 1], g), [236, 12])) throw new Error('SYNDROME_CHAIN');\nconst c = [1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0];\nif (!eq(GOPPA_DEC(c, g, L), c)) throw new Error('NO_ERR');\nconst e2 = Array(14).fill(0); e2[3] = 1; e2[7] = 1;\nif (!eq(GOPPA_DEC(c.map((v, i) => v ^ e2[i]), g, L), c)) throw new Error('TWO_ERR');\nconst e1 = Array(14).fill(0); e1[5] = 1;\nif (!eq(GOPPA_DEC(c.map((v, i) => v ^ e1[i]), g, L), c)) throw new Error('ONE_ERR');\nif (eq(GOPPA_DEC(c.map((v, i) => v ^ e2[i]), [177, 92, 1], L), c)) throw new Error('TAMPER');\nconsole.log('GOPPA_OK');",
+   "expect": "GOPPA_OK"
+  }
  }
 }

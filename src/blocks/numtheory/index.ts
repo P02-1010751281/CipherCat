@@ -8,6 +8,7 @@ export * from './gf2m';
 export * from './codebased';
 export * from './multivariate';
 export * from './gf2mpoly';
+export * from './goppa';
 
 import { FIELD_BLOCK_TYPES, type FieldBlockType } from './field';
 import { MOD_INVERSE_BLOCK_TYPES, type ModInverseBlockType } from './mod-inverse';
@@ -28,6 +29,7 @@ import {
   GF2MPOLY_BLOCK_TYPES,
   type Gf2mPolyBlockType,
 } from './gf2mpoly';
+import { GOPPA_BLOCK_TYPES, type GoppaBlockType } from './goppa';
 
 export const NT_BLOCK_TYPES = [
   ...FIELD_BLOCK_TYPES,
@@ -40,6 +42,7 @@ export const NT_BLOCK_TYPES = [
   ...CODEBASED_BLOCK_TYPES,
   ...MULTIVARIATE_BLOCK_TYPES,
   ...GF2MPOLY_BLOCK_TYPES,
+  ...GOPPA_BLOCK_TYPES,
 ] as const;
 
-export type NtBlockType = FieldBlockType | ModInverseBlockType | NttBlockType | PolyAddBlockType | PolySubBlockType | MatVecMulBlockType | Gf2mBlockType | CodeBasedBlockType | MultivariateBlockType | Gf2mPolyBlockType;
+export type NtBlockType = FieldBlockType | ModInverseBlockType | NttBlockType | PolyAddBlockType | PolySubBlockType | MatVecMulBlockType | Gf2mBlockType | CodeBasedBlockType | MultivariateBlockType | Gf2mPolyBlockType | GoppaBlockType;

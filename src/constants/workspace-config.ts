@@ -1,7 +1,6 @@
 export const WORKSPACE_OPTIONS = {
   media: '/blockly/media/',
-  // Blockly 13 默认 renderer 为 thrasos；锁 geras 保持 12.x 既有视觉（教学平台块外观稳定优先）
-  renderer: 'geras',
+  // renderer 不显式指定：采用 Blockly 13 默认 thrasos（更性能，官方推荐）
   scrollbars: true,
   move: {
     scrollbars: true,

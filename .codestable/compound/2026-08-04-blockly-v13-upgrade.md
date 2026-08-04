@@ -16,7 +16,7 @@ CipherCat + metacrypt_server 双仓 Blockly **12.5.1 → 13.2.0** 升级完成�
 
 ## 配置项（v13 行为变化应对）
 
-- **renderer 锁定 geras**：v13 默认改 thrasos → `WORKSPACE_OPTIONS.renderer: 'geras'`（双仓）保持教学视觉稳定（geras 在 v13 保留）
+- **renderer 采用 thrasos（v13 默认）**：不显式指定 renderer——官方推荐 thrasos（更性能）；浏览器实测块渲染正常（SVG 圆角路径、零 console 错误）。geras 仍可用作备选（v13 保留）
 - **media 同步**：v13 新增 `drop.mp3`（drop 音效）+ `sprites.png` 移除（图标全 SVG 化）→ 双仓 `public/blockly/media/` 同步 16 文件；**metacrypt 此前缺本地 media 目录**（既有缺口，本次补齐）
 - **harness 消息加载**：v13 `msg/*.mjs` 只 `export const` 不自动设置 `Blockly.Msg` → 必须 `setLocale(await import('blockly/msg/en'))`（`scripts/verify-demo.ts` + `verify-templates.ts` 双仓）；项目前端 `locale.ts` 的 `Blockly.setLocale` 在 v13 浏览器入口可用（无需改）
 
@@ -38,6 +38,6 @@ CipherCat + metacrypt_server 双仓 Blockly **12.5.1 → 13.2.0** 升级完成�
 
 ## 后续观察项
 
-- thrasos renderer 可作为后续可选（性能更好），当前 geras 锁定
+- **renderer = thrasos（v13 默认，用户决定不锁 geras）**——性能更好、官方推荐；块外观较 12.x 略有变化（圆角路径），已浏览器实测正常。geras 仍保留可随时回退
 - v13 键盘导航默认开启（无障碍收益），浏览器实测无冲突；未来可做键盘导航/读屏专项验收
 - 12.x 遗留安全修复窗口已关闭——升级消除了 12.x 停滞风险

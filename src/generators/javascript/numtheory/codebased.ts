@@ -68,7 +68,32 @@ function registerCodeBased(): string {
     '    return s;',
     '  }',
     '  function hamDist(x, y) { var c = 0; for (var i = 0; i < x.length; i++) if (x[i] !== y[i]) c++; return c; }',
-    '  return { polyMul: polyMul, polyDiv: function(a,b){return polyDivMod(a,b)[0];}, polyMod: function(a,b){return polyDivMod(a,b)[1];}, polyGcd: polyGcd, matMul: matMul, matInv: matInv, hamWeight: hamWeight, hamDist: hamDist, goppaGenPoly: goppaGenPoly, syndromeCalc: syndromeCalc };',
+    '  function bmShiftreg(seq) {',
+    '    var C = [1], B = [1], L = 0, m = 1, b = 1;',
+    '    for (var n = 0; n < seq.length; n++) {',
+    '      while (C.length <= L) C.push(0);',
+    '      var d = 0;',
+    '      for (var i = 0; i <= L; i++) if (n - i >= 0) d ^= (C[i] & 1) & (seq[n - i] & 1);',
+    '      if (d === 0) { m++; }',
+    '      else if (2 * L <= n) {',
+    '        var T = C.slice();',
+    '        var shift = m;',
+    '        while (C.length < B.length + shift) C.push(0);',
+    '        for (var j = 0; j < B.length; j++) C[shift + j] ^= B[j];',
+    '        L = n + 1 - L;',
+    '        B = T; b = d; m = 1;',
+    '      } else {',
+    '        var shift2 = m;',
+    '        while (C.length < B.length + shift2) C.push(0);',
+    '        for (var j2 = 0; j2 < B.length; j2++) C[shift2 + j2] ^= B[j2];',
+    '        m++;',
+    '      }',
+    '    }',
+    '    while (C.length > 1 && C[C.length - 1] === 0) C.pop();',
+    '    return C;',
+    '  }',
+    '  function hamDist2(x, y) { var c = 0; for (var i = 0; i < x.length; i++) if (x[i] !== y[i]) c++; return c; }',
+    '  return { polyMul: polyMul, polyDiv: function(a,b){return polyDivMod(a,b)[0];}, polyMod: function(a,b){return polyDivMod(a,b)[1];}, polyGcd: polyGcd, matMul: matMul, matInv: matInv, hamWeight: hamWeight, hamDist: hamDist, goppaGenPoly: goppaGenPoly, syndromeCalc: syndromeCalc, bmShiftreg: bmShiftreg };',
     '}',
   ]);
 }
@@ -142,4 +167,10 @@ javascriptGenerator.forBlock['syndrome_calc'] = function (block: Block): [string
   const cols = javascriptGenerator.valueToCode(block, 'COLS', Order.ATOMIC) || '4';
   const fn = registerCodeBased();
   return [fn + '().syndromeCalc(' + h + ', ' + y + ', ' + rows + ', ' + cols + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['berlekamp_massey'] = function (block: Block): [string, number] {
+  const seq = javascriptGenerator.valueToCode(block, 'SEQ', Order.ATOMIC) || '[]';
+  const fn = registerCodeBased();
+  return [fn + '().bmShiftreg(' + seq + ')', Order.ATOMIC];
 };

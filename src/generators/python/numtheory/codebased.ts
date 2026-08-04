@@ -93,7 +93,31 @@ function registerCodeBased(): string {
     '        return g',
     '    def syndrome_calc(h, y, rows, cols):',
     '        return [sum((h[i * cols + j] & 1) * (y[j] & 1) for j in range(cols)) & 1 for i in range(rows)]',
-    '    return {"poly_mul": poly_mul, "poly_div": lambda a, b: poly_divmod(a, b)[0], "poly_mod": lambda a, b: poly_divmod(a, b)[1], "poly_gcd": poly_gcd, "mat_mul": mat_mul, "mat_inv": mat_inv, "ham_weight": ham_weight, "ham_dist": ham_dist, "goppa_gen_poly": goppa_gen_poly, "syndrome_calc": syndrome_calc}',
+    '    def bm_shiftreg(seq):',
+    '        C = [1]; B = [1]; L = 0; m = 1; bb = 1',
+    '        for n in range(len(seq)):',
+    '            while len(C) <= L: C.append(0)',
+    '            d = 0',
+    '            for i in range(L + 1):',
+    '                if n - i >= 0:',
+    '                    d ^= (C[i] & 1) & (seq[n - i] & 1)',
+    '            if d == 0:',
+    '                m += 1',
+    '            elif 2 * L <= n:',
+    '                T = C[:]',
+    '                shift = m',
+    '                while len(C) < len(B) + shift: C.append(0)',
+    '                for j in range(len(B)): C[shift + j] ^= B[j]',
+    '                L = n + 1 - L',
+    '                B = T; bb = d; m = 1',
+    '            else:',
+    '                shift = m',
+    '                while len(C) < len(B) + shift: C.append(0)',
+    '                for j in range(len(B)): C[shift + j] ^= B[j]',
+    '                m += 1',
+    '        while len(C) > 1 and C[-1] == 0: C.pop()',
+    '        return C',
+    '    return {"poly_mul": poly_mul, "poly_div": lambda a, b: poly_divmod(a, b)[0], "poly_mod": lambda a, b: poly_divmod(a, b)[1], "poly_gcd": poly_gcd, "mat_mul": mat_mul, "mat_inv": mat_inv, "ham_weight": ham_weight, "ham_dist": ham_dist, "goppa_gen_poly": goppa_gen_poly, "syndrome_calc": syndrome_calc, "bm_shiftreg": bm_shiftreg}',
     '',
   ]);
 }
@@ -167,4 +191,10 @@ pythonGenerator.forBlock['syndrome_calc'] = function (block: Block): [string, nu
   const cols = pythonGenerator.valueToCode(block, 'COLS', Order.ATOMIC) || '4';
   const fn = registerCodeBased();
   return [fn + '()["syndrome_calc"](' + h + ', ' + y + ', ' + rows + ', ' + cols + ')', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['berlekamp_massey'] = function (block: Block): [string, number] {
+  const seq = pythonGenerator.valueToCode(block, 'SEQ', Order.ATOMIC) || '[]';
+  const fn = registerCodeBased();
+  return [fn + '()["bm_shiftreg"](' + seq + ')', Order.ATOMIC];
 };

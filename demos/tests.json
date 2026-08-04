@@ -488,5 +488,15 @@
       "driver": "if (VDot([1,2,3],[4,5,6]) !== 32) throw new Error('DOT');\nif (JSON.stringify(PScale([1,0,1],3)) !== JSON.stringify([3,0,3])) throw new Error('SCALE');\nvar r1 = FRoot(Uint8Array.from({length:32},()=>1), new Uint8Array(32));\nvar r2 = FRoot(Uint8Array.from({length:32},()=>1), new Uint8Array(32));\nif (JSON.stringify(r1) !== JSON.stringify(r2) || r1.length !== 32) throw new Error('FORS');\nvar g = Goppa([1,2]);\nif (g[g.length-1] !== 1 || g.length !== 3 || g[0] !== 2 || g[1] !== 3) throw new Error('GOPPA');\nvar H = [1,1,0,1,1,0,1,1];\nif (JSON.stringify(Syn(H,[1,1,1,0],2,4)) !== JSON.stringify([0,0])) throw new Error('SYN0');\nif (JSON.stringify(Syn(H,[1,0,0,0],2,4)) !== JSON.stringify([1,1])) throw new Error('SYN1');\nconsole.log('WRAPUP_OK');",
       "expect": "WRAPUP_OK"
     }
+  },
+  "procedures/Research-Math.json": {
+    "py": {
+      "driver": "# 1. LLL：B=[[1,1],[1,2]] det=-1 → 约减基 det 不变\nB = [1,1, 1,2]\nred = LLL(B, 2, 2)\ndet_orig = 1*2 - 1*1\ndet_red = red[0]*red[3] - red[1]*red[2]\nassert abs(det_orig) == abs(det_red), 'LLL det'\n# 2. 离散高斯 PMF：对称 + 归一\nassert abs(GPMF(3, 2) - GPMF(-3, 2)) < 1e-12, 'PMF sym'\nZ = sum(GPMF(i, 2) for i in range(-40, 41))\nassert abs(Z - 1) < 1e-6, 'PMF norm'\n# 3. Berlekamp-Massey：周期序列（x^3+x+1 的 m 序列 0111010 循环？用 1001011 周期）\nseq = [1,0,0,1,1,1,0, 1,0,0,1,1,1,0]  # m 序列周期 7（primitive poly 1+x+x^3）\nc = BM(seq)\n# 验证：LFSR 重放（连接多项式 c，c[0]=1）重现序列\nL = len(c) - 1\nok = True\nfor n in range(L, len(seq)):\n    s = 0\n    for j in range(1, L + 1):\n        s ^= c[j] & seq[n - j]\n    if s != seq[n]:\n        ok = False\n        break\nassert ok, 'BM replay'\nprint('RESEARCH_OK')",
+      "expect": "RESEARCH_OK"
+    },
+    "js": {
+      "driver": "var B = [1,1,1,2];\nvar red = LLL(B, 2, 2);\nvar detOrig = 1*2 - 1*1, detRed = red[0]*red[3] - red[1]*red[2];\nif (Math.abs(detOrig) !== Math.abs(detRed)) throw new Error('LLL det');\nif (Math.abs(GPMF(3,2) - GPMF(-3,2)) > 1e-12) throw new Error('PMF sym');\nvar Z = 0; for (var i = -40; i <= 40; i++) Z += GPMF(i, 2);\nif (Math.abs(Z - 1) > 1e-6) throw new Error('PMF norm');\nvar seq = [1,0,0,1,1,1,0,1,0,0,1,1,1,0];\nvar c = BM(seq);\nvar L = c.length - 1;\nfor (var n = L; n < seq.length; n++) { var s = 0; for (var j = 1; j <= L; j++) s ^= (c[j] & 1) & (seq[n-j] & 1); if (s !== seq[n]) throw new Error('BM replay'); }\nconsole.log('RESEARCH_OK');",
+      "expect": "RESEARCH_OK"
+    }
   }
 }

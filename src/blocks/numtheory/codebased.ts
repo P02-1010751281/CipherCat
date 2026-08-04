@@ -23,6 +23,7 @@ export const CODEBASED_BLOCK_TYPES = [
   'ham_dist',
   'goppa_gen_poly',
   'syndrome_calc',
+  'berlekamp_massey',
 ] as const;
 export type CodeBasedBlockType = (typeof CODEBASED_BLOCK_TYPES)[number];
 
@@ -180,6 +181,23 @@ Blockly.Blocks['syndrome_calc'] = {
     this.setColour(COLOUR);
     this.setTooltip(
       '线性码 syndrome s = H·y (mod 2)：校验矩阵 H（m×n 展平）× 接收向量 y（n）→ m 维。s=0 ⟺ y 是合法码字（无错误）；非零 syndrome 用于纠错译码',
+    );
+    this.setHelpUrl('');
+  },
+};
+
+/** Berlekamp-Massey：GF(2) 序列的最短 LFSR 综合 */
+Blockly.Blocks['berlekamp_massey'] = {
+  init: function () {
+    this.appendValueInput('SEQ')
+      .setCheck(TYPE_INT_LIST)
+      .appendField('BerlekampMassey(');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_INT_LIST);
+    this.setColour(COLOUR);
+    this.setTooltip(
+      'Berlekamp-Massey 算法：GF(2) 序列 → 最短线性反馈移位寄存器（LFSR）连接多项式（系数数组，低位在前，c[0]=1）。BCH/RS 译码与序列综合核心',
     );
     this.setHelpUrl('');
   },

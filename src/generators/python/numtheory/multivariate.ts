@@ -51,7 +51,38 @@ function registerMultivariate(): string {
     '        return sum(x * y for x, y in zip(a, b))',
     '    def poly_scale(p, k):',
     '        return [x * k for x in p]',
-    '    return {"gauss_elim": gauss_elim, "mv_quad_eval": mv_quad_eval, "comb": comb, "vec_dot": vec_dot, "poly_scale": poly_scale}',
+    '    def lll_reduce(basis, rows, cols):',
+    '        b = [list(map(float, basis[i * cols:(i + 1) * cols])) for i in range(rows)]',
+    '        delta = 0.75',
+    '        b_star = [b[0][:]] + [None] * (rows - 1)',
+    '        mu = [[0.0] * rows for _ in range(rows)]',
+    '        def dot(x, y):',
+    '            return sum(x[j] * y[j] for j in range(cols))',
+    '        k = 1',
+    '        while k < rows:',
+    '            for j in range(k):',
+    '                mu[k][j] = dot(b[k], b_star[j]) / dot(b_star[j], b_star[j]) if dot(b_star[j], b_star[j]) else 0.0',
+    '                q = round(mu[k][j])',
+    '                if q != 0:',
+    '                    for c in range(cols): b[k][c] -= q * b[j][c]',
+    '            b_star[k] = b[k][:]',
+    '            for j in range(k):',
+    '                mjk = dot(b[k], b_star[j]) / dot(b_star[j], b_star[j]) if dot(b_star[j], b_star[j]) else 0.0',
+    '                for c in range(cols): b_star[k][c] -= mjk * b_star[j][c]',
+    '            mu_k = dot(b[k], b_star[k - 1]) / dot(b_star[k - 1], b_star[k - 1]) if dot(b_star[k - 1], b_star[k - 1]) else 0.0',
+    '            ok = dot(b_star[k], b_star[k]) >= (delta - mu_k * mu_k) * dot(b_star[k - 1], b_star[k - 1])',
+    '            if ok:',
+    '                k += 1',
+    '            else:',
+    '                b[k], b[k - 1] = b[k - 1], b[k]',
+    '                k = max(k - 1, 1)',
+    '        return [round(b[i][j]) for i in range(rows) for j in range(cols)]',
+    '    def gauss_pmf(x, sigma):',
+    '        E = 2.718281828459045',
+    '        rng = int(20 * sigma)',
+    '        Z = sum(E ** (-i * i / (2 * sigma * sigma)) for i in range(-rng, rng + 1))',
+    '        return E ** (-x * x / (2 * sigma * sigma)) / Z',
+    '    return {"gauss_elim": gauss_elim, "mv_quad_eval": mv_quad_eval, "comb": comb, "vec_dot": vec_dot, "poly_scale": poly_scale, "lll_reduce": lll_reduce, "gauss_pmf": gauss_pmf}',
     '',
   ]);
 }
@@ -89,4 +120,19 @@ pythonGenerator.forBlock['poly_scale'] = function (block: Block): [string, numbe
   const k = pythonGenerator.valueToCode(block, 'K', Order.ATOMIC) || '1';
   const fn = registerMultivariate();
   return [fn + '()["poly_scale"](' + p + ', ' + k + ')', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['lll_reduce'] = function (block: Block): [string, number] {
+  const basis = pythonGenerator.valueToCode(block, 'BASIS', Order.ATOMIC) || '[]';
+  const rows = pythonGenerator.valueToCode(block, 'ROWS', Order.ATOMIC) || '2';
+  const cols = pythonGenerator.valueToCode(block, 'COLS', Order.ATOMIC) || '2';
+  const fn = registerMultivariate();
+  return [fn + '()["lll_reduce"](' + basis + ', ' + rows + ', ' + cols + ')', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['gauss_pmf'] = function (block: Block): [string, number] {
+  const x = pythonGenerator.valueToCode(block, 'X', Order.ATOMIC) || '0';
+  const sigma = pythonGenerator.valueToCode(block, 'SIGMA', Order.ATOMIC) || '2';
+  const fn = registerMultivariate();
+  return [fn + '()["gauss_pmf"](' + x + ', ' + sigma + ')', Order.ATOMIC];
 };

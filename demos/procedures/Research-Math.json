@@ -1,0 +1,175 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "rs_lll_01",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "basis",
+              "id": "param_basis",
+              "type": "int_list"
+            },
+            {
+              "name": "r",
+              "id": "param_r",
+              "type": "int"
+            },
+            {
+              "name": "c",
+              "id": "param_c",
+              "type": "int"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "LLL"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "lll_reduce",
+              "id": "rs_lll_01_b",
+              "inputs": {
+                "BASIS": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "rs_lll_01_vb",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_basis"
+                      }
+                    }
+                  }
+                },
+                "ROWS": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "rs_lll_01_vr",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_r"
+                      }
+                    }
+                  }
+                },
+                "COLS": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "rs_lll_01_vc",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_c"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "rs_gp_02",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "x",
+              "id": "param_x",
+              "type": "int"
+            },
+            {
+              "name": "sg",
+              "id": "param_sg",
+              "type": "int"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "GPMF"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "gauss_pmf",
+              "id": "rs_gp_02_b",
+              "inputs": {
+                "X": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "rs_gp_02_vx",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_x"
+                      }
+                    }
+                  }
+                },
+                "SIGMA": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "rs_gp_02_vs",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_sg"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "rs_bm_03",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "seq",
+              "id": "param_seq",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "BM"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "berlekamp_massey",
+              "id": "rs_bm_03_b",
+              "inputs": {
+                "SEQ": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "rs_bm_03_vs",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_seq"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -20,6 +20,8 @@ export const MULTIVARIATE_BLOCK_TYPES = [
   'comb',
   'vec_dot',
   'poly_scale',
+  'lll_reduce',
+  'gauss_pmf',
 ] as const;
 export type MultivariateBlockType = (typeof MULTIVARIATE_BLOCK_TYPES)[number];
 
@@ -101,6 +103,41 @@ Blockly.Blocks['poly_scale'] = {
     this.setColour(COLOUR);
     this.setTooltip(
       '多项式乘标量：逐系数乘 k（不取模）。格基多项式环 R_q 标量运算基础',
+    );
+    this.setHelpUrl('');
+  },
+};
+
+/** LLL 格约减（Lenstra-Lenstra-Lovász） */
+Blockly.Blocks['lll_reduce'] = {
+  init: function () {
+    this.appendValueInput('BASIS')
+      .setCheck(TYPE_INT_LIST)
+      .appendField('LLLReduce(');
+    this.appendValueInput('ROWS').setCheck(TYPE_NUMBER).appendField(' r=');
+    this.appendValueInput('COLS').setCheck(TYPE_NUMBER).appendField(' c=');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_INT_LIST);
+    this.setColour(COLOUR);
+    this.setTooltip(
+      'LLL 格约减：输入格基矩阵（整数展平 r×c）→ 约减基（同一格，δ=0.75）。性质：行列式不变、基向量更短更正交。格困难性问题与格基密码研究核心',
+    );
+    this.setHelpUrl('');
+  },
+};
+
+/** 离散高斯概率质量函数（Falcon/格采样） */
+Blockly.Blocks['gauss_pmf'] = {
+  init: function () {
+    this.appendValueInput('X').setCheck(TYPE_NUMBER).appendField('GaussPMF(');
+    this.appendValueInput('SIGMA').setCheck(TYPE_NUMBER).appendField(' σ=');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_NUMBER);
+    this.setColour(COLOUR);
+    this.setTooltip(
+      '离散高斯分布概率质量函数（中心化 μ=0）：PMF(x) = exp(-x²/2σ²)/Z，Z = Σ exp(-i²/2σ²)。Falcon/FN-DSA 等格基采样分布教学',
     );
     this.setHelpUrl('');
   },

@@ -46,7 +46,36 @@ function registerMultivariate(): string {
     '  }',
     '  function vecDot(a, b) { var s = 0; for (var i = 0; i < a.length; i++) s += a[i] * b[i]; return s; }',
     '  function polyScale(p, k) { return p.map(function (x) { return x * k; }); }',
-    '  return { gaussElim: gaussElim, mvQuadEval: mvQuadEval, comb: comb, vecDot: vecDot, polyScale: polyScale };',
+    '  function lllReduce(basis, rows, cols) {',
+    '    var b = []; for (var i = 0; i < rows; i++) b.push(basis.slice(i * cols, (i + 1) * cols).map(Number));',
+    '    var delta = 0.75;',
+    '    var bStar = [b[0].slice()], mu = [];',
+    '    var dot = function (x, y) { var s = 0; for (var j = 0; j < cols; j++) s += x[j] * y[j]; return s; };',
+    '    var sub = function (x, y) { var r = []; for (var j = 0; j < cols; j++) r.push(x[j] - y[j]); return r; };',
+    '    var k = 1;',
+    '    while (k < rows) {',
+    '      for (var j = 0; j < k; j++) {',
+    '        mu[j] = dot(b[k], bStar[j]) / dot(bStar[j], bStar[j]);',
+    '        var q = Math.round(mu[j]);',
+    '        if (q !== 0) { for (var c = 0; c < cols; c++) b[k][c] -= q * b[j][c]; }',
+    '      }',
+    '      for (var j2 = 0; j2 <= k; j2++) {',
+    '        if (j2 === k) { bStar[k] = b[k].slice(); for (var j3 = 0; j3 < k; j3++) { var mjk = dot(b[k], bStar[j3]) / dot(bStar[j3], bStar[j3]); for (var c2 = 0; c2 < cols; c2++) bStar[k][c2] -= mjk * bStar[j3][c2]; } }',
+    '      }',
+    '      var muK = k > 0 ? dot(b[k], bStar[k - 1]) / dot(bStar[k - 1], bStar[k - 1]) : 0;',
+    '      var ok = dot(bStar[k], bStar[k]) >= (delta - muK * muK) * dot(bStar[k - 1], bStar[k - 1]);',
+    '      if (ok) k++;',
+    '      else { var tmp = b[k]; b[k] = b[k - 1]; b[k - 1] = tmp; k = Math.max(k - 1, 1); }',
+    '    }',
+    '    var out = []; for (var i2 = 0; i2 < rows; i2++) for (var j4 = 0; j4 < cols; j4++) out.push(b[i2][j4]);',
+    '    return out;',
+    '  }',
+    '  function gaussPmf(x, sigma) {',
+    '    var range = Math.ceil(20 * sigma), Z = 0;',
+    '    for (var i = -range; i <= range; i++) Z += Math.exp(-i * i / (2 * sigma * sigma));',
+    '    return Math.exp(-x * x / (2 * sigma * sigma)) / Z;',
+    '  }',
+    '  return { gaussElim: gaussElim, mvQuadEval: mvQuadEval, comb: comb, vecDot: vecDot, polyScale: polyScale, lllReduce: lllReduce, gaussPmf: gaussPmf };',
     '}',
   ]);
 }
@@ -84,4 +113,19 @@ javascriptGenerator.forBlock['poly_scale'] = function (block: Block): [string, n
   const k = javascriptGenerator.valueToCode(block, 'K', Order.ATOMIC) || '1';
   const fn = registerMultivariate();
   return [fn + '().polyScale(' + p + ', ' + k + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['lll_reduce'] = function (block: Block): [string, number] {
+  const basis = javascriptGenerator.valueToCode(block, 'BASIS', Order.ATOMIC) || '[]';
+  const rows = javascriptGenerator.valueToCode(block, 'ROWS', Order.ATOMIC) || '2';
+  const cols = javascriptGenerator.valueToCode(block, 'COLS', Order.ATOMIC) || '2';
+  const fn = registerMultivariate();
+  return [fn + '().lllReduce(' + basis + ', ' + rows + ', ' + cols + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['gauss_pmf'] = function (block: Block): [string, number] {
+  const x = javascriptGenerator.valueToCode(block, 'X', Order.ATOMIC) || '0';
+  const sigma = javascriptGenerator.valueToCode(block, 'SIGMA', Order.ATOMIC) || '2';
+  const fn = registerMultivariate();
+  return [fn + '().gaussPmf(' + x + ', ' + sigma + ')', Order.ATOMIC];
 };

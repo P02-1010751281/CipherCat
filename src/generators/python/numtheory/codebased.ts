@@ -73,7 +73,27 @@ function registerCodeBased(): string {
     '        return sum(1 for v in x if v != 0)',
     '    def ham_dist(x, y):',
     '        return sum(1 for a, b in zip(x, y) if a != b)',
-    '    return {"poly_mul": poly_mul, "poly_div": lambda a, b: poly_divmod(a, b)[0], "poly_mod": lambda a, b: poly_divmod(a, b)[1], "poly_gcd": poly_gcd, "mat_mul": mat_mul, "mat_inv": mat_inv, "ham_weight": ham_weight, "ham_dist": ham_dist}',
+    '    def gf_mul(a, b):',
+    '        p = 0',
+    '        for _ in range(8):',
+    '            if b & 1: p ^= a',
+    '            hi = a & 0x80',
+    '            a = (a << 1) & 0xFF',
+    '            if hi: a ^= 0x1B',
+    '            b >>= 1',
+    '        return p',
+    '    def goppa_gen_poly(alpha):',
+    '        g = [1]',
+    '        for al in alpha:',
+    '            nxt = [0] * (len(g) + 1)',
+    '            for j, gj in enumerate(g):',
+    '                nxt[j] ^= gf_mul(gj, al)',
+    '                nxt[j + 1] ^= gj',
+    '            g = nxt',
+    '        return g',
+    '    def syndrome_calc(h, y, rows, cols):',
+    '        return [sum((h[i * cols + j] & 1) * (y[j] & 1) for j in range(cols)) & 1 for i in range(rows)]',
+    '    return {"poly_mul": poly_mul, "poly_div": lambda a, b: poly_divmod(a, b)[0], "poly_mod": lambda a, b: poly_divmod(a, b)[1], "poly_gcd": poly_gcd, "mat_mul": mat_mul, "mat_inv": mat_inv, "ham_weight": ham_weight, "ham_dist": ham_dist, "goppa_gen_poly": goppa_gen_poly, "syndrome_calc": syndrome_calc}',
     '',
   ]);
 }
@@ -132,4 +152,19 @@ pythonGenerator.forBlock['ham_dist'] = function (block: Block): [string, number]
   const y = pythonGenerator.valueToCode(block, 'Y', Order.ATOMIC) || '[]';
   const fn = registerCodeBased();
   return [fn + '()["ham_dist"](' + x + ', ' + y + ')', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['goppa_gen_poly'] = function (block: Block): [string, number] {
+  const alpha = pythonGenerator.valueToCode(block, 'ALPHA', Order.ATOMIC) || '[]';
+  const fn = registerCodeBased();
+  return [fn + '()["goppa_gen_poly"](' + alpha + ')', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['syndrome_calc'] = function (block: Block): [string, number] {
+  const h = pythonGenerator.valueToCode(block, 'H', Order.ATOMIC) || '[]';
+  const y = pythonGenerator.valueToCode(block, 'Y', Order.ATOMIC) || '[]';
+  const rows = pythonGenerator.valueToCode(block, 'ROWS', Order.ATOMIC) || '2';
+  const cols = pythonGenerator.valueToCode(block, 'COLS', Order.ATOMIC) || '4';
+  const fn = registerCodeBased();
+  return [fn + '()["syndrome_calc"](' + h + ', ' + y + ', ' + rows + ', ' + cols + ')', Order.ATOMIC];
 };

@@ -47,7 +47,11 @@ function registerMultivariate(): string {
     '        for i in range(k):',
     '            r = r * (n - i) // (i + 1)',
     '        return r',
-    '    return {"gauss_elim": gauss_elim, "mv_quad_eval": mv_quad_eval, "comb": comb}',
+    '    def vec_dot(a, b):',
+    '        return sum(x * y for x, y in zip(a, b))',
+    '    def poly_scale(p, k):',
+    '        return [x * k for x in p]',
+    '    return {"gauss_elim": gauss_elim, "mv_quad_eval": mv_quad_eval, "comb": comb, "vec_dot": vec_dot, "poly_scale": poly_scale}',
     '',
   ]);
 }
@@ -71,4 +75,18 @@ pythonGenerator.forBlock['comb'] = function (block: Block): [string, number] {
   const k = pythonGenerator.valueToCode(block, 'K', Order.ATOMIC) || '0';
   const fn = registerMultivariate();
   return [fn + '()["comb"](' + n + ', ' + k + ')', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['vec_dot'] = function (block: Block): [string, number] {
+  const a = pythonGenerator.valueToCode(block, 'A', Order.ATOMIC) || '[]';
+  const b = pythonGenerator.valueToCode(block, 'B', Order.ATOMIC) || '[]';
+  const fn = registerMultivariate();
+  return [fn + '()["vec_dot"](' + a + ', ' + b + ')', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['poly_scale'] = function (block: Block): [string, number] {
+  const p = pythonGenerator.valueToCode(block, 'P', Order.ATOMIC) || '[]';
+  const k = pythonGenerator.valueToCode(block, 'K', Order.ATOMIC) || '1';
+  const fn = registerMultivariate();
+  return [fn + '()["poly_scale"](' + p + ', ' + k + ')', Order.ATOMIC];
 };

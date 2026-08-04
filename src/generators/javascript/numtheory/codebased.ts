@@ -52,8 +52,23 @@ function registerCodeBased(): string {
     '    return inv;',
     '  }',
     '  function hamWeight(x) { var c = 0; for (var i = 0; i < x.length; i++) if (x[i] !== 0) c++; return c; }',
+    '  function gfMul(a, b) { var p = 0; for (var i = 0; i < 8; i++) { if (b & 1) p ^= a; var hi = a & 0x80; a = (a << 1) & 0xFF; if (hi) a ^= 0x1B; b >>= 1; } return p; }',
+    '  function goppaGenPoly(alpha) {',
+    '    var g = [1];',
+    '    for (var i = 0; i < alpha.length; i++) {',
+    '      var next = new Array(g.length + 1).fill(0);',
+    '      for (var j = 0; j < g.length; j++) { next[j] ^= gfMul(g[j], alpha[i]); next[j + 1] ^= g[j]; }',
+    '      g = next;',
+    '    }',
+    '    return g;',
+    '  }',
+    '  function syndromeCalc(h, y, rows, cols) {',
+    '    var s = new Array(rows).fill(0);',
+    '    for (var i = 0; i < rows; i++) for (var j = 0; j < cols; j++) s[i] ^= (h[i * cols + j] & 1) * (y[j] & 1);',
+    '    return s;',
+    '  }',
     '  function hamDist(x, y) { var c = 0; for (var i = 0; i < x.length; i++) if (x[i] !== y[i]) c++; return c; }',
-    '  return { polyMul: polyMul, polyDiv: function(a,b){return polyDivMod(a,b)[0];}, polyMod: function(a,b){return polyDivMod(a,b)[1];}, polyGcd: polyGcd, matMul: matMul, matInv: matInv, hamWeight: hamWeight, hamDist: hamDist };',
+    '  return { polyMul: polyMul, polyDiv: function(a,b){return polyDivMod(a,b)[0];}, polyMod: function(a,b){return polyDivMod(a,b)[1];}, polyGcd: polyGcd, matMul: matMul, matInv: matInv, hamWeight: hamWeight, hamDist: hamDist, goppaGenPoly: goppaGenPoly, syndromeCalc: syndromeCalc };',
     '}',
   ]);
 }
@@ -112,4 +127,19 @@ javascriptGenerator.forBlock['ham_dist'] = function (block: Block): [string, num
   const y = javascriptGenerator.valueToCode(block, 'Y', Order.ATOMIC) || '[]';
   const fn = registerCodeBased();
   return [fn + '().hamDist(' + x + ', ' + y + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['goppa_gen_poly'] = function (block: Block): [string, number] {
+  const alpha = javascriptGenerator.valueToCode(block, 'ALPHA', Order.ATOMIC) || '[]';
+  const fn = registerCodeBased();
+  return [fn + '().goppaGenPoly(' + alpha + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['syndrome_calc'] = function (block: Block): [string, number] {
+  const h = javascriptGenerator.valueToCode(block, 'H', Order.ATOMIC) || '[]';
+  const y = javascriptGenerator.valueToCode(block, 'Y', Order.ATOMIC) || '[]';
+  const rows = javascriptGenerator.valueToCode(block, 'ROWS', Order.ATOMIC) || '2';
+  const cols = javascriptGenerator.valueToCode(block, 'COLS', Order.ATOMIC) || '4';
+  const fn = registerCodeBased();
+  return [fn + '().syndromeCalc(' + h + ', ' + y + ', ' + rows + ', ' + cols + ')', Order.ATOMIC];
 };

@@ -40,7 +40,9 @@ function registerHashBased(): string {
     '        a[13:17] = typ.to_bytes(4, "big")',
     '        a[17:21] = leaf.to_bytes(4, "big")',
     '        return bytes(a)',
-    '    return {"hash_chain": hash_chain, "merkle_leaf": merkle_leaf, "merkle_node": merkle_node, "merkle_root": merkle_root, "slh_addr": slh_addr}',
+    '    def fors_root(roots, adrs):',
+    '        return h32(adrs, roots)',
+    '    return {"hash_chain": hash_chain, "merkle_leaf": merkle_leaf, "merkle_node": merkle_node, "merkle_root": merkle_root, "slh_addr": slh_addr, "fors_root": fors_root}',
     '',
   ]);
 }
@@ -82,4 +84,11 @@ pythonGenerator.forBlock['slh_addr'] = function (block: Block): [string, number]
   const type = block.getFieldValue('TYPE') || '0';
   const fn = registerHashBased();
   return [fn + '()["slh_addr"](' + layer + ', ' + tree + ', ' + leaf + ', ' + type + ')', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['fors_root'] = function (block: Block): [string, number] {
+  const roots = pythonGenerator.valueToCode(block, 'ROOTS', Order.ATOMIC) || '[]';
+  const adrs = pythonGenerator.valueToCode(block, 'ADRS', Order.ATOMIC) || '[]';
+  const fn = registerHashBased();
+  return [fn + '()["fors_root"](' + roots + ', ' + adrs + ')', Order.ATOMIC];
 };

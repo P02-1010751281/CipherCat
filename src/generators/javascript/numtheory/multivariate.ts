@@ -44,7 +44,9 @@ function registerMultivariate(): string {
     '    for (var i = 0; i < k; i++) r = r * (n - i) / (i + 1);',
     '    return Math.round(r);',
     '  }',
-    '  return { gaussElim: gaussElim, mvQuadEval: mvQuadEval, comb: comb };',
+    '  function vecDot(a, b) { var s = 0; for (var i = 0; i < a.length; i++) s += a[i] * b[i]; return s; }',
+    '  function polyScale(p, k) { return p.map(function (x) { return x * k; }); }',
+    '  return { gaussElim: gaussElim, mvQuadEval: mvQuadEval, comb: comb, vecDot: vecDot, polyScale: polyScale };',
     '}',
   ]);
 }
@@ -68,4 +70,18 @@ javascriptGenerator.forBlock['comb'] = function (block: Block): [string, number]
   const k = javascriptGenerator.valueToCode(block, 'K', Order.ATOMIC) || '0';
   const fn = registerMultivariate();
   return [fn + '().comb(' + n + ', ' + k + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['vec_dot'] = function (block: Block): [string, number] {
+  const a = javascriptGenerator.valueToCode(block, 'A', Order.ATOMIC) || '[]';
+  const b = javascriptGenerator.valueToCode(block, 'B', Order.ATOMIC) || '[]';
+  const fn = registerMultivariate();
+  return [fn + '().vecDot(' + a + ', ' + b + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['poly_scale'] = function (block: Block): [string, number] {
+  const p = javascriptGenerator.valueToCode(block, 'P', Order.ATOMIC) || '[]';
+  const k = javascriptGenerator.valueToCode(block, 'K', Order.ATOMIC) || '1';
+  const fn = registerMultivariate();
+  return [fn + '().polyScale(' + p + ', ' + k + ')', Order.ATOMIC];
 };

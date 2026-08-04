@@ -21,6 +21,8 @@ export const CODEBASED_BLOCK_TYPES = [
   'bin_mat_inv',
   'ham_weight',
   'ham_dist',
+  'goppa_gen_poly',
+  'syndrome_calc',
 ] as const;
 export type CodeBasedBlockType = (typeof CODEBASED_BLOCK_TYPES)[number];
 
@@ -143,5 +145,42 @@ Blockly.Blocks['ham_dist'] = {
     this.setTooltip(
       '汉明距离 d(x,y)：对应位置不同元素个数 = wt(x ⊕ y)。线性码纠错能力 t = ⌊(d-1)/2⌋',
     );
+  },
+};
+
+/** Goppa 生成多项式：G(z) = ∏(z - α_i)，α_i ∈ GF(2^m)（AES 域） */
+Blockly.Blocks['goppa_gen_poly'] = {
+  init: function () {
+    this.appendValueInput('ALPHA')
+      .setCheck(TYPE_INT_LIST)
+      .appendField('GoppaGenPoly(');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_INT_LIST);
+    this.setColour(COLOUR);
+    this.setTooltip(
+      'Goppa 生成多项式 G(z) = ∏(z - α_i)（GF(2^8) AES 域，α_i 为码位对应的域元素字节值）。输出系数数组（低次到高次，GF(2^8) 元素）。McEliece 码核心构造（减号 = 加号，特征 2）',
+    );
+    this.setHelpUrl('');
+  },
+};
+
+/** 线性码 syndrome：H·y mod 2（校验矩阵 × 接收向量） */
+Blockly.Blocks['syndrome_calc'] = {
+  init: function () {
+    this.appendValueInput('H')
+      .setCheck(TYPE_INT_LIST)
+      .appendField('Syndrome(');
+    this.appendValueInput('Y').setCheck(TYPE_INT_LIST).appendField(' y=');
+    this.appendValueInput('ROWS').setCheck(TYPE_NUMBER).appendField(' m=');
+    this.appendValueInput('COLS').setCheck(TYPE_NUMBER).appendField(' n=');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_INT_LIST);
+    this.setColour(COLOUR);
+    this.setTooltip(
+      '线性码 syndrome s = H·y (mod 2)：校验矩阵 H（m×n 展平）× 接收向量 y（n）→ m 维。s=0 ⟺ y 是合法码字（无错误）；非零 syndrome 用于纠错译码',
+    );
+    this.setHelpUrl('');
   },
 };

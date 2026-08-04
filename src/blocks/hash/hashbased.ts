@@ -19,6 +19,7 @@ export const HASHBASED_BLOCK_TYPES = [
   'merkle_node',
   'merkle_root',
   'slh_addr',
+  'fors_root',
 ] as const;
 export type HashBasedBlockType = (typeof HASHBASED_BLOCK_TYPES)[number];
 
@@ -146,5 +147,23 @@ Blockly.Blocks['slh_addr'] = {
       'FIPS 205 ADRS 地址（32 字节）：layer(1) ‖ tree(12) ‖ type(4) ‖ keypair(4)，大端填充，其余字节 0。SPHINCS+ 所有哈希的域分隔参数。FIPS 205 §4.2.5',
     );
     this.setHelpUrl(FIPS205_URL);
+  },
+};
+
+/** FORS 森林根：k 棵 FORS 树根的哈希组合（SPHINCS+ 少时签名结构件） */
+Blockly.Blocks['fors_root'] = {
+  init: function () {
+    this.appendValueInput('ROOTS')
+      .setCheck(TYPE_BYTES)
+      .appendField('ForsRoot(');
+    this.appendValueInput('ADRS').setCheck(TYPE_BYTES).appendField(' adrs:');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_BYTES);
+    this.setColour(230);
+    this.setTooltip(
+      'FORS 森林根：R = H(adrs ‖ root_0 ‖ ... ‖ root_{k-1})——k 棵 FORS 树根拼接后哈希。SPHINCS+ 少时签名（few-time signature）核心结构件（FIPS 205）',
+    );
+    this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.205.pdf');
   },
 };

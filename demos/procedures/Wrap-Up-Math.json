@@ -1,0 +1,303 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "wu_vd_01",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "a",
+              "id": "param_a",
+              "type": "int_list"
+            },
+            {
+              "name": "b",
+              "id": "param_b",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "VDot"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "vec_dot",
+              "id": "wu_vd_01_b",
+              "inputs": {
+                "A": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "wu_vd_01_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_a"
+                      }
+                    }
+                  }
+                },
+                "B": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "wu_vd_01_vb",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_b"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "wu_ps_02",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "p",
+              "id": "param_p",
+              "type": "int_list"
+            },
+            {
+              "name": "k",
+              "id": "param_k",
+              "type": "int"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "PScale"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "poly_scale",
+              "id": "wu_ps_02_b",
+              "inputs": {
+                "P": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "wu_ps_02_vp",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_p"
+                      }
+                    }
+                  }
+                },
+                "K": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "wu_ps_02_vk",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_k"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "wu_fr_03",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "r",
+              "id": "param_r",
+              "type": "bytes"
+            },
+            {
+              "name": "adrs",
+              "id": "param_adrs",
+              "type": "bytes"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "FRoot"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "fors_root",
+              "id": "wu_fr_03_b",
+              "inputs": {
+                "ROOTS": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "wu_fr_03_vr",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_r"
+                      }
+                    }
+                  }
+                },
+                "ADRS": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "wu_fr_03_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_adrs"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "wu_gp_04",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "al",
+              "id": "param_al",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "Goppa"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "goppa_gen_poly",
+              "id": "wu_gp_04_b",
+              "inputs": {
+                "ALPHA": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "wu_gp_04_val",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_al"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "wu_sy_05",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "h",
+              "id": "param_h",
+              "type": "int_list"
+            },
+            {
+              "name": "y",
+              "id": "param_y",
+              "type": "int_list"
+            },
+            {
+              "name": "m",
+              "id": "param_m",
+              "type": "int"
+            },
+            {
+              "name": "n",
+              "id": "param_n",
+              "type": "int"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "Syn"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "syndrome_calc",
+              "id": "wu_sy_05_b",
+              "inputs": {
+                "H": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "wu_sy_05_vh",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_h"
+                      }
+                    }
+                  }
+                },
+                "Y": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "wu_sy_05_vy",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_y"
+                      }
+                    }
+                  }
+                },
+                "ROWS": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "wu_sy_05_vm",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_m"
+                      }
+                    }
+                  }
+                },
+                "COLS": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "wu_sy_05_vn",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_n"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

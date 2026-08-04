@@ -18,6 +18,8 @@ export const MULTIVARIATE_BLOCK_TYPES = [
   'gauss_elim',
   'mv_quad_eval',
   'comb',
+  'vec_dot',
+  'poly_scale',
 ] as const;
 export type MultivariateBlockType = (typeof MULTIVARIATE_BLOCK_TYPES)[number];
 
@@ -69,5 +71,37 @@ Blockly.Blocks['comb'] = {
     this.setTooltip(
       '组合数 C(n,k) = n!/(k!(n-k)!)：CBD 采样（中心二项分布）与二项式教学。C(n,0)=C(n,n)=1，C(n,k)=C(n,n-k)',
     );
+  },
+};
+
+/** 向量点积 */
+Blockly.Blocks['vec_dot'] = {
+  init: function () {
+    this.appendValueInput('A').setCheck(TYPE_INT_LIST).appendField('VecDot(');
+    this.appendValueInput('B').setCheck(TYPE_INT_LIST).appendField(' ·');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_NUMBER);
+    this.setColour(COLOUR);
+    this.setTooltip(
+      '向量点积 a·b = Σ a_i·b_i。格基内积、正交性与线性代数通用基础',
+    );
+    this.setHelpUrl('');
+  },
+};
+
+/** 多项式乘标量 */
+Blockly.Blocks['poly_scale'] = {
+  init: function () {
+    this.appendValueInput('P').setCheck(TYPE_INT_LIST).appendField('PolyScale(');
+    this.appendValueInput('K').setCheck(TYPE_NUMBER).appendField(' ×');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_INT_LIST);
+    this.setColour(COLOUR);
+    this.setTooltip(
+      '多项式乘标量：逐系数乘 k（不取模）。格基多项式环 R_q 标量运算基础',
+    );
+    this.setHelpUrl('');
   },
 };

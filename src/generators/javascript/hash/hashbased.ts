@@ -87,7 +87,8 @@ function registerHashBased(): string {
     '    for (let i = 0; i < 4; i++) a[20 - i] = Math.floor(leaf / Math.pow(256, i)) & 0xFF;',
     '    return a;',
     '  }',
-    '  return { hashChain: hashChain, merkleLeaf: merkleLeaf, merkleNode: merkleNode, merkleRoot: merkleRoot, slhAddr: slhAddr };',
+    '  function forsRoot(roots, adrs) { return h32(adrs, roots); }',
+    '  return { hashChain: hashChain, merkleLeaf: merkleLeaf, merkleNode: merkleNode, merkleRoot: merkleRoot, slhAddr: slhAddr, forsRoot: forsRoot };',
     '}',
   ]);
 }
@@ -129,4 +130,11 @@ javascriptGenerator.forBlock['slh_addr'] = function (block: Block): [string, num
   const type = block.getFieldValue('TYPE') || '0';
   const fn = registerHashBased();
   return [fn + '().slhAddr(' + layer + ', ' + tree + ', ' + leaf + ', ' + type + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['fors_root'] = function (block: Block): [string, number] {
+  const roots = javascriptGenerator.valueToCode(block, 'ROOTS', Order.ATOMIC) || '[]';
+  const adrs = javascriptGenerator.valueToCode(block, 'ADRS', Order.ATOMIC) || '[]';
+  const fn = registerHashBased();
+  return [fn + '().forsRoot(' + roots + ', ' + adrs + ')', Order.ATOMIC];
 };

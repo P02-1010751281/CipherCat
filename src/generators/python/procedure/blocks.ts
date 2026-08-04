@@ -38,7 +38,9 @@ export function generateDefreturnPy(block: Block): string {
     : '') ||
     '    # TODO: implement ' + funcName + ' algorithm\n';
   const returnValue =
-    pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) || (params[0]?.split(':')[0] || 'None');
+    (block.getInput('RETURN')
+      ? pythonGenerator.valueToCode(block, 'RETURN', Order.NONE)
+      : '') || (params[0]?.split(':')[0] || 'None');
   const firstType = argNodes.length ? (TYPE_MAP_PY[argNodes[0].getAttribute('type') || 'bytes'] || 'bytes') : 'bytes';
   const bodyIndented = body;
   return [

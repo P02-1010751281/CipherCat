@@ -7,9 +7,10 @@ export default defineConfig({
   resolve: {
     alias: [
       // 具体 alias 必须排在 '@' 通配之前（vite 按数组顺序匹配）
-      { find: '@/blocks', replacement: resolve(__dirname, 'src/features/blockly/core/blocks') },
-      { find: '@/generators/python', replacement: resolve(__dirname, 'src/features/blockly/core/generators/python') },
-      { find: '@/generators/javascript', replacement: resolve(__dirname, 'src/features/blockly/core/generators/javascript') },
+      // CipherCat 无 features 目录（metacrypt 镜像版为 src/features/blockly/core/...）
+      { find: '@/blocks', replacement: resolve(__dirname, 'src/blocks') },
+      { find: '@/generators/python', replacement: resolve(__dirname, 'src/generators/python') },
+      { find: '@/generators/javascript', replacement: resolve(__dirname, 'src/generators/javascript') },
       { find: '@', replacement: resolve(__dirname, 'src') },
     ],
   },

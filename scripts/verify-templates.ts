@@ -145,9 +145,11 @@ async function main() {
   (globalThis as any).Element = dom.window.Element;
 
   const Blockly = (await import('blockly/core')).default ?? await import('blockly/core');
-  Blockly.Msg['VARIABLES_SET'] = '%1 = %2';
-  Blockly.Msg['VARIABLES_GET'] = '%1';
-  Blockly.Msg['VARIABLES_DEFAULT_NAME'] = 'item';
+  // headless 环境无 i18n 加载：setLocale 灌入官方英文消息（原生块 + FieldVariable 所需全部 Msg 键；
+  // v13 的 msg/*.mjs 只导出常量不自动设置 Msg，必须显式 setLocale）
+  const { setLocale } = await import('blockly/core');
+  const enMsgs = await import('blockly/msg/en');
+  setLocale(enMsgs);
   await import('blockly/blocks');
   // 平台无关：metacrypt 的 vite.verify.config.ts 将 @/blocks 别名到 features/blockly/core/blocks
   await import('@/blocks');

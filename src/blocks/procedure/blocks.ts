@@ -154,7 +154,7 @@ function loadArgsExtraState(block: AnyBlock, state: Record<string, unknown>): vo
     block.arguments_.push(p.name);
     block.paramTypes_.push(p.type || 'bytes');
     const v = (block.workspace.getVariableMap().getVariable(p.name, '') ||
-      block.workspace.createVariable(p.name, '', p.id || undefined)) as unknown as Blockly.VariableModel;
+      block.workspace.getVariableMap().createVariable(p.name, '', p.id || undefined)) as unknown as Blockly.VariableModel;
     block.argumentVarModels_.push(v);
   }
 }
@@ -199,11 +199,7 @@ function updateVarNameCommon(
   if (changed) afterChange(block, oldName);
 }
 
-/** getVars / getVarModels（def/call 完全相同，直接共享）。 */
-function procedureGetVars(this: AnyBlock): string[] {
-  return this.arguments_;
-}
-
+/** getVarModels（def/call 完全相同，直接共享；getVars 在 Blockly 13 已移除，v13 内部统一走 getVarModels）。 */
 function procedureGetVarModels(this: AnyBlock): Blockly.VariableModel[] {
   return this.argumentVarModels_;
 }
@@ -328,7 +324,6 @@ function makeDefBlock(hasReturn: boolean): AnyBlock {
       Blockly.Procedures.mutateCallers(this);
       if (state.hasStatements === false) this.setStatements_(false);
     },
-    getVars: procedureGetVars,
     getVarModels: procedureGetVarModels,
     renameVarById: function (this: AnyBlock, oldId: string, newId: string) {
       renameVarByIdCommon(this, oldId, newId, (block, oldName, newName) => {
@@ -649,7 +644,6 @@ function makeCallBlock(hasReturn: boolean): AnyBlock {
       loadArgsExtraState(this, state);
       this.updateShape_();
     },
-    getVars: procedureGetVars,
     getVarModels: procedureGetVarModels,
     renameVarById: function (this: AnyBlock, oldId: string, newId: string) {
       renameVarByIdCommon(this, oldId, newId, (block) => {
@@ -844,9 +838,10 @@ function buildReturnChain(
   let root: Blockly.BlockSvg | null = null;
   let child: Blockly.BlockSvg | null = null;
   // 确保变量存在（FieldVariable 用 id 引用）
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let varModel: any = ws.getVariableMap().getVariable(varName, '');
-  if (!varModel) varModel = ws.createVariable(varName, '');
+  let varModel: Blockly.IVariableModel<Blockly.IVariableState> | null = ws
+    .getVariableMap()
+    .getVariable(varName, '');
+  if (!varModel) varModel = ws.getVariableMap().createVariable(varName, '');
   for (const type of chain) {
     const b = ws.newBlock(type) as Blockly.BlockSvg;
     if (type === 'variables_get' && varModel) {
@@ -881,7 +876,7 @@ function injectPrefill(block: AnyBlock, prefill: TemplatePrefill | undefined, pa
   const ws = block.workspace;
   // 确保参数变量存在
   if (prefill.paramVarName && !ws.getVariableMap().getVariable(prefill.paramVarName, '')) {
-    ws.createVariable(prefill.paramVarName, '');
+    ws.getVariableMap().createVariable(prefill.paramVarName, '');
   }
   if (prefill.returnChain) {
     try {

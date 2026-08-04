@@ -38,7 +38,9 @@ export function generateDefreturnJS(block: Block): string {
     : '') ||
     '  // TODO: implement ' + funcName + ' algorithm\n';
   const returnValue =
-    javascriptGenerator.valueToCode(block, 'RETURN', Order.NONE) || params[0] || 'undefined';
+    (block.getInput('RETURN')
+      ? javascriptGenerator.valueToCode(block, 'RETURN', Order.NONE)
+      : '') || params[0] || 'undefined';
   const firstType = argNodes.length ? (TYPE_MAP_JS[argNodes[0].getAttribute('type') || 'bytes'] || 'Uint8Array') : 'Uint8Array';
   return [
     '/**',

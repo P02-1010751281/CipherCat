@@ -34,10 +34,11 @@ async function main() {
 
   // 动态 import（确保 DOM 桩先于 Blockly 模块初始化）
   const Blockly = (await import('blockly/core')).default ?? await import('blockly/core');
-  // headless 环境无 i18n 加载：补原生块所需 Msg 键（真实前端由 locale 提供）
-  Blockly.Msg['VARIABLES_SET'] = '%1 = %2';
-  Blockly.Msg['VARIABLES_GET'] = '%1';
-  Blockly.Msg['VARIABLES_DEFAULT_NAME'] = 'item';
+  // headless 环境无 i18n 加载：setLocale 灌入官方英文消息（原生块 + FieldVariable 所需全部 Msg 键；
+  // v13 的 msg/*.mjs 只导出常量不自动设置 Msg，必须显式 setLocale）
+  const { setLocale } = await import('blockly/core');
+  const enMsgs = await import('blockly/msg/en');
+  setLocale(enMsgs);
   await import('blockly/blocks');
   await import('@/blocks');
   await import('@/generators/python');

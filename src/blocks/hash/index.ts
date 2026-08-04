@@ -3,6 +3,7 @@ export * from './sha3';
 export * from './sm3';
 export * from './shake';
 export * from './hashbased';
+export * from './fors';
 
 import { SHA256_BLOCK_TYPES, type Sha256BlockType } from './sha256';
 import { SHA3_BLOCK_TYPES, type Sha3BlockType } from './sha3';
@@ -12,6 +13,7 @@ import {
   HASHBASED_BLOCK_TYPES,
   type HashBasedBlockType,
 } from './hashbased';
+import { FORS_BLOCK_TYPES, type ForsBlockType } from './fors';
 
 export const ALL_BLOCK_TYPES = [
   ...SHA256_BLOCK_TYPES,
@@ -19,10 +21,13 @@ export const ALL_BLOCK_TYPES = [
   ...SHA3_BLOCK_TYPES,
   ...SHAKE_BLOCK_TYPES,
   ...HASHBASED_BLOCK_TYPES,
+  ...FORS_BLOCK_TYPES,
 ] as const;
 
 export type HashBlockType =
   | Sha256BlockType
   | Sha3BlockType
   | Sm3BlockType
-  | ShakeBlockType;
+  | ShakeBlockType
+  | HashBasedBlockType
+  | ForsBlockType;

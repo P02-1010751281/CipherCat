@@ -1,0 +1,175 @@
+{
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "procedures_defreturn",
+    "id": "fors_sign_01",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "sk_seed",
+       "id": "fors_param_sk",
+       "type": "bytes"
+      },
+      {
+       "name": "m",
+       "id": "fors_param_m",
+       "type": "bytes"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "FORS_Sign"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "fors_sign",
+       "id": "fors_sign_01_b",
+       "inputs": {
+        "SK_SEED": {
+         "block": {
+          "type": "variables_get",
+          "id": "fors_param_sk_g",
+          "fields": {
+           "VAR": {
+            "id": "fors_param_sk"
+           }
+          }
+         }
+        },
+        "MESSAGE": {
+         "block": {
+          "type": "variables_get",
+          "id": "fors_param_m_g",
+          "fields": {
+           "VAR": {
+            "id": "fors_param_m"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "fors_pk_02",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "sk_seed",
+       "id": "fors_param_sk",
+       "type": "bytes"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "FORS_PkFromSk"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "fors_pk_from_sk",
+       "id": "fors_pk_02_b",
+       "inputs": {
+        "SK_SEED": {
+         "block": {
+          "type": "variables_get",
+          "id": "fors_param_sk_g",
+          "fields": {
+           "VAR": {
+            "id": "fors_param_sk"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "fors_ver_03",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "pk",
+       "id": "fors_param_pk",
+       "type": "bytes"
+      },
+      {
+       "name": "m",
+       "id": "fors_param_m",
+       "type": "bytes"
+      },
+      {
+       "name": "sig",
+       "id": "fors_param_sig",
+       "type": "bytes"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "FORS_Verify"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "fors_verify",
+       "id": "fors_ver_03_b",
+       "inputs": {
+        "PUBLIC_KEY": {
+         "block": {
+          "type": "variables_get",
+          "id": "fors_param_pk_g",
+          "fields": {
+           "VAR": {
+            "id": "fors_param_pk"
+           }
+          }
+         }
+        },
+        "MESSAGE": {
+         "block": {
+          "type": "variables_get",
+          "id": "fors_param_m_g",
+          "fields": {
+           "VAR": {
+            "id": "fors_param_m"
+           }
+          }
+         }
+        },
+        "SIGNATURE": {
+         "block": {
+          "type": "variables_get",
+          "id": "fors_param_sig_g",
+          "fields": {
+           "VAR": {
+            "id": "fors_param_sig"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+}

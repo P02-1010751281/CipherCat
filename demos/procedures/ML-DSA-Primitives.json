@@ -1,0 +1,331 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "mldsp_p2rh_01",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "r",
+              "id": "param_r",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "P2R_High"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "pq_power2round",
+              "id": "mldsp_p2rh_01_b",
+              "fields": {
+                "PART": "r1"
+              },
+              "inputs": {
+                "INPUT": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mldsp_p2rh_01_v",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_r"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "mldsp_p2rl_02",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "r",
+              "id": "param_r",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "P2R_Low"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "pq_power2round",
+              "id": "mldsp_p2rl_02_b",
+              "fields": {
+                "PART": "r0"
+              },
+              "inputs": {
+                "INPUT": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mldsp_p2rl_02_v",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_r"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "mldsp_dech_03",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "r",
+              "id": "param_r",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "Dec_High"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "pq_decompose",
+              "id": "mldsp_dech_03_b",
+              "fields": {
+                "PART": "r1"
+              },
+              "inputs": {
+                "INPUT": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mldsp_dech_03_v",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_r"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "mldsp_decl_04",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "r",
+              "id": "param_r",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "Dec_Low"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "pq_decompose",
+              "id": "mldsp_decl_04_b",
+              "fields": {
+                "PART": "r0"
+              },
+              "inputs": {
+                "INPUT": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mldsp_decl_04_v",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_r"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "mldsp_hint_05",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "z",
+              "id": "param_z",
+              "type": "int_list"
+            },
+            {
+              "name": "r",
+              "id": "param_r",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "Make_Hint"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "pq_make_hint",
+              "id": "mldsp_hint_05_b",
+              "inputs": {
+                "Z": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mldsp_hint_05_vz",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_z"
+                      }
+                    }
+                  }
+                },
+                "R": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mldsp_hint_05_vr",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_r"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "mldsp_useh_06",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "h",
+              "id": "param_h",
+              "type": "int_list"
+            },
+            {
+              "name": "r",
+              "id": "param_r",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "Use_Hint"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "pq_use_hint",
+              "id": "mldsp_useh_06_b",
+              "inputs": {
+                "H": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mldsp_useh_06_vh",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_h"
+                      }
+                    }
+                  }
+                },
+                "R": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mldsp_useh_06_vr",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_r"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "mldsp_ball_07",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "seed",
+              "id": "param_seed",
+              "type": "bytes"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "In_Ball"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "pq_sample_in_ball",
+              "id": "mldsp_ball_07_b",
+              "inputs": {
+                "SEED": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mldsp_ball_07_v",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_seed"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

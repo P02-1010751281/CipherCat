@@ -76,7 +76,7 @@ import { ECDH_BLOCK_TYPES, type EcdhBlockType } from './ecdh';
 import { DRBG_BLOCK_TYPES, type DrbgBlockType } from './drbg';
 import { ARGON2_BLOCK_TYPES, type Argon2BlockType } from './argon2';
 import { GMDRBG_BLOCK_TYPES, type GmDrbgBlockType } from './gmdrbg';
-import { MLDSA_BLOCK_TYPES, type MldsaBlockType } from './mldsa';
+import { MLDSA_BLOCK_TYPES, MLDSA_PRIMITIVE_BLOCK_TYPES, type MldsaBlockType } from './mldsa';
 import { SM9_BLOCK_TYPES, type Sm9BlockType } from './sm9';
 import { RSA_BLOCK_TYPES, type RsaBlockType } from './rsa';
 
@@ -113,6 +113,7 @@ export const ALL_BLOCK_TYPES = [
   ...ARGON2_BLOCK_TYPES,
   ...GMDRBG_BLOCK_TYPES,
   ...MLDSA_BLOCK_TYPES,
+  ...MLDSA_PRIMITIVE_BLOCK_TYPES,
   ...SM9_BLOCK_TYPES,
   ...RSA_BLOCK_TYPES,
 ] as const;

@@ -11,7 +11,7 @@ import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
 
 /** ML-DSA-44 完整实现（闭包：常量 + 全部辅助函数 + 入口，返回 dict） */
-function registerMlDsaCore(): string {
+export function registerMlDsaCore(): string {
   return pythonGenerator.provideFunction_('ml_dsa_core', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '():',
     '    import hashlib',
@@ -437,7 +437,7 @@ function registerMlDsaCore(): string {
     '        t1 = [[ml_dsa_power2round(c)[0] for c in t[r]] for r in range(K)]',
     '        return ml_dsa_pk_encode(rho, t1)',
     '    ZETAS = ml_dsa_zetas()',
-    '    return {\'sign\': ml_dsa_sign, \'verify\': ml_dsa_verify, \'sign_internal\': ml_dsa_sign_internal, \'verify_internal\': ml_dsa_verify_internal, \'pk_from_sk\': ml_dsa_pk_from_sk}',
+    '    return {\'sign\': ml_dsa_sign, \'verify\': ml_dsa_verify, \'sign_internal\': ml_dsa_sign_internal, \'verify_internal\': ml_dsa_verify_internal, \'pk_from_sk\': ml_dsa_pk_from_sk, \'power2round\': ml_dsa_power2round, \'decompose\': ml_dsa_decompose, \'high_bits\': ml_dsa_high_bits, \'low_bits\': ml_dsa_low_bits, \'make_hint\': ml_dsa_make_hint, \'use_hint\': ml_dsa_use_hint, \'sample_in_ball\': ml_dsa_sample_in_ball}',
     '',
   ]);
 }

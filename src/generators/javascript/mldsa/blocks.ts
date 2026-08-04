@@ -14,7 +14,7 @@ import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
 
 /** ML-DSA-44 完整实现（闭包：常量 + 全部辅助函数 + 入口，返回对象） */
-function registerMlDsaCore(): string {
+export function registerMlDsaCore(): string {
   return javascriptGenerator.provideFunction_('mlDsaCore', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '() {',
     '  var Q=8380417,N=256,D=13,TAU=39,GAMMA1=131072,GAMMA2=95232,K=4,L=4,ETA=2,BETA=78,OMEGA=80,CTILDE_LEN=32,ZETA=1753,F_INTT=8347681,MVAL=44,Q_HALF=4190208;',
@@ -589,7 +589,7 @@ function registerMlDsaCore(): string {
     '    return mlDsaPkEncode(rho, t1);',
     '  }',
     '  var ZETAS = mlDsaZetas();',
-    '  return { sign: mlDsaSign, verify: mlDsaVerify, signInternal: mlDsaSignInternal, verifyInternal: mlDsaVerifyInternal, pkFromSk: mlDsaPkFromSk };',
+    '  return { sign: mlDsaSign, verify: mlDsaVerify, signInternal: mlDsaSignInternal, verifyInternal: mlDsaVerifyInternal, pkFromSk: mlDsaPkFromSk, power2round: mlDsaPower2Round, decompose: mlDsaDecompose, highBits: mlDsaHighBits, lowBits: mlDsaLowBits, makeHint: mlDsaMakeHint, useHint: mlDsaUseHint, sampleInBall: mlDsaSampleInBall };',
     '}',
   ]);
 }

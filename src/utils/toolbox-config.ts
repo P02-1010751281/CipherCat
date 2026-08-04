@@ -34,7 +34,7 @@ import { ECDH_BLOCK_TYPES } from '@/blocks/ecdh';
 import { DRBG_BLOCK_TYPES } from '@/blocks/drbg';
 import { ARGON2_BLOCK_TYPES } from '@/blocks/argon2';
 import { GMDRBG_BLOCK_TYPES } from '@/blocks/gmdrbg';
-import { MLDSA_BLOCK_TYPES } from '@/blocks/mldsa';
+import { MLDSA_BLOCK_TYPES, MLDSA_PRIMITIVE_BLOCK_TYPES } from '@/blocks/mldsa';
 import { SM9_BLOCK_TYPES } from '@/blocks/sm9';
 import { RSA_BLOCK_TYPES } from '@/blocks/rsa';
 
@@ -275,6 +275,10 @@ export function createToolboxConfig() {
         type,
       })),
       ...MLDSA_BLOCK_TYPES.map((type) => ({ kind: 'block' as const, type })),
+      ...MLDSA_PRIMITIVE_BLOCK_TYPES.map((type) => ({
+        kind: 'block' as const,
+        type,
+      })),
     ],
   };
 

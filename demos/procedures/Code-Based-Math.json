@@ -1,0 +1,455 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "cb_pmul_01",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "a",
+              "id": "param_a",
+              "type": "int_list"
+            },
+            {
+              "name": "b",
+              "id": "param_b",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "PMul"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "gf2_poly_mul",
+              "id": "cb_pmul_01_b",
+              "inputs": {
+                "A": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_pmul_01_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_a"
+                      }
+                    }
+                  }
+                },
+                "B": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_pmul_01_vb",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_b"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "cb_pdiv_02",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "a",
+              "id": "param_a",
+              "type": "int_list"
+            },
+            {
+              "name": "b",
+              "id": "param_b",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "PDiv"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "gf2_poly_div",
+              "id": "cb_pdiv_02_b",
+              "inputs": {
+                "A": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_pdiv_02_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_a"
+                      }
+                    }
+                  }
+                },
+                "B": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_pdiv_02_vb",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_b"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "cb_pmod_03",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "a",
+              "id": "param_a",
+              "type": "int_list"
+            },
+            {
+              "name": "b",
+              "id": "param_b",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "PMod"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "gf2_poly_mod",
+              "id": "cb_pmod_03_b",
+              "inputs": {
+                "A": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_pmod_03_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_a"
+                      }
+                    }
+                  }
+                },
+                "B": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_pmod_03_vb",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_b"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "cb_pgcd_04",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "a",
+              "id": "param_a",
+              "type": "int_list"
+            },
+            {
+              "name": "b",
+              "id": "param_b",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "PGcd"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "gf2_poly_gcd",
+              "id": "cb_pgcd_04_b",
+              "inputs": {
+                "A": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_pgcd_04_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_a"
+                      }
+                    }
+                  }
+                },
+                "B": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_pgcd_04_vb",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_b"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "cb_mmul_05",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "a",
+              "id": "param_a",
+              "type": "int_list"
+            },
+            {
+              "name": "b",
+              "id": "param_b",
+              "type": "int_list"
+            },
+            {
+              "name": "n",
+              "id": "param_n",
+              "type": "int"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "MMul"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "bin_mat_mul",
+              "id": "cb_mmul_05_b",
+              "inputs": {
+                "A": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_mmul_05_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_a"
+                      }
+                    }
+                  }
+                },
+                "B": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_mmul_05_vb",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_b"
+                      }
+                    }
+                  }
+                },
+                "N": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_mmul_05_vn",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_n"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "cb_minv_06",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "a",
+              "id": "param_a",
+              "type": "int_list"
+            },
+            {
+              "name": "n",
+              "id": "param_n",
+              "type": "int"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "MInv"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "bin_mat_inv",
+              "id": "cb_minv_06_b",
+              "inputs": {
+                "A": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_minv_06_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_a"
+                      }
+                    }
+                  }
+                },
+                "N": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_minv_06_vn",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_n"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "cb_hw_07",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "x",
+              "id": "param_x",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "HW"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "ham_weight",
+              "id": "cb_hw_07_b",
+              "inputs": {
+                "X": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_hw_07_vx",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_x"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "cb_hd_08",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "x",
+              "id": "param_x",
+              "type": "int_list"
+            },
+            {
+              "name": "y",
+              "id": "param_y",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "HD"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "ham_dist",
+              "id": "cb_hd_08_b",
+              "inputs": {
+                "X": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_hd_08_vx",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_x"
+                      }
+                    }
+                  }
+                },
+                "Y": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "cb_hd_08_vy",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_y"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -458,5 +458,15 @@
       "driver": "function toA(a){return Uint8Array.from(a);}\nvar msg = Uint8Array.from([0,1,2,3,4,5,6,7,8,9]);\nvar adrs = Addr(1, 2, 3);\nif (adrs.length !== 32) throw new Error('ADRS len');\nif (JSON.stringify(Addr(1,2,3)) !== JSON.stringify(adrs)) throw new Error('ADRS det');\nif (JSON.stringify(Chain(msg, 0)) !== JSON.stringify(msg)) throw new Error('CHAIN0');\nif (JSON.stringify(Chain(msg, 2)) !== JSON.stringify(Chain(Chain(msg, 1), 1))) throw new Error('CHAIN');\nvar m1 = msg, m2 = Uint8Array.from([9,9,9,9,9]), m3 = toA([108,101,97,102,51]), m4 = toA([108,101,97,102,52]);\nvar l1 = MLeaf(m1, adrs), l2 = MLeaf(m2, adrs), l3 = MLeaf(m3, adrs), l4 = MLeaf(m4, adrs);\nvar rootManual = MNode(MNode(l1, l2, adrs), MNode(l3, l4, adrs), adrs);\nvar leaves = Array.from(l1).concat(Array.from(l2), Array.from(l3), Array.from(l4));\nif (JSON.stringify(MRoot(leaves, 32, adrs)) !== JSON.stringify(rootManual)) throw new Error('MERKLE');\nconsole.log('HASH_BASED_OK');",
       "expect": "HASH_BASED_OK"
     }
+  },
+  "procedures/Code-Based-Math.json": {
+    "py": {
+      "driver": "a = [1, 0, 1, 0, 0, 1]  # 1 + x^2 + x^5\nb = [1, 1, 0, 1]        # 1 + x + x^3\nc = [1, 0, 1, 1]        # 1 + x^2 + x^3\n# 1. 乘法结合律\nassert PMul(PMul(a, b), c) == PMul(a, PMul(b, c)), 'ASSOC'\n# 2. 除法: a = q*b + r（补齐长度后逐位 XOR 相等）\nq = PDiv(a, b); r = PMod(a, b)\nprod = PMul(q, b)\nif len(prod) < len(a): prod = prod + [0] * (len(a) - len(prod))\nif len(r) < len(a): r = r + [0] * (len(a) - len(r))\nassert [ (prod[i] ^ r[i]) for i in range(len(a)) ] == a, 'DIV'\n# 3. 欧几里得: gcd(a,b) == gcd(b, a mod b)\nassert PGcd(a, b) == PGcd(b, PMod(a, b)), 'GCD'\n# 4. 矩阵求逆: A*A^-1 == I（满秩 3x3）\nA = [1,0,0, 1,1,0, 0,1,1]\nI3 = [1,0,0, 0,1,0, 0,0,1]\nassert MMul(A, MInv(A, 3), 3) == I3, 'MINV'\n# 5. 汉明: d(x,y) == wt(x xor y)\nx = [1,0,1,1,0]; y = [1,1,0,1,0]\nassert HD(x, y) == HW([xi ^ yi for xi, yi in zip(x, y)]), 'HAMMING'\nprint('CODE_BASED_OK')",
+      "expect": "CODE_BASED_OK"
+    },
+    "js": {
+      "driver": "var a = [1,0,1,0,0,1], b = [1,1,0,1], c = [1,0,1,1];\nif (JSON.stringify(PMul(PMul(a,b),c)) !== JSON.stringify(PMul(a,PMul(b,c)))) throw new Error('ASSOC');\nvar q = PDiv(a,b), r = PMod(a,b), prod = PMul(q,b).slice();\nwhile (prod.length < a.length) prod.push(0);\nwhile (r.length < a.length) r.push(0);\nfor (var i = 0; i < a.length; i++) if ((prod[i] ^ r[i]) !== a[i]) throw new Error('DIV');\nif (JSON.stringify(PGcd(a,b)) !== JSON.stringify(PGcd(b, PMod(a,b)))) throw new Error('GCD');\nvar A = [1,0,0,1,1,0,0,1,1], I3 = [1,0,0,0,1,0,0,0,1];\nif (JSON.stringify(MMul(A, MInv(A,3), 3)) !== JSON.stringify(I3)) throw new Error('MINV');\nvar x = [1,0,1,1,0], y = [1,1,0,1,0], xr = [];\nfor (var i = 0; i < x.length; i++) xr.push(x[i] ^ y[i]);\nif (HD(x,y) !== HW(xr)) throw new Error('HAMMING');\nconsole.log('CODE_BASED_OK');",
+      "expect": "CODE_BASED_OK"
+    }
   }
 }

@@ -5,6 +5,7 @@ export * from './poly-add';
 export * from './poly-sub';
 export * from './mat-vec-mul';
 export * from './gf2m';
+export * from './codebased';
 
 import { FIELD_BLOCK_TYPES, type FieldBlockType } from './field';
 import { MOD_INVERSE_BLOCK_TYPES, type ModInverseBlockType } from './mod-inverse';
@@ -13,6 +14,10 @@ import { POLY_ADD_BLOCK_TYPES, type PolyAddBlockType } from './poly-add';
 import { POLY_SUB_BLOCK_TYPES, type PolySubBlockType } from './poly-sub';
 import { MAT_VEC_MUL_BLOCK_TYPES, type MatVecMulBlockType } from './mat-vec-mul';
 import { GF2M_BLOCK_TYPES, type Gf2mBlockType } from './gf2m';
+import {
+  CODEBASED_BLOCK_TYPES,
+  type CodeBasedBlockType,
+} from './codebased';
 
 export const NT_BLOCK_TYPES = [
   ...FIELD_BLOCK_TYPES,
@@ -22,6 +27,7 @@ export const NT_BLOCK_TYPES = [
   ...POLY_SUB_BLOCK_TYPES,
   ...MAT_VEC_MUL_BLOCK_TYPES,
   ...GF2M_BLOCK_TYPES,
+  ...CODEBASED_BLOCK_TYPES,
 ] as const;
 
-export type NtBlockType = FieldBlockType | ModInverseBlockType | NttBlockType | PolyAddBlockType | PolySubBlockType | MatVecMulBlockType | Gf2mBlockType;
+export type NtBlockType = FieldBlockType | ModInverseBlockType | NttBlockType | PolyAddBlockType | PolySubBlockType | MatVecMulBlockType | Gf2mBlockType | CodeBasedBlockType;

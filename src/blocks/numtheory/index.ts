@@ -6,6 +6,7 @@ export * from './poly-sub';
 export * from './mat-vec-mul';
 export * from './gf2m';
 export * from './codebased';
+export * from './multivariate';
 
 import { FIELD_BLOCK_TYPES, type FieldBlockType } from './field';
 import { MOD_INVERSE_BLOCK_TYPES, type ModInverseBlockType } from './mod-inverse';
@@ -18,6 +19,10 @@ import {
   CODEBASED_BLOCK_TYPES,
   type CodeBasedBlockType,
 } from './codebased';
+import {
+  MULTIVARIATE_BLOCK_TYPES,
+  type MultivariateBlockType,
+} from './multivariate';
 
 export const NT_BLOCK_TYPES = [
   ...FIELD_BLOCK_TYPES,
@@ -28,6 +33,7 @@ export const NT_BLOCK_TYPES = [
   ...MAT_VEC_MUL_BLOCK_TYPES,
   ...GF2M_BLOCK_TYPES,
   ...CODEBASED_BLOCK_TYPES,
+  ...MULTIVARIATE_BLOCK_TYPES,
 ] as const;
 
-export type NtBlockType = FieldBlockType | ModInverseBlockType | NttBlockType | PolyAddBlockType | PolySubBlockType | MatVecMulBlockType | Gf2mBlockType | CodeBasedBlockType;
+export type NtBlockType = FieldBlockType | ModInverseBlockType | NttBlockType | PolyAddBlockType | PolySubBlockType | MatVecMulBlockType | Gf2mBlockType | CodeBasedBlockType | MultivariateBlockType;

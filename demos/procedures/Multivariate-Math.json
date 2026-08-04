@@ -1,0 +1,336 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "mv_ge_01",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "aug",
+              "id": "param_aug",
+              "type": "int_list"
+            },
+            {
+              "name": "n",
+              "id": "param_n",
+              "type": "int"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "GE"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "gauss_elim",
+              "id": "mv_ge_01_b",
+              "inputs": {
+                "AUG": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mv_ge_01_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_aug"
+                      }
+                    }
+                  }
+                },
+                "N": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mv_ge_01_vn",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_n"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "mv_q_02",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "c",
+              "id": "param_c",
+              "type": "int_list"
+            },
+            {
+              "name": "x",
+              "id": "param_x",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "Quad"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "mv_quad_eval",
+              "id": "mv_q_02_b",
+              "inputs": {
+                "COEFFS": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mv_q_02_vc",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_c"
+                      }
+                    }
+                  }
+                },
+                "X": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mv_q_02_vx",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_x"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "mv_c_03",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "n",
+              "id": "param_n",
+              "type": "int"
+            },
+            {
+              "name": "k",
+              "id": "param_k",
+              "type": "int"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "Comb"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "comb",
+              "id": "mv_c_03_b",
+              "inputs": {
+                "N": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mv_c_03_vn",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_n"
+                      }
+                    }
+                  }
+                },
+                "K": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mv_c_03_vk",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_k"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "mv_ga_04",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "a",
+              "id": "param_a",
+              "type": "int_list"
+            },
+            {
+              "name": "b",
+              "id": "param_b",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "GAdd"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "gf2m_add",
+              "id": "mv_ga_04_b",
+              "fields": {
+                "FIELD": "aes"
+              },
+              "inputs": {
+                "A": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mv_ga_04_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_a"
+                      }
+                    }
+                  }
+                },
+                "B": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mv_ga_04_vb",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_b"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "mv_gi_05",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "a",
+              "id": "param_a",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "GInv"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "gf2m_inv",
+              "id": "mv_gi_05_b",
+              "fields": {
+                "FIELD": "aes"
+              },
+              "inputs": {
+                "A": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mv_gi_05_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_a"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "mv_gm_06",
+        "x": 60,
+        "y": 60,
+        "extraState": {
+          "params": [
+            {
+              "name": "a",
+              "id": "param_a",
+              "type": "int_list"
+            },
+            {
+              "name": "b",
+              "id": "param_b",
+              "type": "int_list"
+            }
+          ],
+          "hasStatements": false
+        },
+        "fields": {
+          "NAME": "GMul"
+        },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "gf2m_mul",
+              "id": "mv_gm_06_b",
+              "fields": {
+                "FIELD": "aes"
+              },
+              "inputs": {
+                "A": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mv_gm_06_va",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_a"
+                      }
+                    }
+                  }
+                },
+                "B": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "mv_gm_06_vb",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_b"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -468,5 +468,15 @@
       "driver": "var a = [1,0,1,0,0,1], b = [1,1,0,1], c = [1,0,1,1];\nif (JSON.stringify(PMul(PMul(a,b),c)) !== JSON.stringify(PMul(a,PMul(b,c)))) throw new Error('ASSOC');\nvar q = PDiv(a,b), r = PMod(a,b), prod = PMul(q,b).slice();\nwhile (prod.length < a.length) prod.push(0);\nwhile (r.length < a.length) r.push(0);\nfor (var i = 0; i < a.length; i++) if ((prod[i] ^ r[i]) !== a[i]) throw new Error('DIV');\nif (JSON.stringify(PGcd(a,b)) !== JSON.stringify(PGcd(b, PMod(a,b)))) throw new Error('GCD');\nvar A = [1,0,0,1,1,0,0,1,1], I3 = [1,0,0,0,1,0,0,0,1];\nif (JSON.stringify(MMul(A, MInv(A,3), 3)) !== JSON.stringify(I3)) throw new Error('MINV');\nvar x = [1,0,1,1,0], y = [1,1,0,1,0], xr = [];\nfor (var i = 0; i < x.length; i++) xr.push(x[i] ^ y[i]);\nif (HD(x,y) !== HW(xr)) throw new Error('HAMMING');\nconsole.log('CODE_BASED_OK');",
       "expect": "CODE_BASED_OK"
     }
+  },
+  "procedures/Multivariate-Math.json": {
+    "py": {
+      "driver": "# 1. 高斯消元：x+y+z=6, x+2y-z=2, 2x+y+z=7 → (1,2,3)\naug = [1,1,1,6, 1,2,-1,2, 2,1,1,7]\nsol = GE(aug, 3)\nassert len(sol) == 3 and all(abs(sol[i] - [1,2,3][i]) < 1e-9 for i in range(3)), 'GE'\n# 2. 多元二次：Q = 2x1^2 + 3x1x2 + x2^2 + x1 - x2 + 1, x=(2,3) → 35\nassert abs(Quad([2,3,1, 1,-1, 1], [2,3]) - 35) < 1e-9, 'QUAD'\n# 3. 组合数\nassert Comb(5,2) == 10 and Comb(6,3) == 20 and Comb(7,0) == 1 and Comb(10,4) == 210, 'COMB'\n# 4. GF(2^8): 加法 0x57^0x83=0xD4；逆 2·2^-1=1\nassert GAdd([0x57],[0x83]) == 0xD4, 'GADD'\nassert GMul(GInv([2]), [2]) == 1, 'GINV'\nprint('MULTIVAR_OK')",
+      "expect": "MULTIVAR_OK"
+    },
+    "js": {
+      "driver": "var aug = [1,1,1,6,1,2,-1,2,2,1,1,7];\nvar sol = GE(aug, 3);\nfor (var i = 0; i < 3; i++) if (Math.abs(sol[i] - [1,2,3][i]) > 1e-9) throw new Error('GE');\nif (Math.abs(Quad([2,3,1,1,-1,1],[2,3]) - 35) > 1e-9) throw new Error('QUAD');\nif (Comb(5,2)!==10 || Comb(6,3)!==20 || Comb(7,0)!==1 || Comb(10,4)!==210) throw new Error('COMB');\nif (GAdd([0x57],[0x83]) !== 0xD4) throw new Error('GADD');\nif (GMul(GInv([2]), [2]) !== 1) throw new Error('GINV');\nconsole.log('MULTIVAR_OK');",
+      "expect": "MULTIVAR_OK"
+    }
   }
 }

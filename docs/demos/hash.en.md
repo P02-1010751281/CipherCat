@@ -75,3 +75,16 @@ Build SM3 padding + compression with atomic blocks, wrap as `SM3_Hash(msg)`, ver
 ---
 
 **Official-vector verification**: `node dist-verify/verify-demo.js demos/procedures/SM3-Hash.json --exec` → `=== ALL VECTORS PASS ===`
+
+---
+
+## Corresponding Standard Guides
+
+| Standard | Guide |
+|----------|-------|
+| FIPS 180-4 SHA-2 | No build guide yet (standard text: [`standards/fips180-4-SHA2/`](../standards/fips180-4-SHA2/README.md)) |
+| FIPS 202 SHA-3 / SHAKE | No build guide yet (standard text: [`standards/fips202-SHA3/`](../standards/fips202-SHA3/README.md)) |
+| FIPS 198-1 HMAC | No build guide yet (standard text: [`standards/fips198-1-hmac/`](../standards/fips198-1-hmac/README.md)) |
+| GB/T 32905 SM3 | No build guide yet (standard text: [`standards/gbt32905-SM3/`](../standards/gbt32905-SM3/README.md)) |
+
+> For standards with build guides, see the [standards/COVERAGE.en.md](../standards/COVERAGE.en.md) coverage matrix.

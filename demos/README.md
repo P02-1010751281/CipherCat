@@ -69,7 +69,7 @@
 | SHA-256 哈希 | `procedures/SHA256-Hash.json` | 垫块 + 压缩函数链 |
 | HMAC-SHA256 | `procedures/HMAC-SHA256.json` | HMAC 双哈希链 |
 | HKDF / PBKDF2 | `procedures/HKDF.json` / `procedures/PBKDF2.json` | 密钥派生链 |
-| ML-KEM KeyGen | `procedures/ML-KEM-KeyGen.json` | 密钥生成链 |
+| ML-KEM KeyGen | `proc_mlkem_keygen` 模板（Crypto Templates） | 密钥生成链（模板注入） |
 | 模式加密 | `procedures/Mode-ECB.json` / `Mode-CBC.json` / `Mode-CTR.json` | ECB/CBC/CTR 模式链 |
 
 ## 验证方式

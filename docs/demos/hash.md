@@ -75,3 +75,16 @@ SHA-256("abc") = `ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61
 ---
 
 **官方向量验证**：`node dist-verify/verify-demo.js demos/procedures/SM3-Hash.json --exec` → `=== ALL VECTORS PASS ===`
+
+---
+
+## 对应标准指南
+
+| 标准 | 指南 |
+|------|------|
+| FIPS 180-4 SHA-2 | 暂无搭建指南（标准原文见 [`standards/fips180-4-SHA2/`](../standards/fips180-4-SHA2/README.md)） |
+| FIPS 202 SHA-3 / SHAKE | 暂无搭建指南（标准原文见 [`standards/fips202-SHA3/`](../standards/fips202-SHA3/README.md)） |
+| FIPS 198-1 HMAC | 暂无搭建指南（标准原文见 [`standards/fips198-1-hmac/`](../standards/fips198-1-hmac/README.md)） |
+| GB/T 32905 SM3 | 暂无搭建指南（标准原文见 [`standards/gbt32905-SM3/`](../standards/gbt32905-SM3/README.md)） |
+
+> 已有搭建指南的标准见 [standards/COVERAGE.md](../standards/COVERAGE.md) 覆盖矩阵。

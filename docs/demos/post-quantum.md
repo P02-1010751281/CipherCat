@@ -63,7 +63,7 @@
 
 ---
 
-**相关指南**：ML-KEM-768（k=3）的复合块/纯基础块搭建见 [fips203-ML-KEM/guides/](../standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-搭建指南.md)。
+**相关指南**：ML-KEM-768（k=3）的复合块/纯基础块搭建见 [fips203-ML-KEM/guides/](../standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-搭建指南.md)；ML-DSA 签名搭建见 [fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.md](../standards/fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.md)；ZUC 密钥流搭建见 [gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.md](../standards/gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.md)（国密流密码，非后量子）。完整覆盖矩阵见 [standards/COVERAGE.md](../standards/COVERAGE.md)。
 
 ---
 

@@ -19,7 +19,11 @@
 | BR | 比特重组 (从 LFSR 提取 4×32-bit) |
 | F | 非线性函数 (含 S-box) |
 
+## 指南
+
+- [ZUC-KeyStream-搭建指南.md](guides/ZUC-KeyStream-搭建指南.md)（中文）
+- [ZUC-KeyStream-搭建指南.en.md](guides/ZUC-KeyStream-搭建指南.en.md)（English）
+
 ## 实现状态
 
-未实现。需新建 ZUC 相关块 (LFSR/BR/F/S-box)。
-⚠️ 未实现，PDF参考。暂不拆分。
+已实现：`src/blocks/zuc/` 6 块（S0/S1/L1/L2/F 原子块 + zuc_keystream 完整块）+ `proc_zuc_keystream` 模板（🔧 ZUC_Keystream），demo 见 `demos/procedures/EEA3.json`。搭建方法见上方指南。

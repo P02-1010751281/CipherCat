@@ -63,7 +63,7 @@ Build the full ML-KEM-512 Encaps chain (k=2) with post-quantum atomic blocks; ve
 
 ---
 
-**Related guide**: ML-KEM-768 (k=3) composite/basic-block builds: [fips203-ML-KEM/guides/](../standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-搭建指南.md).
+**Related guides**: ML-KEM-768 (k=3) composite/basic-block builds: [fips203-ML-KEM/guides/](../standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-搭建指南.md); ML-DSA signing: [fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.en.md](../standards/fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.en.md); ZUC keystream: [gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.en.md](../standards/gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.en.md) (Chinese SM stream cipher, not post-quantum). Full coverage matrix: [standards/COVERAGE.en.md](../standards/COVERAGE.en.md).
 
 ---
 

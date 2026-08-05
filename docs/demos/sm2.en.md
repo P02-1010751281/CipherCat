@@ -47,3 +47,13 @@ Build scalar multiplication on the sm2p256v1 curve with ECC statement blocks; ve
 ---
 
 **Official-vector verification**: `node dist-verify/verify-demo.js demos/procedures/SM2-PointMul.json --exec` → `=== ALL VECTORS PASS ===`
+
+---
+
+## Corresponding Standard Guides
+
+| Standard | Guide |
+|----------|-------|
+| GB/T 32918 SM2 | No build guide yet (standard text & algorithm breakdown: [`standards/gbt32918-SM2/`](../standards/gbt32918-SM2/README.md)) |
+
+> For standards with build guides, see the [standards/COVERAGE.en.md](../standards/COVERAGE.en.md) coverage matrix.

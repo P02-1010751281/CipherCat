@@ -26,6 +26,13 @@ Sizes (bytes):
 | secret key    | 2560      | 4032      | 4896      |
 | signature     | 2420      | 3309      | 4627      |
 
+## 指南
+
+| 指南 | 语言 | 说明 |
+|------|------|------|
+| [ML-DSA-Sign-搭建指南](guides/ML-DSA-Sign-搭建指南.md) | 中文 | 原子原语链搭建签名/验签（5 个签名原语块 + 黑盒对照 + 格基环辅助） |
+| [ML-DSA-Sign-搭建指南.en](guides/ML-DSA-Sign-搭建指南.en.md) | English | Atomic primitive chain build guide for ML-DSA-44 Sign/Verify |
+
 ## 算法清单
 
 | 序号 | 文件 | 名称 | 类别 | 块实现 |
@@ -80,4 +87,4 @@ Sizes (bytes):
 | 48 | `48-MatrixVectorNTT.md` | MatrixVectorNTT(𝐌, | NTT 运算 | — |
 | 49 | `49-MontgomeryReduce.md` | MontgomeryReduce(𝑎) | Montgomery 约简 | — |
 
-平台尚未实现 ML-DSA。全部 49 个算法仅供参考。
+平台已实现 ML-DSA-44 完整签名/验签（`mldsa_sign` / `mldsa_verify`，NIST ACVP sigGen 30/30 通过）及 5 个签名原语原子块（`pq_power2round` / `pq_decompose` / `pq_make_hint` / `pq_use_hint` / `pq_sample_in_ball`，参数固定 ML-DSA-44：d=13、γ₂=95232、τ=39）。搭建教程见上表指南；demo 见 `demos/procedures/ML-DSA-Primitives.json` 与 `demos/procedures/ML-DSA-Sign.json`。其余算法章节为参考规范。

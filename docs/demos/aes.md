@@ -76,3 +76,13 @@
 6. **验证**：输出 16 字节列表；单轮中间态与 FIPS-197 C.1 附录向量一致
 
 > 完整 AES-128 = 10 轮 + 密钥扩展——用函数管理里的 AES 模板（自动注入 ctrl_iterate 循环）或手动拖 `ctrl_iterate` 展开。
+
+---
+
+## 对应标准指南
+
+| 标准 | 指南 |
+|------|------|
+| FIPS 197 AES | 暂无搭建指南（标准原文与算法拆解见 [`standards/fips197-AES/`](../standards/fips197-AES/README.md)） |
+
+> 已有搭建指南的标准见 [standards/COVERAGE.md](../standards/COVERAGE.md) 覆盖矩阵。

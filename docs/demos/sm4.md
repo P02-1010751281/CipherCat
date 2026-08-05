@@ -73,3 +73,14 @@
 ---
 
 **官方向量验证**：`node dist-verify/verify-demo.js demos/procedures/SM4-Sbox.json --exec` → `=== ALL VECTORS PASS ===`
+
+---
+
+## 对应标准指南
+
+| 标准 | 指南 |
+|------|------|
+| GB/T 32907 SM4 | 暂无搭建指南（标准原文与算法拆解见 [`standards/gbt32907-SM4/`](../standards/gbt32907-SM4/README.md)） |
+| GB/T 32905 SM3 | 暂无搭建指南（标准原文见 [`standards/gbt32905-SM3/`](../standards/gbt32905-SM3/README.md)） |
+
+> 已有搭建指南的标准见 [standards/COVERAGE.md](../standards/COVERAGE.md) 覆盖矩阵。

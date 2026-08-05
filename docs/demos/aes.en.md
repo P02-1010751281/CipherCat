@@ -76,3 +76,13 @@ Use `procedures_defreturn` (native Blockly function definition) to wrap an atomi
 6. **Verify**: 16-byte list output; single-round intermediate matches FIPS-197 C.1 appendix vector
 
 > Full AES-128 = 10 rounds + key schedule — use the AES template in Function Manager (auto-injects ctrl_iterate loops) or unroll `ctrl_iterate` manually.
+
+---
+
+## Corresponding Standard Guides
+
+| Standard | Guide |
+|----------|-------|
+| FIPS 197 AES | No build guide yet (standard text & algorithm breakdown: [`standards/fips197-AES/`](../standards/fips197-AES/README.md)) |
+
+> For standards with build guides, see the [standards/COVERAGE.en.md](../standards/COVERAGE.en.md) coverage matrix.

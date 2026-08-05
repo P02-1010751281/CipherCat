@@ -11,6 +11,9 @@ Pre-built Blockly workspace examples, **all using atomic blocks** (no convenienc
 | SM2 | [demos/sm2.en.md](../demos/sm2.en.md) | `procedures/SM2-PointMul.json` |
 | Post-quantum | [demos/post-quantum.en.md](../demos/post-quantum.en.md) | `ML-KEM-Atomic.json` / `procedures/ML-KEM-Encaps.json` |
 
+> Standard build guides: ML-KEM-768 Encaps → [fips203-ML-KEM/guides/ML-KEM-768-Encaps-build-guide.md](../standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-build-guide.md) · ML-DSA signing → [fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.en.md](../standards/fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.en.md) · ZUC keystream → [gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.en.md](../standards/gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.en.md)
+> Full standard↔block↔demo↔template↔guide coverage matrix: [standards/COVERAGE.en.md](../standards/COVERAGE.en.md).
+
 ---
 
 ## Quick Start

@@ -47,3 +47,13 @@
 ---
 
 **官方向量验证**：`node dist-verify/verify-demo.js demos/procedures/SM2-PointMul.json --exec` → `=== ALL VECTORS PASS ===`
+
+---
+
+## 对应标准指南
+
+| 标准 | 指南 |
+|------|------|
+| GB/T 32918 SM2 | 暂无搭建指南（标准原文与算法拆解见 [`standards/gbt32918-SM2/`](../standards/gbt32918-SM2/README.md)） |
+
+> 已有搭建指南的标准见 [standards/COVERAGE.md](../standards/COVERAGE.md) 覆盖矩阵。

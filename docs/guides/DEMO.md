@@ -11,6 +11,9 @@
 | SM2 | [demos/sm2.md](../demos/sm2.md) | `procedures/SM2-PointMul.json` |
 | 后量子 | [demos/post-quantum.md](../demos/post-quantum.md) | `ML-KEM-Atomic.json` / `procedures/ML-KEM-Encaps.json` |
 
+> 标准搭建指南：ML-KEM-768 Encaps → [fips203-ML-KEM/guides/ML-KEM-768-Encaps-搭建指南.md](../standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-搭建指南.md) · ML-DSA 签名 → [fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.md](../standards/fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.md) · ZUC 密钥流 → [gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.md](../standards/gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.md)
+> 完整标准↔块↔demo↔模板↔指南覆盖矩阵见 [standards/COVERAGE.md](../standards/COVERAGE.md)。
+
 ---
 
 ## 快速开始

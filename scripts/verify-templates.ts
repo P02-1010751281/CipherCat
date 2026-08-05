@@ -14,6 +14,11 @@
  *   3. 对链输入完整的模板，执行结果与官方向量一致
  */
 import { JSDOM } from 'jsdom';
+import {
+  MLKEM_ENCAPS_BODY_STATE,
+  MLKEM_ENCAPS_RETURN_STATE,
+  MLKEM_ENCAPS_VARIABLE_IDS,
+} from '@/blocks/procedure/encaps-prefill';
 
 interface TemplateCase {
   name: string;
@@ -25,6 +30,11 @@ interface TemplateCase {
   pyExpect?: string;
   jsDriver?: string;
   jsExpect?: string;
+  /** 多语句 body 预填（ML-KEM-Encaps 等）：注入后形态的 STACK 链 + RETURN state */
+  bodyState?: unknown;
+  returnState?: unknown;
+  /** 预填引用的变量名（加载前创建） */
+  prefillVariables?: string[];
 }
 
 // 与 src/blocks/procedure/blocks.ts TEMPLATE_PREFILL 对齐（28 模板）
@@ -55,6 +65,15 @@ const TEMPLATES: TemplateCase[] = [
   { name: 'proc_sm3_hmac', paramName: 'key', returnChain: ['variables_get', 'hash_hmac'], chainFields: { hash_hmac: { HASH: 'SM3' } } },
   { name: 'proc_mlkem_keygen', paramName: 'seed', returnChain: ['variables_get', 'pq_sample_poly_cbd', 'pq_ntt'] },
   { name: 'proc_zuc_keystream', paramName: 'key', returnChain: ['variables_get', 'zuc_keystream'] },
+  {
+    name: 'proc_mlkem_encaps', paramName: 'ek', returnChain: [],
+    bodyState: MLKEM_ENCAPS_BODY_STATE, returnState: MLKEM_ENCAPS_RETURN_STATE,
+    prefillVariables: MLKEM_ENCAPS_VARIABLE_IDS,
+    pyDriver: "ek = bytes(800)\nm = bytes(32)\nprint(len(Tpl_mlkem_encaps(ek, m)) > 0)",
+    pyExpect: "True",
+    jsDriver: "var ek = new Uint8Array(800); var m = new Uint8Array(32);\nconsole.log(Tpl_mlkem_encaps(ek, m).length > 0);",
+    jsExpect: "true",
+  },
   // BODY 预填模板（return 链只 variables_get，算法在 BODY）
   { name: 'proc_pbkdf2', paramName: 'password', returnChain: ['variables_get'] },
   { name: 'proc_hkdf', paramName: 'ikm', returnChain: ['variables_get'] },
@@ -87,6 +106,28 @@ const CHAIN_VALUE_INPUTS: Record<string, string[]> = {
   hash_hmac: ['KEY'],
   zuc_keystream: ['KEY'],
 };
+
+/** 构造注入后模板 workspace JSON（bodyState 预填模板：STACK 链 + RETURN state + 多参数） */
+function buildWorkspaceBodyState(tc: TemplateCase): Record<string, unknown> {
+  const fields: Record<string, unknown> = {
+    FUNC_NAME: tc.name.replace(/^proc_/, 'Tpl_').replace(/^crypto_/, 'Tpl_'),
+    PARAM_NAME_0: 'ek', PARAM_TYPE_0: 'bytes',
+    PARAM_NAME_1: 'm', PARAM_TYPE_1: 'bytes',
+  };
+  const inputs: Record<string, unknown> = {
+    BODY: { block: tc.bodyState as Record<string, unknown> },
+    RETURN: { block: tc.returnState as Record<string, unknown> },
+  };
+  return {
+    blocks: {
+      languageVersion: 0,
+      blocks: [
+        { type: tc.name, id: 'tpl_root_0000', x: 80, y: 80,
+          extraState: { prefilled: true }, fields, inputs },
+      ],
+    },
+  };
+}
 
 /** 构造注入后模板 workspace JSON（对齐 buildReturnChain：叶子→根，链块字段覆盖） */
 function buildWorkspace(tc: TemplateCase): Record<string, unknown> {
@@ -165,22 +206,44 @@ async function main() {
 
   for (const tc of cases) {
     const ws = new Blockly.Workspace();
-    Blockly.serialization.workspaces.load(buildWorkspace(tc) as any, ws);
+    if (tc.bodyState) {
+      for (const vid of tc.prefillVariables || []) {
+        ws.getVariableMap().createVariable(vid, '', vid);
+      }
+      Blockly.serialization.workspaces.load(buildWorkspaceBodyState(tc) as any, ws);
+    } else {
+      Blockly.serialization.workspaces.load(buildWorkspace(tc) as any, ws);
+    }
     const pyCode = pythonGenerator.workspaceToCode(ws) as string;
     const jsCode = javascriptGenerator.workspaceToCode(ws) as string;
 
     const problems: string[] = [];
+    if (tc.bodyState) {
+      fs.writeFileSync(`${tmpDir}/${tc.name}.dump.py`, pyCode);
+      fs.writeFileSync(`${tmpDir}/${tc.name}.dump.js`, jsCode);
+      // 多语句模板：验证 def 签名（双参数 ek/m）+ RETURN 引用 ret 变量 + 语句链注入
+      if (!pyCode.includes('def Tpl_mlkem_encaps(ek: bytes, m: bytes)')) {
+        problems.push('def 签名非双参数 ek/m');
+      }
+      if (!pyCode.includes('return ret')) {
+        problems.push('RETURN 未引用 ret');
+      }
+      const stmtCount = (pyCode.match(/ = /g) || []).length;
+      if (stmtCount < 10) {
+        problems.push('BODY 语句注入不足: ' + stmtCount);
+      }
+    }
     // 1. 注入契约：return 表达式存在且引用 param 变量（variables_get 注入成功）
     const pyReturnLine = pyCode.split('\n').filter((l) => l.trim().startsWith('return ')).join(' ');
     const jsReturnLine = jsCode.split('\n').filter((l) => l.trim().startsWith('return ')).join(' ');
     const pyHasParam = pyReturnLine.includes(tc.paramName) && pyReturnLine.length > 'return '.length;
     const jsHasParam = jsReturnLine.includes(tc.paramName) && jsReturnLine.length > 'return '.length;
-    if (!pyHasParam && !jsHasParam) {
+    if (!tc.bodyState && !pyHasParam && !jsHasParam) {
       problems.push('return 链未注入 param 变量');
     }
     // 链块数检查：return 表达式应含至少一个链块调用（非裸变量）
     const pyChainLen = (pyReturnLine.match(/[a-z_]+\s*\(/g) || []).length;
-    if (tc.returnChain.length > 1 && pyChainLen < 1) {
+    if (!tc.bodyState && tc.returnChain.length > 1 && pyChainLen < 1) {
       problems.push('return 链无块调用');
     }
     // 2. 生成代码可执行（Python 编译 + 执行不崩；空输入走默认值）

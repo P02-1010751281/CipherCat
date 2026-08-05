@@ -9,6 +9,10 @@
 import * as Blockly from 'blockly/core';
 import 'blockly/blocks';
 import { toolboxTemplates } from './toolbox-state';
+import {
+  MLKEM_ENCAPS_BODY_STATE,
+  MLKEM_ENCAPS_RETURN_STATE,
+} from './encaps-prefill';
 
 export const PROCEDURE_BLOCK_TYPES = [
   'crypto_return',
@@ -455,8 +459,18 @@ function syncCallParams(block: AnyBlock, funcName: string) {
       return b.getField('FUNC_NAME') !== null && (b.getFieldValue('FUNC_NAME') as string) === funcName;
     });
     if (wsTemplate) {
-      args = [(wsTemplate.getFieldValue('PARAM_NAME') as string) || 'param'];
-      types = [(wsTemplate.getFieldValue('PARAM_TYPE') as string) || 'bytes'];
+      // 多参数模板：探测 PARAM_NAME_i 字段（PARAM_NAME_0 存在即多参数）
+      if (wsTemplate.getField('PARAM_NAME_0') !== null) {
+        for (let i = 0; ; i++) {
+          const n = wsTemplate.getFieldValue('PARAM_NAME_' + i);
+          if (n === null || n === undefined) break;
+          args.push(n as string);
+          types.push((wsTemplate.getFieldValue('PARAM_TYPE_' + i) as string) || 'bytes');
+        }
+      } else {
+        args = [(wsTemplate.getFieldValue('PARAM_NAME') as string) || 'param'];
+        types = [(wsTemplate.getFieldValue('PARAM_TYPE') as string) || 'bytes'];
+      }
     } else {
       const tpl = Object.values(TEMPLATE_REGISTRY).find(function (t) { return t.name === funcName; });
       if (tpl) {
@@ -675,6 +689,8 @@ interface TemplatePrefill {
   chainFields?: Record<string, Record<string, string>>;
   /** BODY statement 预填的块 state（如 ctrl_iterate 循环）。 */
   bodyState?: Blockly.serialization.blocks.State;
+  /** RETURN 预填的块 state（多语句模板的返回表达式，如 ML-KEM-Encaps 的 ret 变量引用）。 */
+  returnState?: Blockly.serialization.blocks.State;
 }
 
 /** 各模板的预填内容定义。 */
@@ -802,6 +818,12 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'pq_sample_poly_cbd', 'pq_ntt'],
     paramVarName: 'seed',
   },
+  // ML-KEM-512 Encaps：28 条 variables_set 语句全链（提取自官方向量 PASS 的 procedure demo）
+  proc_mlkem_encaps: {
+    bodyState: MLKEM_ENCAPS_BODY_STATE as Blockly.serialization.blocks.State,
+    returnState: MLKEM_ENCAPS_RETURN_STATE as Blockly.serialization.blocks.State,
+    paramVarName: 'ek',
+  },
   // ZUC 密钥流：Keystream(key, iv, len) — key 连参数，iv/len 留空
   proc_zuc_keystream: {
     returnChain: ['variables_get', 'zuc_keystream'],
@@ -891,25 +913,70 @@ function injectPrefill(block: AnyBlock, prefill: TemplatePrefill | undefined, pa
       console.warn('[prefill] ' + block.type + ' inject failed:', e);
     }
   }
-  if (prefill.bodyState) {
+  if (prefill.bodyState || prefill.returnState) {
     try {
-      const state = JSON.parse(JSON.stringify(prefill.bodyState));
-      const bodyBlock = Blockly.serialization.blocks.append(
-        state as Blockly.serialization.blocks.State,
-        ws,
-      ) as unknown as Blockly.BlockSvg | null;
-      if (bodyBlock) {
-        bodyBlock.initSvg();
-        bodyBlock.render();
-        const bodyInput = block.getInput('BODY');
-        if (bodyInput && bodyBlock.previousConnection) {
-          bodyInput.connection.connect(bodyBlock.previousConnection);
+      // 多语句预填（如 ML-KEM-Encaps）：先创建 body/return 引用的全部变量，再注入语句链
+      const varRefs: string[] = [];
+      if (prefill.bodyState) collectStateVariables(prefill.bodyState as unknown as Record<string, unknown>, varRefs);
+      if (prefill.returnState) collectStateVariables(prefill.returnState as unknown as Record<string, unknown>, varRefs);
+      for (const v of varRefs) {
+        if (!ws.getVariableMap().getVariable(v, '')) ws.getVariableMap().createVariable(v, '');
+      }
+      if (prefill.bodyState) {
+        const state = JSON.parse(JSON.stringify(prefill.bodyState));
+        const bodyBlock = Blockly.serialization.blocks.append(
+          state as Blockly.serialization.blocks.State,
+          ws,
+        ) as unknown as Blockly.BlockSvg | null;
+        if (bodyBlock) {
+          bodyBlock.initSvg();
+          bodyBlock.render();
+          const bodyInput = block.getInput('BODY');
+          if (bodyInput && bodyBlock.previousConnection) {
+            bodyInput.connection.connect(bodyBlock.previousConnection);
+          }
+        }
+      }
+      if (prefill.returnState) {
+        const rstate = JSON.parse(JSON.stringify(prefill.returnState));
+        const retBlock = Blockly.serialization.blocks.append(
+          rstate as Blockly.serialization.blocks.State,
+          ws,
+        ) as unknown as Blockly.BlockSvg | null;
+        if (retBlock) {
+          retBlock.initSvg();
+          retBlock.render();
+          const retInput = block.getInput('RETURN');
+          if (retInput && retBlock.outputConnection) {
+            retInput.connection.connect(retBlock.outputConnection);
+          }
         }
       }
     } catch (e) {
-      console.warn('[prefill] ' + block.type + ' body inject failed:', e);
+      console.warn('[prefill] ' + block.type + ' multi-state inject failed:', e);
     }
   }
+  if (prefill.bodyState === undefined && prefill.returnState === undefined && prefill.returnChain === undefined) {
+    // 无预填：保持骨架
+  }
+}
+
+/** 收集 serialization state 中的变量引用（variables_set/get VAR + ctrl_iterate VAR）。 */
+function collectStateVariables(state: Record<string, unknown>, out: string[]) {
+  const fields = state.fields as Record<string, unknown> | undefined;
+  if (fields && typeof fields.VAR === 'object' && fields.VAR !== null) {
+    const v = (fields.VAR as { id?: string }).id;
+    if (v && !out.includes(v)) out.push(v);
+  }
+  if (fields && typeof fields.VAR === 'string' && !out.includes(fields.VAR)) out.push(fields.VAR);
+  const inputs = state.inputs as Record<string, { block?: Record<string, unknown> }> | undefined;
+  if (inputs) {
+    for (const inp of Object.values(inputs)) {
+      if (inp && inp.block) collectStateVariables(inp.block, out);
+    }
+  }
+  const next = state.next as { block?: Record<string, unknown> } | undefined;
+  if (next && next.block) collectStateVariables(next.block, out);
 }
 
 /** 构建 ctrl_iterate 循环块 state（BODY 预填用）。 */
@@ -933,31 +1000,58 @@ function iterateState(times: number, varName = 'i', bodyBlocks?: Blockly.seriali
 
 /** 模板注册表：type → 默认函数名 + 参数信息（供 call 块下拉和参数同步用）。
  * 同时是模板清单的唯一事实源（生成器/面板从此派生）。 */
-export interface TemplateInfo { name: string; paramName: string; paramType: string; category: string }
+export interface TemplateInfo {
+  name: string; paramName: string; paramType: string; category: string;
+  /** 多参数模板参数表（如 ML-KEM-Encaps：ek + m）。单参数模板缺省用 paramName/paramType。 */
+  params?: { name: string; type: string }[];
+}
 export const TEMPLATE_REGISTRY: Record<string, TemplateInfo> = {};
 
 function _makeTemplateBlock(
-  presetName: string, paramName: string, paramType: string, label: string,
+  presetName: string, paramName: string | { name: string; type: string }[], paramType: string, label: string,
   category: string,
 ): void {
-  TEMPLATE_REGISTRY[presetName] = { name: presetName, paramName, paramType, category };
+  const paramsArr = Array.isArray(paramName)
+    ? paramName
+    : [{ name: paramName, type: paramType }];
+  TEMPLATE_REGISTRY[presetName] = {
+    name: presetName,
+    paramName: paramsArr[0].name,
+    paramType: paramsArr[0].type,
+    category,
+    params: paramsArr.length > 1 ? paramsArr : undefined,
+  };
   const msg = Blockly.Msg as Record<string, string>;
   Blockly.Blocks[presetName] = {
     init: function () {
       const funcNameField = new Blockly.FieldTextInput(presetName);
       funcNameField.setValidator(identifierValidator);
       funcNameField.setSpellcheck(false);
-      const paramNameField = new Blockly.FieldTextInput(paramName);
-      paramNameField.setValidator(identifierValidator);
-      paramNameField.setSpellcheck(false);
       this.appendDummyInput('NAME_INPUT')
         .appendField(label)
         .appendField(funcNameField, 'FUNC_NAME');
-      this.appendDummyInput('PARAM_INPUT')
-        .appendField(msg.CRYPTO_PROCEDURES_PARAM_MSG || 'param:')
-        .appendField(paramNameField, 'PARAM_NAME')
-        .appendField(':')
-        .appendField(new Blockly.FieldDropdown(CRYPTO_PARAM_TYPES), 'PARAM_TYPE');
+      // 多参数模板：每参数一行 PARAM_NAME_i/PARAM_TYPE_i（生成器/syncCallParams 按字段存在性探测）
+      paramsArr.forEach((p, i) => {
+        const pf = new Blockly.FieldTextInput(p.name);
+        pf.setValidator(identifierValidator);
+        pf.setSpellcheck(false);
+        const row = this.appendDummyInput('PARAM_INPUT_' + i);
+        if (i === 0) row.appendField(msg.CRYPTO_PROCEDURES_PARAM_MSG || 'param:');
+        row.appendField(pf, 'PARAM_NAME_' + i)
+          .appendField(':')
+          .appendField(new Blockly.FieldDropdown(CRYPTO_PARAM_TYPES), 'PARAM_TYPE_' + i);
+      });
+      // 单参数模板：保留原生 PARAM_NAME/PARAM_TYPE 字段（call 同步/生成器兼容）
+      if (paramsArr.length === 1) {
+        const paramNameField = new Blockly.FieldTextInput(paramsArr[0].name);
+        paramNameField.setValidator(identifierValidator);
+        paramNameField.setSpellcheck(false);
+        this.appendDummyInput('PARAM_INPUT')
+          .appendField(msg.CRYPTO_PROCEDURES_PARAM_MSG || 'param:')
+          .appendField(paramNameField, 'PARAM_NAME')
+          .appendField(':')
+          .appendField(new Blockly.FieldDropdown(CRYPTO_PARAM_TYPES), 'PARAM_TYPE');
+      }
       this.appendStatementInput('BODY').setCheck(null).appendField(msg.CRYPTO_ITERATE_DO || 'Do');
       this.appendValueInput('RETURN').setCheck(null).appendField(msg.PROCEDURES_DEFRETURN_RETURN || '\u2699 return');
       this.setInputsInline(false);
@@ -1007,7 +1101,7 @@ function _makeTemplateBlock(
         return;
       }
       self.__prefilled = true;
-      injectPrefill(this as unknown as AnyBlock, TEMPLATE_PREFILL[presetName], paramName);
+      injectPrefill(this as unknown as AnyBlock, TEMPLATE_PREFILL[presetName], paramsArr[0].name);
     },
     // 预填标记随序列化持久化：保存→重载后 onchange 不再重复注入
     saveExtraState: function (this: Blockly.Block) {
@@ -1040,6 +1134,7 @@ _makeTemplateBlock('proc_hkdf', 'ikm', 'bytes', MSG.PROC_HKDF_LABEL || '🔧 HKD
 _makeTemplateBlock('proc_md_iterate', 'iv', 'int_list', MSG.PROC_MD_ITERATE_LABEL || '🔧 MD_Iterate', 'pqc');
 _makeTemplateBlock('proc_sponge_duplex', 'state', 'int_list', MSG.PROC_SPONGE_DUPLEX_LABEL || '🔧 Sponge_Duplex', 'pqc');
 _makeTemplateBlock('proc_mlkem_keygen', 'seed', 'seed', MSG.PROC_MLKEM_KEYGEN_LABEL || '🔧 ML_KEM_KeyGen', 'pqc');
+_makeTemplateBlock('proc_mlkem_encaps', [{ name: 'ek', type: 'bytes' }, { name: 'm', type: 'bytes' }], 'bytes', MSG.PROC_MLKEM_ENCAPS_LABEL || '🔧 ML_KEM_Encaps', 'pqc');
 _makeTemplateBlock('proc_zuc_keystream', 'key', 'bytes', MSG.PROC_ZUC_KEYSTREAM_LABEL || '🔧 ZUC_Keystream', 'pqc');
 _makeTemplateBlock('proc_mode_ecb', 'data', 'bytes', MSG.PROC_MODE_ECB_LABEL || '🔧 ECB', 'mode');
 _makeTemplateBlock('proc_mode_cbc', 'data', 'bytes', MSG.PROC_MODE_CBC_LABEL || '🔧 CBC', 'mode');

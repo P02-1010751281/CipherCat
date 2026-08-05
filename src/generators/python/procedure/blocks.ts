@@ -69,15 +69,31 @@ function generateCallreturnPy(block: Block): string {
 /** Generate Python for all template blocks. */
 export function generateTemplatePy(block: Block): string {
   const funcName = (block.getFieldValue('FUNC_NAME') as string) || 'my_cipher';
-  const paramName = (block.getFieldValue('PARAM_NAME') as string) || 'arg';
-  const paramType = (block.getFieldValue('PARAM_TYPE') as string) || 'bytes';
   const body = pythonGenerator.statementToCode(block, 'BODY') ||
     '# TODO: implement ' + funcName + ' algorithm\n';
-  const returnValue =
-    pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) || paramName;
+  const returnValue = pythonGenerator.valueToCode(block, 'RETURN', Order.NONE) ||
+    ((block.getFieldValue('PARAM_NAME') as string) || 'arg');
+  // statementToCode 已按 INDENT（2 空格）缩进，函数体需 4 空格 → 再补一层 INDENT
+  const bodyIndented = pythonGenerator.prefixLines(body, pythonGenerator.INDENT);
 
+  // 多参数模板：探测 PARAM_NAME_i（PARAM_NAME_0 存在即多参数，如 ML-KEM-Encaps 的 ek/m）
+  if (block.getField('PARAM_NAME_0') !== null) {
+    const params: string[] = [];
+    for (let i = 0; ; i++) {
+      const n = block.getFieldValue('PARAM_NAME_' + i);
+      if (n === null || n === undefined) break;
+      const t = (block.getFieldValue('PARAM_TYPE_' + i) as string) || 'bytes';
+      params.push(n + ': ' + (TYPE_MAP_PY[t] || t));
+    }
+    const retType = (block.getFieldValue('PARAM_TYPE_0') as string) || 'bytes';
+    const sig = 'def ' + funcName + '(' + params.join(', ') + ') -> ' + (TYPE_MAP_PY[retType] || retType) + ':'; 
+    return ['', sig, '    """', '    Crypto function: ' + funcName, '    """',
+      bodyIndented, '    return ' + returnValue, ''].join('\n');
+  }
+
+  const paramName = (block.getFieldValue('PARAM_NAME') as string) || 'arg';
+  const paramType = (block.getFieldValue('PARAM_TYPE') as string) || 'bytes';
   const typeHint = TYPE_MAP_PY[paramType] || paramType;
-  const bodyIndented = pythonGenerator.prefixLines(body, '    ');
 
   return [
     '',

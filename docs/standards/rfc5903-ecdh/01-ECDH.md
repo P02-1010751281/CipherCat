@@ -5,7 +5,7 @@
 双方各自持私钥 d 与对方公钥 Q，计算共享点 `S = [d]Q`；共享密钥取 S 的 x 坐标
 （大端，32 字节）。安全性基于 ECDLP：已知 (G, [d]G) 无法恢复 d。
 
-RFC 5903 §8.1 定义 IKE 使用的 P-256 曲线（SEC2 标准）参数：
+RFC 5903 §3.1 定义 IKE 使用的 P-256 曲线（256-Bit Random ECP Group）参数：
 
 ```
 p    = FFFFFFFF 00000001 00000000 00000000 00000000 FFFFFFFF FFFFFFFF FFFFFFFF

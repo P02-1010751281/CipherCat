@@ -6,31 +6,33 @@ FORS 一次性密钥对挂在最底层。签名 = FORS 签名 + 每层的 WOTS+ 
 
 ## 数据格式
 
-- 私钥（64B + 32B 随机化）：`SK.seed (n) ‖ SK.prf (n) ‖ PK.seed (n) ‖ PK.root (n)`
+- 私钥（4n）：`SK.seed (n) ‖ SK.prf (n) ‖ PK.seed (n) ‖ PK.root (n)`
   （FIPS 205 私钥含公钥两部分，使签名可随机化）
 - 公钥（2n）：`PK.seed ‖ PK.root`
 - 签名：`R (n) ‖ FORS 签名 ‖ HT 签名`
-  - `R = H_msg(PK.seed, PK.root, M, opt_rand)` 的随机化值
+  - `R = PRF_msg(SK.prf, opt_rand, M)` 的随机化值（Algorithm 19 L3）
+  - 消息摘要 `md = H_msg(R, PK.seed, PK.root, M)`（m 字节，Algorithm 19 L5）
   - HT 签名 = d 层 × (WOTS+ 签名 `len·n` + XMSS 认证路径 `h′·n`)
 
 ## 算法
 
-### KeyGen（Algorithm 20）
+### KeyGen（内部 Algorithm 18 §9.1 / 外部 slh_keygen Algorithm 21 §10.1）
 
 随机 SK.seed、SK.prf、PK.seed（各 n 字节）；计算第 d−1 层树的根 = PK.root。
 
-### Sign（Algorithm 21）
+### Sign（内部 Algorithm 19 §9.2 / 外部 slh_sign Algorithm 22）
 
 ```
 ADRS.setLayerAddress(0); ADRS.setTreeAddress(0)
-R ← H_msg(PK.seed, PK.root, M, opt_rand)          # 32m/8 字节消息摘要
-digest ← 取 R 前 k·a 位                                        # FORS 选叶
+R ← PRF_msg(SK.prf, opt_rand, M)                 # 随机化值，n 字节
+md ← H_msg(R, PK.seed, PK.root, M)               # 消息摘要，m 字节
+digest ← md[0 : ⌈k·a/8⌉]                          # FORS 选叶
 FORS 签名 ← FORS.SigGen(SK.seed, digest, ADRS(FORS_TREE))
 HT 签名 ← 对 d 层 XMSS 子树逐层签名（每层 WOTS+ 密钥对由 SK.seed 派生）
 返回 (R, FORS 签名, HT 签名)
 ```
 
-### Verify（Algorithm 22）
+### Verify（内部 Algorithm 20 §9.3 / 外部 slh_verify Algorithm 24）
 
 由 (R, FORS 签名) 重建 FORS 根 → 作为第 0 层 WOTS+ 消息 → 逐层验证认证路径
 → 最终根与 PK.root 比对。**与签名侧计算路径完全对称**（可验证性来自 Merkle 树

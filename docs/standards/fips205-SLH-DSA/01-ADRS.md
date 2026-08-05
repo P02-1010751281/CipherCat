@@ -25,8 +25,8 @@ offset  大小  字段
 | 2 | TREE | tree height (4B) ‖ tree index (4B) |
 | 3 | FORS_TREE | tree height (4B) ‖ tree index (4B) |
 | 4 | FORS_ROOTS | 保留 (8B) |
-| 5 | WOTS_PRF | key pair 地址 (4B) ‖ 保留 (4B) |
-| 6 | FORS_PRF | key pair 地址 (4B) ‖ 保留 (4B) |
+| 5 | WOTS_PRF | chain 地址 (4B) ‖ hash 地址 (4B，=0) |
+| 6 | FORS_PRF | tree height (4B，=0) ‖ tree index (4B) |
 
 ## CipherCat 块实现
 

@@ -43,7 +43,7 @@ csum 拆为 len2 = 3 个 base-w 数字（MSB 在前）
 
 ### wots_pkGen / wots_sign / wots_pkFromSig
 
-- 私钥元素 `sk[i] = PRF(SK.seed, ADRS(WOTS_PRF, kp, i))`
+- 私钥元素 `sk[i] = PRF(PK.seed, SK.seed, ADRS(WOTS_PRF, kp, i))`
 - 签名：`sig[i] = chain(sk[i], 0, msg[i])`（消息数字 + 校验和数字各走一条链）
 - 公钥：所有链终点 `chain(sk[i], 0, w−1)` 再压缩 `pk = Tℓ(ADRS(WOTS_PK, kp))`
 

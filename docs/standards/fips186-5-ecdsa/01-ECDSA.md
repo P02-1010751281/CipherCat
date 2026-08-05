@@ -489,10 +489,10 @@ Example: 01101 ⊕ 11010 = 10111
 / Division
 a || b The concatenation of two strings a and b. Either a and b are both
 bit strings, or both are byte strings.
-a The ceiling of a: the smallest integer that is greater than or equal to
-a. For example, 5 = 5, 5.3 = 6, and –2.1 = –2.
-a The floor of a; the largest integer that is less than or equal to a. For
-example, 5 = 5, 5.3 = 5, and –2.1 = −3.
+⌈a⌉ The ceiling of a: the smallest integer that is greater than or equal to
+a. For example, ⌈5⌉ = 5, ⌈5.3⌉ = 6, and ⌈–2.1⌉ = –2.
+⌊a⌋ The floor of a; the largest integer that is less than or equal to a. For
+example, ⌊5⌋ = 5, ⌊5.3⌋ = 5, and ⌊–2.1⌋ = −3.
 |a| The absolute value of a; |a| is – a if a < 0; otherwise, it is simply a.
 For example, |2| = 2, and |–2| = 2.
 [a, b] The interval of integers between and including a and b. For
@@ -1002,7 +1002,7 @@ Process:
 1. Compute H = Hash(M) using the established hash function or XOF where the bit string H
 has hashlen bits.
 2. Derive the integer e from H as follows:
-a. If len(n) ≥ hashlen, set E = H. Otherwise, set E equal to the leftmost log2(n) bits of
+a. If len(n) ≥ hashlen, set E = H. Otherwise, set E equal to the leftmost ⌈log2(n)⌉ bits of
 H.
 b. Convert the bit string E to the integer e as specified in Appendix B.2.1.
 3. Generate a per-message secret number k, 0 < 𝑘 < 𝑛, for domain parameters D following
@@ -1047,8 +1047,8 @@ verification fails.
 2. Compute H = Hash(M) using the established hash function or XOF where the bit string H
 has hashlen bits.
 3. Derive the integer e from H as follows:
-a. If log2(𝑛) ≥ hashlen, set E = H. Otherwise, set E equal to the leftmost
-log2(𝑛) bits of H.
+a. If ⌈log2(𝑛)⌉ ≥ hashlen, set E = H. Otherwise, set E equal to the leftmost
+⌈log2(𝑛)⌉ bits of H.
 a. Convert the bit string E to the integer e as specified in Appendix B.2.1.
 4. Compute s−1
 mod n using the routine in Appendix B.1.
@@ -1931,8 +1931,8 @@ B.2.3.
 with modulus n.
 1.3 Form seed_material by concatenating the octet string of the private key d with
 the octet string of the Hash H.
-1.4 Key = 0x00 00...00, where Key is 8 × hashlen / 8 bits in length.
-1.5 V = 0x01 0x01...0x01 where V is 8 × hashlen / 8 bits in length.
+1.4 Key = 0x00 00...00, where Key is 8 × ⌈hashlen / 8⌉ bits in length.
+1.5 V = 0x01 0x01...0x01 where V is 8 × ⌈hashlen / 8⌉ bits in length.
 1.6 Key = HMAC(Key, V || 0x00 || seed_material).
 1.7 V = HMAC(Key, V).
 1.8 Key = HMAC(Key, V || 0x01 || seed_material).
@@ -2050,7 +2050,7 @@ Process:
 1. Verify that a and z are positive integers such that z < a; if not, return an ERROR
 indication.
 2. Set i = a, j = z, y2 = 0, and y1 = 1.
-3. quotient = i/j.
+3. quotient = ⌊i/j⌋.
 4. remainder = i – ( j × quotient).
 5. y = y2 – (y1 × quotient).
 6. Set i = j, j = remainder, y2 = y1, and y1 = y.
@@ -2332,7 +2332,7 @@ Process:
 1. Set n, such that 2n
 > C ≥ 2(n−1)
 .
-2. m = n/2.
+2. m = ⌈n/2⌉.
 3. i = 0.
 4. Select X0, such that 2m
 > X0 ≥ 2(m−1)
@@ -2344,15 +2344,15 @@ Process:
 Until (Xi)2
 < 2m
 + C.
-6. If C =  Xi  2
+6. If C = ⌊ Xi ⌋ 2
 , then
 status = PERFECT SQUARE.
 Else
 status = NOT A PERFECT SQUARE.
 7. Return status.
 Notes:
-1. By starting with X0 > (1/2)Sqrt(C), X0 − Sqrt(C)is guaranteed to be less than X0. This
-inequality is maintained in step 5; i.e., Xi − Sqrt(C)< Xi for all i.
+1. By starting with X0 > (1/2)Sqrt(C), ‖X0 − Sqrt(C)‖is guaranteed to be less than X0. This
+inequality is maintained in step 5; i.e., ‖Xi − Sqrt(C)‖< Xi for all i.
 2. For i ≥ 1, 0 ≤ Xi − Sqrt(C) = (Xi–1 − Sqrt(C))2
 / (2 Xi–1) < X0/2i
 .
@@ -2445,7 +2445,7 @@ pseudorandom integer c of length bits.
 6. c = 2length – 1
 + (c mod 2length – 1
 ).
-7. c = (2 × c / 2 ) + 1.
+7. c = (2 × ⌊c / 2⌋ ) + 1.
 Comment: The next steps set prime to the
 least odd integer greater than or equal to c.
 8. prime_gen_counter = prime_gen_counter + 1.
@@ -2457,10 +2457,10 @@ can be tested by trial division. See Appendix B.7.
 11.2 Return (SUCCESS, prime, prime_seed {, prime_gen_counter}).
 12. If (prime_gen_counter > (4 × length)), then return (FAILURE, 0, 0 {, 0}).
 13. Go to step 5.
-14. (status, c0, prime_seed, prime_gen_counter) = (ST_Random_Prime (( length / 2 +
+14. (status, c0, prime_seed, prime_gen_counter) = (ST_Random_Prime (( ⌈length / 2⌉ +
 1), input_seed).
 15. If FAILURE is returned, return (FAILURE, 0, 0 {, 0}).
-16. iterations = length / hashlen – 1.
+16. iterations = ⌈length / hashlen⌉ – 1.
 17. old_counter = prime_gen_counter.
 Comment: Steps 18 through 21 generate a
 pseudorandom integer x in the interval
@@ -2480,10 +2480,10 @@ candidate prime c in the interval [2length – 1
 ,
 2length
 ].
-22. t = x / (2c0).
+22. t = ⌈x / (2c0)⌉.
 23. If (2tc0 + 1 > 2length
-), then t = 2length – 1
-/ (2c0).
+), then t = ⌈2length – 1
+/ (2c0)⌉.
 24. c = 2tc0 + 1.
 25. prime_gen_counter = prime_gen_counter + 1.
 Comment: The remaining steps test the
@@ -2631,7 +2631,7 @@ p1 and p2 have appropriate sizes.
 Regardless of the bit-lengths selected for p1 and p2, the quantity p − 1 will have a prime divisor
 p0 whose bit-length is slightly more than half that of p. In addition, the quantity p0 −1 will have a
 prime divisor whose bit-length is slightly more than half that of p0.
-This algorithm requires that N1 + N2 ≤ L – L/2 – 4. Values for N1 and N2 should be chosen such
+This algorithm requires that N1 + N2 ≤ L – ⌈L/2⌉ – 4. Values for N1 and N2 should be chosen such
 that N1 + N2 ≤ (L/2) – log2(L) – 7 to ensure that the algorithm can generate as many as 5L distinct
 candidates for p.
 Let Hash be the selected hash function to be used, and let hashlen be the length (in bits) of each
@@ -2675,7 +2675,7 @@ generation routine in Appendix B.6 to obtain p1 and p2seed.
 5.1 Using N2 as the length and p2seed as the input_seed, use the random prime
 generation routine in Appendix B.6 to obtain p2 and p0seed.
 5.2 If FAILURE is returned, then return (FAILURE, 0, 0, 0, 0).
-6. Using L / 2 + 1 as the length and p0seed as the input_seed, use the random prime
+6. Using ⌈L / 2⌉ + 1 as the length and p0seed as the input_seed, use the random prime
 generation routine in Appendix B.6 to obtain p0 and pseed. If FAILURE is returned,
 then return (FAILURE, 0, 0, 0, 0).
 Comment: Generate a (strong) prime p in
@@ -2683,7 +2683,7 @@ the interval [( 2 )(2L−1
 ), 2L
 −1].
 7. If GCD(p0p1, p2) ≠ 1, then return (FAILURE, 0, 0, 0, 0).
-8. iterations = L / hashlen −1.
+8. iterations = ⌈L / hashlen⌉ −1.
 9. pgen_counter = 0.
 Comment: Generate pseudo-random x in the
 interval [( 2 )(2L−1
@@ -2694,19 +2694,19 @@ interval [( 2 )(2L−1
 x = x + (Hash(pseed + i))× 2i × hashlen
 .
 12. pseed = pseed + iterations + 1.
-13. x = ( 2 )(2L−1
-) + ( x mod (2L
-− ( )(2L−1
-) ) ).
+13. x = ⌊( 2 )(2L−1
+)⌋ + ( x mod (2L
+− ⌊( )(2L−1
+)⌋ ) ).
 Comment: Generate a candidate for the
 prime p.
 14. Compute y in the interval [1, p2] such that (y p0 p1 – 1) = 0 mod p2 (the inverse
 algorithm of B.1 may be used).
-15. t = ((2y p0 p1) + x)/(2p0 p1 p2).
+15. t = ⌈((2y p0 p1) + x)/(2p0 p1 p2)⌉.
 16. If ((2(t p2 − y) p0 p1 + 1) > 2L
 ), then
-t = ( (2y p0 p1) + ( )(2L−1
-) ) / (2p0 p1 p2).
+t = ⌈( (2y p0 p1) + ⌊( )(2L−1
+)⌋ ) / (2p0 p1 p2)⌉.
 Comment: p satisfies
 0 = (p–1)mod (2p0 p1) and
 0 = (p+1)mod p2.
@@ -2750,7 +2750,7 @@ Using [26], it is possible to compute an upper bound for 𝑝𝑘,𝑡 as a func
 an upper bound can be computed for t as a function of k and ptarget, the maximum allowed
 probability of accidentally generating a composite number. The following is an algorithm for
 computing t:
-1. For t = 1, 2 … –log2(ptarget)/2
+1. For t = 1, 2 … ⌈–log2(ptarget)/2⌉
 1.1 For M = 3, 4 … ⌊2√(k−1) − 1⌋ (1)
 1.1.1 Compute 𝑝𝑘,𝑡 as in (2).
 1.1.2 If pk,t ≤ ptarget
@@ -2770,7 +2770,7 @@ former may be more important to a party responsible for validating the primality
 generated by someone else. However, for sufficiently large k (e.g., k ≥ 51), it can be shown that
 pk,t ≤ 4–t
 under the same assumptions concerning the selection of candidates as those made to
-obtain formula (2) (see [26]). In such cases, t = –log2(ptarget)/2 rounds of Miller-Rabin testing
+obtain formula (2) (see [26]). In such cases, t = ⌈–log2(ptarget)/2⌉ rounds of Miller-Rabin testing
 can be used to both generate and validate primes with ptarget serving as an upper bound on both
 the probability that the generation process yields a composite number and the probability that a
 composite number would survive an attempt to validate its primality.

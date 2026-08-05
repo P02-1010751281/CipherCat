@@ -21,7 +21,7 @@ Additional Information
 
 NIST Special Publication 800
 1
-NIST SP 800-232 ipd
+
 2
 Ascon-Based Lightweight Cryptography
 3
@@ -51,7 +51,7 @@ https://doi.org/10.6028/NIST.SP.800-232.ipd
 
 NIST Special Publication 800
 16
-NIST SP 800-232 ipd
+
 17
 Ascon-Based Lightweight Cryptography
 18
@@ -88,7 +88,7 @@ National Institute of Standards and Technology
 Laurie E. Locascio, NIST Director and Under Secretary of Commerce for Standards and Technology
 31
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Certain equipment, instruments, software, or materials, commercial or non-commercial, are identified in this
 32
@@ -160,10 +160,10 @@ Jinkeon Kang, John Kelsey (2024) Ascon-Based Lightweight Cryptography Standards 
 65
 Devices. (National Institute of Standards and Technology, Gaithersburg, MD),NIST Special Publication (SP)
 66
-NIST SP 800-232 ipd. https://doi.org/10.6028/NIST.SP.800-232.ipd
+. https://doi.org/10.6028/NIST.SP.800-232.ipd
 67
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Author ORCID iDs
 68
@@ -200,7 +200,7 @@ including related content, potential updates, and document history.
 All comments are subject to release under the Freedom of Information Act (FOIA).
 84
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Abstract
 85
@@ -262,7 +262,7 @@ and its collaborative activities with industry, government, and academic organiz
 113
 i
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Call for Patent Claims
 114
@@ -320,7 +320,7 @@ Such statements should be addressed to: SP800-232-comments@list.nist.gov
 140
 ii
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Table of Contents
 141
@@ -380,7 +380,7 @@ A.1. Conversion Functions ... ................ ... ... ... ................ ... 
 168
 iii
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 A.2. Implementingwith Integers ..... ... ... ... ... ... .......... ... ... ... ... ... ........ 32
 169
@@ -388,7 +388,7 @@ Appendix B. Determination of the Initial Values.................................
 170
 iv
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 List of Tables
 171
@@ -448,7 +448,7 @@ Figure 9. Mappingbetween state words,bytes,andbits .. ... ... ... ............. 
 198
 v
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Figure 10. Representation of the Ascon state as 64-bit unsigned integers, byte se-
 199
@@ -456,7 +456,7 @@ quences,andbitstrings .... ... ... ... ... ............. ... ... ... ... .......
 200
 vi
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Acknowledgments
 201
@@ -476,7 +476,7 @@ Ross and Sara Kerman, who provided technical and administrative support.
 208
 vii
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 1. Introduction
 209
@@ -550,7 +550,7 @@ adoption. The final portfolio of the competition was announced in February 2019.
 see https://competitions.cr.yp.to/caesar.html.
 1
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 1. Permutations. The Ascon submission defined three Ascon permutations having 6,
 242
@@ -628,7 +628,7 @@ security properties. Appendix A provides additional notes and conversion functio
 278
 2
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 implementations. Appendix B provides additional information regarding the construction
 279
@@ -636,7 +636,7 @@ of initial values.
 280
 3
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 2. Preliminaries
 281
@@ -671,7 +671,7 @@ Courier New font.
 bit string A finite, ordered sequence of bits.
 4
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Table 2. Terms and definitions
 Term Definition
@@ -706,7 +706,7 @@ sub-string of a specified length.
 width The state size of the underlying permutation.
 5
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Table 3 lists the notations used in this standard.
 284
@@ -755,7 +755,7 @@ Message
 𝑝 ,𝑝 ,𝑝 Constant-addition, substitution and linear layers of the round function 𝑝
 6
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Table 4 lists the basic operations and functions used in this standard.
 285
@@ -792,7 +792,7 @@ index 𝑗, inclusive. When 𝑖 > 𝑗, 𝑋 is the empty string. When
 𝑥 is equal to 𝑦, false otherwise.
 7
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 0x Hexadecimal notation
 int64(𝑥) 64-bit representation of integer 𝑥.
@@ -833,7 +833,7 @@ Output: padded bitstring 𝑋′
 return 𝑋′
 8
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 3. Ascon Permutations
 294
@@ -886,7 +886,7 @@ where const ,…,const are defined in Table 5. The constant-addition layer 𝑝 
 | 317 | | | 2 | 2 | 𝑖 |
 9
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Table 5. The constants const to derive round constants of the Ascon permutations
 𝑖
@@ -942,7 +942,7 @@ in Table 6.
 327
 10
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 y
 x
@@ -983,7 +983,7 @@ SBOX(𝑥) 1e 13 7 e 0 d 11 18 10 c 1 19 16 a f 17
 Note that 5-bit inputs are represented in hexadecimal, (e.g., 𝑥 =1 corresponds to (0,0,0,0,1)).
 11
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 4. Authenticated Encryption Scheme: Ascon-AEAD128
 331
@@ -1043,7 +1043,7 @@ S is initialized as
 352
 12
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Algorithm 3 Ascon-AEAD128.enc(𝐾,𝑁,𝐴,𝑃 )
 Input: 128-bit key 𝐾; 128-bit nonce 𝑁; Associated data 𝐴; Plaintext 𝑃
@@ -1084,7 +1084,7 @@ S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S ⊕(0128 ‖𝐾 ‖064)) ▷ Finalization
 return 𝐶,𝑇
 13
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 where the initialization value 𝐼𝑉 is assigned to 0x00001000808c0001 (see Ap-
 353
@@ -1146,7 +1146,7 @@ using Algorithm 1. When |𝑃 | mod 128 = 0, the last block 𝑃̃
 is empty.
 14
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 For each 𝑃 , 0 ≤ 𝑖 ≤ 𝑛−1, the state S is updated as follows:
 381
@@ -1190,7 +1190,7 @@ The pseudocode of Ascon-AEAD128.dec is provided in Algorithm 4.
 406
 15
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Algorithm 4 Ascon-AEAD128.dec(𝐾,𝑁,𝐴,𝐶,𝑇 )
 Input: 128-bit key 𝐾; 128-bit nonce 𝑁; Associated data 𝐴; Ciphertext 𝐶; 128-bit tag 𝑇
@@ -1231,7 +1231,7 @@ return fail
 end if
 16
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 IV∥K∥N
 Figure 6. Ascon-AEAD128 decryption
@@ -1319,7 +1319,7 @@ S ← (S ⊕ 𝐴 ), (36)
 426 [0∶127] [0∶127] 𝑖
 17
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 and the permutation 𝐴𝑠𝑐𝑜𝑛-𝑝[8] is applied to the state as
 427
@@ -1366,7 +1366,7 @@ the plaintext 𝑃 is returned. Otherwise, an error message fail is returned.
 455
 18
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 4.2. Implementation Options
 456
@@ -1430,7 +1430,7 @@ the same across the life-span of the key.
 486
 19
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 R4. Limit on the maximum number of decryption failures. When the tag bit length
 487
@@ -1500,7 +1500,7 @@ for the confidentiality of the plaintext and the integrity of the tuple of (nonc
 519
 20
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 data, ciphertext, tag), where the total number of input bytes for all 𝑢 keys is limited to 254
 520
@@ -1567,7 +1567,7 @@ Integrity of (𝑁,𝐴,𝐶,𝑇) min{128 − log (𝑢),𝜆} ≤ 28
 2
 21
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 5. Hash and Extendable Output Functions
 547
@@ -1642,7 +1642,7 @@ Integrity of (𝑁,𝐴,𝐶,𝑇) min{128 − log (𝑢),𝜆} ≤ 28
 2
 22
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 2. Absorbing the message. The absorbing phase behaves similarly to the associated
 565
@@ -1681,7 +1681,7 @@ The resulting 256-bit digest is the concatenation of hash blocks as
 587
 23
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Algorithm 5 Ascon-Hash256(𝑀)
 Input: Bitstring 𝑀 ∈ {0,1}∗
@@ -1708,7 +1708,7 @@ end for
 return 𝐻
 24
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 5.2. Specification of Ascon-XOF128
 589
@@ -1766,7 +1766,7 @@ S ← 𝐴𝑠𝑐𝑜𝑛-𝑝[12](S) (67)
 615
 25
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 The value of S is then taken as output block 𝐻 , and the state is again updated
 616
@@ -1822,7 +1822,7 @@ end for
 return 𝐻
 26
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 IV∥0256
 Figure 8. Structure of Ascon-CXOF128
@@ -1904,7 +1904,7 @@ The security strengths of Ascon-Hash256, Ascon-XOF128, and Ascon-CXOF128 are sum
 marized in Table 9.
 27
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Algorithm 7 Ascon-CXOF128(𝑀, 𝐿, 𝑍)
 Input: Bitstring 𝑀 ∈{0,1}∗ ; Output length 𝐿 >0; customization string 𝑍 ∈ {0,1}∗, where
@@ -1945,7 +1945,7 @@ end for
 return 𝐻
 28
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Table 9. Security strengths of Ascon-Hash256, Ascon-XOF128, and Ascon-CXOF128
 algorithms
@@ -2019,7 +2019,7 @@ DOI:10.6028/NIST.IR.8369
 678
 29
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 [11] Sönmez Turan M, Mc Kay KA, Chang D, Bassham L, Kang J, Waller N, Kelsey J, Hong
 679
@@ -2085,7 +2085,7 @@ key extension. Information Security and Privacy -29th Australasian Conference, A
 709
 30
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Appendix A. Implementation Notes
 710
@@ -2142,7 +2142,7 @@ bitstring is the least significant bit of the integer (or byte).
 735
 31
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Table 10. Address for each byte of Ascon state word 𝑆 in memory on little-endian and
 𝑖
@@ -2210,7 +2210,7 @@ Domain Separation Bit. The hexadecimal integer form of the domain separation bit
 0x8000000000000000. Therefore, the addition of this bit into the state may be imple-
 32
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 | State | State | | Word value (64-bit unsigned integers) |
 | ---------- | ------ | --- | -------------------------------------- | ------------------- |
@@ -2265,7 +2265,7 @@ modes of operation. Note that 64-bit integers and bitstrings only appear to be r
 the visual representation.
 33
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Table 11. Examples of padding an unsigned integer 𝑥 to a 64-bit block, where 𝑥 encodes a
 sequence of bytes each having value 0xFF in little-endian byte order.
@@ -2311,7 +2311,7 @@ the key addition at the end of the initialization phase may be written as:
 4 4
 34
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 the key addition at the beginning of the finalization phase can be expressed as:
 𝑆 ←𝑆 ⊕ 0x0706050403020100
@@ -2325,7 +2325,7 @@ and the key addition at the end of finalization can be implemented as:
 4 4
 35
 
-NIST SP 800-232 ipd (Initial Public Draft)
+ (Initial Public Draft)
 November 2024
 Appendix B. Determination of the Initial Values
 756

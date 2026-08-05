@@ -1,0 +1,370 @@
+{
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "procedures_defreturn",
+    "id": "tf_01",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "m",
+       "id": "tidx_param_m",
+       "type": "bytes"
+      },
+      {
+       "name": "i",
+       "id": "tidx_param_i",
+       "type": "int"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "FLI"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "fors_leaf_index",
+       "id": "tf_01_b",
+       "inputs": {
+        "M": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_m_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_m"
+           }
+          }
+         }
+        },
+        "I": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_i_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_i"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "ta_02",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "leaves",
+       "id": "tidx_param_leaves",
+       "type": "bytes"
+      },
+      {
+       "name": "leaf_len",
+       "id": "tidx_param_leaf_len",
+       "type": "int"
+      },
+      {
+       "name": "adrs",
+       "id": "tidx_param_adrs",
+       "type": "bytes"
+      },
+      {
+       "name": "idx",
+       "id": "tidx_param_idx",
+       "type": "int"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "AP"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "merkle_auth_path",
+       "id": "ta_02_b",
+       "inputs": {
+        "LEAVES": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_leaves_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_leaves"
+           }
+          }
+         }
+        },
+        "LEAF_LEN": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_leaf_len_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_leaf_len"
+           }
+          }
+         }
+        },
+        "ADRS": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_adrs_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_adrs"
+           }
+          }
+         }
+        },
+        "INDEX": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_idx_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_idx"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "tr_03",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "leaves",
+       "id": "tidx_param_leaves",
+       "type": "bytes"
+      },
+      {
+       "name": "leaf_len",
+       "id": "tidx_param_leaf_len",
+       "type": "int"
+      },
+      {
+       "name": "adrs",
+       "id": "tidx_param_adrs",
+       "type": "bytes"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "MR"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "merkle_root",
+       "id": "tr_03_b",
+       "inputs": {
+        "LEAVES": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_leaves_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_leaves"
+           }
+          }
+         }
+        },
+        "LEAF_LEN": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_leaf_len_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_leaf_len"
+           }
+          }
+         }
+        },
+        "ADRS": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_adrs_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_adrs"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "tn_04",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "l",
+       "id": "tidx_param_l",
+       "type": "bytes"
+      },
+      {
+       "name": "r",
+       "id": "tidx_param_r",
+       "type": "bytes"
+      },
+      {
+       "name": "adrs",
+       "id": "tidx_param_adrs",
+       "type": "bytes"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "MN"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "merkle_node",
+       "id": "tn_04_b",
+       "inputs": {
+        "LEFT": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_l_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_l"
+           }
+          }
+         }
+        },
+        "RIGHT": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_r_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_r"
+           }
+          }
+         }
+        },
+        "ADRS": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_adrs_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_adrs"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "td_05",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "layer",
+       "id": "tidx_param_layer",
+       "type": "int"
+      },
+      {
+       "name": "tree",
+       "id": "tidx_param_tree",
+       "type": "int"
+      },
+      {
+       "name": "leaf",
+       "id": "tidx_param_leaf",
+       "type": "int"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "Addr"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "slh_addr",
+       "id": "td_05_b",
+       "fields": {
+        "TYPE": "0"
+       },
+       "inputs": {
+        "LAYER": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_layer_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_layer"
+           }
+          }
+         }
+        },
+        "TREE": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_tree_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_tree"
+           }
+          }
+         }
+        },
+        "LEAF": {
+         "block": {
+          "type": "variables_get",
+          "id": "tidx_param_leaf_g",
+          "fields": {
+           "VAR": {
+            "id": "tidx_param_leaf"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+}

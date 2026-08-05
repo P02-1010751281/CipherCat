@@ -79,6 +79,30 @@ function registerHashBased(): string {
     '    }',
     '    return level[0];',
     '  }',
+    '  function merkleAuthPath(leaves, leafLen, adrs, idx) {',
+    '    let b = toBytes(leaves);',
+    '    let n = b.length / leafLen;',
+    '    let level = [];',
+    '    for (let i = 0; i < n; i++) level.push(b.slice(i * leafLen, (i + 1) * leafLen));',
+    '    let auth = [];',
+    '    let h = 0;',
+    '    while (level.length > 1) {',
+    '      auth.push(level[(idx >> h) ^ 1]);',
+    '      let next = [];',
+    '      for (let i = 0; i < level.length; i += 2) next.push(h32(adrs, level[i], level[i + 1]));',
+    '      level = next;',
+    '      h++;',
+    '    }',
+    '    let total = 0; for (let p of auth) total += p.length;',
+    '    let out = new Uint8Array(total); let o = 0;',
+    '    for (let p of auth) { out.set(p, o); o += p.length; }',
+    '    return out;',
+    '  }',
+    '  function forsLeafIndex(m, i) {',
+    '    m = toBytes(m);',
+    '    let mv = (m[0] << 8) | m[1];',
+    '    return (mv >> (12 - 4 * i)) & 0xF;',
+    '  }',
     '  function slhAddr(layer, tree, leaf, type) {',
     '    let a = new Uint8Array(32);',
     '    a[0] = layer & 0xFF;',
@@ -88,7 +112,7 @@ function registerHashBased(): string {
     '    return a;',
     '  }',
     '  function forsRoot(roots, adrs) { return h32(adrs, roots); }',
-    '  return { hashChain: hashChain, merkleLeaf: merkleLeaf, merkleNode: merkleNode, merkleRoot: merkleRoot, slhAddr: slhAddr, forsRoot: forsRoot };',
+    '  return { hashChain: hashChain, merkleLeaf: merkleLeaf, merkleNode: merkleNode, merkleRoot: merkleRoot, merkleAuthPath: merkleAuthPath, forsLeafIndex: forsLeafIndex, slhAddr: slhAddr, forsRoot: forsRoot };',
     '}',
   ]);
 }
@@ -137,4 +161,20 @@ javascriptGenerator.forBlock['fors_root'] = function (block: Block): [string, nu
   const adrs = javascriptGenerator.valueToCode(block, 'ADRS', Order.ATOMIC) || '[]';
   const fn = registerHashBased();
   return [fn + '().forsRoot(' + roots + ', ' + adrs + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['merkle_auth_path'] = function (block: Block): [string, number] {
+  const leaves = javascriptGenerator.valueToCode(block, 'LEAVES', Order.ATOMIC) || '[]';
+  const leafLen = javascriptGenerator.valueToCode(block, 'LEAF_LEN', Order.ATOMIC) || '32';
+  const adrs = javascriptGenerator.valueToCode(block, 'ADRS', Order.ATOMIC) || '[]';
+  const idx = javascriptGenerator.valueToCode(block, 'INDEX', Order.ATOMIC) || '0';
+  const fn = registerHashBased();
+  return [fn + '().merkleAuthPath(' + leaves + ', ' + leafLen + ', ' + adrs + ', ' + idx + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['fors_leaf_index'] = function (block: Block): [string, number] {
+  const m = javascriptGenerator.valueToCode(block, 'M', Order.ATOMIC) || '[]';
+  const i = javascriptGenerator.valueToCode(block, 'I', Order.ATOMIC) || '0';
+  const fn = registerHashBased();
+  return [fn + '().forsLeafIndex(' + m + ', ' + i + ')', Order.ATOMIC];
 };

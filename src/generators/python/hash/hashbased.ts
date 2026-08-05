@@ -33,6 +33,21 @@ function registerHashBased(): string {
     '        while len(level) > 1:',
     '            level = [h32(adrs, level[i], level[i + 1]) for i in range(0, len(level), 2)]',
     '        return level[0]',
+    '    def merkle_auth_path(leaves, leaf_len, adrs, idx):',
+    '        # 认证路径：自底向上每层取目标叶子索引 idx 的兄弟（与 merkle_root 同组合约定）',
+    '        b = to_bytes(leaves)',
+    '        level = [b[i * leaf_len:(i + 1) * leaf_len] for i in range(len(b) // leaf_len)]',
+    '        auth = []',
+    '        h = 0',
+    '        while len(level) > 1:',
+    '            auth.append(level[(idx >> h) ^ 1])',
+    '            level = [h32(adrs, level[i], level[i + 1]) for i in range(0, len(level), 2)]',
+    '            h += 1',
+    '        return b"".join(auth)',
+    '    def fors_leaf_index(m, i):',
+    '        # FORS 选叶：消息 M 的第 i 个 4-bit 块（块 0 最高位，与 fors_sign 同约定）',
+    '        m = to_bytes(m)',
+    '        return (int.from_bytes(m, "big") >> (12 - 4 * i)) & 0xF',
     '    def slh_addr(layer, tree, leaf, typ):',
     '        a = bytearray(32)',
     '        a[0] = layer & 0xFF',
@@ -42,7 +57,7 @@ function registerHashBased(): string {
     '        return bytes(a)',
     '    def fors_root(roots, adrs):',
     '        return h32(adrs, roots)',
-    '    return {"hash_chain": hash_chain, "merkle_leaf": merkle_leaf, "merkle_node": merkle_node, "merkle_root": merkle_root, "slh_addr": slh_addr, "fors_root": fors_root}',
+    '    return {"hash_chain": hash_chain, "merkle_leaf": merkle_leaf, "merkle_node": merkle_node, "merkle_root": merkle_root, "merkle_auth_path": merkle_auth_path, "fors_leaf_index": fors_leaf_index, "slh_addr": slh_addr, "fors_root": fors_root}',
     '',
   ]);
 }
@@ -91,4 +106,20 @@ pythonGenerator.forBlock['fors_root'] = function (block: Block): [string, number
   const adrs = pythonGenerator.valueToCode(block, 'ADRS', Order.ATOMIC) || '[]';
   const fn = registerHashBased();
   return [fn + '()["fors_root"](' + roots + ', ' + adrs + ')', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['merkle_auth_path'] = function (block: Block): [string, number] {
+  const leaves = pythonGenerator.valueToCode(block, 'LEAVES', Order.ATOMIC) || 'b\'\'';
+  const leafLen = pythonGenerator.valueToCode(block, 'LEAF_LEN', Order.ATOMIC) || '32';
+  const adrs = pythonGenerator.valueToCode(block, 'ADRS', Order.ATOMIC) || 'b\'\'';
+  const idx = pythonGenerator.valueToCode(block, 'INDEX', Order.ATOMIC) || '0';
+  const fn = registerHashBased();
+  return [fn + '()["merkle_auth_path"](' + leaves + ', ' + leafLen + ', ' + adrs + ', ' + idx + ')', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['fors_leaf_index'] = function (block: Block): [string, number] {
+  const m = pythonGenerator.valueToCode(block, 'M', Order.ATOMIC) || 'b\'\'';
+  const i = pythonGenerator.valueToCode(block, 'I', Order.ATOMIC) || '0';
+  const fn = registerHashBased();
+  return [fn + '()["fors_leaf_index"](' + m + ', ' + i + ')', Order.ATOMIC];
 };

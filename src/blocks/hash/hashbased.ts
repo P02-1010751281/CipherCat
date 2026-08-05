@@ -18,6 +18,8 @@ export const HASHBASED_BLOCK_TYPES = [
   'merkle_leaf',
   'merkle_node',
   'merkle_root',
+  'merkle_auth_path',
+  'fors_leaf_index',
   'slh_addr',
   'fors_root',
 ] as const;
@@ -165,5 +167,53 @@ Blockly.Blocks['fors_root'] = {
       'FORS 森林根：R = H(adrs ‖ root_0 ‖ ... ‖ root_{k-1})——k 棵 FORS 树根拼接后哈希。SPHINCS+ 少时签名（few-time signature）核心结构件（FIPS 205）',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.205.pdf');
+  },
+};
+
+/** Merkle 认证路径：全叶子 + 目标索引 → 每层兄弟拼接（与 merkle_root 同组合约定） */
+Blockly.Blocks['merkle_auth_path'] = {
+  init: function () {
+    this.appendValueInput('LEAVES')
+      .setCheck(TYPE_BYTES)
+      .appendField('MerkleAuthPath(leaves,');
+    this.appendValueInput('LEAF_LEN')
+      .setCheck(TYPE_NUMBER)
+      .appendField(' leafLen:');
+    this.appendValueInput('ADRS')
+      .setCheck(TYPE_BYTES)
+      .appendField(' adrs:');
+    this.appendValueInput('INDEX')
+      .setCheck(TYPE_NUMBER)
+      .appendField(' idx:');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_BYTES);
+    this.setColour(HASH_BASED_COLOUR);
+    this.setTooltip(
+      'Merkle 认证路径：自底向上每层取目标叶子索引 idx 的兄弟节点（h32(ADRS‖L‖R) 组合），' +
+        '输出按层拼接（h × leafLen 字节）。与 merkle_root 同约定——leaf + auth 可重建根（Merkle 证明）。',
+    );
+    this.setHelpUrl(FIPS205_URL);
+  },
+};
+
+/** FORS 选叶索引：消息 M 的第 i 个 4-bit 块（块 0 最高位，k=4/a=4）→ 叶子索引 0..15 */
+Blockly.Blocks['fors_leaf_index'] = {
+  init: function () {
+    this.appendValueInput('M')
+      .setCheck(TYPE_BYTES)
+      .appendField('FORSLeafIndex(');
+    this.appendValueInput('I')
+      .setCheck(TYPE_NUMBER)
+      .appendField(' block#:');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_NUMBER);
+    this.setColour(HASH_BASED_COLOUR);
+    this.setTooltip(
+      'FORS 选叶索引：消息 M（2 字节）按 4-bit 分块（块 0 最高位），第 I 块值即树内叶子索引。' +
+        '与 fors_sign 黑盒选叶同约定（FIPS 205 FORS.SigGen）。',
+    );
+    this.setHelpUrl(FIPS205_URL);
   },
 };

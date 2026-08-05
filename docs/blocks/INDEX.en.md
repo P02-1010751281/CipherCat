@@ -39,7 +39,7 @@
 | SP 800-90A | SP 800-90A (DRBG) | `sp800-90a-drbg/` |
 | SEC 2 | SEC 2 (ECC) | — |
 
-## By Category (browser-measured 2026-08-03, 17 toolbox categories)
+## By Category (browser-measured 2026-08-05, 17 toolbox categories)
 
 | Toolbox Category | Blocks | Doc |
 |------|------|------|
@@ -48,14 +48,14 @@
 | Data & Conversion | 20 | [data-encoding.md](data-encoding.en.md) |
 | Bitwise | 8 | [bitwise-logic.md](bitwise-logic.en.md) |
 | S-Box | 4 | [ecc-sbox.md](ecc-sbox.en.md) |
-| Hash & Padding | 26 | [hash.md](hash.en.md) |
+| Hash & Padding | 31 | [hash.md](hash.en.md) |
 | Symmetric Cipher | 18 | [symmetric.md](symmetric.en.md) |
-| Number Theory & KDF | 15 | [numtheory.md](numtheory.en.md) |
+| Number Theory & KDF | 37 | [numtheory.md](numtheory.en.md) |
 | Elliptic Curve | 19 | [ecc-sbox.md](ecc-sbox.en.md) |
 | ZUC Stream Cipher | 6 | [zuc.md](zuc.en.md) |
-| Post-Quantum Basic | 9 | [post-quantum.md](post-quantum.en.md) |
-| Post-Quantum Advanced | 4 | [post-quantum.md](post-quantum.en.md) |
-| Function Wrapping | 3+ (28 templates) | — |
+| Post-Quantum Basic | 10 | [post-quantum.md](post-quantum.en.md) |
+| Post-Quantum Advanced | 9 | [post-quantum.md](post-quantum.en.md) |
+| Function Wrapping | 3+ (29 templates) | — |
 | Crypto Templates | dynamic (after Manager add) | — |
 
 > Note: NTT blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`) are listed in both "Number Theory" and "Post-Quantum" block docs; after dedup the toolbox holds **139 custom blocks** across 17 categories (see `ALL_BLOCK_TYPES` in `src/blocks/index.ts`). Counts measured 2026-08-05.

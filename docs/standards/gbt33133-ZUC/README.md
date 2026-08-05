@@ -29,3 +29,7 @@
 ## 实现状态
 
 已实现：`src/blocks/zuc/` 6 块（S0/S1/L1/L2/F 原子块 + zuc_keystream 完整块）+ `proc_zuc_keystream` 模板（🔧 ZUC_Keystream），demo 见 `demos/procedures/EEA3.json`。搭建方法见上方指南。
+
+> ⚠️ 扫描版 PDF 提取：本目录拆分/提取文件来自扫描版 PDF 的 OCR 文本层，
+> 数学公式的上下标与特殊符号可能丢失/粘连（如 SM3/SM4 已修复核心公式区）；
+> 精确公式以目录内 PDF 原文为准。

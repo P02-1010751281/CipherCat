@@ -36,3 +36,7 @@
 | `sm3_hash` | SM3 哈希 (签名/加密需要) |
 
 Demo：`demos/procedures/SM2-PointMul.json` · `SM2-Sign.json` · `SM2-Encrypt.json`。
+
+> ⚠️ 扫描版 PDF 提取：本目录拆分/提取文件来自扫描版 PDF 的 OCR 文本层，
+> 数学公式的上下标与特殊符号可能丢失/粘连（如 SM3/SM4 已修复核心公式区）；
+> 精确公式以目录内 PDF 原文为准。

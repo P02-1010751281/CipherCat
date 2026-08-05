@@ -1,7 +1,7 @@
 # 积木块标准依据参考
 
 
-**版本**: 2.14 | **日期**: 2026-08-03 | **总块数**: 138（另有 28 个函数模板）
+**版本**: 2.15 | **日期**: 2026-08-05 | **总块数**: 139（另有 29 个函数模板）
 
 ## 图例
 
@@ -20,6 +20,10 @@
 || FIPS 202 | FIPS 202 (SHA-3) | `fips202-SHA3/` |
 || FIPS 203 | FIPS 203 (ML-KEM) | `fips203-ML-KEM/` |
 || FIPS 204 | FIPS 204 (ML-DSA) | `fips204-ML-DSA/` |
+|| FIPS 205 | FIPS 205 (SLH-DSA) | `fips205-SLH-DSA/` |
+|| McEliece | McEliece / Goppa 码 | `mceliece-goppa/` |
+|| RFC 8017 | RFC 8017 (PKCS#1 RSA) | `rfc8017-pkcs1/` |
+|| RFC 5903 | RFC 5903 (ECDH) | `rfc5903-ecdh/` |
 || GM/T 0002 | GB/T 32907 (SM4) | `gbt32907-SM4/` |
 || GM/T 0004 | GB/T 32905 (SM3) | `gbt32905-SM3/` |
 || GB/T 33133 | GB/T 33133 (ZUC) | `gbt33133-ZUC/` |

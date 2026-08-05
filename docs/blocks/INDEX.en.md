@@ -1,7 +1,7 @@
 # Block Standard-Basis Reference
 
 
-**Version**: 2.14 | **Date**: 2026-08-03 | **Total blocks**: 138 (plus 28 function templates)
+**Version**: 2.15 | **Date**: 2026-08-05 | **Total blocks**: 139 (plus 29 function templates)
 
 ## Legend
 
@@ -20,6 +20,10 @@
 | FIPS 202 | FIPS 202 (SHA-3) | `fips202-SHA3/` |
 | FIPS 203 | FIPS 203 (ML-KEM) | `fips203-ML-KEM/` |
 | FIPS 204 | FIPS 204 (ML-DSA) | `fips204-ML-DSA/` |
+| FIPS 205 | FIPS 205 (SLH-DSA) | `fips205-SLH-DSA/` |
+| McEliece | McEliece / Goppa codes | `mceliece-goppa/` |
+| RFC 8017 | RFC 8017 (PKCS#1 RSA) | `rfc8017-pkcs1/` |
+| RFC 5903 | RFC 5903 (ECDH) | `rfc5903-ecdh/` |
 | GM/T 0002 | GB/T 32907 (SM4) | `gbt32907-SM4/` |
 | GM/T 0004 | GB/T 32905 (SM3) | `gbt32905-SM3/` |
 | GB/T 33133 | GB/T 33133 (ZUC) | `gbt33133-ZUC/` |
@@ -54,4 +58,4 @@
 | Function Wrapping | 3+ (28 templates) | — |
 | Crypto Templates | dynamic (after Manager add) | — |
 
-> Note: NTT blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`) are listed in both "Number Theory" and "Post-Quantum" block docs; after dedup the toolbox holds **138 custom blocks** across 17 categories (see `ALL_BLOCK_TYPES` in `src/blocks/index.ts`). Counts are flyout-measured on 2026-08-03.
+> Note: NTT blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`) are listed in both "Number Theory" and "Post-Quantum" block docs; after dedup the toolbox holds **139 custom blocks** across 17 categories (see `ALL_BLOCK_TYPES` in `src/blocks/index.ts`). Counts measured 2026-08-05.

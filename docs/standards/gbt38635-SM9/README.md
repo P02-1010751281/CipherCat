@@ -19,3 +19,7 @@ SM9 基于双线性对 (Weil/Tate pairing)，实现复杂度极高。
 需 BN 曲线或 SM9 曲线上的 pairing 运算。
 
 Demo：`demos/procedures/SM9-Sign.json`（`sm9_master_key` · `sm9_user_key` · `sm9_sign` · `sm9_verify`）。
+
+> ⚠️ 扫描版 PDF 提取：本目录拆分/提取文件来自扫描版 PDF 的 OCR 文本层，
+> 数学公式的上下标与特殊符号可能丢失/粘连（如 SM3/SM4 已修复核心公式区）；
+> 精确公式以目录内 PDF 原文为准。

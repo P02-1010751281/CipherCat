@@ -110,6 +110,8 @@
 | `slh_addr` / `slh_adrs_full` | ADRS 地址（SHAKE 域分隔） |
 
 > 教学点：FORS 是"少时"签名——每对密钥只签少量消息；SPHINCS+ 用 Merkle 树聚合大量 WOTS+/FORS 密钥成树根。FORS 无独立官方向量（FIPS 205 KAT 为完整 SLH-DSA），性质向量覆盖。
+>
+> **相关标准**：[standards/fips205-SLH-DSA/](../standards/fips205-SLH-DSA/)（FIPS 205 全算法索引 + ADRS/WOTS+/FORS 分解）。
 
 ---
 
@@ -138,3 +140,5 @@
 | `gf2_poly_*` / `bin_mat_*` / `ham_*` | GF(2) 多项式 / 二进制矩阵 / 汉明量 |
 
 > 教学点：特征 2 域中 syndrome 的**对数导数恒等式** S = σ′/σ 使错误定位子可解；Patterson 的扩展欧几里得迭代与 Frobenius 开方是数据依赖算法（黑盒承担），syndrome 侧原子链展示数学入口。
+>
+> **相关标准**：[standards/mceliece-goppa/](../standards/mceliece-goppa/)（McEliece/Goppa 码全算法索引 + 码构造/Patterson 译码分解）。

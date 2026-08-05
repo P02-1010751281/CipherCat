@@ -110,6 +110,8 @@ Understand the FORS (Forest of Random Subsets) part of SPHINCS+: k Merkle trees,
 | `slh_addr` / `slh_adrs_full` | ADRS addressing (SHAKE domain separation) |
 
 > Teaching point: FORS is a *few-time* scheme — each key signs few messages; SPHINCS+ aggregates many WOTS+/FORS keys under Merkle trees. FORS has no standalone official vectors (FIPS 205 KATs are full SLH-DSA); property vectors cover it.
+>
+> **Related standard**: [standards/fips205-SLH-DSA/](../standards/fips205-SLH-DSA/) (FIPS 205 full algorithm index + ADRS/WOTS+/FORS breakdown).
 
 ---
 
@@ -138,3 +140,5 @@ Understand the coding-based foundation: Goppa code construction (GF(2^m) coeffic
 | `gf2_poly_*` / `bin_mat_*` / `ham_*` | GF(2) polynomials / binary matrices / Hamming |
 
 > Teaching point: in characteristic 2 the **logarithmic-derivative identity** S = σ′/σ makes the error locator solvable; Patterson's extended-Euclid iteration and Frobenius square root are data-dependent (black box), while the syndrome chain shows the mathematical entry with atomic blocks.
+>
+> **Related standard**: [standards/mceliece-goppa/](../standards/mceliece-goppa/) (McEliece/Goppa full algorithm index + code construction / Patterson decoding breakdown).

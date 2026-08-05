@@ -541,29 +541,29 @@ specified; in Section A.2.3, the formatting of P is specified.
 12
 
 A.2.1 Formatting of the Control Information and the Nonce
-The  leading  octet  of  the  first  block  of  the  formatting,  B ,  contains  four  flags  for  control
+The leading octet of the first block of the formatting, B , contains four flags for control
 0
 B
 information: two single bits, called Reserved and Adata, and two strings of three bits, to encode
-the values t and q.  The encoding of t is [(t-2)/2] , and the encoding of q is [q-1] .  Thus, for
-example, if the MAC length is 8 octets, then t is encoded as 011.  Note that the encoding 000 in
-both cases does not correspond to a permitted value of t or q.  The Reserved bit is reserved to
-enable future extensions of the formatting; it shall be set to ‘0’.  The Adata bit is ‘0’ if a=0 and
-‘1’ if a>0.  The ordering of the flags within the octet is given in Table 1.
+the values t and q. The encoding of t is [(t-2)/2] , and the encoding of q is [q-1] . Thus, for
+example, if the MAC length is 8 octets, then t is encoded as 011. Note that the encoding 000 in
+both cases does not correspond to a permitted value of t or q. The Reserved bit is reserved to
+enable future extensions of the formatting; it shall be set to ‘0’. The Adata bit is ‘0’ if a=0 and
+‘1’ if a>0. The ordering of the flags within the octet is given in Table 1.
 Table 1: Formatting of the Flags Octet in B
 0
 B
-| Bit number | 7 | 6 | 5 | 4  3 | 2 | 1 | 0 |
+| Bit number | 7 | 6 | 5 | 4 3 | 2 | 1 | 0 |
 | ----------- | --------- | ------ | --------- | ----- | --- | ----- |
-| Contents | Reserved | Adata | [(t-2)/2] |  |  | [q-1] |
+| Contents | Reserved | Adata | [(t-2)/2] | | | [q-1] |
 The remaining 15 octets of the first block of the formatting are devoted to the nonce and the
 binary representation of the message length in q octets, as given in Table 2.
 Table 2: Formatting of B
 B 0
-|  | Octet number |  | 0 | 1 ... 15-q | 16-q ... 15 |
+| | Octet number | | 0 | 1 ... 15-q | 16-q ... 15 |
 | ----------------- | ------------- | --- | ----- | ----------- | ----------- |
-|  | Contents |  | Flags | N | Q |
-| For example, if B | 0  is |
+| | Contents | | Flags | N | Q |
+| For example, if B | 0 is |
 B
 01101110 00010011 11010100 10100011 01011101 01110001 10100101 00000000
 00000000 00000000 00000000 00000000 00000000 00000000 01000100 00000001:
@@ -573,15 +573,15 @@ B
 3
 00000000 00000000 01000100 00000001.
 56
-• The  octet  length  of  N  is  8  (because  n=15-q  and  q=7),  so  N=00010011  11010100
+• The octet length of N is 8 (because n=15-q and q=7), so N=00010011 11010100
 10100011 01011101 01110001 10100101 00000000 00000000.
 A.2.2 Formatting of the Associated Data
 If a=0, as indicated by the Adata field in the first octet of B , then there are no blocks devoted to
 0 B
-the associated data in the formatted data.  If a>0, then a is encoded as described below, and the
+the associated data in the formatted data. If a>0, then a is encoded as described below, and the
 encoding of a is concatenated with the associated data A, followed by the minimum number of
 ‘0’ bits, possibly none, such that the resulting string can be partitioned into 16-octet blocks.
-These blocks are denoted in the formatted data as B , B , … B  for some positive integer u that
+These blocks are denoted in the formatted data as B , B , … B for some positive integer u that
 depends on a.
 The value a is encoded according to the following three cases:
 13
@@ -596,34 +596,34 @@ For example, if a=216, the encoding of a is 11111111 11111110 00000000 00000001 
 The formatting of distinct sets of associated data will not overlap, because for distinct values of
 a, the leading bits of the encodings of a are distinct: in the first case, the first octet will not be
 0xff as it will for the second and third cases; the second and third cases can be distinguished by
-the second octet.  Encodings that are not specified in these three cases are reserved, e.g., when
+the second octet. Encodings that are not specified in these three cases are reserved, e.g., when
 the first two octets are 0x0000, 0xff00, 0xff01, etc.
 The associated data blocks, if any, are followed in the sequence of formatted blocks by the
-payload blocks.  The payload is concatenated with the minimum number of ‘0’ bits, possibly
+payload blocks. The payload is concatenated with the minimum number of ‘0’ bits, possibly
 none, such that the result can be partitioned into 16-octet blocks. These blocks are denoted in the
-| formatted data as B |  | , B | … B | , where r=u+⎡p |  | 16⎤. |
+| formatted data as B | | , B | … B | , where r=u+⎡p | | 16⎤. |
 | ------------------- | --- | --- | ---- | -------------- | --- | ----- |
-|  |  | u+1 | u+2 | r |
-A.3  Formatting of the Counter Blocks
+| | | u+1 | u+2 | r |
+A.3 Formatting of the Counter Blocks
 The counter generation function in this section is equivalent to a formatting of the counter index i
-into a complete data block.  The counter blocks Ctr are formatted as shown in Table 3 below.
+into a complete data block. The counter blocks Ctr are formatted as shown in Table 3 below.
 i
 Table 3: Formatting of Ctr
 i
-|  | Octet number: |  |  | 0 |  |  | 1 ... 15-q | 16-q ... 15 |
+| | Octet number: | | | 0 | | | 1 ... 15-q | 16-q ... 15 |
 | --- | -------------- | --- | --- | ------ | --- | --- | ----------- | ----------- |
-|  | Contents: |  |  | Flags |  |  | N | [i] |
+| | Contents: | | | Flags | | | N | [i] |
 8q
 Within each block Ctr, the Flags field is formatted as shown in Table 4 below.
 i
 Table 4: Formatting of the Flags Field in Ctr
 i
-| Bit number |  |  | 7 |  | 6 |  | 5  4 | 3  2 | 1  0 |
+| Bit number | | | 7 | | 6 | | 5 4 | 3 2 | 1 0 |
 | ----------- | --- | --- | --------- | --- | --------- | --- | ----- | ----- | ----- |
-| Contents |  |  | Reserved |  | Reserved |  | 0  0 | 0 | [q-1] |
+| Contents | | | Reserved | | Reserved | | 0 0 | 0 | [q-1] |
 3
 The Reserved bits are reserved for future expansions and shall be set to 0. Bits 3, 4, and 5 shall
-also be set to 0, to ensure that all the counter blocks are distinct from B  (as specified in A.2.1
+also be set to 0, to ensure that all the counter blocks are distinct from B (as specified in A.2.1
 0
 B
 0
@@ -812,21 +812,21 @@ f0f1f2f3 f4f5f6f7 f8f9fafb fcfdfeff
 ...
 P: 20212223 24252627 28292a2b 2c2d2e2f
 30313233 34353637 38393a3b 3c3d3e3f
-B: 71101112 13141516 1718191a 1b1c0020 (cid:1004)(cid:1011)(cid:882)(cid:1006)(cid:1004)(cid:882)(cid:1006)(cid:1004)(cid:1004)(cid:1011)(cid:855)
-fffe0001 00000001 02030405 06070809 (cid:100)(cid:346)(cid:286)(cid:3)(cid:448)(cid:258)(cid:367)(cid:437)(cid:286)(cid:3)(cid:381)(cid:296)(cid:3)(cid:393)(cid:258)(cid:396)(cid:258)(cid:373)(cid:286)(cid:410)(cid:286)(cid:396)(cid:3)(cid:17)(cid:3)
-0a0b0c0d 0e0f1011 12131415 16171819 (cid:346)(cid:258)(cid:400)(cid:3)(cid:271)(cid:286)(cid:286)(cid:374)(cid:3)(cid:272)(cid:381)(cid:396)(cid:396)(cid:286)(cid:272)(cid:410)(cid:286)(cid:282)(cid:3)(cid:271)(cid:455)(cid:3)
-1a1b1c1d 1e1f2021 22232425 26272829 (cid:258)(cid:282)(cid:282)(cid:349)(cid:374)(cid:336)(cid:3)(cid:410)(cid:346)(cid:286)(cid:3)(cid:296)(cid:349)(cid:374)(cid:258)(cid:367)(cid:3)(cid:410)(cid:449)(cid:381)(cid:3)(cid:367)(cid:349)(cid:374)(cid:286)(cid:400)(cid:3)(cid:381)(cid:296)(cid:3)
+B: 71101112 13141516 1718191a 1b1c0020 
+fffe0001 00000001 02030405 06070809 
+0a0b0c0d 0e0f1011 12131415 16171819 
+1a1b1c1d 1e1f2021 22232425 26272829 
 ...
-(cid:346)(cid:286)(cid:454)(cid:258)(cid:282)(cid:286)(cid:272)(cid:349)(cid:373)(cid:258)(cid:367)(cid:3)(cid:448)(cid:258)(cid:367)(cid:437)(cid:286)(cid:400)(cid:855)(cid:3)
+
 dadbdcdd dedfe0e1 e2e3e4e5 e6e7e8e9
 eaebeced eeeff0f1 f2f3f4f5 f6f7f8f9
-(cid:21)(cid:19)(cid:21)(cid:20)(cid:17)(cid:17)(cid:17)(cid:21)(cid:72)(cid:21)(cid:73)
+
 fafbfcfd feff0000 00000000 00000000
-20212223 24252627 28292a2b 2c2d2e2f (cid:22)(cid:19)(cid:22)(cid:20)(cid:17)(cid:17)(cid:17)(cid:22)(cid:72)(cid:22)(cid:73)
+20212223 24252627 28292a2b 2c2d2e2f 
 30313233 34353637 38393a3b 3c3d3e3f
-(cid:100)(cid:346)(cid:349)(cid:400)(cid:3)(cid:349)(cid:400)(cid:3)(cid:410)(cid:346)(cid:286)(cid:3)(cid:381)(cid:374)(cid:367)(cid:455)(cid:3)(cid:272)(cid:346)(cid:258)(cid:374)(cid:336)(cid:286)(cid:3)(cid:410)(cid:381)(cid:3)
-(cid:410)(cid:346)(cid:286)(cid:3)(cid:381)(cid:396)(cid:349)(cid:336)(cid:349)(cid:374)(cid:258)(cid:367)(cid:3)(cid:68)(cid:258)(cid:455)(cid:3)(cid:1006)(cid:1004)(cid:1004)(cid:1008)(cid:3)
-(cid:396)(cid:286)(cid:367)(cid:286)(cid:258)(cid:400)(cid:286)(cid:3)(cid:381)(cid:296)(cid:3)(cid:410)(cid:346)(cid:349)(cid:400)(cid:3)(cid:393)(cid:437)(cid:271)(cid:367)(cid:349)(cid:272)(cid:258)(cid:410)(cid:349)(cid:381)(cid:374)(cid:856)
+
+
+
 19
 
 T: f4dd5d0e e4046172 25ffe34f ce91

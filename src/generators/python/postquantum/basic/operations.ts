@@ -43,3 +43,12 @@ pythonGenerator.forBlock['pq_seed_with_nonce'] = function (
   const funcName = registerSeedWithNonce();
   return [funcName + '(' + seed + ', ' + nonce + ')', Order.ATOMIC];
 };
+
+/** 拒绝采样：X < BOUND 接受返回 X，否则 -1（内联，无需闭包） */
+pythonGenerator.forBlock['pq_rej_sample'] = function (
+  block: Block,
+): [string, number] {
+  const x = pythonGenerator.valueToCode(block, 'X', Order.ATOMIC) || '0';
+  const bound = pythonGenerator.valueToCode(block, 'BOUND', Order.ATOMIC) || '0';
+  return ['((' + x + ') if (' + x + ') < (' + bound + ') else -1)', Order.ATOMIC];
+};

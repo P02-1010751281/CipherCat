@@ -14,13 +14,14 @@
  *
  * 参考: FIPS 203 — https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
  */
-import { TYPE_BYTES } from '@/constants/block-types';
+import { TYPE_BYTES, TYPE_NUMBER } from '@/constants/block-types';
 import * as Blockly from 'blockly/core';
 
 export const BASIC_OPERATIONS_BLOCK_TYPES = [
   'pq_byte_concat',
   'pq_bytes_slice',
   'pq_seed_with_nonce',
+  'pq_rej_sample',
 ] as const;
 
 export type BasicOperationsBlockType =
@@ -73,5 +74,23 @@ Blockly.Blocks['pq_seed_with_nonce'] = {
         'and CBD vector sampling (Alg 14 step 5/8). (FIPS 203)',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf');
+  },
+};
+
+/** Rejection sampling（ML-DSA RejBounded 单值版）：X < BOUND 接受，否则拒绝返回 -1 */
+Blockly.Blocks['pq_rej_sample'] = {
+  init: function () {
+    this.appendValueInput('X').setCheck(null).appendField('RejSample(');
+    this.appendValueInput('BOUND').setCheck(null).appendField(' < ');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_NUMBER);
+    this.setColour(190);
+    this.setTooltip(
+      'RejSample(X, BOUND): 拒绝采样（ML-DSA RejBoundedPoly 单系数）。' +
+        'X < BOUND 接受返回 X；否则拒绝返回 -1（表示需重试采样）。' +
+        'ML-DSA 用均匀采样 γ1 域/eta 域系数（FIPS 204 Alg 13/14）。',
+    );
+    this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf');
   },
 };

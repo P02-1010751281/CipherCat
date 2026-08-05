@@ -20,6 +20,7 @@ Blockly.Blocks['nt_mod_pow'] = { init: function(this: B) {
     .appendField(', mod ')
     .appendField(new Blockly.FieldDropdown([
       ['3329 (Kyber)', '3329'],
+      ['8380417 (ML-DSA)', '8380417'],
       ['12289 (NewHope)', '12289'],
       ['65537', '65537'],
       ['1000000007', '1000000007'],

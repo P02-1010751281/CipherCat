@@ -36,3 +36,10 @@ javascriptGenerator.forBlock['pq_seed_with_nonce'] = function(block: Block): [st
   const funcName = registerSeedWithNonce();
   return [`${funcName}(${seed}, ${nonce})`, Order.ATOMIC];
 };
+
+/** 拒绝采样：X < BOUND 接受返回 X，否则 -1（内联，无需闭包） */
+javascriptGenerator.forBlock['pq_rej_sample'] = function(block: Block): [string, number] {
+  const x = javascriptGenerator.valueToCode(block, 'X', Order.ATOMIC) || '0';
+  const bound = javascriptGenerator.valueToCode(block, 'BOUND', Order.ATOMIC) || '0';
+  return [`(${x} < ${bound} ? ${x} : -1)`, Order.ATOMIC];
+};

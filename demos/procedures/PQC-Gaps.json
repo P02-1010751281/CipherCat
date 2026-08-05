@@ -1,0 +1,480 @@
+{
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "procedures_defreturn",
+    "id": "g_rej",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "x",
+       "id": "gap_param_x",
+       "type": "int"
+      },
+      {
+       "name": "b",
+       "id": "gap_param_b",
+       "type": "int"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "REJ"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "pq_rej_sample",
+       "id": "g_rej_b",
+       "inputs": {
+        "X": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_x_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_x"
+           }
+          }
+         }
+        },
+        "BOUND": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_b_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_b"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "g_pm",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "a",
+       "id": "gap_param_a",
+       "type": "int_list"
+      },
+      {
+       "name": "b",
+       "id": "gap_param_b",
+       "type": "int_list"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "PM"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "pq_poly_mul",
+       "id": "g_pm_b",
+       "inputs": {
+        "A": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_a_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_a"
+           }
+          }
+         }
+        },
+        "B": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_b_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_b"
+           }
+          }
+         }
+        }
+       },
+       "fields": {
+        "MODULUS": "none"
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "g_pmq",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "a",
+       "id": "gap_param_a",
+       "type": "int_list"
+      },
+      {
+       "name": "b",
+       "id": "gap_param_b",
+       "type": "int_list"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "PMQ"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "pq_poly_mul",
+       "id": "g_pmq_b",
+       "inputs": {
+        "A": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_a_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_a"
+           }
+          }
+         }
+        },
+        "B": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_b_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_b"
+           }
+          }
+         }
+        }
+       },
+       "fields": {
+        "MODULUS": "8380417"
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "g_at",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "layer",
+       "id": "gap_param_layer",
+       "type": "int"
+      },
+      {
+       "name": "tree",
+       "id": "gap_param_tree",
+       "type": "int"
+      },
+      {
+       "name": "kp",
+       "id": "gap_param_kp",
+       "type": "int"
+      },
+      {
+       "name": "h",
+       "id": "gap_param_h",
+       "type": "int"
+      },
+      {
+       "name": "idx",
+       "id": "gap_param_idx",
+       "type": "int"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "ADRS_TREE"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "slh_adrs_full",
+       "id": "g_at_b",
+       "inputs": {
+        "LAYER": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_layer_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_layer"
+           }
+          }
+         }
+        },
+        "TREE": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_tree_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_tree"
+           }
+          }
+         }
+        },
+        "KEYPAIR": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_kp_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_kp"
+           }
+          }
+         }
+        },
+        "HEIGHT": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_h_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_h"
+           }
+          }
+         }
+        },
+        "INDEX": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_idx_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_idx"
+           }
+          }
+         }
+        }
+       },
+       "fields": {
+        "TYPE": "3"
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "g_ar",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "layer",
+       "id": "gap_param_layer",
+       "type": "int"
+      },
+      {
+       "name": "tree",
+       "id": "gap_param_tree",
+       "type": "int"
+      },
+      {
+       "name": "kp",
+       "id": "gap_param_kp",
+       "type": "int"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "ADRS_ROOTS"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "slh_adrs_full",
+       "id": "g_ar_b",
+       "inputs": {
+        "LAYER": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_layer_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_layer"
+           }
+          }
+         }
+        },
+        "TREE": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_tree_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_tree"
+           }
+          }
+         }
+        },
+        "KEYPAIR": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_kp_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_kp"
+           }
+          }
+         }
+        },
+        "HEIGHT": {
+         "block": {
+          "type": "math_number",
+          "id": "g_ar_h",
+          "fields": {
+           "NUM": 0
+          }
+         }
+        },
+        "INDEX": {
+         "block": {
+          "type": "math_number",
+          "id": "g_ar_i",
+          "fields": {
+           "NUM": 0
+          }
+         }
+        }
+       },
+       "fields": {
+        "TYPE": "4"
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "g_wc",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "m",
+       "id": "gap_param_m",
+       "type": "bytes"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "WC"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "wots_checksum",
+       "id": "g_wc_b",
+       "inputs": {
+        "M": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_m_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_m"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "g_mp",
+    "x": 60,
+    "y": 60,
+    "extraState": {
+     "params": [
+      {
+       "name": "a",
+       "id": "gap_param_a",
+       "type": "int"
+      },
+      {
+       "name": "b",
+       "id": "gap_param_b",
+       "type": "int"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "MP"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "nt_mod_pow",
+       "id": "g_mp_b",
+       "inputs": {
+        "A": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_a_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_a"
+           }
+          }
+         }
+        },
+        "B": {
+         "block": {
+          "type": "variables_get",
+          "id": "gap_param_b_g",
+          "fields": {
+           "VAR": {
+            "id": "gap_param_b"
+           }
+          }
+         }
+        }
+       },
+       "fields": {
+        "MODULUS": "8380417"
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+}

@@ -4,6 +4,8 @@ export * from './sm3';
 export * from './shake';
 export * from './hashbased';
 export * from './fors';
+export * from './adrs';
+export * from './wots';
 
 import { SHA256_BLOCK_TYPES, type Sha256BlockType } from './sha256';
 import { SHA3_BLOCK_TYPES, type Sha3BlockType } from './sha3';
@@ -14,6 +16,8 @@ import {
   type HashBasedBlockType,
 } from './hashbased';
 import { FORS_BLOCK_TYPES, type ForsBlockType } from './fors';
+import { ADRS_BLOCK_TYPES, type AdrsBlockType } from './adrs';
+import { WOTS_BLOCK_TYPES, type WotsBlockType } from './wots';
 
 export const ALL_BLOCK_TYPES = [
   ...SHA256_BLOCK_TYPES,
@@ -22,6 +26,8 @@ export const ALL_BLOCK_TYPES = [
   ...SHAKE_BLOCK_TYPES,
   ...HASHBASED_BLOCK_TYPES,
   ...FORS_BLOCK_TYPES,
+  ...ADRS_BLOCK_TYPES,
+  ...WOTS_BLOCK_TYPES,
 ] as const;
 
 export type HashBlockType =
@@ -30,4 +36,6 @@ export type HashBlockType =
   | Sm3BlockType
   | ShakeBlockType
   | HashBasedBlockType
-  | ForsBlockType;
+  | ForsBlockType
+  | AdrsBlockType
+  | WotsBlockType;

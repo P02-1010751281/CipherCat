@@ -4,3 +4,5 @@ import './sm3';
 import './shake';
 import './hashbased';
 import './fors';
+import './adrs';
+import './wots';

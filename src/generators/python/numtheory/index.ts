@@ -9,3 +9,4 @@ import './codebased';
 import './multivariate';
 import './gf2mpoly';
 import './goppa';
+import './poly-mul';

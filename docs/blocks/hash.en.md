@@ -73,3 +73,28 @@
 | Block | Layer | Connection | Input→Output | Description |
 |----|----|------|----------|------|
 | `hash_hmac` | 1 | value(→) | Bytes&Bytes→Bytes | HMAC (SHA-256/SM3 selectable) |
+
+## Hash-Based Post-Quantum Structures (FIPS 205 / SPHINCS+)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `hash_chain` | 1 | value(→) | Bytes&Number→Bytes | WOTS+ hash chain cⁱ(x)=Hⁱ(x) (SHAKE-256 32B) |
+| `merkle_leaf` | 1 | value(→) | Bytes&Bytes→Bytes | leaf = H(ADRS‖MSG) |
+| `merkle_node` | 1 | value(→) | Bytes&Bytes&Bytes→Bytes | node = H(ADRS‖L‖R) |
+| `merkle_root` | 1 | value(→) | Bytes&Number&Bytes→Bytes | whole-tree root (leaf concatenation, power of 2) |
+| `merkle_auth_path` | 1 | value(→) | Bytes&Number&Bytes&Number→Bytes | auth path: sibling of target idx concatenated per level — Merkle proof core |
+| `fors_leaf_index` | 1 | value(→) | Bytes&Number→Number | FORS leaf selection: I-th 4-bit block of message → 0..15 (same convention as fors_sign) |
+| `slh_addr` | 1 | value(→) | Number&Number&Number&Number→Bytes | FIPS 205 ADRS 32B simplified (layer/tree/type/leaf) |
+| `slh_adrs_full` | 1 | value(→) | Number&Number&Number&Number&Number→Bytes | full ADRS: type dropdown 0-6 + type-dependent fields (WOTS_HASH uses chain/hash, TREE/FORS_TREE uses height/index) — SHAKE domain separation |
+| `fors_root` | 1 | value(→) | IntList&Bytes→Bytes | FORS forest root R=H(ADRS‖roots) |
+| `wots_checksum` | 1 | value(→) | Bytes→IntList | WOTS+ checksum (w=16, 4-bit blocks); message block ↑ → csum ↓ (forgery prevention) |
+
+## FORS Few-Time Signatures (FIPS 205 §8)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `fors_sign` | 1 | value(→) | Bytes&Bytes→Bytes | FORS.SigGen: sk_seed 32B + M 2B (k=4/a=4) → 640B signature (black box, full FORS closure) |
+| `fors_verify` | 1 | value(→) | Bytes&Bytes&Bytes→Boolean | PkFromSig semantics: rebuild root, compare to public key |
+| `fors_pk_from_sk` | 1 | value(→) | Bytes→Bytes | public key derivation (message-independent) |
+
+> Property vectors: determinism / sign-verify round-trip / tamper detection (FORS has no standalone official vectors; FIPS 205 KAT is the full SLH-DSA).

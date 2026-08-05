@@ -16,7 +16,7 @@ Pre-built Blockly workspace examples, all using **atomic blocks** (no convenienc
 
 ## Procedure-Wrapped Demos (official-vector verified)
 
-The demos below wrap atomic-block chains with `procedures_defreturn` (custom functions), **without using `proc_*` template blocks**; generated code (Python + JavaScript) passes official test vectors via `scripts/verify-demo.ts --exec` (25 vectors, see `demos/tests.json`):
+The demos below wrap atomic-block chains with `procedures_defreturn` (custom functions), **without using `proc_*` template blocks**; generated code (Python + JavaScript) passes official test vectors via `scripts/verify-demo.ts --exec` (55 vectors, see `demos/tests.json`):
 
 | Demo | File | Official vector |
 |------|------|----------|
@@ -44,6 +44,21 @@ The demos below wrap atomic-block chains with `procedures_defreturn` (custom fun
 | CCM | `procedures/CCM-Encrypt.json` | SP 800-38C Annex C Example 1-3 |
 | XTS | `procedures/XTS-Encrypt.json` | SP 800-38E + IEEE 1619-2007 |
 | ASCON | `procedures/ASCON.json` | SP 800-232 (ascon-c KAT 1089 cases) |
+
+## Procedure-Wrapped Demos (PQC math foundations / property-vector verification)
+
+The demos below are the PQC gap-fill batch outputs, verified dual-language with property vectors (mathematical identities / round-trips / determinism / tamper detection) — algorithms without official vectors or black-box algorithms use property assertions:
+
+| Demo | File | Property vectors |
+|------|------|----------|
+| ML-DSA signature primitives | `procedures/ML-DSA-Primitives.json` | P2R reversible `r=r1·2¹³+r0`, UseHint(MakeHint) theorem, InBall exactly 39 ±1 |
+| Coding-basis math | `procedures/Code-Based-Math.json` | GF(2) polynomial associativity / division-remainder rebuild / Euclid, A·A⁻¹=I, d=wt(x⊕y) |
+| Hash-based structures | `procedures/Hash-Based-Structures.json` | Chain(x,0)=x, semigroup property, 4-leaf tree root manual composition, ADRS 32B determinism |
+| FORS few-time signature | `procedures/FORS-Sign.json` | round-trip (Verify(Sign)=True), determinism, tamper detection, sig 640B / pk 32B |
+| GF(2^m) coefficient polynomials | `procedures/GF2m-Poly.json` | add zero element / commutativity / associativity, mul associativity, (a·b) mod b=0, Bezout identity, Goppa root check |
+| Goppa codes + Patterson | `procedures/Goppa-Decode.json` | G=[176,92,1] root check, inverse u·(z−α)≡1, syndrome atomic chain == known value, no-error / single-error / double-error round-trips, tampered G undecodable |
+| PQC gap fill | `procedures/PQC-Gaps.json` | Rej exclusive bound, convolution associative / commutative / distributive, mod 8380417 range, ADRS domain separation, WOTS csum monotonic, Fermat 2^(q-1)≡1 |
+| Merkle tree indexing | `procedures/Tree-Index.json` | FORS leaf-selection nibbles, leaf+auth rebuild root == whole-tree root (idx ∈ {0,1,3,5,7}) |
 
 ## Procedure-Wrapped Demos (structural / load-verified)
 

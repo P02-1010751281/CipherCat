@@ -15,7 +15,7 @@
 
 ## Procedure 封装 Demo（官方向量验证通过）
 
-以下 demos 用 `procedures_defreturn`（自定义函数）封装原子块链，**不使用 `proc_*` 模板块**；生成代码（Python + JavaScript）经 `scripts/verify-demo.ts --exec` 实测通过官方测试向量（25 项，见 `demos/tests.json`）：
+以下 demos 用 `procedures_defreturn`（自定义函数）封装原子块链，**不使用 `proc_*` 模板块**；生成代码（Python + JavaScript）经 `scripts/verify-demo.ts --exec` 实测通过官方测试向量（55 项向量，见 `demos/tests.json`）：
 
 | Demo | 文件 | 官方向量 |
 |------|------|----------|
@@ -43,6 +43,21 @@
 | CCM | `procedures/CCM-Encrypt.json` | SP 800-38C 附录 C Example 1-3 |
 | XTS | `procedures/XTS-Encrypt.json` | SP 800-38E + IEEE 1619-2007 |
 | ASCON | `procedures/ASCON.json` | SP 800-232（ascon-c KAT 1089 例） |
+
+## Procedure 封装 Demo（PQC 数学基础 / 性质向量验证）
+
+以下 demos 为后量子补全批次产物，用性质向量（数学恒等式 / 往返 / 确定性 / 篡改检测）双语言验证——无官方向量或黑盒算法用性质断言：
+
+| Demo | 文件 | 性质向量 |
+|------|------|----------|
+| ML-DSA 签名原语 | `procedures/ML-DSA-Primitives.json` | P2R 可逆 `r=r1·2¹³+r0`、UseHint(MakeHint) 定理、InBall 恰 39 个 ±1 |
+| 编码基数学 | `procedures/Code-Based-Math.json` | GF(2) 多项式结合/除余重建/欧几里得、A·A⁻¹=I、d=wt(x⊕y) |
+| 哈希基结构 | `procedures/Hash-Based-Structures.json` | Chain(x,0)=x、半群性、4 叶树根手工组合、ADRS 32B 确定性 |
+| FORS 少时签名 | `procedures/FORS-Sign.json` | 往返（Verify(Sign)=True）、确定性、篡改检测、sig 640B/pk 32B |
+| GF(2^m) 系数多项式 | `procedures/GF2m-Poly.json` | 加法零元/交换/结合、乘法结合律、(a·b) mod b=0、Bezout 恒等式、Goppa 根判定 |
+| Goppa 码 + Patterson | `procedures/Goppa-Decode.json` | G=[176,92,1] 根判定、逆元 u·(z−α)≡1、syndrome 原子链==已知值、无错/单错/双错往返、篡改 G 不可纠 |
+| PQC 缺口补全 | `procedures/PQC-Gaps.json` | Rej 边界排他、卷积结合/交换/分配、mod 8380417 范围、ADRS 域分隔、WOTS csum 单调、费马 2^(q-1)≡1 |
+| Merkle 树索引 | `procedures/Tree-Index.json` | FORS 选叶分块、leaf+auth 重建根 == 全树根（idx ∈ {0,1,3,5,7}） |
 
 ## Procedure 封装 Demo（结构展示 / 加载验证）
 

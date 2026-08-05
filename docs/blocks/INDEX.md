@@ -46,15 +46,15 @@
 | 数据处理与转换 | 20 | [data-encoding.md](data-encoding.md) |
 | 位运算单元 | 8 | [bitwise-logic.md](bitwise-logic.md) |
 | 非线性运算单元（S-Box） | 4 | [ecc-sbox.md](ecc-sbox.md) |
-| 哈希与填充单元 | 26 | [hash.md](hash.md) |
+| 哈希与填充单元 | 31 | [hash.md](hash.md) |
 | 对称密码 | 18 | [symmetric.md](symmetric.md) |
-| 数论与密钥推导单元 | 15 | [numtheory.md](numtheory.md) |
+| 数论与密钥推导单元 | 37 | [numtheory.md](numtheory.md) |
 | 椭圆曲线运算单元 | 19 | [ecc-sbox.md](ecc-sbox.md) |
 | 祖冲之序列密码 | 6 | [zuc.md](zuc.md) |
-| 后量子基础块 | 9 | [post-quantum.md](post-quantum.md) |
-| 后量子高级块 | 4 | [post-quantum.md](post-quantum.md) |
+| 后量子基础块 | 10 | [post-quantum.md](post-quantum.md) |
+| 后量子高级块 | 9 | [post-quantum.md](post-quantum.md) |
 | 函数封装空间 | 3+（28 模板） | — |
 | Crypto Templates | 动态（Manager 添加后） | — |
 | 函数封装 | [ecc-sbox.md](ecc-sbox.md) | 5 |
 
-> 注：NTT 变换块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`）在「数论 + 大数」与「后量子」文档中各列一次，去重后合计 138 个自定义积木块（见 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`）。2026-08-02 新增：ZUC 6 块 + CMAC/CCM/XTS/GCM/X25519/ASCON/HKDF/PBKDF2（SP 800-38B/C/D/E + RFC 7748/5869/8018 + SP 800-232）+ **签名/KDF/DRBG 族**：EdDSA 2（RFC 8032）、ECDSA 2（RFC 6979 确定性）、SM2 签名 2（GB/T 32918.2）、ML-DSA 2（FIPS 204）、SM9 4（GB/T 38635.2）、DRBG 1（SP 800-90A HMAC-DRBG）、Argon2 1（RFC 9106）、国密 RNG 1（GM/T 0103 框架 + SM3-HMAC-DRBG 实例化）；**RSA 5 块**（FIPS 186-4 密钥生成 + PKCS#1 v1.5 加解密/签名，RFC 8017，cryptography 交叉验证）——standards 缺口全部清零。
+> 注：NTT 变换块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_ntt_butterfly`）在「数论 + 大数」与「后量子」文档中各列一次，去重后合计 154 个自定义积木块（见 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`）。2026-08-05 PQC 补全批次新增 16 块：FORS 3（`fors_sign/verify/pk_from_sk`）+ GF(2^m) 系数多项式 5（`gf2m_poly_add/mul/mod/xgcd/eval`）+ `goppa_decode`（Patterson 译码）+ `arr_slice` + `pq_rej_sample` + `pq_poly_mul` + `slh_adrs_full` + `wots_checksum` + `merkle_auth_path` + `fors_leaf_index`；`nt_mod_pow` 模数下拉补 8380417（ML-DSA）。2026-08-02 新增：ZUC 6 块 + CMAC/CCM/XTS/GCM/X25519/ASCON/HKDF/PBKDF2（SP 800-38B/C/D/E + RFC 7748/5869/8018 + SP 800-232）+ **签名/KDF/DRBG 族**：EdDSA 2（RFC 8032）、ECDSA 2（RFC 6979 确定性）、SM2 签名 2（GB/T 32918.2）、ML-DSA 2（FIPS 204）、SM9 4（GB/T 38635.2）、DRBG 1（SP 800-90A HMAC-DRBG）、Argon2 1（RFC 9106）、国密 RNG 1（GM/T 0103 框架 + SM3-HMAC-DRBG 实例化）；**RSA 5 块**（FIPS 186-4 密钥生成 + PKCS#1 v1.5 加解密/签名，RFC 8017，cryptography 交叉验证）——standards 缺口全部清零。

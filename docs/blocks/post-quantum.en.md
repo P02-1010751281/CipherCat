@@ -37,3 +37,16 @@
 | `pq_intt` | 1 | value(→) | IntList→IntList |
 | `pq_ntt_mul` | 1 | value(→) | IntList&IntList→IntList |
 | `pq_ntt_butterfly` | 1 | value(→) | null&null&null→null |
+
+## FIPS 204 ML-DSA Signature Primitives (atomic, composable)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `pq_power2round` | 1 | value(→) | Number&Number→IntList | centered 2¹³ decomposition (r1/r0) — public key t1/t0 |
+| `pq_decompose` | 1 | value(→) | Number&Number→IntList | centered 2γ₂ decomposition (γ₂=95232) — signature w1/w0 |
+| `pq_make_hint` | 1 | value(→) | Number&Number→Number | hint bit (signer-side rounding difference) |
+| `pq_use_hint` | 1 | value(→) | Number&Number&Number→Number | hint repairs r1 (verifier rebuilds w1') |
+| `pq_sample_in_ball` | 1 | value(→) | IntList→IntList | SHAKE256 sampling of exactly τ=39 ±1 challenge polynomial |
+| `pq_rej_sample` | 1 | value(→) | Number&Number→Number | rejection sampling: accept X < BOUND, else -1 (RejBounded single-value) |
+
+> Primitives reuse the `mldsa_sign/verify` embedded closures (same source, consistent); property vectors: P2R reversible, UseHint(MakeHint) theorem, InBall exactly 39 ±1, Rej exclusive bound.

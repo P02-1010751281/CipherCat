@@ -89,3 +89,27 @@
 | `sha3_hash` | 1 | value(→) | Bytes→Bytes | SHA3-224/256/384/512 一键哈希（SIZE 下拉）：pad10*1(0x06) + absorb + squeeze；官方向量 FIPS 202（"abc" 四档）双语言 PASS |
 
 > 补齐说明（2026-08-03）：SHA-224 复用 `hash_sha256_compress`（不同 IV + 截断，见 demo `SHA224-Hash.json`）；SHA-384/512 用 64 位核（`hash_sha512_*`）；SHA-3 系列新增独立封装块。SHA-256 compress 语义统一为「收填充块、内部扩展调度」（原 JS 侧按字读 + 漏 feed-forward，均修复）。
+## 哈希基后量子结构件 (FIPS 205 / SPHINCS+)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `hash_chain` | 1 | value(→) | Bytes&Number→Bytes | WOTS+ 哈希链 cⁱ(x)=Hⁱ(x)（SHAKE-256 32B） |
+| `merkle_leaf` | 1 | value(→) | Bytes&Bytes→Bytes | 叶子 = H(ADRS‖MSG) |
+| `merkle_node` | 1 | value(→) | Bytes&Bytes&Bytes→Bytes | 节点 = H(ADRS‖L‖R) |
+| `merkle_root` | 1 | value(→) | Bytes&Number&Bytes→Bytes | 整树根（叶子拼接，2 的幂） |
+| `merkle_auth_path` | 1 | value(→) | Bytes&Number&Bytes&Number→Bytes | 认证路径：每层取目标 idx 的兄弟拼接——Merkle 证明核心 |
+| `fors_leaf_index` | 1 | value(→) | Bytes&Number→Number | FORS 选叶：消息第 I 个 4-bit 块 → 0..15（与 fors_sign 同约定） |
+| `slh_addr` | 1 | value(→) | Number&Number&Number&Number→Bytes | FIPS 205 ADRS 32B 简化版（layer/tree/type/leaf） |
+| `slh_adrs_full` | 1 | value(→) | Number&Number&Number&Number&Number→Bytes | 完整 ADRS：type 下拉 0-6 + type 相关字段（WOTS_HASH 用 chain/hash，TREE/FORS_TREE 用 height/index）——SHAKE 域分隔 |
+| `fors_root` | 1 | value(→) | IntList&Bytes→Bytes | FORS 森林根 R=H(ADRS‖roots) |
+| `wots_checksum` | 1 | value(→) | Bytes→IntList | WOTS+ 校验和（w=16，4-bit 块）；消息块增大 → csum 减小（防伪造） |
+
+## FORS 少时签名 (FIPS 205 §8)
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `fors_sign` | 1 | value(→) | Bytes&Bytes→Bytes | FORS.SigGen：sk_seed 32B + M 2B（k=4/a=4）→ 640B 签名（黑盒，闭包内嵌完整 FORS） |
+| `fors_verify` | 1 | value(→) | Bytes&Bytes&Bytes→Boolean | PkFromSig 语义：重建根比对公钥 |
+| `fors_pk_from_sk` | 1 | value(→) | Bytes→Bytes | 公钥派生（与消息无关） |
+
+> 性质向量：确定性 / 签名-验证往返 / 篡改检测（FORS 无独立官方向量，FIPS 205 KAT 为完整 SLH-DSA）。

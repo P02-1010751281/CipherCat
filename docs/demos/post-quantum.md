@@ -82,3 +82,59 @@
 ---
 
 **官方向量验证**：`node dist-verify/verify-demo.js demos/procedures/ML-KEM-Encaps.json --exec` → `=== ALL VECTORS PASS ===`
+
+---
+
+## 场景 10：FORS 少时签名（FIPS 205 §8，20 分钟）
+
+### 目标
+理解 SPHINCS+ 的 FORS（森林少时签名）：k 棵 Merkle 树、消息按 4-bit 分块选叶、认证路径、森林根。
+
+### 步骤
+
+1. **加载 demo**：导入 `demos/procedures/FORS-Sign.json`
+2. **观察结构**（`procedures_defreturn` 封装三个黑盒块）：
+   - `FORS_Sign(sk_seed, m)`：sk_seed 32B + 消息摘要 m 2B（16 bit，按 4-bit 分块、块 0 最高位）→ **640B 签名**（4 树 × (32B 叶私钥 + 4×32B 认证路径)）
+   - `FORS_PkFromSk(sk_seed)`：4 棵 FORS 树根 → `pk = H(ADRS(FORS_ROOTS) ‖ roots)`（与消息无关）
+   - `FORS_Verify(pk, m, sig)`：由 sk + auth 重建树根 → 比对公钥
+3. **选叶数学**：`fors_leaf_index(m, i)` 原子块——第 i 个 4-bit 块值即树内叶子索引（`demos/procedures/Tree-Index.json` 有分块断言：`0x3C A5` → [3, 12, 10, 5]）
+4. **Merkle 证明**：`merkle_auth_path` 输出每层兄弟 → leaf + auth 用 `merkle_node` 链重建根 == `merkle_root` 全树根（Tree-Index demo 性质向量）
+5. **验证**：`node dist-verify/verify-demo.js demos/procedures/FORS-Sign.json --exec` → 往返 / 确定性 / 篡改检测 PASS
+
+### 涉及块
+| 块 | 功能 |
+|----|------|
+| `fors_sign` / `fors_verify` / `fors_pk_from_sk` | FORS 黑盒三件套（FIPS 205 Alg 12-14） |
+| `fors_leaf_index` | 消息 4-bit 块 → 叶子索引 |
+| `merkle_auth_path` / `merkle_root` / `merkle_node` | Merkle 证明（认证路径 + 重建） |
+| `slh_addr` / `slh_adrs_full` | ADRS 地址（SHAKE 域分隔） |
+
+> 教学点：FORS 是"少时"签名——每对密钥只签少量消息；SPHINCS+ 用 Merkle 树聚合大量 WOTS+/FORS 密钥成树根。FORS 无独立官方向量（FIPS 205 KAT 为完整 SLH-DSA），性质向量覆盖。
+
+---
+
+## 场景 11：Goppa 码与 Patterson 译码（McEliece，20 分钟）
+
+### 目标
+理解编码基后量子签名的基础：Goppa 码构造（GF(2^m) 系数多项式）+ 错误纠正（Patterson 译码）。
+
+### 步骤
+
+1. **加载 demo**：导入 `demos/procedures/Goppa-Decode.json`（GF(16) 子域 [14,6,5] 码，t=2）
+2. **码构造**（原子链，可拼装）：
+   - `GOPPA_G(alphas)`：`goppa_gen_poly([13, 81])` → G = [176, 92, 1]（z² + 92z + 176），根在 13/81（`GOPPA_EVAL` 求值为 0 验证）
+   - `GOPPA_INV(a, g)`：`gf2m_poly_xgcd` + `arr_slice` 解析 → (z−α)⁻¹ mod g（逆元验证 `u·(z−177) ≡ 1`）
+   - `GOPPA_SYN(a, b, g)`：syndrome 原子链 = Σ (z−αᵢ)⁻¹ mod g —— **Patterson 的教学入口**
+3. **译码**（黑盒）：`GOPPA_DEC(y, g, L)` → Patterson 完整算法：syndrome → sqrt(z+S⁻¹)（16×16 Frobenius 开方）→ 扩展欧几里得 → σ 求根定错位 → 翻转
+4. **验证**：`node dist-verify/verify-demo.js demos/procedures/Goppa-Decode.json --exec` → 无错/单错/双错往返 + 篡改 G 不可纠 PASS
+
+### 涉及块
+| 块 | 功能 |
+|----|------|
+| `goppa_gen_poly` / `syndrome_calc` | Goppa 生成多项式 / 线性码 syndrome |
+| `gf2m_poly_add/mul/mod/xgcd/eval` | GF(2^m) 系数多项式（Patterson 原语） |
+| `goppa_decode` | Patterson 完整译码（黑盒） |
+| `arr_slice` | xgcd 展平输出解析 |
+| `gf2_poly_*` / `bin_mat_*` / `ham_*` | GF(2) 多项式 / 二进制矩阵 / 汉明量 |
+
+> 教学点：特征 2 域中 syndrome 的**对数导数恒等式** S = σ′/σ 使错误定位子可解；Patterson 的扩展欧几里得迭代与 Frobenius 开方是数据依赖算法（黑盒承担），syndrome 侧原子链展示数学入口。

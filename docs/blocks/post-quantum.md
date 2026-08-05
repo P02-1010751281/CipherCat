@@ -38,3 +38,16 @@
 | `pq_ntt_mul` | 1 | value(→) | IntList&IntList→IntList |
 | `pq_ntt_butterfly` | 1 | value(→) | null&null&null→null |
 
+
+## FIPS 204 ML-DSA 签名原语（原子化，可拼装）
+
+| 块 | 层 | 连接 | 输入→输出 | 说明 |
+|----|----|------|----------|------|
+| `pq_power2round` | 1 | value(→) | Number&Number→IntList | 中心化 2¹³ 分解（r1/r0）——公钥 t1/t0 |
+| `pq_decompose` | 1 | value(→) | Number&Number→IntList | 中心化 2γ₂ 分解（γ₂=95232）——签名 w1/w0 |
+| `pq_make_hint` | 1 | value(→) | Number&Number→Number | hint 位（签名端舍入差异） |
+| `pq_use_hint` | 1 | value(→) | Number&Number&Number→Number | hint 修复 r1（验证端重建 w1'） |
+| `pq_sample_in_ball` | 1 | value(→) | IntList→IntList | SHAKE256 采样恰 τ=39 个 ±1 挑战多项式 |
+| `pq_rej_sample` | 1 | value(→) | Number&Number→Number | 拒绝采样：X < BOUND 接受，否则 -1（RejBounded 单值版） |
+
+> 原语复用 `mldsa_sign/verify` 内嵌闭包（同源一致）；性质向量：P2R 可逆、UseHint(MakeHint) 定理、InBall 39 个 ±1、Rej 边界排他。

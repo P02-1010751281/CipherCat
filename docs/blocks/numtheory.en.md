@@ -12,6 +12,7 @@
 | `nt_div_rem` | 1 | value(→) | Number&Number→Number |
 | `pq_poly_add` | 1 | value(→) | IntList&IntList→IntList |
 | `pq_poly_sub` | 1 | value(→) | IntList&IntList→IntList |
+| `pq_poly_mul` | 1 | value(→) | IntList&IntList→IntList | plain integer convolution (MODULUS dropdown none/3329/8380417/12289); ring R_q teaching, compare with NTT-domain `pq_ntt_mul` |
 | `pq_mat_vec_mul` | 1 | value(→) | IntList&IntList→IntList |
 | `pq_ntt` | 1 | value(→) | IntList→IntList |
 | `pq_intt` | 1 | value(→) | IntList→IntList |
@@ -44,3 +45,34 @@
 | Block | Layer | Connection | Input→Output |
 |----|----|------|----------|
 | `gf2m_mul` | 1 | value(→) | Number&Number→Number |
+| `gf2m_add` | 1 | value(→) | IntList&IntList→IntList | field addition = bitwise XOR (AES/GCM dual field) |
+| `gf2m_inv` | 1 | value(→) | IntList→IntList | multiplicative inverse (polynomial extended Euclid, Fermat check) |
+
+## GF(2) Polynomials + Binary Matrices (Coding Basis)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `gf2_poly_mul` | 1 | value(→) | IntList&IntList→IntList | GF(2) polynomial multiplication (XOR convolution, little-endian) |
+| `gf2_poly_div` / `gf2_poly_mod` | 1 | value(→) | IntList&IntList→IntList | long-division quotient / remainder |
+| `gf2_poly_gcd` | 1 | value(→) | IntList&IntList→IntList | Euclidean GCD |
+| `bin_mat_mul` / `bin_mat_inv` | 1 | value(→) | IntList&IntList→IntList | GF(2) matrix multiply / inverse (augmented Gaussian elimination, flattened n×n) |
+| `ham_weight` / `ham_dist` | 1 | value(→) | IntList→Number | Hamming weight / distance |
+
+## Goppa Codes (McEliece, Coding Basis)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `goppa_gen_poly` | 1 | value(→) | IntList→IntList | G(z)=∏(z−αᵢ), αᵢ ∈ GF(2⁸) (AES field) — core McEliece code construction |
+| `syndrome_calc` | 1 | value(→) | IntList&IntList&Number&Number→IntList | linear-code syndrome s = H·y mod 2; s=0 ⟺ valid codeword |
+| `berlekamp_massey` | 1 | value(→) | IntList→IntList | GF(2) shortest LFSR synthesis (BCH/RS decoding) |
+| `goppa_decode` | 1 | value(→) | IntList&IntList&IntList→IntList | **Patterson decoding** (full black box): Y + G + L → corrected bit vector; corrects ⌊deg G/2⌋ errors; property vectors (GF(16) subfield [14,6,5] code round-trip) |
+
+## GF(2^m) Coefficient Polynomials (Patterson Primitives)
+
+| Block | Layer | Connection | Input→Output | Notes |
+|----|----|------|----------|------|
+| `gf2m_poly_add` | 1 | value(→) | IntList&IntList→IntList | coefficient-wise XOR (characteristic 2) |
+| `gf2m_poly_mul` | 1 | value(→) | IntList&IntList→IntList | convolution (GF(2⁸) field multiplication) |
+| `gf2m_poly_mod` | 1 | value(→) | IntList&IntList→IntList | long-division remainder (mod Goppa polynomial) |
+| `gf2m_poly_xgcd` | 1 | value(→) | IntList&IntList→IntList | extended Euclid → [len_u,u…,len_v,v…,g…] (u·A⊕v·B=g); Patterson locator core |
+| `gf2m_poly_eval` | 1 | value(→) | IntList&Number→Number | Horner evaluation (Chien search) |

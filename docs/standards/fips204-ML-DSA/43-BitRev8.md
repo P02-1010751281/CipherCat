@@ -1,6 +1,6 @@
 # Algorithm 43  BitRev8 (𝑚)
 
-**章节**: §3.5  
+**章节**: §7.5
 **类别**: NTT 运算
 
 ### 规范
@@ -18,13 +18,10 @@ Output: A byte 𝑟 ∈ [0, 255].
 5: end for
 6: 𝑟 ← BitsToInteger(𝑏rev , 8)
 7: return r
-44
 
-FIPS 204
 
 7.6
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 Arithmetic Under NTT
 

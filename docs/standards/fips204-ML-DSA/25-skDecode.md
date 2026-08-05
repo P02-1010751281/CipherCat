@@ -1,6 +1,6 @@
 # Algorithm 25  skDecode(𝑠𝑘)
 
-**章节**: §3.2  
+**章节**: §7.2
 **类别**: 密钥/签名编解码
 
 ### 规范
@@ -13,14 +13,7 @@ Output: 𝜌 ∈ 𝔹32 , 𝐾 ∈ 𝔹32 , 𝑡𝑟 ∈ 𝔹64 ,
 𝐬1 ∈ 𝑅ℓ , 𝐬2 ∈ 𝑅𝑘 , 𝐭0 ∈ 𝑅𝑘 with coefficients in [−2𝑑−1 + 1, 2𝑑−1 ].
 ℓ
 
-1: (𝜌, 𝐾, 𝑡𝑟, 𝑦0 , … , 𝑦ℓ−1 , 𝑧0 , … , 𝑧𝑘−1 , 𝑤0 , … , 𝑤𝑘−1 ) ∈ 𝔹32 × 𝔹32 × 𝔹64 × (𝔹32⋅bitlen (2𝜂) )
-32⋅bitlen (2𝜂) 𝑘
-
-×
-
-32𝑑 𝑘
-
-) × (𝔹 ) ← 𝑠𝑘
+1: (𝜌, 𝐾, 𝑡𝑟, 𝑦0 , … , 𝑦ℓ−1 , 𝑧0 , … , 𝑧𝑘−1 , 𝑤0 , … , 𝑤𝑘−1 ) ∈ 𝔹32 × 𝔹32 × 𝔹64 × (𝔹32⋅bitlen (2𝜂) )ℓ × (𝔹32⋅bitlen (2𝜂) )𝑘 × (𝔹32𝑑 )𝑘 ← 𝑠𝑘
 (𝔹
 2: for 𝑖 from 0 to ℓ − 1 do
 3:
@@ -42,11 +35,8 @@ Next, sigEncode and sigDecode translate ML-DSA signatures into byte strings and 
 verifying a signature, sigDecode might take input that comes from an untrusted source. Thus, care is
 required when using BitUnpack. As used here, BitUnpack always returns values in the correct range.
 
-34
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 ```
 

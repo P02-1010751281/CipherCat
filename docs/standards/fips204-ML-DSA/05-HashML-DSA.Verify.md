@@ -1,6 +1,6 @@
 # Algorithm 5  HashML-DSA.Verify(𝑝𝑘, 𝑀 , 𝜎, 𝑐𝑡𝑥, PH)
 
-**章节**: §5
+**章节**: §5.4.1
 **类别**: HashML-DSA 公开 API
 
 ### 规范
@@ -48,15 +48,12 @@ case …
 19: return ML-DSA.Verify_internal(𝑝𝑘, 𝑀 ′ , 𝜎)
 8:
 
-21
 
-FIPS 204
 
 ---
 
 6.
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 Internal Functions
 
@@ -94,24 +91,18 @@ The ML-DSA public key 𝑝𝑘 is a byte encoding of the public random seed 𝜌
 vector 𝐭1 .
 The ML-DSA private key 𝑠𝑘 is a byte encoding of the public random seed 𝜌, a private random seed 𝐾
 for use during signing, a 64-byte hash 𝑡𝑟 of the public key for use during signing, the secret polynomial
-7
 
 In some cases, it is permissible to modify the format of the private key in these interfaces (see Sections 4 and 3.6.3.)
 Single-byte encodings of the parameters 𝑘 and ℓ are included in the XOF input for domain separation. For
 implementations that use the seed in place of the private key, this ensures that the expansion will produce an
 unrelated key if the seed is mistakenly expanded using a parameter set other than the one originally intended.
-9
 More precisely, since only the NTT form of 𝐀, 𝐀̂ ∈ 𝑇𝑞𝑘×ℓ = NTT(𝐀) is needed in subsequent calculations, the
 ̂ is only
 code actually computes 𝐀̂ as a pseudorandom sample over 𝑇𝑞𝑘×ℓ , and the sampling of 𝐀 = NTT−1 (𝐀)
 implicit (i.e., it could be computed but is not).
-8
 
-22
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 vectors 𝐬1 and 𝐬2 , and a polynomial vector 𝐭0 encoding the 𝑑 least significant bits of each coefficient of
 the uncompressed public-key polynomial 𝐭.

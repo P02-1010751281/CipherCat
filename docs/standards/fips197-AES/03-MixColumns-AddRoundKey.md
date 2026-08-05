@@ -6,20 +6,21 @@
 MIXCOLUMNS() is a transformation of the state that multiplies each of the four columns of the
 state by a single fxed matrix, as described in Section 4.3, with its entries taken from the following
 word:
-Thus,
-0
-| ⎢ | s ⎥ | ⎢ 0 1 | 0 2 | 0 3   0 | 1 ⎥   ⎢ s ⎥ |
-| --- | ---------- | ------ | ------- | ------- | ------------- | --------------- | --- | ----- |
-| ⎢ | 1 , c   ⎥ |  |  |  | 1 , c |
-|  |  | =  ⎢ |  |  | ⎥ ⎢ ⎥ | for 0 ≤ c < 4, |  | (5.7) |
-| ⎢ | s  0   ⎥ | ⎣ 0  1 | 0 1 | 0 2   0 | 3   ⎦   ⎣s  ⎦ |
-| ⎣ | 2 , c   ⎦ |  |  |  | 2 , c |
-|  | 0 | 03 | 01 | 01  02 | s |
-|  | s |  |  |  | 3,c |
-3,c
+
+[s′₀,c]   [02 03 01 01] [s₀,c]
+[s′₁,c]   [01 02 03 01] [s₁,c]
+[s′₂,c] = [01 01 02 03] · [s₂,c]  for 0 ≤ c < 4  (5.7)
+[s′₃,c]   [03 01 01 02] [s₃,c]
+
 so that the individual output bytes are defned as follows:
-s 0
-s 0
+
+s′₀,c = ({02}·s₀,c) ⊕ ({03}·s₁,c) ⊕ s₂,c ⊕ s₃,c
+s′₁,c = s₀,c ⊕ ({02}·s₁,c) ⊕ ({03}·s₂,c) ⊕ s₃,c     (5.6)
+s′₂,c = s₀,c ⊕ s₁,c ⊕ ({02}·s₂,c) ⊕ ({03}·s₃,c)
+s′₃,c = ({03}·s₀,c) ⊕ s₁,c ⊕ s₂,c ⊕ ({02}·s₃,c)
+
+（逆矩阵用于 INVERSEMIXCOLUMNS()，Eq. 5.8：系数 [0e 0b 0d 09] / [09 0e 0b 0d] / [0d 09 0e 0b] / [0b 0d 09 0e]）
+
 Figure 4 illustrates MIXCOLUMNS().
 15
 

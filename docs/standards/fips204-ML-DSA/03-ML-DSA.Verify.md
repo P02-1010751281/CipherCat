@@ -1,6 +1,6 @@
 # Algorithm 3  ML-DSA.Verify(𝑝𝑘, 𝑀 , 𝜎, 𝑐𝑡𝑥)
 
-**章节**: §4
+**章节**: §5.3
 **类别**: ML-DSA 公开 API
 
 ### 规范
@@ -30,11 +30,8 @@ Pre-Hash ML-DSA
 For some cryptographic modules that generate ML-DSA signatures, hashing the message in step 6 of
 ML-DSA.Sign_internal may result in unacceptable performance if the message 𝑀 is large. For example,
 
-18
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 the platform may require hardware support for hashing to achieve acceptable performance but lack
 hardware support for SHAKE256 specifically. For some use cases, this may be addressed by signing a
@@ -80,18 +77,13 @@ by a one-byte domain separator, one byte that indicates the length of the contex
 string, and the distinguished encoding rules (DER) encoding of the hash function or XOF’s OID. The domain
 separator has a value of one for “pre-hash” signing. The DER encoding of the OID includes the tag and
 length.
-5
-6
 
 In the case of a XOF this would also include the length of the output from the XOF.
 Obtaining at least 𝜆 bits of classical security strength against collision attacks requires that the digest to be signed
 be at least 2𝜆 bits in length.
 
-19
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 Algorithm 4 shows the DER encodings of the OIDs for SHA-256, SHA-512, and SHAKE128. However, it may
 be used with other hash functions or XOFs.

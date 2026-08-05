@@ -14,8 +14,8 @@ Output: (none)
  3: end for
  4: j ← 0
  5: for (k ← 256; k > 1; k ← k/2)
- 6:    j ← j + 1
- 7:    B[j] ← B[j] + k
+ 6:    B[j] ← k
+ 7:    j ← j + 1
  8: end for
 ```
 

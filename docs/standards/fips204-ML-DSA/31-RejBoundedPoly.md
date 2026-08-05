@@ -1,6 +1,6 @@
 # Algorithm 31  RejBoundedPoly(𝜌)
 
-**章节**: §3.3  
+**章节**: §7.3
 **类别**: 采样
 
 ### 规范
@@ -39,11 +39,8 @@ end if
 16: end while
 17: return 𝑎
 
-37
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 ```
 

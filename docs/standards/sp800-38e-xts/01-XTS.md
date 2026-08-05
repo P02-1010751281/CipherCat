@@ -2,10 +2,8 @@
 
 来源: NIST SP 800-38E
 
-NIST Special Publication 800-38E
 January, 2010
 
-Recommendation for Block
 Cipher Modes of Operation:
 The XTS-AES Mode for
 Confidentiality on Storage
@@ -15,9 +13,7 @@ Morris Dworkin
 
 C  O  M  P  U  T  E  R      S  E  C  U  R  I  T  Y
 
-NIST Special Publication 800-38E
 
-Recommendation for Block
 Cipher Modes of Operation:
 The XTS-AES Mode for
 Confidentiality on Storage Devices
@@ -39,7 +35,6 @@ Gary Locke, Secretary
 National Institute of Standards and Technology
 Patrick D. Gallagher, Director
 
-NIST Special Publication 800-38E
 
 Reports on Information Security Technology
 
@@ -66,7 +61,6 @@ CODEN: NSPUE2
 
   ii
 
-NIST Special Publication 800-38E
 
 Acknowledgements
 
@@ -78,7 +72,6 @@ sectors to improve the quality of this publication.
 
  iii
 
-NIST Special Publication 800-38E
 
 Abstract
 
@@ -91,7 +84,6 @@ cryptography; encryption; information security mode of operation; tweakable bloc
 
   iv
 
-NIST Special Publication 800-38E
 
  TABLE OF CONTENTS
 
@@ -109,7 +101,6 @@ APPENDIX A:  BIBLIOGRAPHY ......................................................
 
   v
 
-NIST Special Publication 800-38E
 
 1  Purpose
 
@@ -158,7 +149,6 @@ of  possible  input  data  strings.    In  particular,  XEX  can  only  encrypt 
 blocks, i.e., any data string that is an integer multiple of 128 bits; whereas for XTS-AES, the data
 string may also consist of one or more complete blocks followed by a single, non-empty partial
 
-NIST Special Publication 800-38E
 
 block.    (The  acronym  XTS  stands  for  the  XEX  Tweakable  Block  Cipher  with  Ciphertext
 Stealing).
@@ -210,7 +200,6 @@ restrict the length of the data units for any key.  For example, an implementati
 
   2
 
-NIST Special Publication 800-38E
 
 only  data  units  that  are  sequences  of  complete  blocks.    In  this  case,  the  ciphertext  stealing
 components  in  the  implementations  of  the  XTS-AES-Enc  and  the  XTS-AES-Dec  procedures
@@ -256,7 +245,6 @@ swapping the last complete block and the partial block could be built into the i
 
   3
 
-NIST Special Publication 800-38E
 
 Appendix A:  Bibliography
 

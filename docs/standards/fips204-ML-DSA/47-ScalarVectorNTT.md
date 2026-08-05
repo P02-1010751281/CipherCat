@@ -1,6 +1,6 @@
 # Algorithm 47  ScalarVectorNTT(𝑐,̂ 𝐯)̂
 
-**章节**: §3.5  
+**章节**: §7.6
 **类别**: NTT 运算
 
 ### 规范

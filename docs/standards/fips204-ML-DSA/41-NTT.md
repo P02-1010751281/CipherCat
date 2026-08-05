@@ -1,6 +1,6 @@
 # Algorithm 41  NTT(𝑤)
 
-**章节**: §3.5  
+**章节**: §7.5
 **类别**: NTT 运算
 
 ### 规范
@@ -8,7 +8,6 @@
 ```
 Algorithm 41 NTT(𝑤)
 Computes the NTT.
-255
 
 Input: Polynomial 𝑤(𝑋) = ∑𝑗=0 𝑤𝑗 𝑋 𝑗 ∈ 𝑅𝑞 .
 Output: 𝑤̂ = (𝑤[0],
@@ -56,13 +55,10 @@ end while
 19: end while
 20: return 𝑤̂
 
-43
 
 ▷ 𝑧 ← 𝜁 BitRev8 (𝑚) mod 𝑞
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 ```
 

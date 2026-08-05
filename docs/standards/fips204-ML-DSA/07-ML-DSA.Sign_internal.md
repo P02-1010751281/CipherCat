@@ -1,6 +1,6 @@
 # Algorithm 7  ML-DSA.Sign_internal(𝑠𝑘, 𝑀 ′ , 𝑟𝑛𝑑)
 
-**章节**: §7
+**章节**: §6.2
 **类别**: ML-DSA 内部 API
 
 ### 规范
@@ -91,11 +91,8 @@ ML-DSA Verifying (Internal)
 The algorithm ML-DSA.Verify_internal (Algorithm 8) takes a public key 𝑝𝑘 encoded as a byte string, a
 message 𝑀 encoded as a bit string, and a signature 𝜎 encoded as a byte string as input. No randomness is
 
-25
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 required for ML-DSA.Verify_internal. It produces a Boolean value (i.e., a value that is true if the signature
 is valid with respect to the message and public key and false if the signature is invalid) as output. Algorithm 8
@@ -128,11 +125,8 @@ more than 𝜔 nonzero coefficients, and 𝑐 ̃matches the hash 𝑐′̃ of th
 with 𝐰′1 (represented as a byte string). If all of these checks succeed, then ML-DSA.Verify_internal returns
 true. Otherwise, it returns false.
 
-26
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 ```
 

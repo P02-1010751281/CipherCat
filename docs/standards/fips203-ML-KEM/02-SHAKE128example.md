@@ -7,7 +7,7 @@
 
 ```
 Input:  byte strings str₁,…,strₘ, output lengths b₁,…,bₗ
-Output: byte arrays out₁,…,outₗ
+Output: byte array out₁ ‖ … ‖ outₗ (length Σbᵢ)
 
  1: ctx ← XOF.Init()
  2: for i ← 1 to m:
@@ -16,7 +16,7 @@ Output: byte arrays out₁,…,outₗ
  5: for i ← 1 to ℓ:
  6:    (ctx, outᵢ) ← XOF.Squeeze(ctx, bᵢ)
  7: end for
- 8: return (out₁, …, outₗ)
+ 8: return out₁ ‖ … ‖ outₗ
 ```
 
 ### 备注

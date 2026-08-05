@@ -1,6 +1,6 @@
 # Algorithm 49  MontgomeryReduce(𝑎)
 
-**章节**: §3.1  
+**章节**: 附录 A
 **类别**: Montgomery 约简
 
 ### 规范
@@ -27,17 +27,13 @@ operation. When a sequence of modular operations is to be performed, the operand
 to Montgomery form. The operations are then performed, and the factor 232 is extracted from the final
 result.
 
-13
 
 This section does not distinguish between different versions of the “mod” operator. There are three such versions
 of “𝑥 = 𝑎 modulo 𝑞”: i) 𝑥 ∈ [0, 𝑞 − 1]; ii) 𝑥 ∈ [−⌈𝑞/2⌉, ⌊𝑞/2⌋] ; iii) 𝑥 ∈ [−𝑞 + 1, 𝑞 − 1]. The last version
 corresponds to the ‶ %″ operator in most programming languages.
 
-50
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 Appendix B — Zetas Array
 The values 𝜁 BitRev8 (𝑘) mod 𝑞 for 𝑘 = 1, … , 255 used in the NTT Algorithms 41 and 42 may be pre-computed

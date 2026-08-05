@@ -1,6 +1,6 @@
 # Algorithm 6  ML-DSA.KeyGen_internal(𝜉)
 
-**章节**: §7
+**章节**: §6.1
 **类别**: ML-DSA 内部 API
 
 ### 规范
@@ -53,15 +53,11 @@ The main part of the signing algorithm consists of a rejection sampling loop in 
 loop either produces a valid signature or an invalid signature whose release would leak information about
 the private key. The loop is repeated until a valid signature is produced, which can then be encoded as a
 byte string and output.10 The rejection sampling loop follows the Fiat-Shamir With Aborts paradigm [10]
-10
 
 Implementations may limit the number of iterations in this loop to not exceed a finite maximum value. If this
 
-23
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 and (aside from the rejection step) is similar in structure to Schnorr signatures [30] (e.g., EdDSA [31]). The
 signer first produces a “commitment” 𝐰1 and then pseudorandomly derives a “challenge” 𝑐 from 𝐰1 and
@@ -91,15 +87,11 @@ brackets enclosing the variables being multiplied (e.g., ⟨⟨𝑐𝐬1 ⟩⟩)
 option is used and the maximum number of iterations is exceeded without producing a valid signature, the signing
 algorithm shall return a constant that represents an error and no other output, destroying the results of the
 unsuccessful signing attempts. See Appendix C.
-11
 The length of 𝑐 ̃ is determined by the desired security with respect to the “message-bound signatures” property
 described in [14]. Here, a length of 𝜆/4 bytes or equivalently 2𝜆 bits is required for 𝜆 bits of classical security.
 
-24
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 ```
 

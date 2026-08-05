@@ -1,6 +1,6 @@
 # Algorithm 48  MatrixVectorNTT(𝐌,
 
-**章节**: §3.5  
+**章节**: §7.6
 **类别**: NTT 运算
 
 ### 规范
@@ -25,11 +25,8 @@ end for
 6: end for
 7: return 𝐰̂
 
-46
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 References
 [1] National Institute of Standards and Technology (2023) Digital signature standard (DSS), (U.S. Department of Commerce, Washington, DC), Federal Information Processing Standards Publication (FIPS)
@@ -66,11 +63,8 @@ scheme for embedded systems. CHES (Springer), Vol. 7428, pp 530–547. https://d
 errors. Topics in Cryptology – CT-RSA 2014, ed Benaloh J (Springer International Publishing, Cham),
 pp 28–47. https://doi.org/10.1007/978-3-319-04852-9_2.
 
-47
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 [14] Cremers C, Düzlü S, Fiedler R, Janson C, Fischlin M (2021) BUFFing signature schemes beyond
 unforgeability and the case of post-quantum signatures. 2021 IEEE Symposium on Security and
@@ -113,11 +107,8 @@ USA, April 16-20, 2018, Proceedings (Springer), pp 1–20. https://doi.org/10.10
 [26] National Institute of Standards and Technology (2016) Submission requirements and evaluation
 criteria for the post-quantum cryptography standardization process. Available at https://csrc.nist.go
 
-48
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 v/CSRC/media/Projects/Post-Quantum-Cryptography/documents/call-for-proposals-final-dec-201
 6.pdf.
@@ -146,11 +137,8 @@ ps.google.com/a/list.nist.gov/g/pqc-forum/c/TQo-qFbBO1A/m/sLjseYlSAwAJ.
 [35] Lee S (2024) Updates for FIPS 203. Available at https://groups.google.com/a/list.nist.gov/g/pqc-for
 um/c/Rb0nFvfFTEQ/m/lw-k7tVdBQAJ.
 
-49
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 Appendix A — Montgomery Multiplication
 This document uses modular multiplications of the form 𝑎 ⋅ 𝑏 modulo 𝑞. This is an expensive operation

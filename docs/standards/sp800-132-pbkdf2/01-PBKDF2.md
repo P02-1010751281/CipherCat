@@ -2,7 +2,6 @@
 
 来源: NIST SP 800-132
 
-NIST Special Publication 800-132
 Recommendation for Password-Based Key
 Derivation
 Part 1: Storage Applications

@@ -1,6 +1,6 @@
 # Algorithm 8  ML-DSA.Verify_internal(𝑝𝑘, 𝑀 ′ , 𝜎)
 
-**章节**: §7
+**章节**: §6.3
 **类别**: ML-DSA 内部 API
 
 ### 规范
@@ -43,15 +43,12 @@ computed in a different cryptographic module
 ′
 13: return [[ ||𝐳||∞ < 𝛾1 − 𝛽]] and [[𝑐 ̃ = 𝑐 ̃ ]]
 
-27
 
-FIPS 204
 
 ---
 
 7.
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 Auxiliary Functions
 

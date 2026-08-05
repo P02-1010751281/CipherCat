@@ -11,14 +11,27 @@ Let b denote an input byte to SBOX(), and let c denote the constant byte {011000
 output byte b = SBOX(b) is constructed by composing the following two transformations:
 1. Defne an intermediate value b˜, as follows, where b−1 is the multiplicative inverse of b, as
 described in Section 4.4:
-b˜ =
-(5.2)
+
+b˜ = { b⁻¹  if b ≠ 0        (5.2)
+     { 0     if b = 0
+
 2. Apply the following affne transformation of the bits of b˜ to produce the bits of b 0
 :
-⊕ c.  (5.3)
+
+b′ᵢ = b̃ᵢ ⊕ b̃₍ᵢ₊₄₎ mod 8 ⊕ b̃₍ᵢ₊₅₎ mod 8 ⊕ b̃₍ᵢ₊₆₎ mod 8 ⊕ b̃₍ᵢ₊₇₎ mod 8 ⊕ cᵢ  (5.3)
+
+其中 c = {01100011}，cᵢ 为 c 的第 i 位。
+
 The matrix form of Eq. (5.3) is given by Eq. (5.4) below:
-0
-Figure 2 illustrates how SUBBYTES() transforms the state.
+
+| b′₀ |   | 1 0 0 0 1 1 1 1 |   | b̃₀ |   | 1 |
+| b′₁ |   | 1 1 0 0 0 1 1 1 |   | b̃₁ |   | 1 |
+| b′₂ |   | 1 1 1 0 0 0 1 1 |   | b̃₂ |   | 0 |
+| b′₃ | = | 1 1 1 1 0 0 0 1 | · | b̃₃ | ⊕ | 0 |   (5.4)
+| b′₄ |   | 1 1 1 1 1 0 0 0 |   | b̃₄ |   | 0 |
+| b′₅ |   | 0 1 1 1 1 1 0 0 |   | b̃₅ |   | 1 |
+| b′₆ |   | 0 0 1 1 1 1 1 0 |   | b̃₆ |   | 1 |
+| b′₇ |   | 0 0 0 1 1 1 1 1 |   | b̃₇ |   | 0 |
 Figure 2. Illustration of SUBBYTES()
 The AES S-box is presented in hexadecimal form in Table 4. For example, if s = {53}, then
 r,c

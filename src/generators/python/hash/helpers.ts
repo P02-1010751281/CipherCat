@@ -12,8 +12,6 @@ export function registerSha3Pad(): string {
     '    msg = bytes(msg)',
     '    m_len = len(msg)',
     '    q = rate_bytes - (m_len % rate_bytes)',
-    '    if q == 1:',
-    '        q += rate_bytes',
     '    padded = bytearray(msg) + bytearray(q)',
     '    padded[m_len] ^= suffix',
     '    padded[m_len + q - 1] ^= 0x80',

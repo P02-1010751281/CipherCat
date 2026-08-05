@@ -1,6 +1,6 @@
 # Algorithm 1  ML-DSA.KeyGen()
 
-**章节**: §4
+**章节**: §5.1
 **类别**: ML-DSA 公开 API
 
 ### 规范
@@ -32,15 +32,11 @@ generate a 256-bit (32-byte) random seed 𝑟𝑛𝑑. If the deterministic vari
 to the fixed zero string {0}32 . The value 𝑟𝑛𝑑, the private key, and the encoded message are input to
 ML-DSA.Sign_internal (Algorithm 7), which produces the signature.
 
-4
 
 By default, the context is the empty string, though applications may specify the use of a non-empty context string.
 
-17
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 ```
 

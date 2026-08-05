@@ -2,7 +2,6 @@
 
 来源: NIST SP 800-90A
 
-NIST Special Publication 800-90A
 Revision 1
 Recommendation for Random
 Number Generation Using
@@ -13,7 +12,6 @@ This publication is available free of charge from:
 http://dx.doi.org/10.6028/NIST.SP.800-90Ar1
 C O M P U T E R S E C U R I T Y
 
-NIST Special Publication 800-90A
 Revision 1
 Recommendation for Random
 Number Generation Using

@@ -281,12 +281,12 @@
  },
  "procedures/SHA3-Hash.json": {
   "py": {
-   "driver": "print(''.join('%02x' % b for b in SHA3_Hash(b'abc')))",
-   "expect": "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532"
+   "driver": "print(''.join('%02x' % b for b in SHA3_Hash(b'abc')))\nprint(''.join('%02x' % b for b in SHA3_Hash(bytes(range(135)))))",
+   "expect": "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532\nfded8fd9d6551c601eeb3b7c6bc5e5cfd8aad1d015b7e9aaa9c9b9475231d5e2"
   },
   "js": {
-   "driver": "console.log(Buffer.from(SHA3_Hash(new TextEncoder().encode('abc'))).toString('hex'));",
-   "expect": "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532"
+   "driver": "console.log(Buffer.from(SHA3_Hash(new TextEncoder().encode('abc'))).toString('hex'));\nconsole.log(Buffer.from(SHA3_Hash(Uint8Array.from({length:135},(_,i)=>i))).toString('hex'));",
+   "expect": "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532\nfded8fd9d6551c601eeb3b7c6bc5e5cfd8aad1d015b7e9aaa9c9b9475231d5e2"
   }
  },
  "procedures/AES-Round.json": {

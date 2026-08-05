@@ -1,6 +1,6 @@
 # Algorithm 4  HashML-DSA.Sign(𝑠𝑘, 𝑀 , 𝑐𝑡𝑥, PH)
 
-**章节**: §5
+**章节**: §5.4.1
 **类别**: HashML-DSA 公开 API
 
 ### 规范
@@ -65,11 +65,8 @@ content must be computed within a FIPS 140-validated cryptographic module, which
 cryptographic module than the one that performs ML-DSA.Verify_internal.
 As noted in Section 5.4, the identifier associated with the signature should indicate whether ML-DSA or
 
-20
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 the pre-hash version HashML-DSA of signature verification should be used, as well as the hash function or
 XOF to be used to compute the pre-hash. A non-empty context string should be used in verification if one

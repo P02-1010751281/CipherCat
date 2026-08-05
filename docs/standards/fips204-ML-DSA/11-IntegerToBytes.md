@@ -1,6 +1,6 @@
 # Algorithm 11  IntegerToBytes(𝑥, 𝛼)
 
-**章节**: §3.2  
+**章节**: §7.1
 **类别**: 整数/比特/字节编码
 
 ### 规范
@@ -18,11 +18,8 @@ Output: A byte string 𝑦 of length 𝛼.
 𝑥′ ← ⌊𝑥′ /256⌋
 5: end for
 6: return 𝑦
-28
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 ```
 

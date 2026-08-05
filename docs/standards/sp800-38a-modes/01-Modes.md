@@ -2,8 +2,6 @@
 
 来源: NIST SP 800-38A
 
-Recommendation for Block
-NIST Special Publication 800-38A
 2001 Edition Cipher Modes of Operation
 Methods and Techniques
 Morris Dworkin

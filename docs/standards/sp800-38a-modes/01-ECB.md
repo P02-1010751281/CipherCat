@@ -10,10 +10,8 @@ code words in a codebook. The Electronic Codebook (ECB) mode is defined as follo
 
 j K j
 
-|  | P = CIPH -1 (C) |  | for j = 1 …  n. |
-| ---------------- | ---------------- | --- | ---------------- |
-| ECB Decryption: |
-j K j
+| ECB Encryption:  C = CIPH (P) for j = 1 … n. | | ECB Decryption: P = CIPH -1 (C) for j = 1 … n. |
+| j         K j                | | j         K j  |
 
 In ECB encryption, the forward cipher function is applied directly and independently to each
 block of the plaintext. The resulting sequence of output blocks is the ciphertext.

@@ -24,16 +24,13 @@ C# = P# ⊕ MSB(O) for j = 1, 2 … n.
 j j s j
 CFB Decryption: I = IV;
 1
-I = LSB (I )| C# for j = 2 … n;
-j b-s j -1 j -1
-11
-
-| --- | --- | --- | --- | --- | -------- | --- | ---- | --- | ------------------- |
-|  |  |  |  |  | O = CIPH |  | (I) |  | for j = 1, 2 …  n; |
-|  |  |  |  |  | j |  | K j |
-P# =  C# ⊕  MSB(O)
-|  |  |  |  |  |  |  |  |  | for j = 1, 2 …  n. |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | ------------------ |
+I = LSB (I )| C# for j = 2 … n;      # 输入块由前一块的 b−s 个低有效位与 C# 拼接生成
+j b-s j -1 j -1                        # （CFB encryption, by concatenating the b−s least significant
+                                        #  bits of the previous input block with）
+O = CIPH (I) for j = 1, 2 … n;
+j K j
+P# = C# ⊕ MSB(O) for j = 1, 2 … n.
+j j s j
 
 In CFB encryption, the first input block is the IV, and the forward cipher operation is applied to
 the IV to produce the first output block.  The first ciphertext segment is produced by exclusive-

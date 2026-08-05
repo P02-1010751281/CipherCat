@@ -1,6 +1,6 @@
 # Algorithm 19  BitUnpack(𝑣, 𝑎, 𝑏)
 
-**章节**: §3.2  
+**章节**: §7.1
 **类别**: 比特打包
 
 ### 规范
@@ -9,7 +9,7 @@
 Algorithm 19 BitUnpack(𝑣, 𝑎, 𝑏)
 Reverses the procedure BitPack.
 Input: 𝑎, 𝑏 ∈ ℕ and a byte string 𝑣 of length 32 ⋅ bitlen (𝑎 + 𝑏).
-Output: A polynomial 𝑤 ∈ 𝑅 with coefficients in [𝑏 − 2𝑐 + 1, 𝑏], where 𝑐 = bitlen (𝑎 + 𝑏).
+Output: A polynomial 𝑤 ∈ 𝑅 with coefficients in [𝑏 − 2^𝑐 + 1, 𝑏], where 𝑐 = bitlen (𝑎 + 𝑏).
 When 𝑎 + 𝑏 + 1 is a power of 2, the coefficients are in [−𝑎, 𝑏].
 1: 𝑐 ← bitlen (𝑎 + 𝑏)
 2: 𝑧 ← BytesToBits(𝑣)
@@ -28,11 +28,8 @@ how many nonzero coefficients are present in each of the polynomials 𝐡[0], �
 first 𝜔 bytes of 𝑦 contain information about exactly where those nonzero terms occur. HintBitUnpack
 reverses the procedure performed by HintBitPack and recovers the vector 𝐡.
 
-31
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 ```
 

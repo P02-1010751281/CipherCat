@@ -1,6 +1,6 @@
 # Algorithm 14  CoeffFromThreeBytes(𝑏0 , 𝑏1 , 𝑏2 )
 
-**章节**: §3.2  
+**章节**: §7.1
 **类别**: 系数采样辅助
 
 ### 规范
@@ -15,20 +15,17 @@ Output: An integer modulo 𝑞 or ⊥.
 3:
 𝑏2′ ← 𝑏2′ − 128
 4: end if
-5: 𝑧 ← 216 ⋅ 𝑏2′ + 28 ⋅ 𝑏1 + 𝑏0
+5: 𝑧 ← 2¹⁶ ⋅ 𝑏2′ + 2⁸ ⋅ 𝑏1 + 𝑏0
 6: if 𝑧 < 𝑞 then return 𝑧
 7: else return ⊥
 8: end if
 
 ▷ set the top bit of 𝑏2′ to zero
-▷ 0 ≤ 𝑧 ≤ 223 − 1
+▷ 0 ≤ 𝑧 ≤ 2²³ − 1
 ▷ rejection sampling
 
-29
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 ```
 

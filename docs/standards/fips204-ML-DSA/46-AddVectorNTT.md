@@ -1,6 +1,6 @@
 # Algorithm 46  AddVectorNTT(𝐯,̂ 𝐰)
 
-**章节**: §3.5  
+**章节**: §7.6
 **类别**: NTT 运算
 
 ### 规范
@@ -20,11 +20,8 @@ Output: 𝐮̂ ∈ 𝑇𝑞ℓ .
 3: end for
 4: return 𝐮̂
 
-45
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 ```
 

@@ -238,17 +238,15 @@ by their randomizing effect on the decryption of the succeeding ciphertext segme
 
 Table D.1 summarizes the effects of bit errors in a ciphertext block or IV on the decryption of the
 ciphertext for each of the five confidentiality modes.
-Table D.1e five confidentiality modes.
-Table D.2: Summary of Effect of Bit Errors on Decryption
-Mode Effect of Bit Errors in C Effect of Bit Errors in the IV
-j
-ECB RBE in the decryption of C Not applicable
-j
-RBE in the decryption of C
-CBC j SBE in the decryption of C
-SBE in the decryption of C 1
-j+1
-SBE in the decryption of C RBE in the decryption of C, C, …, C
-CFB j 1 2 j
-RBE in the decryption of C ,…,C for some j between 1 and b/s
-j+1 j+b/s
+Table D.1: Summary of Effect of Bit Errors on Decryption
+
+| Mode | Effect of Bit Errors in C_j | Effect of Bit Errors in the IV |
+|------|------------------------------|--------------------------------|
+| ECB  | RBE in the decryption of C_j | Not applicable |
+| CBC  | RBE in the decryption of C_j; SBE in the decryption of C_(j+1) | SBE in the decryption of C_1 |
+| CFB  | RBE in the decryption of C_j; SBE in the decryption of C_(j+1), …, C_(j+b/s) | SBE in the decryption of C_1, …, C_j |
+| OFB  | RBE in the decryption of C_j | SBE in the decryption of C_1, …, C_n |
+| CTR  | RBE in the decryption of C_j | SBE in the decryption of C_1, …, C_n |
+
+RBE = Random Bit Error（解密结果随机）；SBE = Systematic Bit Error（可预测的确定错误）。
+注：C_j 中第 t 位的错误：CTR 模式只影响解密明文的同一位置；CFB 模式影响后续 b/s 个片段。

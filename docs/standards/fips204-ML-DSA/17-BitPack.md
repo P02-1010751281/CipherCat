@@ -1,6 +1,6 @@
 # Algorithm 17  BitPack(𝑤, 𝑎, 𝑏)
 
-**章节**: §3.2  
+**章节**: §7.1
 **类别**: 比特打包
 
 ### 规范
@@ -23,11 +23,8 @@ BitUnpack to output polynomials whose coefficients are not in the ranges [0, �
 This can be a concern when running SimpleBitUnpack and BitUnpack on inputs that may come from an
 untrusted source.
 
-30
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 ```
 

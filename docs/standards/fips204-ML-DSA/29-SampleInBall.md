@@ -1,6 +1,6 @@
 # Algorithm 29  SampleInBall(𝜌)
 
-**章节**: §3.3  
+**章节**: §7.3
 **类别**: 采样
 
 ### 规范
@@ -37,23 +37,11 @@ end while
 ▷ 𝑗 is a pseudorandom byte that is ≤ 𝑖
 
 Algorithms 30–34 are the pseudorandom procedures RejNTTPoly, RejBoundedPoly, ExpandA, ExpandS,
-and ExpandMask. Each generates elements of 𝑅 or 𝑇𝑞 under different input and output conditions.
-RejNTTPoly and ExpandA make use of the more efficient XOF G, whereas the other three procedures
-use the XOF H.
-The procedure ExpandMask (Algorithm 34) generates a polynomial vector 𝐲 in 𝑅𝑘 that disguises the
-secret key in the ML-DSA.Sign_internal procedure (Algorithm 7). In addition to the seed 𝜌, ExpandMask
-also accepts an integer input 𝜇 that is incorporated into the pseudorandom procedure that generates 𝐬.
 
-12
 
-The parameter 𝜏 is always less than or equal to 64, and thus 8 bytes are sufficient to choose the signs for all 𝜏
-nonzero entries of 𝐜.
 
-36
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 ```
 

@@ -1,6 +1,6 @@
 # Algorithm 40  UseHint(ℎ, 𝑟)
 
-**章节**: §3.4  
+**章节**: §7.4
 **类别**: 舍入与分解
 
 ### 规范
@@ -11,7 +11,6 @@ Returns the high bits of 𝑟 adjusted according to hint ℎ.
 Input: Boolean ℎ, 𝑟 ∈ ℤ𝑞 .
 Output: 𝑟1 ∈ ℤ with 0 ≤ 𝑟1 ≤ 𝑞−1
 2𝛾 .
-2
 
 1: 𝑚 ← (𝑞 − 1)/(2𝛾2 )
 2: (𝑟1 , 𝑟0 ) ← Decompose(𝑟)
@@ -19,13 +18,10 @@ Output: 𝑟1 ∈ ℤ with 0 ≤ 𝑟1 ≤ 𝑞−1
 4: if ℎ = 1 and 𝑟0 ≤ 0 return (𝑟1 − 1) mod 𝑚
 5: return 𝑟1
 
-41
 
-FIPS 204
 
 7.5
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 NTT and NTT−1
 
@@ -50,11 +46,8 @@ into an array zetas[1..255]. The table of zetas is given in Appendix B. If Montg
 (see Appendix A), then the zetas array would typically be stored in Montgomery form.
 NTT and NTT−1 use BitRev8 , which reverses the order of bits in an 8-bit integer.
 
-42
 
-FIPS 204
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 ```
 

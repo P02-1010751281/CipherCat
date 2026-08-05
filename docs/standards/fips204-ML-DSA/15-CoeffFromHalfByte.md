@@ -1,6 +1,6 @@
 # Algorithm 15  CoeffFromHalfByte(𝑏)
 
-**章节**: §3.2  
+**章节**: §7.1
 **类别**: 系数采样辅助
 
 ### 规范
@@ -27,7 +27,6 @@ Algorithms 16–19 efficiently translate an element 𝑤 ∈ 𝑅 into a byte st
 assumption that the coefficients of 𝑤 are in a restricted range. SimpleBitPack assumes that 𝑤𝑖 ∈ [0, 𝑏]
 for some positive integer 𝑏 and packs 𝑤 into a byte string of length 32 ⋅ bitlen 𝑏. BitPack allows for the
 more general restriction 𝑤𝑖 ∈ [−𝑎, 𝑏]. The BitPack algorithm works by merely subtracting 𝑤 from the
-255
 polynomial ∑𝑖=0 𝑏𝑋 𝑖 .
 
 ```

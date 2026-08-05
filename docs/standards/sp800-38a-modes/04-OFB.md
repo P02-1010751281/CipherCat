@@ -17,18 +17,21 @@ generation of such IVs is discussed in Appendix C. The OFB mode is defined as fo
 |  |  | O = CIPH | (I) | for j = 1, 2 …  n; |
 j K j
 j   j  j
-C* = P*  ⊕  MSB(O).
+C# = P# ⊕ MSB(O) for j = 1 … n.
+j j s j
+C = P ⊕ O for j = 1 … n−1;  (完整块：C = P ⊕ O)
+j j j  j j j
 
-1
 |  |  | I = O |  | for j = 2 …  n; |
 | --- | --- | ---------- | ---- | --------------------- |
 |  |  | j | j -1 |
 |  |  | O = CIPH | (I) | for j = 1, 2 …  n; |
 j K j
 j  j  j
-|  |  | P*  = C* ⊕  MSB(O). |
-| --- | --- | -------------------- | ---- |
+P*  = C* ⊕  MSB(O).
 |  |  | n | n  u | n |
+
+完整块（j = 1 … n−1）：加密 C_j = P_j ⊕ O_j；解密 P_j = C_j ⊕ O_j。
 
 In OFB encryption, the IV is transformed by the forward cipher function to produce the first
 output block.  The first output block is exclusive-ORed with the first plaintext block to produce

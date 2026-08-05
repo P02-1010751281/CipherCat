@@ -1,6 +1,6 @@
 # Algorithm 21  HintBitUnpack(𝑦)
 
-**章节**: §3.2  
+**章节**: §7.1
 **类别**: 比特打包
 
 ### 规范
@@ -51,13 +51,10 @@ if 𝑦[𝑖] ≠ 0 then return ⊥
 end if
 19: end for
 20: return 𝐡
-32
 
-FIPS 204
 
 7.2
 
-MODULE-LATTICE-BASED DIGITAL SIGNATURE STANDARD
 
 Encodings of ML-DSA Keys and Signatures
 

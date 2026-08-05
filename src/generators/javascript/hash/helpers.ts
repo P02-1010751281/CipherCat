@@ -49,7 +49,6 @@ export function registerSha3Pad(): string {
     '  suffix = (suffix !== undefined) ? suffix : 0x06;',
     '  let mLen = msg.length;',
     '  let q = rateBytes - (mLen % rateBytes);',
-    '  if (q === 1) q += rateBytes;',
     '  let padded = new Uint8Array(mLen + q);',
     '  padded.set(msg);',
     '  padded[mLen] ^= suffix;',

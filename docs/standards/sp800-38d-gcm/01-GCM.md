@@ -2,16 +2,12 @@
 
 来源: NIST SP 800-38D
 
-Recommendation for Block
-NIST Special Publication 800-38D
 November, 2007 Cipher Modes of Operation:
 Galois/Counter Mode (GCM)
 and GMAC
 Morris Dworkin
 C O M P U T E R S E C U R I T Y
 
-Recommendation for Block
-NIST Special Publication 800-38D
 Cipher Modes of Operation:
 Galois/Counter Mode (GCM)
 and GMAC
@@ -27,7 +23,6 @@ Carlos M. Gutierrez, Secretary
 Nation al Institute of Standards and Technology
 James M. Turner, Acting Director
 
-NIST Special Publication 800-38D
 Reports on Information Security Technology
 The Information Technology Laboratory (ITL) at the National Institute of Standards and Technology
 (NIST) promotes the U.S. economy and public welfare by providing technical leadership for the Nation’s
@@ -48,7 +43,6 @@ Natl. Inst. Stand. Technol. Spec. Publ. 800-38D 37 pages (November 2007)
 CODEN: NSPUE2
 ii
 
-NIST Special Publication 800-38D
 Acknowledgements
 The author wishes to thank David McGrew, who co-invented GCM and submitted it to NIST, and also the
 author’s colleagues who reviewed drafts of this document and contributed to its development, especially
@@ -57,7 +51,6 @@ gratefully acknowledges the many comments from the public and private sectors to
 and usefulness of this publication.
 iii
 
-NIST Special Publication 800-38D
 Abstract
 This Recommendation specifies the Galois/Counter Mode (GCM), an algorithm for
 authenticated encryption with associated data, and its specialization, GMAC, for generating a
@@ -67,7 +60,6 @@ KEY WORDS: authenticated encryption; authentication; block cipher; confidentiali
 cryptography; encryption; information security; mode of operation.
 iv
 
-NIST Special Publication 800-38D
 Table of Contents
 1 PURPOSE...........................................................................................................................................................1
 2 AUTHORITY.....................................................................................................................................................1
@@ -109,7 +101,6 @@ APPENDIX D: PROTECTION AGAINST REPLAY OF MESSAGES...............................
 APPENDIX E: BIBLIOGRAPHY..........................................................................................................................31
 v
 
-NIST Special Publication 800-38D
 List of Figures
 Figure 1:  GHASH  (X  || X || ... || X ) = Y .................................................................................13
 |  | H 1 | 2  m | m |
@@ -127,7 +118,6 @@ Table 1:  Constraints with 32-bit Tags..........................................
 Table 2:  Constraints with 64-bit Tags..........................................................................................29
  vi
 
-NIST Special Publication 800-38D
 1 Purpose
 This publication is the fourth Part in a series of Recommendations regarding modes of operation
 of symmetric key block ciphers.
@@ -165,7 +155,6 @@ operation for encryption. GCM provides assurance of the authenticity of the conf
 (up to about 64 gigabytes per invocation) using a universal hash function that is defined over a
 1
 
-NIST Special Publication 800-38D
 binary Galois (i.e., finite) field. GCM can also provide authentication assurance for additional
 data (of practically unlimited length per invocation) that is not encrypted.
 If the GCM input is restricted to data that is not to be encrypted, the resulting specialization of
@@ -201,7 +190,6 @@ they discuss in detail its security and performance in Ref. [7].
 4.1 Definitions and Abbreviations
 2
 
-NIST Special Publication 800-38D
 AAD Additional Authenticated Data
 Additional The input data to the authenticated encryption function that is
 Authenticated Data authenticated but not encrypted.
@@ -232,7 +220,6 @@ Byte String A finite, ordered sequence of bytes.
 Ciphertext The encrypted form of the plaintext.
 3
 
-NIST Special Publication 800-38D
 Direct Random String In the RBG-based construction of IVs, an output string of an RBG
 that is used as the random field for an IV.
 Exclusive-OR The bitwise addition, modulo 2, of two bit strings of equal length.
@@ -264,7 +251,6 @@ Mode of Operation An algorithm for the cryptographic transformation of data that
 (Mode) based on a block cipher.
 4
 
-NIST Special Publication 800-38D
 Most Significant Bit(s) The left-most bit(s) of a bit string.
 NIST National Institute of Standards and Technology.
 Nonce A value that is used only once within a specified context.
@@ -292,7 +278,6 @@ T The authentication tag.
 t The bit length of the authentication tag.
 5
 
-NIST Special Publication 800-38D
 4.2.2 Operations and Functions
 0 s The bit string that consists of s ‘0’ bits.
 CIPH (X) The output of the forward cipher function of the block cipher under the
@@ -327,7 +312,6 @@ Xi For a positive integer i, the ith power of X under the product ‘•’.
 x·y The product of two integers, x and y.
 6
 
-NIST Special Publication 800-38D
 5 Elements of GCM
 The elements of GCM and the associated notation and requirements are introduced in the three
 sections below. The underlying block cipher and key are discussed in Sec. 5.1. The data
@@ -366,7 +350,6 @@ The requirements and notation for the input and output data of these functions a
 Secs. 5.2.1 and 5.2.2. Algorithms for computing these functions are given in Sec. 7.
 7
 
-NIST Special Publication 800-38D
 5.2.1 Authenticated Encryption Function
 5.2.1.1 Input Data
 Given the selection of an approved block cipher and key, there are three input strings to the
@@ -403,7 +386,6 @@ promote interoperability, efficiency, and simplicity of design.
 The following two bit strings comprise the output data of the authenticated encryption function:
 8
 
-NIST Special Publication 800-38D
 • A ciphertext, denoted C, whose bit length is the same as that of the plaintext.
 • An authentication tag, or tag, for short, denoted T.
 The bit length of the tag, denoted t, is a security parameter, as discussed in Appendix B. In
@@ -442,7 +424,6 @@ functions are ultimately equivalent, but the simplified version of GHASH in this
 all of the properties that are shown for the designers' definition of GHASH in Ref. [7].
 9
 
-NIST Special Publication 800-38D
 The hash subkey, denoted H, is generated by applying the block cipher to the “zero” block. The
 resulting instance of this hash function, denoted GHASH , is used to compress an encoding of
 H
@@ -479,7 +460,6 @@ addition, modulo 2, of the bits in each bit position, i.e., without carries. For
 10101 = 00110.
 10
 
-NIST Special Publication 800-38D
 Given a bit string X, the bit length of X is denoted len(X). For example, len(00010)=5.
 Given a bit string X and a non-negative integer s such that len(X)≥s, the functions LSB (X) and
 s
@@ -527,7 +507,6 @@ Steps:
 i+1 i+1
 11
 
-NIST Special Publication 800-38D
 ⎧ Z                          if x =0;
 i i
 Z = ⎨
@@ -589,7 +568,6 @@ The  GHASH  function  is  illustrated  in  Figure  1  below,  without  the  zero
 | ------------------- | ------------------ |
  12
 
-NIST Special Publication 800-38D
 
 ...
 | --- | --- | --- | ---------------- | --- | --- | --------------------- | -------- |
@@ -639,7 +617,6 @@ are complete blocks.2
 n 1
  13
 
-NIST Special Publication 800-38D
 | 8. | Let Y | =Y |  | Y |  |  | ... |  | Y∗. |
 | --- | ----- | ------ | ----------- |
 9.  Return Y.
@@ -685,7 +662,6 @@ Algorithm 4 below specifies the authenticated encryption function:
 
  14
 
-NIST Special Publication 800-38D
 K
 
 Prerequisites:
@@ -740,7 +716,6 @@ lengths of the AAD and the ciphertext, and the GHASH function is applied to the 
 produce a single output block.  In Step 6, this output block is encrypted using the GCTR function
  15
 
-NIST Special Publication 800-38D
 with the pre-counter block that was generated in Step 2, and the result is truncated to the
 specified tag length to form the authentication tag.  The ciphertext and the tag are returned as the
 output in Step 7.
@@ -777,7 +752,6 @@ initialization vector IV;
 ciphertext C;
  16
 
-NIST Special Publication 800-38D
 additional authenticated data A;
 authentication tag T.
 
@@ -835,7 +809,6 @@ from IV (Step 3) is not depicted.
 
  17
 
-NIST Special Publication 800-38D
 
 | J |  | inc |  | GCTR |
 | --- | --- | --- | --- | ---- | --- | ---------- | --- | -------- |
@@ -871,7 +844,6 @@ allowed IV constructions for satisfying this requirement are given in Sec. 8.2. 
 number of invocations of the authenticated encryption function are given in Sec. 8.3.
  18
 
-NIST Special Publication 800-38D
 8.1 Key Establishment
 The following requirement, which is the norm for secret key cryptographic algorithms in general,
 takes on explicit importance for GCM to support the uniqueness requirement in Sec. 8:
@@ -908,7 +880,6 @@ IV lengths, one possible combination of choices is the construction in Sec. 8.2.
 and the construction in Sec. 8.2.2 for 128-bit and 160-bit IVs.
 19
 
-NIST Special Publication 800-38D
 8.2.1 Deterministic Construction
 In the deterministic construction, the IV is the concatenation of two fields, called the fixed field
 and the invocation field. The fixed field shall identify the device, or, more generally, the context
@@ -946,7 +917,6 @@ r(i)–bit output string from the RBG is called a direct random string, and the 
 result from applying the r(i)–bit incrementing function are called its successors.
 20
 
-NIST Special Publication 800-38D
 There are no requirements on the bits in the free field. For example, they may identify the
 device, similar to the fixed field of the deterministic construction, except within the RBG-based
 construction these identifiers are not required to be distinct for each device. For any IV length
@@ -984,7 +954,6 @@ devices/contexts that can implement the authenticated encryption function for th
 key, with IVs of the given length.
 21
 
-NIST Special Publication 800-38D
 9 Practical Considerations for Validating Implementations
 Both the designer of a GCM implementation and the information technology (IT) professional
 who deploys and maintains it within a particular system have important roles in meeting the
@@ -1021,7 +990,6 @@ are necessary to construct the IV would have to be available when power is resto
 example, these elements could be stored in non-volatile memory.
 22
 
-NIST Special Publication 800-38D
 When power is restored, neither the preceding IV nor any other previous IV shall immediately be
 repeated for the key. One way to avoid such a repetition would be to ensure that the invocation
 field value that is periodically stored in the non-volatile memory is always one or more values
@@ -1059,7 +1027,6 @@ invocations ensured?
 of power without violating the uniqueness requirement on IVs?
 23
 
-NIST Special Publication 800-38D
 The following considerations are specific to the deterministic construction:
 • How are the device identifiers installed into the fixed field so that compliance with the
 requirements on the fixed field in Sec. 8.2.1 is ensured, both for the initially deployed
@@ -1088,7 +1055,6 @@ replace the given set of steps with any mathematically equivalent sets of steps.
 different procedures that produce the correct output for any input are permitted.
 24
 
-NIST Special Publication 800-38D
 Appendix A: Importance of the Uniqueness Requirement on IVs
 Sec. 8 contains a uniqueness requirement for the IVs of GCM, across all implementations of the
 authenticated encryption function with any given key. This appendix summarizes why this
@@ -1127,7 +1093,6 @@ correspond to any desired plaintext of the same length. In other words, the adve
 could control the plaintext output of the authenticated decryption function.
 25
 
-NIST Special Publication 800-38D
 Appendix B: Authentication Assurance
 The creation of an authentication tag by the authenticated encryption function provides the
 mechanism whereby assurance of the authenticity of the plaintext and AAD (and IV) can be
@@ -1167,7 +1132,6 @@ implements GCM should monitor and, if necessary, limit the number of unsuccessfu
 attempts for each key.
 26
 
-NIST Special Publication 800-38D
 Moreover, as with most block cipher modes of operation, the security assurance of GCM
 degrades as more data is processed with a single key. Therefore, the total number of blocks of
 plaintext and AAD that are protected by invocations of the authenticated encryption function
@@ -1175,7 +1139,6 @@ during the lifetime of the key should be limited. A reasonable limit for most ap
 be 264, consistent with the requirement on the number of invocations in Sec. 8.3.
 27
 
-NIST Special Publication 800-38D
 Appendix C: Requirements and Guidelines for Using Short Tags
 For some voice or video applications, short authentication tags can be appropriate. The forgery
 of some fraction of the individual authenticated “packets” may be tolerable, because each packet
@@ -1213,7 +1176,6 @@ An example of a protocol that meets these guidelines is Secure Real-time Transpo
 carrying Voice over Internet Protocol, running over User Datagram Protocol.
 28
 
-NIST Special Publication 800-38D
 Tables 1 and 2 below quantify the recommendations in Item 4 above, for 32-bit and 64-bit tags,
 respectively. Each row has two entries: 1) a maximum combined length for the ciphertext and
 the AAD in a single packet, in bytes, and 2) a corresponding maximum number of invocations of
@@ -1246,7 +1208,6 @@ In a Single Packet (bytes)
 225 2 17
 29
 
-NIST Special Publication 800-38D
 Appendix D: Protection Against Replay of Messages
 As described in Appendix B, the successful verification of the tag within the authenticated
 decryption function gives assurance of the authenticity of the data; however, the party that
@@ -1264,7 +1225,6 @@ authenticity, this information may provide a means for the detection of replayed
 of-sequence messages, or missing messages.
 30
 
-NIST Special Publication 800-38D
 Appendix E: Bibliography
 [1] Ferguson, N., Authentication Weaknesses in GCM, Natl. Inst. Stand. Technol.
 [Web page], http://www.csrc.nist.gov/groups/ST/toolkit/BCM/documents/comments/

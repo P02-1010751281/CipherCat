@@ -69,11 +69,35 @@ export function registerPolySubModQ(): string {
 
 export function registerNtt(): string {
   const powModName = registerPowMod();
+  const bitRevName = registerBitRev();
   return javascriptGenerator.provideFunction_('ntt', [
     'function ' +
       javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
       '(a, q, n) {',
     '  q = q || 3329; n = n || 256;',
+    '  if (q === 8380417) {',
+    '    // ML-DSA (FIPS 204 §6.3.2): Cooley-Tukey 8 layers, ζ=1753 (2^32 mod q, 512th primitive root)',
+    '    let zetas = new Array(256).fill(0);',
+    '    for (let k = 1; k < 256; k++) zetas[k] = ' + powModName + '(1753, ' + bitRevName + '(k, 8), q);',
+    '    let res = a.slice();',
+    '    let m = 0;',
+    '    let len = 128;',
+    '    while (len >= 1) {',
+    '      let start = 0;',
+    '      while (start < 256) {',
+    '        m += 1;',
+    '        let z = zetas[m];',
+    '        for (let j = start; j < start + len; j++) {',
+    '          let t = (z * res[j + len]) % q;',
+    '          res[j + len] = (((res[j] - t) % q) + q) % q;',
+    '          res[j] = (res[j] + t) % q;',
+    '        }',
+    '        start += 2 * len;',
+    '      }',
+    '      len = Math.floor(len / 2);',
+    '    }',
+    '    return res;',
+    '  }',
     '  let gen = (q === 3329) ? 17 : 3;',
     '  let res = a.slice();',
     '  let len = res.length;',
@@ -105,11 +129,38 @@ export function registerNtt(): string {
 
 export function registerIntt(): string {
   const powModName = registerPowMod();
+  const bitRevName = registerBitRev();
   return javascriptGenerator.provideFunction_('intt', [
     'function ' +
       javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
       '(a, q, n) {',
     '  q = q || 3329; n = n || 256;',
+    '  if (q === 8380417) {',
+    '    // ML-DSA (FIPS 204 §6.3.3): Gentleman-Sande 8 layers, -zetas[m], final × 256⁻¹',
+    '    let zetas = new Array(256).fill(0);',
+    '    for (let k = 1; k < 256; k++) zetas[k] = ' + powModName + '(1753, ' + bitRevName + '(k, 8), q);',
+    '    let res = a.slice();',
+    '    let m = 256;',
+    '    let len = 1;',
+    '    while (len < 256) {',
+    '      let start = 0;',
+    '      while (start < 256) {',
+    '        m -= 1;',
+    '        let z = (q - zetas[m]) % q;',
+    '        for (let j = start; j < start + len; j++) {',
+    '          let t = res[j];',
+    '          res[j] = (t + res[j + len]) % q;',
+    '          res[j + len] = (t - res[j + len] + q) % q;',
+    '          res[j + len] = (z * res[j + len]) % q;',
+    '        }',
+    '        start += 2 * len;',
+    '      }',
+    '      len *= 2;',
+    '    }',
+    '    let finv = 8347681; // 256⁻¹ mod 8380417',
+    '    for (let j = 0; j < 256; j++) res[j] = (res[j] * finv) % q;',
+    '    return res;',
+    '  }',
     '  let gen = (q === 3329) ? 17 : 3;',
     '  let res = a.slice();',
     '  let len = res.length;',
@@ -165,6 +216,18 @@ export function registerPowMod(): string {
   ]);
 }
 
+export function registerBitRev(): string {
+  return javascriptGenerator.provideFunction_('bitRev8', [
+    'function ' +
+      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
+      '(x, bits) {',
+    '  let r = 0;',
+    '  for (let i = 0; i < bits; i++) { r = (r << 1) | (x & 1); x >>= 1; }',
+    '  return r;',
+    '}',
+  ]);
+}
+
 export function registerNttMul(): string {
   const powModName = registerPowMod();
   return javascriptGenerator.provideFunction_('nttMul', [
@@ -172,6 +235,12 @@ export function registerNttMul(): string {
       javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
       '(a, b, q) {',
     '  q = q || 3329;',
+    '  if (q === 8380417) {',
+    '    // ML-DSA (FIPS 204 §6.3.4): pointwise multiplication of NTT-domain polynomials',
+    '    let res = new Array(256);',
+    '    for (let i = 0; i < 256; i++) res[i] = (a[i] * b[i]) % q;',
+    '    return res;',
+    '  }',
     '  let gen = (q === 3329) ? 17 : 3;',
     '  let len = Math.min(a.length, b.length);',
     '  let res = new Array(len);',

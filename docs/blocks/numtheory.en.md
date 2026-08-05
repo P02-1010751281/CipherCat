@@ -14,9 +14,9 @@
 | `pq_poly_sub` | 1 | value(→) | IntList&IntList→IntList |
 | `pq_poly_mul` | 1 | value(→) | IntList&IntList→IntList | plain integer convolution (MODULUS dropdown none/3329/8380417/12289); ring R_q teaching, compare with NTT-domain `pq_ntt_mul` |
 | `pq_mat_vec_mul` | 1 | value(→) | IntList&IntList→IntList |
-| `pq_ntt` | 1 | value(→) | IntList→IntList |
-| `pq_intt` | 1 | value(→) | IntList→IntList |
-| `pq_ntt_mul` | 1 | value(→) | IntList&IntList→IntList |
+| `pq_ntt` | 1 | value(→) | IntList→IntList | NTT (MODULUS dropdown 3329/8380417/12289): q=8380417 branch per FIPS 204 (ζ=1753, BitRev8, 8-layer CT) |
+| `pq_intt` | 1 | value(→) | IntList→IntList | INTT (same dropdown): q=8380417 GS 8 layers then × 256⁻¹=8347681 |
+| `pq_ntt_mul` | 1 | value(→) | IntList&IntList→IntList | NTT-domain multiply (dropdown 3329/8380417): q=8380417 pointwise, q=3329 half-NTT base mul |
 | `pq_ntt_butterfly` | 1 | value(→) | null&null&null→null |
 
 ## Big Integer Ops

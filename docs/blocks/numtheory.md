@@ -14,9 +14,9 @@
 | `pq_poly_sub` | 1 | value(→) | IntList&IntList→IntList |
 | `pq_poly_mul` | 1 | value(→) | IntList&IntList→IntList | 普通整数卷积（MODULUS 下拉 none/3329/8380417/12289）；环 R_q 教学，与 NTT 域 `pq_ntt_mul` 对比 |
 | `pq_mat_vec_mul` | 1 | value(→) | IntList&IntList→IntList |
-| `pq_ntt` | 1 | value(→) | IntList→IntList |
-| `pq_intt` | 1 | value(→) | IntList→IntList |
-| `pq_ntt_mul` | 1 | value(→) | IntList&IntList→IntList |
+| `pq_ntt` | 1 | value(→) | IntList→IntList | NTT（MODULUS 下拉 3329/8380417/12289）：q=8380417 分支按 FIPS 204（ζ=1753、BitRev8、8 层 CT） |
+| `pq_intt` | 1 | value(→) | IntList→IntList | INTT（同下拉）：q=8380417 分支 GS 8 层 + 乘 256⁻¹=8347681 |
+| `pq_ntt_mul` | 1 | value(→) | IntList&IntList→IntList | NTT 域乘法（下拉 3329/8380417）：q=8380417 逐点乘，q=3329 half-NTT 基乘 |
 | `pq_ntt_butterfly` | 1 | value(→) | null&null&null→null |
 
 ## 大数运算

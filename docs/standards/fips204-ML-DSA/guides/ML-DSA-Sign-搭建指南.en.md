@@ -67,15 +67,16 @@ MakeHint/UseHint let the verifier recover w1′.
 | PolyMul | `pq_poly_mul` | A, B (IntList) → IntList | `MODULUS`: none / 3329 / **8380417** / 12289 | — (§2.4) | R_q ring multiplication teaching (plain convolution mod q) |
 | XOF | `pq_xof` | SEED, OUTLEN → Bytes | `ALGO`: SHAKE128 / **SHAKE256** | H of Alg 29/34 | hashing for μ, ρ″, c̃ (SHAKE256) |
 | PRF | `pq_prf` | SEED, NONCE, OUTLEN → Bytes | `ALGO`: SHAKE256 / SHAKE128 | Alg 34 | pseudorandom source for ExpandMask(y) (seed ‖ nonce) |
-| NTT / INTT | `pq_ntt` / `pq_intt` | IntList → IntList | ⚠ `MODULUS` only 3329 / 12289, **no 8380417** | Alg 41/42 | ring op w ← NTT⁻¹(Â∘NTT(y)) (q=8380417 not atomized, see appendix) |
-| NTT Mul | `pq_ntt_mul` | A, B → IntList | ⚠ `MODULUS` only 3329 | Alg 45 | NTT-domain pointwise multiply (same gap) |
-| PolyAdd | `pq_poly_add` | A, B → IntList | ⚠ `MODULUS` only 3329 | Alg 44 | vector/poly addition (same gap) |
-| SampleNTT | `pq_sample_ntt` | SEED → IntList | ⚠ `MODULUS` only 3329 | Alg 30 | NTT-domain sampling of matrix A (same gap) |
+| NTT / INTT | `pq_ntt` / `pq_intt` | IntList → IntList | `MODULUS`: 3329 / **8380417** / 12289; `DEGREE`: 256/128 | Alg 41/42 | ring op w ← NTT⁻¹(Â∘NTT(y)) (q=8380417 branch: ζ=1753, BitRev8, 8 layers) |
+| NTT Mul | `pq_ntt_mul` | A, B → IntList | `MODULUS`: 3329 / **8380417** | Alg 45 | NTT-domain pointwise multiply (q=8380417 pointwise; q=3329 half-NTT base mul) |
+| PolyAdd | `pq_poly_add` | A, B → IntList | `MODULUS`: 3329 / **8380417** | Alg 44 | vector/poly addition |
+| SampleNTT | `pq_sample_ntt` | SEED → IntList | `MODULUS`: 3329 / **8380417** | Alg 30 | NTT-domain sampling of matrix A (q=8380417: SHAKE128 3 bytes → 23-bit < q) |
 
 > ⚠ **Block facts**: the signature primitives (first 5) hard-code ML-DSA-44 parameters
 > (d=13, γ₂=95232, τ=39) with q=8380417 embedded; `nt_mod_pow` / `pq_poly_mul` include 8380417 in their dropdowns.
-> But the **NTT-domain ring-op blocks (pq_ntt / pq_ntt_mul / pq_poly_add / pq_sample_ntt) currently support
-> only q=3329 (Kyber) / 12289** — they cannot yet assemble the Â∘NTT(y) part of ML-DSA. See the appendix.
+> The NTT-domain ring-op blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_poly_add`/`pq_sample_ntt`)
+> all support **q=8380417 (ML-DSA)** — the NTT branch follows FIPS 204 Alg 41/42 (ζ=1753, BitRev8, INTT × 256⁻¹),
+> see Step 8c for the full assembly and `demos/procedures/ML-DSA-NTT.json` for property vectors.
 
 ---
 
@@ -239,7 +240,7 @@ procedures_defreturn In_Ball(seed: bytes)
 ## Step 8: Lattice-Ring Helpers — modular arithmetic at q=8380417
 
 FIPS 204 §2.4–2.5: ring R_q = Z_q[X]/(X²⁵⁶+1), q = 2²³−2¹³+1 = 8380417.
-Full primitive-chain assembly needs NTT-domain ring ops (see appendix gap); this step uses the two blocks
+Full primitive-chain assembly uses the NTT-domain ring ops (see Step 8c); this step first uses the two blocks
 that support 8380417 to verify q's algebraic properties.
 
 ### 8a — Fermat's little theorem: q is prime
@@ -268,6 +269,32 @@ that support 8380417 to verify q's algebraic properties.
 > (see the convolution property group in `demos/procedures/PQC-Gaps.json`).
 
 **Blocks**: 1× `nt_mod_pow`, 2× `pq_poly_mul`, ~4× number blocks
+
+### 8c — NTT-domain ring ops: assembling w ← NTT⁻¹(Â∘NTT(y))
+
+The core ring op of the FIPS 204 signing chain (Alg 7 step 7-8) is now fully assembleable from atomic blocks (q=8380417):
+
+| # | Operation | Block | Dropdown |
+|---|-----------|-------|----------|
+| 1 | Sample matrix A in NTT domain | **Number Theory / PQ** → `SampleNTT` (SEED ← seed‖s‖r bytes) | `MODULUS`: **8380417** |
+| 2 | Forward transform of y | `NTT(y)` | `MODULUS`: **8380417**, `DEGREE`: 256 |
+| 3 | NTT-domain pointwise multiply | `NTT Mul(Â, NTT(y))` | `MODULUS`: **8380417** |
+| 4 | Inverse transform | `INTT(·)` | `MODULUS`: **8380417**, `DEGREE`: 256 |
+| 5 | (contrast) pointwise vs plain convolution | `NTT Mul` vs `PolyMul` | both accept 8380417 |
+
+**Algorithm convention (FIPS 204 §6.3.2-6.3.4)**: NTT = Cooley-Tukey 8 layers (len 128→1),
+twiddle `zetas[m] = 1753^BitRev8(m) mod q` (ζ=1753 = 2³² mod q, a 512th primitive root);
+INTT = Gentleman-Sande 8 layers (−zetas[m]) then × 256⁻¹ = 8347681; NTT-domain multiply is pointwise mod q.
+This differs from Kyber (q=3329, ζ=17, half-NTT 7 layers + base multiply) — the dropdown dispatches per q.
+
+**Property vectors** (`demos/procedures/ML-DSA-NTT.json`, both languages PASS):
+
+| Property | Assertion |
+|----------|-----------|
+| NTT roundtrip | `INTT(NTT(p)) == p` (256 coefficients) |
+| NTT homomorphism | `NTT(a·b mod (X²⁵⁶+1)) == NTT(a) ∘ NTT(b)` (negacyclic convolution vs NTT-domain pointwise) |
+
+**Blocks**: 5× NTT-domain blocks + number blocks; demo workspace holds 3 def functions (`NTT1`/`INTT1`/`MUL1`).
 
 ---
 
@@ -423,23 +450,21 @@ stores nonzero positions + running Index).
 
 ---
 
-## Appendix: Lattice-Ring Op q Support Status (Known Gap)
+## Appendix: Lattice-Ring Op q Support Status
 
 | Block | Dropdown options | ML-DSA (q=8380417) |
 |----|----------|:---:|
-| `pq_ntt` / `pq_intt` | 3329, 12289 | ❌ |
-| `pq_ntt_mul` | 3329 | ❌ |
-| `pq_poly_add` | 3329 | ❌ |
-| `pq_sample_ntt` | 3329 | ❌ |
+| `pq_ntt` / `pq_intt` | 3329, **8380417**, 12289 | ✅ (ζ=1753, BitRev8, 8-layer CT/GS, INTT × 256⁻¹) |
+| `pq_ntt_mul` | 3329, **8380417** | ✅ (pointwise; q=3329 half-NTT base mul) |
+| `pq_poly_add` | 3329, **8380417** | ✅ (coefficient-wise mod q) |
+| `pq_sample_ntt` | 3329, **8380417** | ✅ (SHAKE128 3 bytes → 23-bit < q) |
 | `nt_mod_pow` | 3329, **8380417**, 12289, 65537, 1000000007 | ✅ |
 | `pq_poly_mul` | none, 3329, **8380417**, 12289 | ✅ |
 
-The NTT-domain ring-op blocks were implemented for FIPS 203 (ML-KEM, q=3329) and their dropdowns
-**do not yet offer 8380417**, so the full atomic chain for "w ← NTT⁻¹(Â∘NTT(y))" and "z ← y + c·s1"
-is missing the NTT link. Current teaching outlets: the signature primitive chain (Steps 1–7 of this guide,
-property vectors) plus the black-box mldsa_sign/verify (ACVP vectors). Adding 8380417 to the
-NTT/INTT/ntt_mul dropdowns is the remaining atomization gap (dropdown-only change; generators dispatch on
-the MODULUS field).
+**Closed 2026-08-05**: the four NTT-domain blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_poly_add`/`pq_sample_ntt`)
+now offer q=8380417, with the generators dispatching on the `MODULUS` field to the FIPS 204 convention
+(distinct from the Kyber half-NTT branch). The full atomic chain for "w ← NTT⁻¹(Â∘NTT(y))" is in **Step 8c**;
+property vectors live in `demos/procedures/ML-DSA-NTT.json` (roundtrip + negacyclic homomorphism, Python/JS PASS).
 
 ---
 

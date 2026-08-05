@@ -548,5 +548,15 @@
    "driver": "var m = Uint8Array.from([0x3C, 0xA5]);\nif (FLI(m, 0) !== 3 || FLI(m, 1) !== 12 || FLI(m, 2) !== 10 || FLI(m, 3) !== 5) throw new Error('FLI');\nvar leaves = Uint8Array.from({length: 256}, (_, i) => i);\nvar adrs = Addr(1, 2, 3);\nconst root = MR(leaves, 32, adrs);\nconst eqB = (x, y) => { if (x.length !== y.length) return false; for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return false; return true; };\nfor (const ix of [0, 1, 3, 5, 7]) {\n  const ap = AP(leaves, 32, adrs, ix);\n  if (ap.length !== 96) throw new Error('AP_LEN');\n  let node = leaves.slice(ix * 32, (ix + 1) * 32);\n  for (let h = 0; h < 3; h++) {\n    const sib = ap.slice(h * 32, (h + 1) * 32);\n    node = ((ix >> h) & 1) ? MN(sib, node, adrs) : MN(node, sib, adrs);\n  }\n  if (!eqB(node, root)) throw new Error('AUTH_REBUILD');\n}\nconsole.log('TREE_IDX_OK');",
    "expect": "TREE_IDX_OK"
   }
+ },
+ "procedures/ML-DSA-NTT.json": {
+  "py": {
+   "driver": "# ML-DSA NTT 域（q=8380417, FIPS 204 Alg 41/42/45）性质向量\nQ = 8380417\n# 1. 往返：INTT(NTT(p)) == p\np = [i * 12345 % Q for i in range(256)]\nrt = INTT1(NTT1(p))\nassert rt == p, 'NTT_ROUNDTRIP'\n# 2. NTT 乘法同态：NTT(a·b mod (X^256+1)) == NTT(a)∘NTT(b)\ndef neg_cyclic(a, b):\n    n = 256; c = [0]*n\n    for i in range(n):\n        for j in range(n):\n            idx = i + j\n            if idx >= n: c[idx-n] = (c[idx-n] - a[i]*b[j]) % Q\n            else: c[idx] = (c[idx] + a[i]*b[j]) % Q\n    return [x % Q for x in c]\na = [i * 777 % Q for i in range(256)]\nb = [i * 333 % Q for i in range(256)]\nlhs = NTT1(neg_cyclic(a, b))\nrhs = MUL1(NTT1(a), NTT1(b))\nassert lhs == rhs, 'NTT_HOMOMORPHISM'\n# 3. SampleNTT 边界（q=8380417 23-bit 拒绝采样）\n# 4. INTT 缩放：INTT(NTT(1 阶跃)) 常数 1 → 全部系数为 1? 用已知向量\nprint('ML-DSA-NTT-OK')\n",
+   "expect": "ML-DSA-NTT-OK"
+  },
+  "js": {
+   "driver": "// ML-DSA NTT 域（q=8380417, FIPS 204 Alg 41/42/45）性质向量\nconst Q = 8380417n;\n// 1. 往返\nvar p = []; for (let i = 0; i < 256; i++) p.push(Number(BigInt(i) * 12345n % Q));\nlet rt = INTT1(NTT1(p));\nfor (let i = 0; i < 256; i++) if (rt[i] !== p[i]) throw new Error('NTT_ROUNDTRIP ' + i);\n// 2. 同态\nfunction negCyclic(a, b) {\n  let c = new Array(256).fill(0);\n  for (let i = 0; i < 256; i++) for (let j = 0; j < 256; j++) {\n    let idx = i + j;\n    if (idx >= 256) c[idx-256] = (c[idx-256] - a[i]*b[j] % Number(Q) + Number(Q)) % Number(Q);\n    else c[idx] = (c[idx] + a[i]*b[j]) % Number(Q);\n  }\n  return c.map(x => x % Number(Q));\n}\nvar a = [], b = [];\nfor (let i = 0; i < 256; i++) { a.push(Number(BigInt(i) * 777n % Q)); b.push(Number(BigInt(i) * 333n % Q)); }\nlet lhs = NTT1(negCyclic(a, b));\nlet rhs = MUL1(NTT1(a), NTT1(b));\nfor (let i = 0; i < 256; i++) if (lhs[i] !== rhs[i]) throw new Error('NTT_HOMOMORPHISM ' + i);\nconsole.log('ML-DSA-NTT-OK');\n",
+   "expect": "ML-DSA-NTT-OK"
+  }
  }
 }

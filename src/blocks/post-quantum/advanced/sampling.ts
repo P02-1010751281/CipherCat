@@ -46,7 +46,10 @@ Blockly.Blocks['pq_sample_ntt'] = {
     this.appendDummyInput()
       .appendField(', q=')
       .appendField(
-        new Blockly.FieldDropdown([['3329 (Kyber)', '3329']]),
+        new Blockly.FieldDropdown([
+          ['3329 (Kyber)', '3329'],
+          ['8380417 (ML-DSA)', '8380417'],
+        ]),
         'MODULUS',
       );
     this.appendDummyInput().appendField(')');
@@ -81,7 +84,10 @@ Blockly.Blocks['pq_sample_poly_cbd'] = {
     this.appendDummyInput()
       .appendField(', q=')
       .appendField(
-        new Blockly.FieldDropdown([['3329 (Kyber)', '3329']]),
+        new Blockly.FieldDropdown([
+          ['3329 (Kyber)', '3329'],
+          ['8380417 (ML-DSA)', '8380417'],
+        ]),
         'MODULUS',
       );
     this.appendDummyInput().appendField(')');

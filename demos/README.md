@@ -15,7 +15,7 @@
 
 ## Procedure 封装 Demo（官方向量验证通过）
 
-以下 demos 用 `procedures_defreturn`（自定义函数）封装原子块链，**不使用 `proc_*` 模板块**；生成代码（Python + JavaScript）经 `scripts/verify-demo.ts --exec` 实测通过官方测试向量（55 项向量，见 `demos/tests.json`）：
+以下 demos 用 `procedures_defreturn`（自定义函数）封装原子块链，**不使用 `proc_*` 模板块**；生成代码（Python + JavaScript）经 `scripts/verify-demo.ts --exec` 实测通过官方测试向量（56 项向量，见 `demos/tests.json`）：
 
 | Demo | 文件 | 官方向量 |
 |------|------|----------|

@@ -33,9 +33,9 @@
 
 | 块 | 层 | 连接 | 输入→输出 |
 |----|----|------|----------|
-| `pq_ntt` | 1 | value(→) | IntList→IntList |
-| `pq_intt` | 1 | value(→) | IntList→IntList |
-| `pq_ntt_mul` | 1 | value(→) | IntList&IntList→IntList |
+| `pq_ntt` | 1 | value(→) | IntList→IntList | NTT（3329/8380417/12289，FIPS 204 分支 ζ=1753） |
+| `pq_intt` | 1 | value(→) | IntList→IntList | INTT（FIPS 204 分支 × 256⁻¹） |
+| `pq_ntt_mul` | 1 | value(→) | IntList&IntList→IntList | NTT 域乘法（8380417 逐点乘） |
 | `pq_ntt_butterfly` | 1 | value(→) | null&null&null→null |
 
 

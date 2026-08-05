@@ -25,6 +25,7 @@ Blockly.Blocks['pq_mat_vec_mul'] = {
       .appendField(', q=')
       .appendField(new Blockly.FieldDropdown([
         ['3329', '3329'],
+        ['8380417 (ML-DSA)', '8380417'],
       ]), 'MODULUS');
     this.appendDummyInput()
       .appendField(')');
@@ -33,7 +34,7 @@ Blockly.Blocks['pq_mat_vec_mul'] = {
     this.setColour(250);
     this.setTooltip(
       'MatVecMul(A, v): Matrix-vector multiplication in R_q. ' +
-      'A is a flattened k×k matrix, v is a k-vector. (FIPS 203 §4, Alg 15)'
+      'A is a flattened k×k matrix, v is a k-vector. (FIPS 203 §4 / FIPS 204 §2.4)'
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf');
   },

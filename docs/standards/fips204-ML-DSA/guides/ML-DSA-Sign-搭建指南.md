@@ -64,15 +64,15 @@ ML-DSA.Verify_internal(pk, M′, σ)
 | PolyMul | `pq_poly_mul` | A, B（IntList）→ IntList | `MODULUS`: none / 3329 / **8380417** / 12289 | —（§2.4） | R_q 环乘法教学（普通卷积 mod q） |
 | XOF | `pq_xof` | SEED, OUTLEN → Bytes | `ALGO`: SHAKE128 / **SHAKE256** | 算法 29/34 的 H | μ、ρ″、c̃ 的哈希（SHAKE256） |
 | PRF | `pq_prf` | SEED, NONCE, OUTLEN → Bytes | `ALGO`: SHAKE256 / SHAKE128 | 算法 34 | ExpandMask(y) 的伪随机源（seed ‖ nonce） |
-| NTT / INTT | `pq_ntt` / `pq_intt` | IntList → IntList | ⚠ `MODULUS` 仅 3329 / 12289，**无 8380417** | 算法 41/42 | 环运算 w ← NTT⁻¹(Â∘NTT(y))（q=8380417 版本未原子化，见附录） |
-| NTT Mul | `pq_ntt_mul` | A, B → IntList | ⚠ `MODULUS` 仅 3329 | 算法 45 | NTT 域点乘（同上缺口） |
-| PolyAdd | `pq_poly_add` | A, B → IntList | ⚠ `MODULUS` 仅 3329 | 算法 44 | 向量/多项式加法（同上缺口） |
-| SampleNTT | `pq_sample_ntt` | SEED → IntList | ⚠ `MODULUS` 仅 3329 | 算法 30 | 矩阵 A 的 NTT 域采样（同上缺口） |
+| NTT / INTT | `pq_ntt` / `pq_intt` | IntList → IntList | `MODULUS`: 3329 / **8380417** / 12289；`DEGREE`: 256/128 | 算法 41/42 | 环运算 w ← NTT⁻¹(Â∘NTT(y))（q=8380417 分支：ζ=1753, BitRev8, 8 层） |
+| NTT Mul | `pq_ntt_mul` | A, B → IntList | `MODULUS`: 3329 / **8380417** | 算法 45 | NTT 域点乘（q=8380417 为逐点乘；q=3329 为 half-NTT 基乘） |
+| PolyAdd | `pq_poly_add` | A, B → IntList | `MODULUS`: 3329 / **8380417** | 算法 44 | 向量/多项式加法 |
+| SampleNTT | `pq_sample_ntt` | SEED → IntList | `MODULUS`: 3329 / **8380417** | 算法 30 | 矩阵 A 的 NTT 域采样（q=8380417：SHAKE128 3 字节 → 23-bit < q） |
 
 > ⚠ **块事实**：签名原语（前 5 块）内部固定 ML-DSA-44 参数（d=13、γ₂=95232、τ=39），
-> q=8380417 已内嵌；`nt_mod_pow` / `pq_poly_mul` 的下拉含 8380417。
-> 但 **NTT 域环运算块（pq_ntt / pq_ntt_mul / pq_poly_add / pq_sample_ntt）目前仅支持
-> q=3329（Kyber）/ 12289**，尚不能直接拼装 ML-DSA 的 Â∘NTT(y) 部分——见文末附录。
+> q=8380417 已内嵌。NTT 域环运算块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_poly_add`/`pq_sample_ntt`）
+> 均已支持 **q=8380417（ML-DSA）**——NTT 分支按 FIPS 204 Alg 41/42（ζ=1753、BitRev8、INTT 乘 256⁻¹），
+> 见步骤 8c 的完整拼装与 `demos/procedures/ML-DSA-NTT.json` 性质向量。
 
 ---
 
@@ -262,6 +262,32 @@ FIPS 204 §2.4–2.5：环 R_q = Z_q[X]/(X²⁵⁶+1)，q = 2²³−2¹³+1 = 83
 
 **块数**：1× `nt_mod_pow`、2× `pq_poly_mul`、~4× 数字块
 
+### 8c — NTT 域环运算：w ← NTT⁻¹(Â∘NTT(y)) 的原子拼装
+
+FIPS 204 签名主链（Alg 7 step 7-8）的核心环运算，现在可全部用原子块拼装（q=8380417）：
+
+| # | 操作 | 块 | 下拉 |
+|---|------|-----|------|
+| 1 | 采样矩阵 A 的 NTT 域表示 | **数论/后量子** → `SampleNTT`（SEED ← seed‖s‖r 字节） | `MODULUS`: **8380417** |
+| 2 | y 正向变换 | `NTT(y)` | `MODULUS`: **8380417**, `DEGREE`: 256 |
+| 3 | NTT 域点乘 | `NTT Mul(Â, NTT(y))` | `MODULUS`: **8380417** |
+| 4 | 逆变换回系数域 | `INTT(·)` | `MODULUS`: **8380417**, `DEGREE`: 256 |
+| 5 | （对照）逐点乘 vs 普通卷积 | `NTT Mul` vs `PolyMul` | 均可选 8380417 |
+
+**算法约定（FIPS 204 §6.3.2-6.3.4）**：NTT 为 Cooley-Tukey 8 层（len 128→1），
+旋转因子 `zetas[m] = 1753^BitRev8(m) mod q`（ζ=1753 = 2³² mod q，512 次本原根）；
+INTT 为 Gentleman-Sande 8 层（-zetas[m]），末乘 256⁻¹ = 8347681；NTT 域乘法为逐点乘 mod q。
+与 Kyber（q=3329，ζ=17，half-NTT 7 层 + 基乘）**不是同一约定**——下拉按 q 自动分发。
+
+**性质向量**（`demos/procedures/ML-DSA-NTT.json`，双语言 PASS）：
+
+| 性质 | 断言 |
+|------|------|
+| NTT 往返 | `INTT(NTT(p)) == p`（256 系数） |
+| NTT 同态 | `NTT(a·b mod (X²⁵⁶+1)) == NTT(a) ∘ NTT(b)`（负缠绕卷积 vs NTT 域点乘） |
+
+**块数**：5× NTT 域块 + 数字块，demo 工作区 3 个 def 函数（`NTT1`/`INTT1`/`MUL1`）。
+
 ---
 
 ## 步骤 9：黑盒对照 — MLDSA_Sign / MLDSA_Verify
@@ -414,21 +440,21 @@ z 每系数 18 位（bitlen(2γ₁)=18，BitPack(z, γ₁−1, γ₁)）；h 为
 
 ---
 
-## 附录：格基环运算 q 支持现状（已知缺口）
+## 附录：格基环运算 q 支持现状
 
 | 块 | 下拉选项 | ML-DSA (q=8380417) |
 |----|----------|:---:|
-| `pq_ntt` / `pq_intt` | 3329, 12289 | ❌ |
-| `pq_ntt_mul` | 3329 | ❌ |
-| `pq_poly_add` | 3329 | ❌ |
-| `pq_sample_ntt` | 3329 | ❌ |
+| `pq_ntt` / `pq_intt` | 3329, **8380417**, 12289 | ✅（ζ=1753, BitRev8, 8 层 CT/GS, INTT 乘 256⁻¹） |
+| `pq_ntt_mul` | 3329, **8380417** | ✅（逐点乘；q=3329 为 half-NTT 基乘） |
+| `pq_poly_add` | 3329, **8380417** | ✅（逐系数 mod q） |
+| `pq_sample_ntt` | 3329, **8380417** | ✅（SHAKE128 3 字节 → 23-bit < q） |
 | `nt_mod_pow` | 3329, **8380417**, 12289, 65537, 1000000007 | ✅ |
 | `pq_poly_mul` | none, 3329, **8380417**, 12289 | ✅ |
 
-NTT 域环运算块是为 FIPS 203（ML-KEM，q=3329）实现的，**下拉尚无 8380417**，
-因此「w ← NTT⁻¹(Â∘NTT(y))」与「z ← y + c·s1」的完整原子链拼装暂缺 NTT 一环。
-当前教学出口：签名原语链（本指南步骤 1–7，性质向量）+ 黑盒 mldsa_sign/verify（ACVP 向量）。
-补 8380417 NTT/INTT/ntt_mul 下拉是后续原子化缺口（新增下拉即可，生成器按 MODULUS 字段分发）。
+**2026-08-05 补齐**：NTT 域四块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_poly_add`/`pq_sample_ntt`）新增
+q=8380417 下拉，生成器按 `MODULUS` 字段分发到 FIPS 204 约定（与 Kyber half-NTT 不同分支）。
+「w ← NTT⁻¹(Â∘NTT(y))」完整原子链拼装见**步骤 8c**，性质向量见 `demos/procedures/ML-DSA-NTT.json`
+（往返 + 负缠绕同态，Python/JS 双语言 PASS）。
 
 ---
 

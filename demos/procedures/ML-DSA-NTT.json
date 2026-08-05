@@ -1,0 +1,169 @@
+{
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "procedures_defreturn",
+    "id": "def_ntt1",
+    "x": 50,
+    "y": 50,
+    "extraState": {
+     "params": [
+      {
+       "name": "p",
+       "id": "def_ntt1_p0",
+       "type": "int_list"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "NTT1"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "pq_ntt",
+       "id": "ntt1_b",
+       "fields": {
+        "MODULUS": "8380417",
+        "DEGREE": "256"
+       },
+       "inputs": {
+        "INPUT": {
+         "block": {
+          "type": "variables_get",
+          "id": "ntt1_p",
+          "fields": {
+           "VAR": {
+            "id": "ntt1_p0",
+            "name": "p",
+            "type": "int_list"
+           }
+          },
+          "inline": true
+         }
+        }
+       },
+       "inline": true
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "def_intt1",
+    "x": 50,
+    "y": 50,
+    "extraState": {
+     "params": [
+      {
+       "name": "p",
+       "id": "def_intt1_p0",
+       "type": "int_list"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "INTT1"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "pq_intt",
+       "id": "intt1_b",
+       "fields": {
+        "MODULUS": "8380417",
+        "DEGREE": "256"
+       },
+       "inputs": {
+        "INPUT": {
+         "block": {
+          "type": "variables_get",
+          "id": "intt1_p",
+          "fields": {
+           "VAR": {
+            "id": "intt1_p0",
+            "name": "p",
+            "type": "int_list"
+           }
+          },
+          "inline": true
+         }
+        }
+       },
+       "inline": true
+      }
+     }
+    }
+   },
+   {
+    "type": "procedures_defreturn",
+    "id": "def_mul1",
+    "x": 50,
+    "y": 50,
+    "extraState": {
+     "params": [
+      {
+       "name": "a",
+       "id": "def_mul1_p0",
+       "type": "int_list"
+      },
+      {
+       "name": "b",
+       "id": "def_mul1_p1",
+       "type": "int_list"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "MUL1"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "pq_ntt_mul",
+       "id": "mul1_b",
+       "fields": {
+        "MODULUS": "8380417"
+       },
+       "inputs": {
+        "A": {
+         "block": {
+          "type": "variables_get",
+          "id": "mul1_a",
+          "fields": {
+           "VAR": {
+            "id": "mul1_a0",
+            "name": "a",
+            "type": "int_list"
+           }
+          },
+          "inline": true
+         }
+        },
+        "B": {
+         "block": {
+          "type": "variables_get",
+          "id": "mul1_b",
+          "fields": {
+           "VAR": {
+            "id": "mul1_b0",
+            "name": "b",
+            "type": "int_list"
+           }
+          },
+          "inline": true
+         }
+        }
+       },
+       "inline": true
+      }
+     }
+    }
+   }
+  ]
+ }
+}

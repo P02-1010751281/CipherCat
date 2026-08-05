@@ -40,6 +40,7 @@ Blockly.Blocks['pq_ntt'] = {
       .appendField(
         new Blockly.FieldDropdown([
           ['3329 (Kyber)', '3329'],
+          ['8380417 (ML-DSA)', '8380417'],
           ['12289 (NewHope)', '12289'],
         ]),
         'MODULUS',
@@ -59,7 +60,7 @@ Blockly.Blocks['pq_ntt'] = {
     this.setColour(230);
     this.setTooltip(
       Blockly.Msg.CRYPTO_NTT_TOOLTIP ||
-        'Number Theoretic Transform (NTT): Cooley-Tukey butterfly, convert polynomial from coefficient form to NTT evaluation form (FIPS 203)',
+        'Number Theoretic Transform (NTT): Cooley-Tukey butterfly, convert polynomial from coefficient form to NTT evaluation form (FIPS 203 / FIPS 204)',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf');
   },
@@ -78,6 +79,7 @@ Blockly.Blocks['pq_intt'] = {
       .appendField(
         new Blockly.FieldDropdown([
           ['3329 (Kyber)', '3329'],
+          ['8380417 (ML-DSA)', '8380417'],
           ['12289 (NewHope)', '12289'],
         ]),
         'MODULUS',
@@ -97,7 +99,7 @@ Blockly.Blocks['pq_intt'] = {
     this.setColour(230);
     this.setTooltip(
       Blockly.Msg.CRYPTO_INTT_TOOLTIP ||
-        'Inverse NTT (INTT): Gentleman-Sande butterfly, convert NTT evaluation form back to coefficient form (FIPS 203)',
+        'Inverse NTT (INTT): Gentleman-Sande butterfly, convert NTT evaluation form back to coefficient form (FIPS 203 / FIPS 204)',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf');
   },
@@ -117,7 +119,10 @@ Blockly.Blocks['pq_ntt_mul'] = {
     this.appendDummyInput()
       .appendField(', q=')
       .appendField(
-        new Blockly.FieldDropdown([['3329 (Kyber)', '3329']]),
+        new Blockly.FieldDropdown([
+          ['3329 (Kyber)', '3329'],
+          ['8380417 (ML-DSA)', '8380417'],
+        ]),
         'MODULUS',
       );
     this.appendDummyInput().appendField(')');
@@ -126,7 +131,7 @@ Blockly.Blocks['pq_ntt_mul'] = {
     this.setColour(230);
     this.setTooltip(
       Blockly.Msg.CRYPTO_NTT_MUL_TOOLTIP ||
-        'Kyber half-NTT domain multiplication for q=3329, O(n) complexity (FIPS 203)',
+        'NTT domain multiplication: Kyber half-NTT (q=3329) or pointwise ML-DSA (q=8380417, FIPS 204)',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf');
   },

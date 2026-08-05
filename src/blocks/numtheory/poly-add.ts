@@ -28,6 +28,7 @@ Blockly.Blocks['pq_poly_add'] = {
       .appendField(', q=')
       .appendField(new Blockly.FieldDropdown([
         ['3329', '3329'],
+        ['8380417 (ML-DSA)', '8380417'],
       ]), 'MODULUS');
     this.appendDummyInput()
       .appendField(')');
@@ -36,7 +37,7 @@ Blockly.Blocks['pq_poly_add'] = {
     this.setColour(250);
     this.setTooltip(
       'PolyAdd(A, B): Component-wise polynomial addition in R_q, each coefficient mod q. ' +
-      '(a_i + b_i) mod q for i=0..255. (FIPS 203 §4, Alg 14 step 7/9)'
+      '(a_i + b_i) mod q for i=0..255. (FIPS 203 §4 / FIPS 204 §2.4)'
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf');
   },

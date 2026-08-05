@@ -11,4 +11,6 @@
 
 ## 实现状态
 
-未实现。EdDSA 是现代高性能数字签名标准，广泛用于 SSH、TLS 和加密货币。
+✅ 已实现：`eddsa_sign` / `eddsa_verify`（Ed25519，RFC 8032 TEST 1-3 官方向量）。Demo：`demos/procedures/EDDSA.json`。
+
+Ed448 未实现。

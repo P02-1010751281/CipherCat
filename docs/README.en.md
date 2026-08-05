@@ -60,7 +60,7 @@ Full coverage matrix (standard ↔ blocks ↔ demos ↔ templates ↔ guides): [
 | [gbt32905-SM3/](./standards/gbt32905-SM3/) | GB/T 32905 SM3 hash |
 | [gbt32907-SM4/](./standards/gbt32907-SM4/) | GB/T 32907 SM4 block cipher |
 | [gbt32918-SM2/](./standards/gbt32918-SM2/) | GB/T 32918 SM2 public-key cryptography |
-| [gbt32915-randomness/](./standards/gbt32915-randomness/) | GB/T 32915 randomness testing (Go backend) |
+| [gmt0005-randomness/](./standards/gmt0005-randomness/) | GM/T 0005 randomness testing (Go backend) |
 | [gbt33133-ZUC/](./standards/gbt33133-ZUC/) | GB/T 33133 ZUC stream cipher |
 | [gbt36624-aead/](./standards/gbt36624-aead/) | GB/T 36624 authenticated encryption |
 | [gbt38635-SM9/](./standards/gbt38635-SM9/) | GB/T 38635 SM9 identity-based cryptography |

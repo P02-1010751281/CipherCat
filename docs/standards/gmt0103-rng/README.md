@@ -10,5 +10,4 @@
 
 ## 实现状态
 
-未直接实现。`seed_bytes` 块提供种子输入。
-full.txt available (214 lines)
+✅ 已实现：`gm_rng`（SM3-HMAC-DRBG，GM/T 0103 框架），官方向量 Demo：`demos/procedures/GM-RNG.json`。`seed_bytes` 块提供种子输入。

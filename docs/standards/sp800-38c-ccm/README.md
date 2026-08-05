@@ -10,9 +10,9 @@
 
 ## 文档文件
 
-- `full.txt` — PDF 全文提取 (1188 lines)
-- `extracted.md` — pdfplumber 结构化提取
+- `01-CCM.md` — CCM 算法参考
+- `NIST.SP.800-38C.pdf` — 标准原文
 
 ## 实现状态
 
-未实现。CCM 结合 CTR 模式的加密和 CBC-MAC 的认证，提供认证加密 (AEAD)。
+✅ 已实现：`ccm_encrypt`，SP 800-38C 附录 C Example 1-3 官方向量（tagLen 4/6/8）+ pycryptodome 交叉。Demo：`demos/procedures/CCM-Encrypt.json`。

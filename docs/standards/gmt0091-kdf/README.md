@@ -10,5 +10,4 @@
 
 ## 对应块
 
-`kdf_pbkdf2` — PBKDF2 密钥派生
-full.txt available (601 lines)
+`kdf_pbkdf2` — PBKDF2 密钥派生（GM/T 0091 同构 SM3 路径，Demo：`demos/procedures/PBKDF2-SM3.json`）

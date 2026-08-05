@@ -46,7 +46,7 @@
 | GB/T 17964 block modes | `gbt17964-modes/` | `mode_ecb_encrypt/decrypt` · `mode_cbc_encrypt` · `mode_ctr_encrypt`（SM4-based） | `demos/procedures/Mode-ECB.json` · `Mode-CBC.json` · `Mode-CTR.json` | `proc_mode_ecb` · `proc_mode_cbc` · `proc_mode_ctr` | — |
 | GB/T 36624 AEAD | `gbt36624-aead/` | —（no matching blocks） | — | — | — |
 | GB/T 15852 MAC | `gbt15852-mac/` | `cmac_mac`(SM4) · `hash_hmac`(SM3/SHA-256) | — | `proc_hmac_sha256` · `proc_sm3_hmac` | — |
-| GM/T 0005 randomness testing | `gbt32915-randomness/` | —（implemented in Go backend `randomness/`, not Blockly blocks） | — | — | — |
+| GM/T 0005 randomness testing | `gmt0005-randomness/` | —（implemented in Go backend `randomness/`, not Blockly blocks） | — | — | — |
 | CNSA PQC tracking | `cnsa-pqc-tracking/` | —（roadmap tracking doc, not an algorithm） | — | — | — |
 
 ---

@@ -10,4 +10,6 @@
 
 ## 实现状态
 
-未实现。X25519 是现代 TLS 1.3 和 Signal 协议的基础密钥交换算法。
+✅ 已实现：`x25519`（RFC 7748 §5.2 V1/V2 官方向量 + cryptography 交叉，双语言）。Demo：`demos/procedures/X25519.json`。
+
+X448 未实现。

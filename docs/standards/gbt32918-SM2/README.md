@@ -9,9 +9,9 @@
 | 部分 | 内容 | 块实现 |
 |------|------|----------|
 | 第1部分 | 总则 | — |
-| 第2部分 | 数字签名算法 | 底层就绪 (ECC+SM3) |
-| 第3部分 | 密钥交换协议 | 底层就绪 |
-| 第4部分 | 公钥加密算法 | 底层就绪 |
+| 第2部分 | 数字签名算法 | `sm2_sign` · `sm2_verify` ✅（GB/T 32918.2-2016 附录 A 官方向量） |
+| 第3部分 | 密钥交换协议 | 底层就绪（ecc_* 原语） |
+| 第4部分 | 公钥加密算法 | `sm2_encrypt` · `sm2_decrypt` ✅（GB/T 32918.4-2016 附录 A 示例 2） |
 | 第5部分 | 参数定义 | 需预设 SM2 曲线 |
 
 ## SM2 曲线参数
@@ -31,6 +31,8 @@
 |----|------|
 | `ecc_load_curve_params` | 加载 SM2 曲线参数 |
 | `ecc_multiply` | 标量乘法 k*P |
+| `sm2_sign` / `sm2_verify` | SM2 数字签名/验签（GB/T 32918.2） |
+| `sm2_encrypt` / `sm2_decrypt` | SM2 加密/解密（GB/T 32918.4） |
 | `sm3_hash` | SM3 哈希 (签名/加密需要) |
-| `nt_mod_inverse` | 模逆 (签名需要) |
-⚠️ 未实现，PDF参考。暂不拆分。
+
+Demo：`demos/procedures/SM2-PointMul.json` · `SM2-Sign.json` · `SM2-Encrypt.json`。

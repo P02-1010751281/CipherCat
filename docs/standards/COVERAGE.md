@@ -46,7 +46,7 @@
 | GB/T 17964 分组模式 | `gbt17964-modes/` | `mode_ecb_encrypt/decrypt` · `mode_cbc_encrypt` · `mode_ctr_encrypt`（SM4 基） | `demos/procedures/Mode-ECB.json` · `Mode-CBC.json` · `Mode-CTR.json` | `proc_mode_ecb` · `proc_mode_cbc` · `proc_mode_ctr` | — |
 | GB/T 36624 可鉴别加密 | `gbt36624-aead/` | —（无对应块） | — | — | — |
 | GB/T 15852 MAC | `gbt15852-mac/` | `cmac_mac`(SM4) · `hash_hmac`(SM3/SHA-256) | — | `proc_hmac_sha256` · `proc_sm3_hmac` | — |
-| GM/T 0005 随机性检测 | `gbt32915-randomness/` | —（Go 后端 `randomness/` 实现，非 Blockly 块） | — | — | — |
+| GM/T 0005 随机性检测 | `gmt0005-randomness/` | —（Go 后端 `randomness/` 实现，非 Blockly 块） | — | — | — |
 | CNSA PQC 追踪 | `cnsa-pqc-tracking/` | —（路线图追踪文档，非算法） | — | — | — |
 
 ---

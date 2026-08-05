@@ -10,9 +10,9 @@
 
 ## 文档文件
 
-- `full.txt` — PDF 全文提取 (297 lines)
-- `extracted.md` — pdfplumber 结构化提取
+- `01-XTS.md` — XTS 算法参考
+- `NIST.SP.800-38E.pdf` — 标准原文
 
 ## 实现状态
 
-未实现。XTS 用于磁盘/存储加密，支持任意长度数据且无需填充。
+✅ 已实现：`xts_encrypt`，IEEE 1619-2007 经典向量（key=0/tweak=0/data=0 → 917cf69e...）+ cryptography 交叉。Demo：`demos/procedures/XTS-Encrypt.json`。

@@ -10,9 +10,9 @@
 
 ## 文档文件
 
-- `full.txt` — PDF 全文提取 (4871 lines)
-- `extracted.md` — pdfplumber 结构化提取
+- `01-DRBG.md` — DRBG 算法参考
+- `NIST.SP.800-90A.pdf` — 标准原文
 
 ## 实现状态
 
-未实现。DRBG 是 NIST 推荐的确定性随机数生成器，可用于密钥生成和随机性测试。
+✅ 已实现：`drbg_generate`（CTR-DRBG，官方向量 CAVP 480/480）。Demo：`demos/procedures/DRBG.json`。

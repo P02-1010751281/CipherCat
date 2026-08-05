@@ -60,7 +60,7 @@
 | [gbt32905-SM3/](./standards/gbt32905-SM3/) | GB/T 32905 SM3 国密哈希 |
 | [gbt32907-SM4/](./standards/gbt32907-SM4/) | GB/T 32907 SM4 国密分组密码 |
 | [gbt32918-SM2/](./standards/gbt32918-SM2/) | GB/T 32918 SM2 国密公钥密码 |
-| [gbt32915-randomness/](./standards/gbt32915-randomness/) | GB/T 32915 随机性检测（Go 后端） |
+| [gmt0005-randomness/](./standards/gmt0005-randomness/) | GM/T 0005 随机性检测（Go 后端） |
 | [gbt33133-ZUC/](./standards/gbt33133-ZUC/) | GB/T 33133 ZUC 序列密码 |
 | [gbt36624-aead/](./standards/gbt36624-aead/) | GB/T 36624 可鉴别加密 |
 | [gbt38635-SM9/](./standards/gbt38635-SM9/) | GB/T 38635 SM9 标识密码 |

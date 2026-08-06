@@ -1,0 +1,199 @@
+{
+ "blocks": {
+  "languageVersion": 0,
+  "blocks": [
+   {
+    "type": "procedures_defreturn",
+    "id": "def_kex",
+    "x": 50,
+    "y": 50,
+    "extraState": {
+     "params": [
+      {
+       "name": "dB",
+       "id": "kex_db",
+       "type": "string"
+      },
+      {
+       "name": "rB",
+       "id": "kex_rb",
+       "type": "string"
+      },
+      {
+       "name": "pax",
+       "id": "kex_pax",
+       "type": "string"
+      },
+      {
+       "name": "pay",
+       "id": "kex_pay",
+       "type": "string"
+      },
+      {
+       "name": "RA",
+       "id": "kex_ra",
+       "type": "string"
+      },
+      {
+       "name": "RBP",
+       "id": "kex_rbp",
+       "type": "string"
+      },
+      {
+       "name": "ZA",
+       "id": "kex_za",
+       "type": "string"
+      },
+      {
+       "name": "ZB",
+       "id": "kex_zb",
+       "type": "string"
+      },
+      {
+       "name": "wlen",
+       "id": "kex_wlen_p",
+       "type": "int"
+      }
+     ],
+     "hasStatements": false
+    },
+    "fields": {
+     "NAME": "SM2KEX"
+    },
+    "inputs": {
+     "RETURN": {
+      "block": {
+       "type": "sm2_key_exchange",
+       "id": "kex_b",
+       "inline": true,
+       "inputs": {
+        "DB": {
+         "block": {
+          "type": "variables_get",
+          "id": "kex_db",
+          "inline": true,
+          "fields": {
+           "VAR": {
+            "id": "kex_db",
+            "name": "dB",
+            "type": "string"
+           }
+          }
+         }
+        },
+        "RBVAL": {
+         "block": {
+          "type": "variables_get",
+          "id": "kex_rb",
+          "inline": true,
+          "fields": {
+           "VAR": {
+            "id": "kex_rb",
+            "name": "rB",
+            "type": "string"
+           }
+          }
+         }
+        },
+        "PAX": {
+         "block": {
+          "type": "variables_get",
+          "id": "kex_pax",
+          "inline": true,
+          "fields": {
+           "VAR": {
+            "id": "kex_pax",
+            "name": "pax",
+            "type": "string"
+           }
+          }
+         }
+        },
+        "PAY": {
+         "block": {
+          "type": "variables_get",
+          "id": "kex_pay",
+          "inline": true,
+          "fields": {
+           "VAR": {
+            "id": "kex_pay",
+            "name": "pay",
+            "type": "string"
+           }
+          }
+         }
+        },
+        "RA": {
+         "block": {
+          "type": "variables_get",
+          "id": "kex_ra",
+          "inline": true,
+          "fields": {
+           "VAR": {
+            "id": "kex_ra",
+            "name": "RA",
+            "type": "string"
+           }
+          }
+         }
+        },
+        "RBP": {
+         "block": {
+          "type": "variables_get",
+          "id": "kex_rbp",
+          "inline": true,
+          "fields": {
+           "VAR": {
+            "id": "kex_rbp",
+            "name": "RBP",
+            "type": "string"
+           }
+          }
+         }
+        },
+        "ZA": {
+         "block": {
+          "type": "variables_get",
+          "id": "kex_za",
+          "inline": true,
+          "fields": {
+           "VAR": {
+            "id": "kex_za",
+            "name": "ZA",
+            "type": "string"
+           }
+          }
+         }
+        },
+        "ZB": {
+         "block": {
+          "type": "variables_get",
+          "id": "kex_zb",
+          "inline": true,
+          "fields": {
+           "VAR": {
+            "id": "kex_zb",
+            "name": "ZB",
+            "type": "string"
+           }
+          }
+         }
+        },
+        "WLEN": {
+         "block": {
+          "type": "math_number",
+          "id": "kex_wlen",
+          "inline": true,
+          "fields": {
+           "NUM": 128
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+}

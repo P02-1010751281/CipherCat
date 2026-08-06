@@ -14,6 +14,7 @@ export const SHA256_BLOCK_TYPES = [
   'hash_sha256_pad_text',
   'hash_sha256_pad_hex',
   'hash_sha256_compress',
+  'hash_sha224_hash',
 ] as const;
 
 export type Sha256BlockType = (typeof SHA256_BLOCK_TYPES)[number];
@@ -81,5 +82,24 @@ Blockly.Blocks['hash_sha256_compress'] = {
         'SHA-256 compression function: CF(V, W)',
     );
     this.setHelpUrl('');
+  },
+};
+
+// 独立 SHA-224 一键封装块（FIPS 180-4）：复用 sha256 pad/compress 核，
+// 换 SHA-224 初值 IV + 截断到 28 字节（224/8）。
+Blockly.Blocks['hash_sha224_hash'] = {
+  init: function () {
+    this.appendValueInput('MSG')
+      .setCheck(null)
+      .appendField(Blockly.Msg.CRYPTO_SHA224_HASH || 'SHA-224 Hash(');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_BYTES);
+    this.setColour(200);
+    this.setTooltip(
+      Blockly.Msg.CRYPTO_SHA224_HASH_TOOLTIP ||
+        'SHA-224 one-shot hash (FIPS 180-4): sha256 core with SHA-224 IV, 28-byte output',
+    );
+    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/180-4/final');
   },
 };

@@ -48,7 +48,7 @@
 
 | Primitive | Present | Missing |
 |-----------|---------|---------|
-| SHA-2 family | SHA-256/384/512 (sha512 64-bit core) | SHA-224 (low priority, sha256 core reusable) |
+| SHA-2 family | SHA-256/384/512 (sha512 64-bit core) + SHA-224 (`hash_sha224_hash` standalone block, 2026-08-05) | — |
 | SHA-3 family | Keccak primitives + template + standalone `sha3_hash` (224-512) | — |
 | ECC | curve ops + ECDH (RFC 5903 P-256, 2026-08-03) + SM2 enc | — |
 | SM2 | point-mul / curve params (template) + sign/verify (`sm2_sign`/`sm2_verify`) + enc/dec (`sm2_encrypt`/`sm2_decrypt`) | key-exchange wrapper |
@@ -59,7 +59,7 @@
 | Priority | Primitive | Notes |
 |----------|-----------|-------|
 | P3 | Falcon full signature | FIPS 206, the only open complete-algorithm-level item (large; block-vs-blackbox form to be decided per user preference) |
-| P2 | SHA-224 / SM2-KEX | low priority |
+| P3 | Falcon full signature | FIPS 206, sole open complete-algorithm-level item |
 | P2 | SHA-1 / MD5 | textbook common, low priority |
 
 ## 3. GM Standards (v3.0 status)
@@ -68,7 +68,7 @@
 |-----------|----------|------|------|
 | **SM3** | GM/T 0004 / GB/T 32905 | ✅ pad+compress | ✅ + HMAC-SM3 + one-click hash (template) |
 | **SM4** | GM/T 0002 / GB/T 32907 | ❌ P0 | ✅ full rounds + 32-round template + official vector |
-| **SM2** | GM/T 0003 / GB/T 32918 | ⚠️ composable | ✅ point-mul + sign/verify (`sm2_sign`/`sm2_verify`, GB/T 32918.2 Appendix A vectors) + enc/dec (`sm2_encrypt`/`sm2_decrypt`, GB/T 32918.4); KEX pending |
+| **SM2** | GM/T 0003 / GB/T 32918 | ⚠️ composable | ✅ point-mul + sign/verify (`sm2_sign`/`sm2_verify`, GB/T 32918.2 Appendix A vectors) + enc/dec (`sm2_encrypt`/`sm2_decrypt`, GB/T 32918.4) + key exchange (`sm2_key_exchange`, GB/T 32918.3 Appendix A.2 vectors, 2026-08-05) |
 | **ZUC** | GM/T 0001 / GB/T 33133 | ❌ | ✅ S0/S1/L1/L2/F atomic + `zuc_keystream` (official vectors both languages), template assembly pending |
 | **SM9** | GM/T 0044 / GB/T 38635 | ❌ | ✅ 4 blocks (`sm9_master_key`/`sm9_user_key`/`sm9_sign`/`sm9_verify`, GB/T 38635.2 official vectors, BN curve R-ate pairing) |
 | SM1 / SM7 | — | N/A | N/A (undisclosed algorithms) |
@@ -90,4 +90,4 @@ Domestic PQC: CAC post-quantum working group in progress; The full ML-KEM primit
 - **v2.0's biggest gap (symmetric crypto) is closed**: AES/SM4/modes/padding/HMAC/KDF all present, with 4 core algorithms passing official test vectors in both languages.
 - Strongest: full ML-KEM primitive set + official-vector verification (leading among visual programming platforms).
 - **Standards gaps fully closed**: protocol wrappers closed 2026-08-03 (ECDH P-256 RFC 5903 §8.1 vectors + cryptography cross-check; SM2 enc/dec GB/T 32918.4 Appendix A vectors); RSA closed 2026-08-02 (5 blocks, cryptography cross-validated); signature/KDF/DRBG family closed 2026-08-02; AEAD family (CMAC/CCM/XTS/GCM/ASCON) + X25519/HKDF/PBKDF2 closed 2026-08-02 — all official vectors both languages.
-- Remaining: Falcon full signature (FIPS 206, sole open complete-algorithm-level item), SHA-224 / SM2-KEX (low priority).
+- Remaining: Falcon full signature (FIPS 206, sole open complete-algorithm-level item).

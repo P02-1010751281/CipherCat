@@ -9,6 +9,7 @@
 | `hash_sha256_pad_text` | 1 | value(→) | null→Bytes | UTF-8 text padding |
 | `hash_sha256_pad_hex` | 1 | value(→) | null→Bytes | hex padding |
 | `hash_sha256_compress` | 1 | value(→) | null&null→null | 64-round compression |
+| `hash_sha224_hash` | 1 | value(→) | null→Bytes | SHA-224 one-shot hash (FIPS 180-4: sha256 core + SHA-224 IV, 28-byte output, 2026-08-05) |
 
 ## SHA-3 / Keccak (FIPS 202)
 

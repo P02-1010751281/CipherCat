@@ -9,6 +9,7 @@
 | `hash_sha256_pad_text` | 1 | value(→) | null→Bytes | UTF-8文本填充 |
 | `hash_sha256_pad_hex` | 1 | value(→) | null→Bytes | Hex填充 |
 | `hash_sha256_compress` | 1 | value(→) | null&null→null | 64轮压缩函数 |
+| `hash_sha224_hash` | 1 | value(→) | null→Bytes | SHA-224 一键哈希（FIPS 180-4：sha256 核 + SHA-224 IV，28 字节输出，2026-08-05） |
 
 ## SHA-3 / Keccak (FIPS 202)
 
@@ -88,7 +89,7 @@
 |----|----|------|----------|------|
 | `sha3_hash` | 1 | value(→) | Bytes→Bytes | SHA3-224/256/384/512 一键哈希（SIZE 下拉）：pad10*1(0x06) + absorb + squeeze；官方向量 FIPS 202（"abc" 四档）双语言 PASS |
 
-> 补齐说明（2026-08-03）：SHA-224 复用 `hash_sha256_compress`（不同 IV + 截断，见 demo `SHA224-Hash.json`）；SHA-384/512 用 64 位核（`hash_sha512_*`）；SHA-3 系列新增独立封装块。SHA-256 compress 语义统一为「收填充块、内部扩展调度」（原 JS 侧按字读 + 漏 feed-forward，均修复）。
+> 补齐说明（2026-08-05）：SHA-224 独立块 `hash_sha224_hash`（sha256 核 + SHA-224 IV + 截断 28 字节，官方向量双语言 PASS，demo `SHA224-Hash.json`）；SHA-384/512 用 64 位核（`hash_sha512_*`）；SHA-3 系列新增独立封装块。SHA-256 compress 语义统一为「收填充块、内部扩展调度」（原 JS 侧按字读 + 漏 feed-forward，均修复）。
 ## 哈希基后量子结构件 (FIPS 205 / SPHINCS+)
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |

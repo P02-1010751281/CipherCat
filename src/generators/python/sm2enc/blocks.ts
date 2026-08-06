@@ -190,6 +190,32 @@ function registerSm2Enc(): string {
     '        raise ValueError("SM2: C3 mismatch (ciphertext tampered)")',
     '    return m2',
     '',
+    'def sm2_key_exchange(dB, rB, pax, pay, RA, RBP, ZA, ZB, klen):',
+    '    # GB/T 32918.3-2016 §6.2 B 侧（B1-B9）',
+    '    C = sm2_params()',
+    '    db = sm2_to_big(dB)',
+    '    rb = sm2_to_big(rB)',
+    '    RA_bytes = bytes.fromhex(RA)',
+    '    RBP_bytes = bytes.fromhex(RBP)',
+    '    RAp = (sm2_to_big(RA_bytes[1:33]), sm2_to_big(RA_bytes[33:65]))',
+    '    Rbp = (sm2_to_big(RBP_bytes[1:33]), sm2_to_big(RBP_bytes[33:65]))',
+    '    PA = (sm2_to_big(pax), sm2_to_big(pay))',
+    '    # w = ceil(ceil(log2 n)/2) - 1；x̄ = 2^w + (x & (2^w - 1))',
+    '    w = ((C["n"].bit_length() - 1) + 1) // 2 - 1',
+    '    xb1 = (1 << w) + (RAp[0] & ((1 << w) - 1))',
+    '    xb2 = (1 << w) + (Rbp[0] & ((1 << w) - 1))',
+    '    tb = (db + xb2 * rb) % C["n"]',
+    '    S = sm2_point_add(PA, sm2_point_mul(xb1, RAp))',
+    '    V = sm2_point_mul(tb, S)',
+    '    if V == (0, 0):',
+    '        raise ValueError("SM2-KEX: V at infinity")',
+    '    xVb = sm2_big_to_bytes(V[0], 32)',
+    '    yVb = sm2_big_to_bytes(V[1], 32)',
+    '    ZAb = list(bytes.fromhex(ZA))',
+    '    ZBb = list(bytes.fromhex(ZB))',
+    '    K = sm2_kdf(xVb + yVb + ZAb + ZBb, klen)',
+    '    return "".join("%02x" % b for b in K)',
+    '',
   ]);
 }
 
@@ -203,8 +229,25 @@ pythonGenerator.forBlock['sm2_encrypt'] = function (block: Block): [string, numb
 };
 
 pythonGenerator.forBlock['sm2_decrypt'] = function (block: Block): [string, number] {
-  const ct = pythonGenerator.valueToCode(block, 'CT', Order.ATOMIC) || '""';
-  const da = pythonGenerator.valueToCode(block, 'DA', Order.ATOMIC) || '""';
+  const ct = pythonGenerator.valueToCode(block, 'CT', Order.ATOMIC) || '\"\"';
+  const da = pythonGenerator.valueToCode(block, 'DA', Order.ATOMIC) || '\"\"';
   registerSm2Enc();
   return ['sm2_decrypt(' + ct + ', ' + da + ')', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['sm2_key_exchange'] = function (block: Block): [string, number] {
+  const db = pythonGenerator.valueToCode(block, 'DB', Order.ATOMIC) || '\"\"';
+  const rb = pythonGenerator.valueToCode(block, 'RBVAL', Order.ATOMIC) || '\"\"';
+  const pax = pythonGenerator.valueToCode(block, 'PAX', Order.ATOMIC) || '\"\"';
+  const pay = pythonGenerator.valueToCode(block, 'PAY', Order.ATOMIC) || '\"\"';
+  const ra = pythonGenerator.valueToCode(block, 'RA', Order.ATOMIC) || '\"\"';
+  const rbp = pythonGenerator.valueToCode(block, 'RBP', Order.ATOMIC) || '\"\"';
+  const za = pythonGenerator.valueToCode(block, 'ZA', Order.ATOMIC) || '\"\"';
+  const zb = pythonGenerator.valueToCode(block, 'ZB', Order.ATOMIC) || '\"\"';
+  const wlen = pythonGenerator.valueToCode(block, 'WLEN', Order.ATOMIC) || '128';
+  registerSm2Enc();
+  return [
+    'sm2_key_exchange(' + db + ', ' + rb + ', ' + pax + ', ' + pay + ', ' + ra + ', ' + rbp + ', ' + za + ', ' + zb + ', ' + wlen + ')',
+    Order.ATOMIC,
+  ];
 };

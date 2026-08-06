@@ -1,7 +1,7 @@
 # Block Standard-Basis Reference
 
 
-**Version**: 2.15 | **Date**: 2026-08-05 | **Total blocks**: 139 (plus 29 function templates)
+**Version**: 2.15 | **Date**: 2026-08-05 | **Total blocks**: 141 (plus 29 function templates)
 
 ## Legend
 
@@ -48,10 +48,10 @@
 | Data & Conversion | 20 | [data-encoding.md](data-encoding.en.md) |
 | Bitwise | 8 | [bitwise-logic.md](bitwise-logic.en.md) |
 | S-Box | 4 | [ecc-sbox.md](ecc-sbox.en.md) |
-| Hash & Padding | 31 | [hash.md](hash.en.md) |
+| Hash & Padding | 32 | [hash.md](hash.en.md) |
 | Symmetric Cipher | 18 | [symmetric.md](symmetric.en.md) |
 | Number Theory & KDF | 37 | [numtheory.md](numtheory.en.md) |
-| Elliptic Curve | 19 | [ecc-sbox.md](ecc-sbox.en.md) |
+| Elliptic Curve | 20 | [ecc-sbox.md](ecc-sbox.en.md) |
 | ZUC Stream Cipher | 6 | [zuc.md](zuc.en.md) |
 | Post-Quantum Basic | 10 | [post-quantum.md](post-quantum.en.md) |
 | Post-Quantum Advanced | 9 | [post-quantum.md](post-quantum.en.md) |

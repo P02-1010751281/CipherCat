@@ -16,7 +16,7 @@ Pre-built Blockly workspace examples, all using **atomic blocks** (no convenienc
 
 ## Procedure-Wrapped Demos (official-vector verified)
 
-The demos below wrap atomic-block chains with `procedures_defreturn` (custom functions), **without using `proc_*` template blocks**; generated code (Python + JavaScript) passes official test vectors via `scripts/verify-demo.ts --exec` (56 vectors, see `demos/tests.json`):
+The demos below wrap atomic-block chains with `procedures_defreturn` (custom functions), **without using `proc_*` template blocks**; generated code (Python + JavaScript) passes official test vectors via `scripts/verify-demo.ts --exec` (57 vectors, see `demos/tests.json`):
 
 | Demo | File | Official vector |
 |------|------|----------|

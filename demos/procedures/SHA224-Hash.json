@@ -4,52 +4,39 @@
   "blocks": [
    {
     "type": "procedures_defreturn",
-    "id": "demo_sha224hash_def_0001",
-    "x": 80,
-    "y": 80,
+    "id": "def_sh224",
+    "x": 50,
+    "y": 50,
     "extraState": {
      "params": [
       {
-       "name": "msg",
-       "id": "param_msg",
-       "type": "message"
+       "name": "m",
+       "id": "sh224_p0",
+       "type": "bytes"
       }
      ],
      "hasStatements": false
     },
     "fields": {
-     "NAME": "SHA224_Hash"
+     "NAME": "SHA224H"
     },
     "inputs": {
      "RETURN": {
       "block": {
-       "type": "hash_sha256_compress",
-       "id": "demo_sha224hash_cmp_0002",
+       "type": "hash_sha224_hash",
+       "id": "sh224_h",
+       "inline": true,
        "inputs": {
-        "V": {
+        "MSG": {
          "block": {
-          "type": "data_value",
-          "id": "demo_sha224hash_iv_0003",
+          "type": "variables_get",
+          "id": "sh224_p",
+          "inline": true,
           "fields": {
-           "NUM": "[0xc1059ed8,0x367cd507,0x3070dd17,0xf70e5939,0xffc00b31,0x68581511,0x64f98fa7,0xbefa4fa4]"
-          }
-         }
-        },
-        "W": {
-         "block": {
-          "type": "hash_sha256_pad",
-          "id": "demo_sha224hash_pad_0004",
-          "inputs": {
-           "INPUT": {
-            "block": {
-             "type": "variables_get",
-             "id": "demo_sha224hash_var_0005",
-             "fields": {
-              "VAR": {
-               "id": "param_msg"
-              }
-             }
-            }
+           "VAR": {
+            "id": "sh224_p0",
+            "name": "m",
+            "type": "bytes"
            }
           }
          }

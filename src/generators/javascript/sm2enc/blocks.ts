@@ -197,6 +197,30 @@ function registerSm2Enc(): string {
     '  return m2;',
     '}',
     '',
+    'function sm2KeyExchange(dB, rB, pax, pay, RA, RBP, ZA, ZB, klen) {',
+    '  // GB/T 32918.3-2016 §6.2 B 侧（B1-B9）',
+    '  var C=sm2Params();',
+    '  var db=sm2ToBig(dB), rb=sm2ToBig(rB);',
+    '  var hexToBytes=function(h){var b=[];for(var i=0;i<h.length;i+=2)b.push(parseInt(h.substr(i,2),16));return b;};',
+    '  var RAp={x:sm2ToBig(hexToBytes(RA).slice(1,33)),y:sm2ToBig(hexToBytes(RA).slice(33,65))};',
+    '  var Rbp={x:sm2ToBig(hexToBytes(RBP).slice(1,33)),y:sm2ToBig(hexToBytes(RBP).slice(33,65))};',
+    '  var PA={x:sm2ToBig(pax),y:sm2ToBig(pay)};',
+    '  // w = ceil(ceil(log2 n)/2) - 1；x̄ = 2^w + (x & (2^w - 1))',
+    '  var w=Math.ceil((C.n.toString(2).length-1)/2)-1;',
+    '  var xb1=2n**BigInt(w)+(RAp.x&(2n**BigInt(w)-1n));',
+    '  var xb2=2n**BigInt(w)+(Rbp.x&(2n**BigInt(w)-1n));',
+    '  var tb=(db+xb2*rb)%C.n;',
+    '  var sum=sm2PointAdd(PA,sm2PointMul(xb1,RAp));',
+    '  var V=sm2PointMul(tb,sum);',
+    '  if (V.x===0n&&V.y===0n) throw new Error("SM2-KEX: V at infinity");',
+    '  var xVb=sm2BigToBytes(V.x,32),yVb=sm2BigToBytes(V.y,32);',
+    '  var ZAb=hexToBytes(ZA),ZBb=hexToBytes(ZB);',
+    '  var K=sm2Kdf(xVb.concat(yVb,ZAb,ZBb),klen);',
+    '  var hex="";',
+    '  for (var i=0;i<K.length;i++) hex+=K[i].toString(16).padStart(2,"0");',
+    '  return hex;',
+    '}',
+    '',
   ]);
 }
 
@@ -210,8 +234,25 @@ javascriptGenerator.forBlock['sm2_encrypt'] = function (block: Block): [string, 
 };
 
 javascriptGenerator.forBlock['sm2_decrypt'] = function (block: Block): [string, number] {
-  const ct = javascriptGenerator.valueToCode(block, 'CT', Order.ATOMIC) || '""';
-  const da = javascriptGenerator.valueToCode(block, 'DA', Order.ATOMIC) || '""';
+  const ct = javascriptGenerator.valueToCode(block, 'CT', Order.ATOMIC) || '\"\"';
+  const da = javascriptGenerator.valueToCode(block, 'DA', Order.ATOMIC) || '\"\"';
   registerSm2Enc();
   return ['sm2Decrypt(' + ct + ', ' + da + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['sm2_key_exchange'] = function (block: Block): [string, number] {
+  const db = javascriptGenerator.valueToCode(block, 'DB', Order.ATOMIC) || '\"\"';
+  const rb = javascriptGenerator.valueToCode(block, 'RBVAL', Order.ATOMIC) || '\"\"';
+  const pax = javascriptGenerator.valueToCode(block, 'PAX', Order.ATOMIC) || '\"\"';
+  const pay = javascriptGenerator.valueToCode(block, 'PAY', Order.ATOMIC) || '\"\"';
+  const ra = javascriptGenerator.valueToCode(block, 'RA', Order.ATOMIC) || '\"\"';
+  const rbp = javascriptGenerator.valueToCode(block, 'RBP', Order.ATOMIC) || '\"\"';
+  const za = javascriptGenerator.valueToCode(block, 'ZA', Order.ATOMIC) || '\"\"';
+  const zb = javascriptGenerator.valueToCode(block, 'ZB', Order.ATOMIC) || '\"\"';
+  const wlen = javascriptGenerator.valueToCode(block, 'WLEN', Order.ATOMIC) || '128';
+  registerSm2Enc();
+  return [
+    'sm2KeyExchange(' + db + ', ' + rb + ', ' + pax + ', ' + pay + ', ' + ra + ', ' + rbp + ', ' + za + ', ' + zb + ', ' + wlen + ')',
+    Order.ATOMIC,
+  ];
 };

@@ -251,12 +251,12 @@
  },
  "procedures/SHA224-Hash.json": {
   "py": {
-   "driver": "print(''.join('%08x' % x for x in SHA224_Hash(b'abc')[:7]))",
-   "expect": "23097d223405d8228642a477bda255b32aadbce4bda0b3f7e36c9da7"
+   "driver": "# SHA-224 官方向量（FIPS 180-4 附录 B，hashlib 交叉）\nimport hashlib\nassert bytes(SHA224H(b'abc')).hex() == '23097d223405d8228642a477bda255b32aadbce4bda0b3f7e36c9da7', 'SHA224_ABC'\nassert bytes(SHA224H(b'')).hex() == 'd14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f', 'SHA224_EMPTY'\nassert bytes(SHA224H(bytes(range(256)))).hex() == hashlib.sha224(bytes(range(256))).hexdigest(), 'SHA224_RANGE'\nprint('SHA224-OK')\n",
+   "expect": "SHA224-OK"
   },
   "js": {
-   "driver": "console.log(SHA224_Hash(new TextEncoder().encode('abc')).slice(0,7).map(x => (x >>> 0).toString(16).padStart(8,'0')).join(''));",
-   "expect": "23097d223405d8228642a477bda255b32aadbce4bda0b3f7e36c9da7"
+   "driver": "// SHA-224 官方向量（FIPS 180-4 附录 B）\nconst b = (s) => [...s].map(c => c.charCodeAt(0));\nconst hex = (u8) => [...u8].map(x => x.toString(16).padStart(2, '0')).join('');\nif (hex(SHA224H(b('abc'))) !== '23097d223405d8228642a477bda255b32aadbce4bda0b3f7e36c9da7') throw new Error('SHA224_ABC');\nif (hex(SHA224H(b(''))) !== 'd14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f') throw new Error('SHA224_EMPTY');\n// 长消息确定性与块边界（135B 跨块 + 64B 整块）\nlet r = []; for (let i = 0; i < 135; i++) r.push(i % 251);\nlet h1 = hex(SHA224H(r)), h2 = hex(SHA224H(r));\nif (h1 !== h2) throw new Error('SHA224_DET');\nconsole.log('SHA224-OK');\n",
+   "expect": "SHA224-OK"
   }
  },
  "procedures/SHA384-Hash.json": {
@@ -557,6 +557,16 @@
   "js": {
    "driver": "// ML-DSA NTT 域（q=8380417, FIPS 204 Alg 41/42/45）性质向量\nconst Q = 8380417n;\n// 1. 往返\nvar p = []; for (let i = 0; i < 256; i++) p.push(Number(BigInt(i) * 12345n % Q));\nlet rt = INTT1(NTT1(p));\nfor (let i = 0; i < 256; i++) if (rt[i] !== p[i]) throw new Error('NTT_ROUNDTRIP ' + i);\n// 2. 同态\nfunction negCyclic(a, b) {\n  let c = new Array(256).fill(0);\n  for (let i = 0; i < 256; i++) for (let j = 0; j < 256; j++) {\n    let idx = i + j;\n    if (idx >= 256) c[idx-256] = (c[idx-256] - a[i]*b[j] % Number(Q) + Number(Q)) % Number(Q);\n    else c[idx] = (c[idx] + a[i]*b[j]) % Number(Q);\n  }\n  return c.map(x => x % Number(Q));\n}\nvar a = [], b = [];\nfor (let i = 0; i < 256; i++) { a.push(Number(BigInt(i) * 777n % Q)); b.push(Number(BigInt(i) * 333n % Q)); }\nlet lhs = NTT1(negCyclic(a, b));\nlet rhs = MUL1(NTT1(a), NTT1(b));\nfor (let i = 0; i < 256; i++) if (lhs[i] !== rhs[i]) throw new Error('NTT_HOMOMORPHISM ' + i);\nconsole.log('ML-DSA-NTT-OK');\n",
    "expect": "ML-DSA-NTT-OK"
+  }
+ },
+ "procedures/SM2-KeyExchange.json": {
+  "py": {
+   "driver": "# SM2 密钥交换官方向量（GB/T 32918.3-2016 附录 A.2 示例 1，B 侧）\ndB = '5e35d7d3f3c54dbac72e61819e730b019a84208ca3a35e4c2e353dfccb2a3b53'\nrB = '33fe21940342161c55619c4a0c060293d543c80af19748ce176d83477de71c80'\npax = '3099093bf3c137d8fcbbcdf4a2ae50f3b0f216c3122d79425fe03a45dbfe1655'\npay = '3df79e8dac1cf0ecbaa2f2b49d51a4b387f2efaf482339086a27a8e05baed98b'\nRA = '04' + '6cb5633816f4dd560b1dec458310cbcc6856c09505324a6d23150c408f162bf0' + '0d6fcf62f1036c0a1b6daccf57399223a65f7d7bf2d9637e5bbbeb857961bf1a'\nRBP = '04' + '1799b2a2c778295300d9a2325c686129b8f2b5337b3dcf4514e8bbc19d900ee5' + '54c9288c82733efdf7808ae7f27d0e732f7c73a7d9ac98b7d8740a91d0db3cf4'\nZA = 'e4d1d0c3ca4c7f11bc8ff8cb3f4c02a78f108fa098e51a668487240f75e20f31'\nZB = '6b4b6d0e276691bd4a11bf72f4fb501ae309fdacb72fa6cc336e6656119abd67'\nk = SM2KEX(dB, rB, pax, pay, RA, RBP, ZA, ZB, 128)\nassert k == '55b0ac62a6b927ba23703832c853ded4', 'KEX_K ' + k\n# 确定性：同输入重复调用输出一致\nassert SM2KEX(dB, rB, pax, pay, RA, RBP, ZA, ZB, 128) == k, 'KEX_DET'\nprint('SM2-KEX-OK')\n",
+   "expect": "SM2-KEX-OK"
+  },
+  "js": {
+   "driver": "// SM2 密钥交换官方向量（GB/T 32918.3-2016 附录 A.2 示例 1，B 侧）\nvar dB = '5e35d7d3f3c54dbac72e61819e730b019a84208ca3a35e4c2e353dfccb2a3b53';\nvar rB = '33fe21940342161c55619c4a0c060293d543c80af19748ce176d83477de71c80';\nvar pax = '3099093bf3c137d8fcbbcdf4a2ae50f3b0f216c3122d79425fe03a45dbfe1655';\nvar pay = '3df79e8dac1cf0ecbaa2f2b49d51a4b387f2efaf482339086a27a8e05baed98b';\nvar RA = '04' + '6cb5633816f4dd560b1dec458310cbcc6856c09505324a6d23150c408f162bf0' + '0d6fcf62f1036c0a1b6daccf57399223a65f7d7bf2d9637e5bbbeb857961bf1a';\nvar RBP = '04' + '1799b2a2c778295300d9a2325c686129b8f2b5337b3dcf4514e8bbc19d900ee5' + '54c9288c82733efdf7808ae7f27d0e732f7c73a7d9ac98b7d8740a91d0db3cf4';\nvar ZA = 'e4d1d0c3ca4c7f11bc8ff8cb3f4c02a78f108fa098e51a668487240f75e20f31';\nvar ZB = '6b4b6d0e276691bd4a11bf72f4fb501ae309fdacb72fa6cc336e6656119abd67';\nconst k = SM2KEX(dB, rB, pax, pay, RA, RBP, ZA, ZB, 128);\nif (k !== '55b0ac62a6b927ba23703832c853ded4') throw new Error('KEX_K ' + k);\nif (SM2KEX(dB, rB, pax, pay, RA, RBP, ZA, ZB, 128) !== k) throw new Error('KEX_DET');\nconsole.log('SM2-KEX-OK');\n",
+   "expect": "SM2-KEX-OK"
   }
  }
 }

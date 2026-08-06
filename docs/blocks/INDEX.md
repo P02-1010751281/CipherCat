@@ -1,7 +1,7 @@
 # 积木块标准依据参考
 
 
-**版本**: 2.15 | **日期**: 2026-08-05 | **总块数**: 139（另有 29 个函数模板）
+**版本**: 2.15 | **日期**: 2026-08-05 | **总块数**: 141（另有 29 个函数模板）
 
 ## 图例
 
@@ -50,10 +50,10 @@
 | 数据处理与转换 | 20 | [data-encoding.md](data-encoding.md) |
 | 位运算单元 | 8 | [bitwise-logic.md](bitwise-logic.md) |
 | 非线性运算单元（S-Box） | 4 | [ecc-sbox.md](ecc-sbox.md) |
-| 哈希与填充单元 | 31 | [hash.md](hash.md) |
+| 哈希与填充单元 | 32 | [hash.md](hash.md) |
 | 对称密码 | 18 | [symmetric.md](symmetric.md) |
 | 数论与密钥推导单元 | 37 | [numtheory.md](numtheory.md) |
-| 椭圆曲线运算单元 | 19 | [ecc-sbox.md](ecc-sbox.md) |
+| 椭圆曲线运算单元 | 20 | [ecc-sbox.md](ecc-sbox.md) |
 | 祖冲之序列密码 | 6 | [zuc.md](zuc.md) |
 | 后量子基础块 | 10 | [post-quantum.md](post-quantum.md) |
 | 后量子高级块 | 9 | [post-quantum.md](post-quantum.md) |

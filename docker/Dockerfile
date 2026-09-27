@@ -38,8 +38,9 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --de
 
 WORKDIR /app
 
-# Cache deps
-COPY package.json package-lock.json ./
+# Cache deps. Keep the repository npm policy with the lockfiles so npm ci does
+# not depend on a different .npmrc on the host running the build.
+COPY package.json package-lock.json .npmrc ./
 RUN npm ci
 
 COPY src-tauri/Cargo.toml src-tauri/build.rs src-tauri/

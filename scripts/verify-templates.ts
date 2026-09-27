@@ -2,7 +2,7 @@
  * 模板（Crypto Templates / proc_* / crypto_*_func）注入正确性 + 可执行性验证
  *
  * 用法:
- *   node dist-verify/verify-templates.js            # 全部 28 模板
+ *   node dist-verify/verify-templates.js            # 全部 29 模板
  *   node dist-verify/verify-templates.js <name>     # 单个（如 proc_sm4_round）
  *
  * 模板 = _makeTemplateBlock 创建的「单参数教学起点」块：拖出后由 TEMPLATE_PREFILL
@@ -19,6 +19,8 @@ import {
   MLKEM_ENCAPS_RETURN_STATE,
   MLKEM_ENCAPS_VARIABLE_IDS,
 } from '@/blocks/procedure/encaps-prefill';
+
+const DRIVER_TIMEOUT_MS = 30_000;
 
 interface TemplateCase {
   name: string;
@@ -37,7 +39,20 @@ interface TemplateCase {
   prefillVariables?: string[];
 }
 
-// 与 src/blocks/procedure/blocks.ts TEMPLATE_PREFILL 对齐（28 模板）
+type DemoGlobals = typeof globalThis & {
+  document: unknown;
+  window: unknown;
+  DOMParser: unknown;
+  XMLSerializer: unknown;
+  Node: unknown;
+  Element: unknown;
+};
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+// 与 src/blocks/procedure/blocks.ts TEMPLATE_PREFILL 对齐（29 模板）
 // returnChain 顺序：叶子 → 根（buildReturnChain 语义）
 const TEMPLATES: TemplateCase[] = [
   { name: 'crypto_hash_func', paramName: 'message', returnChain: ['variables_get', 'hash_sha256_pad'] },
@@ -69,10 +84,10 @@ const TEMPLATES: TemplateCase[] = [
     name: 'proc_mlkem_encaps', paramName: 'ek', returnChain: [],
     bodyState: MLKEM_ENCAPS_BODY_STATE, returnState: MLKEM_ENCAPS_RETURN_STATE,
     prefillVariables: MLKEM_ENCAPS_VARIABLE_IDS,
-    pyDriver: "ek = bytes(800)\nm = bytes(32)\nprint(len(Tpl_mlkem_encaps(ek, m)) > 0)",
-    pyExpect: "True",
-    jsDriver: "var ek = new Uint8Array(800); var m = new Uint8Array(32);\nconsole.log(Tpl_mlkem_encaps(ek, m).length > 0);",
-    jsExpect: "true",
+    pyDriver: 'ek = bytes(800)\nm = bytes(32)\nprint(len(Tpl_mlkem_encaps(ek, m)) > 0)',
+    pyExpect: 'True',
+    jsDriver: 'var ek = new Uint8Array(800); var m = new Uint8Array(32);\nconsole.log(Tpl_mlkem_encaps(ek, m).length > 0);',
+    jsExpect: 'true',
   },
   // BODY 预填模板（return 链只 variables_get，算法在 BODY）
   { name: 'proc_pbkdf2', paramName: 'password', returnChain: ['variables_get'] },
@@ -136,7 +151,6 @@ function buildWorkspace(tc: TemplateCase): Record<string, unknown> {
     type: 'variables_get', id: 'tpl_var_0001',
     fields: { VAR: { id: 'tpl_param_id', name: tc.paramName } },
   };
-  let prevId = 'tpl_var_0001';
   // 中间 + 根：每块连到前块输出到其第一个 VALUE input
   for (let i = 1; i < tc.returnChain.length; i++) {
     const type = tc.returnChain[i];
@@ -150,7 +164,6 @@ function buildWorkspace(tc: TemplateCase): Record<string, unknown> {
       blk.inputs = { [firstInput]: { block: leaf } };
     }
     leaf = blk;
-    prevId = id;
   }
   const root = leaf;
   return {
@@ -178,12 +191,13 @@ async function main() {
   if (!cases.length) { console.error(`未知模板: ${filter}`); process.exit(1); }
 
   const dom = new JSDOM('<!DOCTYPE html><body></body>', { url: 'http://localhost/' });
-  (globalThis as any).document = dom.window.document;
-  (globalThis as any).window = dom.window;
-  (globalThis as any).DOMParser = dom.window.DOMParser;
-  (globalThis as any).XMLSerializer = dom.window.XMLSerializer;
-  (globalThis as any).Node = dom.window.Node;
-  (globalThis as any).Element = dom.window.Element;
+  const demoGlobals = globalThis as DemoGlobals;
+  demoGlobals.document = dom.window.document;
+  demoGlobals.window = dom.window;
+  demoGlobals.DOMParser = dom.window.DOMParser;
+  demoGlobals.XMLSerializer = dom.window.XMLSerializer;
+  demoGlobals.Node = dom.window.Node;
+  demoGlobals.Element = dom.window.Element;
 
   const Blockly = (await import('blockly/core')).default ?? await import('blockly/core');
   // headless 环境无 i18n 加载：setLocale 灌入官方英文消息（原生块 + FieldVariable 所需全部 Msg 键；
@@ -199,10 +213,15 @@ async function main() {
   const { pythonGenerator } = await import('blockly/python');
   const { javascriptGenerator } = await import('blockly/javascript');
   const fs = await import('node:fs');
+  const os = await import('node:os');
+  const path = await import('node:path');
   const { execFileSync } = await import('node:child_process');
+  const pythonCommand = process.env.CIPHER_CAT_PYTHON ||
+    (process.platform === 'win32' ? 'python' : 'python3');
 
   let pass = 0, fail = 0;
-  const tmpDir = fs.mkdtempSync('/tmp/ciphercat-tpl-');
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ciphercat-tpl-'));
+  process.once('exit', () => fs.rmSync(tmpDir, { recursive: true, force: true }));
 
   for (const tc of cases) {
     const ws = new Blockly.Workspace();
@@ -210,9 +229,11 @@ async function main() {
       for (const vid of tc.prefillVariables || []) {
         ws.getVariableMap().createVariable(vid, '', vid);
       }
-      Blockly.serialization.workspaces.load(buildWorkspaceBodyState(tc) as any, ws);
+      const state = buildWorkspaceBodyState(tc) as unknown as Parameters<typeof Blockly.serialization.workspaces.load>[0];
+      Blockly.serialization.workspaces.load(state, ws);
     } else {
-      Blockly.serialization.workspaces.load(buildWorkspace(tc) as any, ws);
+      const state = buildWorkspace(tc) as unknown as Parameters<typeof Blockly.serialization.workspaces.load>[0];
+      Blockly.serialization.workspaces.load(state, ws);
     }
     const pyCode = pythonGenerator.workspaceToCode(ws) as string;
     const jsCode = javascriptGenerator.workspaceToCode(ws) as string;
@@ -251,10 +272,13 @@ async function main() {
     try {
       const pyFile = `${tmpDir}/${tc.name}.py`;
       fs.writeFileSync(pyFile, pyCode + '\n' + (tc.pyDriver || 'pass\n'));
-      pyOut = execFileSync('python3', [pyFile], { encoding: 'utf8' }).trim();
+      pyOut = execFileSync(pythonCommand, [pyFile], {
+        encoding: 'utf8',
+        timeout: DRIVER_TIMEOUT_MS,
+      }).trim();
       pyExecOk = true;
-    } catch (e: any) {
-      problems.push(`Python 执行失败: ${e.message?.split('\n').slice(-2).join(' ')}`);
+    } catch (e: unknown) {
+      problems.push(`Python 执行失败: ${errorMessage(e).split('\n').slice(-2).join(' ')}`);
     }
     // 3. 官方向量（如配置）
     if (tc.pyDriver && tc.pyExpect !== undefined) {
@@ -263,16 +287,18 @@ async function main() {
       }
     }
     // JS 同验（仅执行 + 向量，链结构已由 python 侧验证）
-    let jsOut = '';
     try {
       const jsFile = `${tmpDir}/${tc.name}.js`;
       fs.writeFileSync(jsFile, jsCode + '\n' + (tc.jsDriver || 'console.log(1);'));
-      jsOut = execFileSync('node', [jsFile], { encoding: 'utf8' }).trim();
+      const jsOut = execFileSync(process.execPath, [jsFile], {
+        encoding: 'utf8',
+        timeout: DRIVER_TIMEOUT_MS,
+      }).trim();
       if (tc.jsDriver && tc.jsExpect !== undefined && jsOut !== tc.jsExpect) {
         problems.push(`JS 向量不符: got=${jsOut} expect=${tc.jsExpect}`);
       }
-    } catch (e: any) {
-      problems.push(`JS 执行失败: ${e.message?.split('\n').slice(-2).join(' ')}`);
+    } catch (e: unknown) {
+      problems.push(`JS 执行失败: ${errorMessage(e).split('\n').slice(-2).join(' ')}`);
     }
 
     if (problems.length) {

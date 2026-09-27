@@ -1,0 +1,56 @@
+name: Quality gates
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Check lint
+        run: npm run lint:check
+
+      - name: Check types
+        run: npm run type-check
+
+      - name: Check standards metadata
+        run: npm run standards:check
+
+      - name: Check circular dependencies
+        run: npm run cycles:check
+
+      - name: Check documentation links
+        run: npm run docs:check-links
+
+      - name: Build application
+        run: npm run build
+
+      - name: Check production entry budget
+        run: npm run build:check-bundle
+
+      - name: Verify templates and demos
+        run: npm run verify:all
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high --registry=https://registry.npmjs.org

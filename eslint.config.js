@@ -8,11 +8,13 @@ export default [
     name: 'app/files-to-ignore',
     ignores: [
       '**/dist/**',
+      '**/dist-verify/**',
       '**/dist-ssr/**',
       '**/coverage/**',
       '**/node_modules/**',
       '**/target/**',
       '**/.cargo/**',
+      'src/blocks/procedure/encaps-prefill.ts',
     ],
   },
 
@@ -54,6 +56,7 @@ export default [
         MouseEvent: 'readonly',
         HTMLElement: 'readonly',
         HTMLInputElement: 'readonly',
+        HTMLAnchorElement: 'readonly',
         __dirname: 'readonly',
       },
     },
@@ -68,6 +71,22 @@ export default [
         { argsIgnorePattern: '^_' },
       ],
       '@typescript-eslint/no-explicit-any': 'error',
+    },
+  },
+
+  {
+    files: ['scripts/**/*.{js,mjs,cjs,ts}'],
+    rules: {
+      // 验证 harness 的 stdout 是测试报告接口，不是生产日志。
+      'no-console': 'off',
+    },
+  },
+
+  {
+    files: ['**/*.cjs'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: { module: 'readonly' },
     },
   },
 ];

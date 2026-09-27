@@ -10,9 +10,28 @@
  */
 import { JSDOM } from 'jsdom';
 
+const DRIVER_TIMEOUT_MS = 25_000;
+
 interface TestSpec {
   py: { driver: string; expect: string };
   js: { driver: string; expect: string };
+}
+
+type DemoGlobals = typeof globalThis & {
+  document: unknown;
+  window: unknown;
+  DOMParser: unknown;
+  XMLSerializer: unknown;
+  Node: unknown;
+  Element: unknown;
+};
+
+function errorDetail(error: unknown, field: 'message' | 'stderr'): string {
+  if (error instanceof Error && field === 'message') return error.message;
+  if (typeof error === 'object' && error !== null && field in error) {
+    return String((error as Record<string, unknown>)[field] ?? '');
+  }
+  return String(error);
 }
 
 async function main() {
@@ -25,12 +44,13 @@ async function main() {
 
   // headless DOM 桩（必须在 import Blockly 前设置）
   const dom = new JSDOM('<!DOCTYPE html><body></body>', { url: 'http://localhost/' });
-  (globalThis as any).document = dom.window.document;
-  (globalThis as any).window = dom.window;
-  (globalThis as any).DOMParser = dom.window.DOMParser;
-  (globalThis as any).XMLSerializer = dom.window.XMLSerializer;
-  (globalThis as any).Node = dom.window.Node;
-  (globalThis as any).Element = dom.window.Element;
+  const demoGlobals = globalThis as DemoGlobals;
+  demoGlobals.document = dom.window.document;
+  demoGlobals.window = dom.window;
+  demoGlobals.DOMParser = dom.window.DOMParser;
+  demoGlobals.XMLSerializer = dom.window.XMLSerializer;
+  demoGlobals.Node = dom.window.Node;
+  demoGlobals.Element = dom.window.Element;
 
   // 动态 import（确保 DOM 桩先于 Blockly 模块初始化）
   const Blockly = (await import('blockly/core')).default ?? await import('blockly/core');
@@ -46,14 +66,18 @@ async function main() {
   const { pythonGenerator } = await import('blockly/python');
   const { javascriptGenerator } = await import('blockly/javascript');
   const fs = await import('node:fs');
+  const os = await import('node:os');
+  const path = await import('node:path');
   const { execFileSync } = await import('node:child_process');
+  const pythonCommand = process.env.CIPHER_CAT_PYTHON ||
+    (process.platform === 'win32' ? 'python' : 'python3');
 
   const json = JSON.parse(fs.readFileSync(file, 'utf8'));
   const ws = new Blockly.Workspace();
   Blockly.serialization.workspaces.load(json, ws);
 
   const defs = ws.getBlocksByType('procedures_defreturn', false);
-  console.log('== def 函数:', defs.map((b: any) => b.getFieldValue('NAME')));
+  console.log('== def 函数:', defs.map((b) => b.getFieldValue('NAME')));
 
   const pyCode = pythonGenerator.workspaceToCode(ws) as string;
   const jsCode = javascriptGenerator.workspaceToCode(ws) as string;
@@ -70,14 +94,19 @@ async function main() {
   const registry: Record<string, TestSpec> = JSON.parse(
     fs.readFileSync('demos/tests.json', 'utf8'),
   );
-  const rel = file.replace(/^demos\//, '');
+  const normalizedFile = file.replaceAll('\\', '/');
+  const demosMarker = '/demos/';
+  const demosIndex = normalizedFile.lastIndexOf(demosMarker);
+  const rel = demosIndex >= 0
+    ? normalizedFile.slice(demosIndex + demosMarker.length)
+    : normalizedFile.replace(/^demos\//, '');
   const spec = registry[rel];
   if (!spec) {
     console.error(`FAIL: demos/tests.json 缺 ${rel} 的测试规格`);
     process.exit(1);
   }
 
-  const tmpDir = fs.mkdtempSync('/tmp/ciphercat-verify-');
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ciphercat-verify-'));
   const results: Array<{ lang: string; pass: boolean; got: string; expect: string }> = [];
 
   // Python
@@ -86,11 +115,14 @@ async function main() {
     const pyDriver = `${pyCode}\n${spec.py.driver}\n`;
     pyFile = `${tmpDir}/demo.py`;
     fs.writeFileSync(pyFile, pyDriver);
-    const stdout = execFileSync('python3', [pyFile], { encoding: 'utf8' }).trim();
+    const stdout = execFileSync(pythonCommand, [pyFile], {
+      encoding: 'utf8',
+      timeout: DRIVER_TIMEOUT_MS,
+    }).trim();
     const pass = stdout === spec.py.expect;
     results.push({ lang: 'Python', pass, got: stdout, expect: spec.py.expect });
-  } catch (e: any) {
-    results.push({ lang: 'Python', pass: false, got: `EXEC ERROR: ${e.message} | stderr: ${e.stderr} | file: ${pyFile}`, expect: spec.py.expect });
+  } catch (e: unknown) {
+    results.push({ lang: 'Python', pass: false, got: `EXEC ERROR: ${errorDetail(e, 'message')} | stderr: ${errorDetail(e, 'stderr')} | file: ${pyFile}`, expect: spec.py.expect });
   }
 
   // JS
@@ -99,11 +131,14 @@ async function main() {
     const jsDriver = `${jsCode}\n${spec.js.driver}\n`;
     jsFile = `${tmpDir}/demo.js`;
     fs.writeFileSync(jsFile, jsDriver);
-    const stdout = execFileSync('node', [jsFile], { encoding: 'utf8' }).trim();
+    const stdout = execFileSync(process.execPath, [jsFile], {
+      encoding: 'utf8',
+      timeout: DRIVER_TIMEOUT_MS,
+    }).trim();
     const pass = stdout === spec.js.expect;
     results.push({ lang: 'JS', pass, got: stdout, expect: spec.js.expect });
-  } catch (e: any) {
-    results.push({ lang: 'JS', pass: false, got: `EXEC ERROR: ${e.message} | stderr: ${e.stderr} | file: ${jsFile}`, expect: spec.js.expect });
+  } catch (e: unknown) {
+    results.push({ lang: 'JS', pass: false, got: `EXEC ERROR: ${errorDetail(e, 'message')} | stderr: ${errorDetail(e, 'stderr')} | file: ${jsFile}`, expect: spec.js.expect });
   }
 
   let allPass = true;
@@ -115,6 +150,7 @@ async function main() {
       console.log(`  got:    ${r.got}`);
     }
   }
+  fs.rmSync(tmpDir, { recursive: true, force: true });
   console.log(allPass ? '\n=== ALL VECTORS PASS ===' : '\n=== VECTOR MISMATCH ===');
   process.exit(allPass ? 0 : 1);
 }

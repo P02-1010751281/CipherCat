@@ -3,14 +3,16 @@
 # sync-docs-to-metacrypt.sh — 通用文档单源同步（CipherCat → metacrypt_server）
 #
 # 两项目共享 Blockly 核心，以下文档在 CipherCat 维护、同步到 metacrypt：
-#   docs/guides/{TYPE-SYSTEM,BLOCKLY-GUIDE,AUDIT-REPORT,DEMO}.md(+en)
+#   docs/guides/{CAPABILITY-MAP,TYPE-SYSTEM,BLOCKLY-GUIDE,AUDIT-REPORT,DEMO}.md(+en)
 #   docs/blocks/（8 份块文档，双语）
-#   docs/standards/（33 算法规范目录，纯知识库）
+#   docs/standards/（38 标准与参考目录，纯知识库）
 #   docs/demos/（5 份算法搭建文档，双语）
+#   docs/research/（调研报告）
+#   paper/references/（调研报告引用的标准与论文 PDF）
 #   demos/（Blockly 工作区示例文件 + README，metacrypt 编辑器可直接导入）
 #
-# 不同步（平台专属）：ARCHITECTURE / DEVELOPMENT（metacrypt 平台形态不同）
-# 链接约定：同步保持相对目录结构（guides/ + blocks/ + standards/ + demos/），
+# 不同步（平台专属）：USER-GUIDE / TUTORIALS / ARCHITECTURE / DEVELOPMENT（入口、路由及任务流程不同）
+# 链接约定：同步保持相对目录结构（guides/ + blocks/ + standards/ + demos/ + research/），
 #           内部相对链接在目标仓库同样有效；同步后运行全仓死链检查验证。
 # =============================================================================
 set -euo pipefail
@@ -26,7 +28,7 @@ fi
 
 echo "== 同步 guides/ 通用文档 =="
 mkdir -p "$MC_ROOT/docs/guides"
-for f in TYPE-SYSTEM BLOCKLY-GUIDE AUDIT-REPORT; do
+for f in CAPABILITY-MAP TYPE-SYSTEM BLOCKLY-GUIDE AUDIT-REPORT; do
   for ext in md en.md; do
     src="$CC_ROOT/docs/guides/$f.$ext"
     if [ -f "$src" ]; then
@@ -48,9 +50,11 @@ for f in INDEX bitwise-logic data-encoding ecc-sbox hash numtheory post-quantum 
 done
 
 echo "== 同步 standards/ 算法规范知识库 =="
-rm -rf "$MC_ROOT/docs/standards"
-cp -r "$CC_ROOT/docs/standards" "$MC_ROOT/docs/standards"
-echo "  standards/ ($(find "$CC_ROOT/docs/standards" -type f | wc -l) files)"
+mkdir -p "$MC_ROOT/docs/standards"
+# Copy canonical files without deleting target-only material (e.g. CNSA tracking).
+# Obsolete target files require an explicit reviewed removal, not a whole-tree wipe.
+cp -r "$CC_ROOT/docs/standards/." "$MC_ROOT/docs/standards/"
+echo "  standards/ canonical files copied; target-only files preserved"
 
 echo "== 同步 docs/demos/ 搭建文档 ==============="
 mkdir -p "$MC_ROOT/docs/demos"
@@ -85,28 +89,47 @@ for f in "$CC_ROOT"/demos/*.json; do
   cp "$f" "$MC_ROOT/demos/"
   echo "  demos/$(basename "$f")"
 done
+
+echo "== 同步可复用的 Blockly 界面插图 ============"
+mkdir -p "$MC_ROOT/frontend/public/docs-assets/tutorials"
+for f in 02-editor-empty 03-import-menu 04-editor-imported 05-generated-python 08-function-demo 09-function-generated; do
+  cp "$CC_ROOT/public/docs-assets/tutorials/$f.png" "$MC_ROOT/frontend/public/docs-assets/tutorials/$f.png"
+  echo "  frontend/public/docs-assets/tutorials/$f.png"
+done
+# 06-docs-center-current.png is specific to CipherCat's docs UI; do not sync it.
 for f in "$CC_ROOT"/demos/procedures/*.json; do
   mkdir -p "$MC_ROOT/demos/procedures"
   cp "$f" "$MC_ROOT/demos/procedures/"
   echo "  demos/procedures/$(basename "$f")"
 done
+
+echo "== 同步 research/ 调研报告 ================="
+mkdir -p "$MC_ROOT/docs/research"
+cp "$CC_ROOT/docs/research/CRYPTO-RESEARCH-2026-09.md" "$MC_ROOT/docs/research/"
+echo "  research/CRYPTO-RESEARCH-2026-09.md"
+cp "$CC_ROOT/docs/research/CRYPTO-RESEARCH-2026-09-12.md" "$MC_ROOT/docs/research/"
+echo "  research/CRYPTO-RESEARCH-2026-09-12.md"
+cp "$CC_ROOT/docs/research/CRYPTO-RESEARCH-2026-09-25.md" "$MC_ROOT/docs/research/"
+echo "  research/CRYPTO-RESEARCH-2026-09-25.md"
+
+echo "== 同步 research/ 文献包 =================="
+mkdir -p "$MC_ROOT/paper/references"
+cp "$CC_ROOT/paper/references/README.md" "$MC_ROOT/paper/references/"
+cp "$CC_ROOT"/paper/references/*.pdf "$MC_ROOT/paper/references/"
+echo "  paper/references/ ($(find "$CC_ROOT/paper/references" -name '*.pdf' | wc -l) PDFs)"
+
+echo "== 同步 NIST 研究来源索引与 PDF ============="
+mkdir -p "$MC_ROOT/docs/research/sources"
+cp -r "$CC_ROOT/docs/research/sources/." "$MC_ROOT/docs/research/sources/"
+echo "  docs/research/sources/ (index + source PDFs)"
+
 for ext in md en.md; do
   cp "$CC_ROOT/demos/README.$ext" "$MC_ROOT/demos/README.$ext"
   echo "  demos/README.$ext"
 done
 
-echo "== metacrypt 文档去 CipherCat 化（平台名替换） =="
-# 先替换再复制部署副本，确保 backend/docs 不含 CipherCat 残留（审计 finding-23）
-find "$MC_ROOT/docs" "$MC_ROOT/demos" -name '*.md' -print0 | xargs -0 sed -i 's/CipherCat/Metacrypto/g'
-echo "  CipherCat → Metacrypto 替换完成"
-
-echo "== 同步冗余副本 backend/docs =="
-# 注意：容器实际 bind mount 仓库根 docs/（docker/docker-compose.yml ../docs），backend/docs 仅为历史冗余副本；
-# 用 metacrypt 自身 docs/ 全量（共享文档已在上方同步进来 + 平台文档 USAGE/DEPLOYMENT/API 等），
-# 不能用 CipherCat docs 覆盖（会丢平台文档）
-rm -rf "$MC_ROOT/backend/docs"
-cp -r "$MC_ROOT/docs" "$MC_ROOT/backend/docs"
-echo "  backend/docs/ ($(find "$MC_ROOT/backend/docs" -type f | wc -l) files)"
+echo "== 平台专属用户指南保留目标仓库版本 =="
+echo "  USER-GUIDE / TUTORIALS 不同步：入口、路由和测评流程按目标平台维护，不做全仓品牌替换。"
 
 echo "== 同步完成 =="
-echo "提示：同步后需更新 metacrypt docs/INDEX.md、重启 mc-backend 容器并运行死链检查（见脚本头部约定）。"
+echo "提示：backend/docs 是历史冗余副本，不由此脚本生成；同步后需审阅 docs/INDEX.md 并运行死链检查。"

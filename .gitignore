@@ -1,5 +1,9 @@
-# Paper drafts (local only, publish when ready)
-paper/
+# Paper drafts (local only, publish when ready). The downloaded research bundle
+# is intentionally versioned so the research report remains reproducible.
+paper/*
+!paper/references/
+!paper/references/*.pdf
+!paper/references/README.md
 
 # Dependencies
 node_modules/

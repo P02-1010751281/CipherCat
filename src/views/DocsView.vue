@@ -75,11 +75,12 @@
         </div>
 
         <!-- Doc content -->
-        <div
-          v-else-if="renderedHtml"
-          class="content-markdown"
-          v-html="renderedHtml"
-        />
+        <template v-else-if="renderedHtml">
+          <p v-if="isSourceLocaleFallback" class="locale-fallback">
+            {{ ui("docsSourceFallback") }}
+          </p>
+          <div class="content-markdown" v-html="renderedHtml" />
+        </template>
 
         <!-- Welcome screen -->
         <div v-else class="content-welcome">
@@ -123,7 +124,11 @@ import { ui, uiLocaleRef, useBlocklyLocale } from '@/composables/locale';
 import {
   renderMarkdown,
   getCategoryLabel,
-  parseDocTitle,
+  getDocTitle,
+  getBlockDocCategories,
+  getGuideCategory,
+  getPlatformCategory,
+  getStandardDocCategory,
   parseOrder,
   type DocFile,
   type DocCategory,
@@ -147,6 +152,51 @@ const docLoaders = import.meta.glob('/docs/**/*.md', {
   eager: false,
 }) as Record<string, () => Promise<string>>;
 
+const legacyGuideLocalePairs: Record<string, string> = {
+  '/docs/standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-build-guide.md':
+    '/docs/standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-搭建指南.md',
+  '/docs/standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-搭建指南.md':
+    '/docs/standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-build-guide.md',
+  '/docs/standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-pure-basic.md':
+    '/docs/standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-纯基础块.md',
+  '/docs/standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-纯基础块.md':
+    '/docs/standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-pure-basic.md',
+};
+
+function localizedCounterpart(path: string): string {
+  if (path in legacyGuideLocalePairs) return legacyGuideLocalePairs[path];
+  return path.endsWith('.en.md')
+    ? `${path.slice(0, -'.en.md'.length)}.md`
+    : `${path.slice(0, -'.md'.length)}.en.md`;
+}
+
+function isEnglishPath(path: string): boolean {
+  return (
+    path.endsWith('.en.md') ||
+    path ===
+      '/docs/standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-build-guide.md' ||
+    path ===
+      '/docs/standards/fips203-ML-KEM/guides/ML-KEM-768-Encaps-pure-basic.md'
+  );
+}
+
+function shouldIncludeLocalePath(path: string, locale: string): boolean {
+  const isEnglish = isEnglishPath(path);
+  const counterpart = localizedCounterpart(path);
+  const hasCounterpart = counterpart in docLoaders;
+  // Prefer a translation when present; retain the only available language as
+  // an explicit fallback so a missing translation never hides a document.
+  return locale === 'en' ? isEnglish || !hasCounterpart : !isEnglish || !hasCounterpart;
+}
+
+const isSourceLocaleFallback = computed(() => {
+  const path = activeDoc.value;
+  if (!path) return false;
+  const isEnglish = isEnglishPath(path);
+  const expectsEnglish = currentLocale.value === 'en';
+  return isEnglish !== expectsEnglish && !(localizedCounterpart(path) in docLoaders);
+});
+
 // Parse modules into categories (from file paths only, no content loading)
 function buildCategories(): DocCategory[] {
   const catMap = new Map<string, DocFile[]>();
@@ -155,73 +205,112 @@ function buildCategories(): DocCategory[] {
   for (const path of Object.keys(docLoaders)) {
     // path looks like: /docs/guides/ARCHITECTURE.md | /docs/standards/fips202-SHA3/01-Theta.md
     const parts = path.replace(/^\/docs\//, '').split('/');
-    if (parts.length < 2) continue;
+    if (parts.length < 1) continue;
 
     const top = parts[0];
+
+    // Root/index/research docs are valid entries too. Keep locale filtering
+    // consistent with the other top-level documentation groups.
+    if (parts.length === 1 || (top === 'research' && parts.length >= 2)) {
+      const filename = parts[parts.length - 1];
+      if (!shouldIncludeLocalePath(path, locale)) continue;
+
+      const category = parts.length === 1
+        ? getPlatformCategory(filename)
+        : 'research';
+      const file: DocFile = {
+        path,
+        category,
+        filename: parts.slice(1).join('/') || filename,
+        title: getDocTitle(filename, locale),
+        order: parseOrder(filename),
+      };
+      if (!catMap.has(category)) catMap.set(category, []);
+      catMap.get(category)!.push(file);
+      continue;
+    }
+
+    if (top === 'standards' && parts.length === 2) {
+      const filename = parts[1];
+      if (!shouldIncludeLocalePath(path, locale)) continue;
+
+      const file: DocFile = {
+        path,
+        category: 'standards-index',
+        filename,
+        title: getDocTitle(filename, locale),
+        order: parseOrder(filename),
+      };
+      if (!catMap.has('standards-index')) catMap.set('standards-index', []);
+      catMap.get('standards-index')!.push(file);
+      continue;
+    }
 
     // guides/：核心文档平铺（guides/<file>），按 locale 过滤中英版本
     if (top === 'guides' && parts.length === 2) {
       const filename = parts[1];
-      const isEn = filename.endsWith('.en.md');
-      if ((locale === 'zh') === isEn) continue; // zh 只收 .md，en 只收 .en.md
+      if (!shouldIncludeLocalePath(path, locale)) continue;
 
       const file: DocFile = {
         path,
-        category: 'guides',
+        category: getGuideCategory(filename),
         filename,
-        title: parseDocTitle(filename),
+        title: getDocTitle(filename, locale),
         order: parseOrder(filename),
       };
-      if (!catMap.has('guides')) catMap.set('guides', []);
-      catMap.get('guides')!.push(file);
+      if (!catMap.has(file.category)) catMap.set(file.category, []);
+      catMap.get(file.category)!.push(file);
       continue;
     }
 
     // demos/：搭建教程（demos/<file>），按 locale 过滤
     if (top === 'demos' && parts.length === 2) {
       const filename = parts[1];
-      const isEn = filename.endsWith('.en.md');
-      if ((locale === 'zh') === isEn) continue;
+      if (!shouldIncludeLocalePath(path, locale)) continue;
 
       const file: DocFile = {
         path,
-        category: 'demos',
+        category: 'user-demos',
         filename,
-        title: parseDocTitle(filename),
+        title: getDocTitle(filename, locale),
         order: parseOrder(filename),
       };
-      if (!catMap.has('demos')) catMap.set('demos', []);
-      catMap.get('demos')!.push(file);
+      if (!catMap.has(file.category)) catMap.set(file.category, []);
+      catMap.get(file.category)!.push(file);
       continue;
     }
 
-    // blocks/：积木块参考（blocks/<file>），按 locale 过滤
+    // blocks/：按算法家族拆开导航，同时保留总览和共享原语入口
     if (top === 'blocks' && parts.length === 2) {
       const filename = parts[1];
-      const isEn = filename.endsWith('.en.md');
-      if ((locale === 'zh') === isEn) continue;
+      if (!shouldIncludeLocalePath(path, locale)) continue;
 
-      const file: DocFile = {
+      const file = {
         path,
-        category: 'blocks',
         filename,
-        title: parseDocTitle(filename),
+        title: getDocTitle(filename, locale),
         order: parseOrder(filename),
       };
-      if (!catMap.has('blocks')) catMap.set('blocks', []);
-      catMap.get('blocks')!.push(file);
+      for (const category of getBlockDocCategories(filename)) {
+        if (!catMap.has(category)) catMap.set(category, []);
+        catMap.get(category)!.push({ ...file, category });
+      }
       continue;
     }
 
-    // standards/：算法规范（standards/<cat>/<file> 3 层），category 取第二层
-    if (top === 'standards' && parts.length === 3) {
-      const category = parts[1];
+    // standards/：算法规范允许包含 guides/、papers/ 等子目录；category
+    // 仍取标准目录名，filename 使用相对路径以避免同名文件冲突。
+    if (top === 'standards' && parts.length >= 3) {
+      const category = getStandardDocCategory(parts[1]);
+      const filename = parts.slice(2).join('/');
+      const basename = parts[parts.length - 1];
+      if (!shouldIncludeLocalePath(path, currentLocale.value)) continue;
       const file: DocFile = {
         path,
         category,
-        filename: parts[2],
-        title: parseDocTitle(parts[2]),
-        order: parseOrder(parts[2]),
+        filename,
+        title: getDocTitle(basename, locale),
+        order: parseOrder(basename),
       };
       if (!catMap.has(category)) catMap.set(category, []);
       catMap.get(category)!.push(file);
@@ -233,8 +322,19 @@ function buildCategories(): DocCategory[] {
     files.sort((a, b) => a.order - b.order);
   }
 
-  // Define display order of categories：核心/演示/块参考固定在前，其余 = 全部算法规范（按 slug 排序）
-  const pinned = ['guides', 'demos', 'blocks'];
+  // Define display order: user docs first, then development/audit/reference docs, then standards.
+  const pinned = [
+    'user-guides',
+    'user-demos',
+    'user-reference',
+    'user-reference-foundations',
+    'development-guides',
+    'audit-reports',
+    'platform',
+    'research',
+    'standards-index',
+    'rfc-references',
+  ];
   const rest = [...catMap.keys()]
     .filter((id) => !pinned.includes(id))
     .sort((a, b) => a.localeCompare(b));
@@ -256,6 +356,7 @@ const loading = ref(false);
 const error = ref<string>('');
 const searchQuery = ref('');
 const expandedCategories = ref<Set<string>>(new Set());
+let docRequestId = 0;
 
 const filteredCategories = computed(() => {
   if (!searchQuery.value) return categories.value;
@@ -264,7 +365,9 @@ const filteredCategories = computed(() => {
   return categories.value
     .map((cat) => ({
       ...cat,
-      files: cat.files.filter((f) => f.title.toLowerCase().includes(q)),
+      files: getCategoryLabel(cat.id, currentLocale.value).toLowerCase().includes(q)
+        ? cat.files
+        : cat.files.filter((f) => f.title.toLowerCase().includes(q)),
     }))
     .filter((cat) => cat.files.length > 0);
 });
@@ -279,7 +382,8 @@ function toggleCategory(id: string) {
   expandedCategories.value = new Set(expandedCategories.value);
 }
 
-async function selectDoc(path: string) {
+async function selectDoc(path: string, sourceLine?: number, headingId?: string) {
+  const requestId = ++docRequestId;
   activeDoc.value = path;
   loading.value = true;
   error.value = '';
@@ -287,21 +391,27 @@ async function selectDoc(path: string) {
   try {
     const loader = docLoaders[path];
     if (!loader) {
-      error.value = 'Document not found';
+      if (requestId === docRequestId) error.value = ui('docsNotFound');
       return;
     }
     const content = await loader();
-    renderedHtml.value = renderMarkdown(content);
+    if (requestId === docRequestId) renderedHtml.value = renderMarkdown(content, sourceLine);
   } catch (err) {
-    error.value = `Failed to render document: ${err}`;
+    if (requestId === docRequestId) error.value = `${ui('docsRenderFailed')}: ${err}`;
   } finally {
-    loading.value = false;
-    // loading=false 后内容区才渲染，mermaid 需在 DOM 就绪后执行
-    await renderMermaid();
+    if (requestId === docRequestId) {
+      loading.value = false;
+      // loading=false 后内容区才渲染，mermaid 需在 DOM 就绪后执行
+      await renderMermaid();
+      if (requestId === docRequestId && sourceLine) {
+        document.getElementById(`source-line-${sourceLine}`)?.scrollIntoView({ block: 'start' });
+      } else if (requestId === docRequestId && headingId) {
+        document.getElementById(headingId)?.scrollIntoView({ block: 'start' });
+      }
+    }
   }
 }
 
-// 渲染文档中的 mermaid 图（动态加载，避免增大首屏包体）
 // 渲染文档中的 mermaid 图（动态加载，避免增大首屏包体）
 async function renderMermaid() {
   // 等待 renderedHtml 写入 DOM（loading=false 后才渲染内容区）
@@ -333,8 +443,8 @@ function rebuildCategories() {
   }
 }
 
-// 应用内文档相对链接导航：markdown 渲染后 <a href="*.md"> 是相对路径，
-// 拦截点击 → 解析为 docs/ 内路径 → selectDoc 应用内切换（否则浏览器跳转 404/异常）
+// Keep relative Markdown and PDF links inside their docs/ source paths. Markdown
+// files load in the docs view; PDFs are served as static files by Vite/nginx.
 async function setupDocLinks() {
   await nextTick();
   const container = document.querySelector('.docs-content');
@@ -343,57 +453,58 @@ async function setupDocLinks() {
     const target = ev.target as HTMLElement;
     const a = target.closest?.('a[href]') as HTMLAnchorElement | null;
     if (!a) return;
-    // markdown-it normalizeLink 会把非 ASCII（中文文件名）percent-encode，而 docLoaders 是原始文件名 → 先解码再解析
-    let href = a.getAttribute('href') || '';
+    const href = a.getAttribute('href') || '';
+    let url: URL;
     try {
-      href = decodeURIComponent(href);
+      url = new URL(href, `${window.location.origin}${activeDoc.value}`);
     } catch {
-      // 非法百分号序列：保留原值
-    }
-    if (
-      !href.endsWith('.md') ||
-      href.startsWith('http') ||
-      href.startsWith('/') ||
-      href.startsWith('#')
-    )
       return;
-    ev.preventDefault();
-    // 相对当前文档所在目录解析
-    const base = activeDoc.value
-      .replace(/^\/docs\//, '')
-      .split('/')
-      .slice(0, -1);
-    const parts = [...base, ...href.split('/')].filter(
-      (p) => p && p !== '.',
-    );
-    const resolved: string[] = [];
-    for (const p of parts) {
-      if (p === '..') resolved.pop();
-      else resolved.push(p);
     }
-    const targetPath = resolved.join('/');
-    if ('/docs/' + targetPath in docLoaders) {
-      void selectDoc('/docs/' + targetPath);
+    if (url.origin !== window.location.origin) return;
+
+    let targetPath = url.pathname;
+    try {
+      targetPath = decodeURIComponent(targetPath);
+    } catch {
+      // Keep malformed percent sequences unchanged; they will not match a doc.
+    }
+
+    if (targetPath.endsWith('.pdf')) {
+      ev.preventDefault();
+      window.location.assign(`${targetPath}${url.search}${url.hash}`);
+      return;
+    }
+    if (!targetPath.endsWith('.md')) return;
+
+    ev.preventDefault();
+    if (targetPath in docLoaders) {
+      const sourceLine = /^#L(\d+)/.exec(url.hash)?.[1];
+      let headingId = sourceLine ? '' : url.hash.slice(1);
+      try {
+        headingId = decodeURIComponent(headingId);
+      } catch {
+        // Keep malformed heading fragments unchanged; they will not match.
+      }
+      if (targetPath === activeDoc.value && headingId) {
+        document.getElementById(headingId)?.scrollIntoView({ block: 'start' });
+      } else {
+        void selectDoc(targetPath, sourceLine ? Number(sourceLine) : undefined, headingId || undefined);
+      }
     } else {
-      console.warn('Doc link outside docs/:', targetPath);
+      console.warn('Doc link not found:', targetPath);
     }
   });
 }
 
 onMounted(rebuildCategories);
-// 语言切换：重建类目（guides/ 按 locale 过滤中英版本）+ 当前打开文档同步切换到对应语言版本
-//（存在 .en.md/.md 对应文件则重载内容，否则保持现状——standards 仅中文）
-watch(currentLocale, async (newLocale) => {
+// 语言切换：优先使用对应译文；标准页暂无英文译本时保留 source 语言页面作为可见 fallback。
+watch(currentLocale, async () => {
   rebuildCategories();
   const rel = activeDoc.value.replace(/^\/docs\//, '');
   if (!rel) return;
-  const isEn = rel.endsWith('.en.md');
-  if (isEn === (newLocale === 'en')) return;
-  const counterpart = isEn
-    ? rel.slice(0, -'.en.md'.length) + '.md'
-    : rel.slice(0, -'.md'.length) + '.en.md';
-  if ('/docs/' + counterpart in docLoaders) {
-    await selectDoc('/docs/' + counterpart);
+  const counterpart = localizedCounterpart(activeDoc.value);
+  if (counterpart in docLoaders) {
+    await selectDoc(counterpart);
   }
 });
 // 文档链接拦截（v-html 渲染后绑定，容器级事件委托）
@@ -616,6 +727,16 @@ void setupDocLinks();
   border: 1px solid rgba(211, 47, 47, 0.2);
 }
 
+.locale-fallback {
+  margin: 0 0 16px;
+  padding: 8px 12px;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
 /* Welcome */
 .content-welcome {
   display: flex;
@@ -720,6 +841,26 @@ void setupDocLinks();
   background: #282c34;
 }
 
+.content-markdown :deep(pre.doc-code) {
+  position: relative;
+  padding-top: 30px;
+}
+
+.content-markdown :deep(pre.doc-code::before) {
+  content: attr(data-language);
+  position: absolute;
+  inset: 0 0 auto;
+  height: 30px;
+  padding: 7px 14px 0;
+  box-sizing: border-box;
+  color: #abb2bf;
+  background: rgba(0, 0, 0, 0.18);
+  font-family: var(--font-family);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
 .content-markdown :deep(pre code) {
   display: block;
   padding: 16px;
@@ -789,7 +930,19 @@ void setupDocLinks();
 }
 
 .content-markdown :deep(img) {
+  display: block;
   max-width: 100%;
   border-radius: 4px;
+  border: 1px solid var(--color-border);
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(32, 36, 43, 0.08);
+  margin: 16px 0 8px;
+}
+
+.content-markdown :deep(p > em:only-child) {
+  display: block;
+  color: var(--color-text-secondary, #697586);
+  font-size: 0.9em;
+  margin-bottom: 16px;
 }
 </style>

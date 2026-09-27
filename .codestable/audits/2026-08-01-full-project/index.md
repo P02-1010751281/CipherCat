@@ -3,7 +3,8 @@ doc_type: audit-index
 audit: 2026-08-01-full-project
 scope: "CipherCat 全仓库 src/ + src-tauri/ + docs/ + demos/，五维全扫（bug/security/performance/maintainability/docs-api），用户重点强调文档与 API 边缘"
 created: 2026-08-01
-status: active
+status: superseded
+superseded-by: 2026-09-07-full-project-review
 total_findings: 24
 ---
 

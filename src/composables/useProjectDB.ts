@@ -74,8 +74,14 @@ export async function saveProject(project: ProjectRecord): Promise<number> {
     const tx = db.transaction(STORE_NAME, 'readwrite');
     const store = tx.objectStore(STORE_NAME);
     const request = store.put(project);
-    request.onsuccess = () => resolve(request.result as number);
-    request.onerror = () => reject(request.error);
+    let id: number;
+    request.onsuccess = () => {
+      id = request.result as number;
+    };
+    request.onerror = () => reject(request.error ?? new Error('IndexedDB write failed'));
+    tx.oncomplete = () => resolve(id);
+    tx.onerror = () => reject(tx.error ?? new Error('IndexedDB transaction failed'));
+    tx.onabort = () => reject(tx.error ?? new Error('IndexedDB transaction aborted'));
   });
 }
 

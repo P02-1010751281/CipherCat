@@ -90,11 +90,11 @@ function migrateSboxXml(xml: string): string {
 
   // Old SXX (hex) field names → SBox_R_C
   result = result.replace(
-    /<field name="S([0-9A-F])([0-9A-F])"/gi,
-    (_, rowHex, colHex) => {
+    /<field name=(['"])S([0-9A-F])([0-9A-F])\1/gi,
+    (_, quote, rowHex, colHex) => {
       const row = parseInt(rowHex, 16);
       const col = parseInt(colHex, 16);
-      return `<field name="SBox_${row}_${col}"`;
+      return `<field name=${quote}SBox_${row}_${col}${quote}`;
     },
   );
 
@@ -115,14 +115,14 @@ function migrateSboxXml(xml: string): string {
   for (const oldType of sboxOldTypes) {
     if (!result.includes(oldType)) continue;
     result = result.replace(
-      new RegExp(`type="${oldType}"`, 'g'),
-      'type="sbox"',
+      new RegExp(`type=(["'])${oldType}\\1`, 'g'),
+      (_, quote) => `type=${quote}sbox${quote}`,
     );
   }
 
   // Add <mutation> for blocks that don't already have one
   result = result.replace(
-    /<block type="sbox"[^>]*>(?!\s*<mutation)/g,
+    /<block\b(?=[^>]*\btype=(['"])sbox\1)[^>]*>(?!\s*<mutation)/g,
     '$&<mutation row="' +
       defaultSize +
       '" col="' +

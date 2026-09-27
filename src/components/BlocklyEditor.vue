@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, shallowRef, onMounted, onUnmounted } from 'vue';
+import { ref, shallowRef, onMounted, onUnmounted, watch } from 'vue';
 import * as Blockly from 'blockly/core';
 import { Workspace } from '@/utils/workspace';
 import { closeAllSboxPopups } from '@/blocks/sbox/sbox';
@@ -11,6 +11,7 @@ import { closeAllSboxPopups } from '@/blocks/sbox/sbox';
 const emit = defineEmits<{
   (_e: 'change'): void;
 }>();
+const props = defineProps<{ readOnly?: boolean }>();
 
 const blocklyDiv = ref<HTMLElement | null>(null);
 
@@ -31,6 +32,7 @@ onMounted(() => {
   if (result) {
     workspaceRef.value = result;
     isReadyRef.value = workspaceApi.getIsReady();
+    if (props.readOnly) result.setIsReadOnly(true);
   }
 
   // Ensure workspace SVG is properly sized after mount so zoom/trashcan controls
@@ -48,6 +50,12 @@ onMounted(() => {
     workspaceRef.value.addChangeListener(changeListener);
   }
 });
+
+watch(
+  () => props.readOnly,
+  (readOnly) => workspaceRef.value?.setIsReadOnly(Boolean(readOnly)),
+  { flush: 'sync' },
+);
 
 onUnmounted(() => {
   if (cleanupResizeListener) {
@@ -93,13 +101,12 @@ const exportWorkspace = (format: 'json' | 'xml'): string => {
   return workspaceApi.exportWorkspace(format);
 };
 
-const handleFileUpload = async (file: File): Promise<boolean> => {
-  return await workspaceApi.handleFileUpload(file);
+const handleFileUpload = (file: File): Promise<boolean> => {
+  return workspaceApi.handleFileUpload(file);
 };
 
-const downloadWorkspace = (filename?: string) => {
+const downloadWorkspace = (filename?: string) =>
   workspaceApi.downloadWorkspace(filename);
-};
 
 const loadWorkspace = (
   workspaceText: string,

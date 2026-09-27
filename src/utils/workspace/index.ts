@@ -11,7 +11,7 @@ export interface WorkspaceReturn {
   initWorkspace: (_container: HTMLElement) => Blockly.WorkspaceSvg | null;
   loadWorkspace: (_workspaceText: string, _type: 'xml' | 'json') => boolean;
   exportWorkspace: (_type: 'xml' | 'json') => string;
-  downloadWorkspace: (_filename?: string) => void;
+  downloadWorkspace: (_filename?: string) => Promise<string | null>;
   handleFileUpload: (_file: File) => Promise<boolean>;
   clearWorkspace: () => void;
   zoomInWorkspace: () => void;
@@ -70,21 +70,20 @@ export function Workspace(): WorkspaceReturn {
     }
   };
 
-  const downloadWorkspace = (filename?: string): void => {
-    if (!filename) {
-      filename = 'blockly_workspace.json';
+  const downloadWorkspace = async (
+    filename = 'blockly_workspace.json',
+  ): Promise<string | null> => {
+    // 先让当前 Blockly 渲染周期结束，再执行同步序列化和下载。
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    try {
+      const content = filename.endsWith('.xml')
+        ? serialization.exportXml(workspace)
+        : serialization.exportJson(workspace);
+      return await serialization.downloadContent(content, filename);
+    } catch (error) {
+      errorHandler.handleFileError('下载工作空间', error);
+      throw error;
     }
-    // 延迟到下一个宏任务，给 WebKit 一个干净的调用栈，避免递归序列化栈溢出
-    setTimeout(() => {
-      try {
-        const content = filename.endsWith('.xml')
-          ? serialization.exportXml(workspace)
-          : serialization.exportJson(workspace);
-        serialization.downloadContent(content, filename);
-      } catch (error) {
-        errorHandler.handleFileError('下载工作空间', error);
-      }
-    }, 0);
   };
 
   const handleFileUpload = async (file: File): Promise<boolean> => {

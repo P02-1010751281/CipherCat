@@ -310,6 +310,7 @@ export const MESSAGES_ZH_HANS: Record<string, string> = {
   CRYPTO_SUBCAT_HASH_MAC_KDF: '哈希 / MAC / KDF',
   CRYPTO_SUBCAT_MODE: '分组模式',
   CRYPTO_SUBCAT_ITERATE_SPONGE_PQC: '迭代 / 海绵 / 后量子',
+  CRYPTO_SUBCAT_ZUC: 'ZUC / 序列密码',
   CRYPTO_FUNCTIONS_IMPORT_BUTTON: '📥 导入',
   CRYPTO_FUNCTIONS_EXPORT_BUTTON: '📤 导出',
   CRYPTO_FUNCTIONS_PANEL_TITLE: '函数管理',
@@ -597,6 +598,7 @@ export const MESSAGES_EN: Record<string, string> = {
   CRYPTO_SUBCAT_HASH_MAC_KDF: 'Hash / MAC / KDF',
   CRYPTO_SUBCAT_MODE: 'Mode',
   CRYPTO_SUBCAT_ITERATE_SPONGE_PQC: 'Iterate / Sponge / PQC',
+  CRYPTO_SUBCAT_ZUC: 'ZUC / Stream Cipher',
 
 
   CRYPTO_PROCEDURES_PARAM_MSG: 'message',
@@ -652,6 +654,8 @@ const UI_MESSAGES: Record<BlocklyLocale, Record<string, string>> = {
     exportWorkspace: '导出工作区',
     importWorkspace: '导入工作区',
     localeChanged: '界面已切换为中文',
+    workspaceNestingLimit: '工作区块嵌套超过 256 层。为避免浏览器调用栈溢出，已拒绝导入或导出。',
+    workspaceCurrentNestingLimit: '当前工作区超过 256 层，无法安全创建导入回滚副本。若需导入，请先清空当前工作区（会删除其中的块），再重试。',
     back: '返回',
     projectList: '项目列表',
     newProject: '新建项目',
@@ -671,6 +675,7 @@ const UI_MESSAGES: Record<BlocklyLocale, Record<string, string>> = {
     newWorkspaceConfirmTitle: '确认新建',
     unnamed: '未命名',
     saveError: '保存失败',
+    saveBeforeLeave: '当前项目有未保存修改。是否先保存再离开？',
     docs: '文档',
     docsTitle: '算法参考文档',
     docsSearch: '搜索文档...',
@@ -678,6 +683,9 @@ const UI_MESSAGES: Record<BlocklyLocale, Record<string, string>> = {
     docsWelcome: '欢迎查阅算法参考文档',
     docsWelcomeDesc:
       '选择左侧的文档分类浏览 FIPS 标准的算法规范、参数说明和实现参考。',
+    docsNotFound: '文档不存在',
+    docsRenderFailed: '文档渲染失败',
+    docsSourceFallback: '当前条目暂无英文译本，以下显示源语言内容。',
   },
   en: {
     codeGenerator: 'Code Generator:',
@@ -697,6 +705,8 @@ const UI_MESSAGES: Record<BlocklyLocale, Record<string, string>> = {
     exportWorkspace: 'Export Workspace',
     importWorkspace: 'Import Workspace',
     localeChanged: 'Switched to English',
+    workspaceNestingLimit: 'Workspace block nesting exceeds 256 levels. Import or export was rejected to prevent browser call-stack overflow.',
+    workspaceCurrentNestingLimit: 'The current workspace exceeds 256 levels and cannot be safely snapshotted for import rollback. To import, clear the current workspace first; this removes its blocks.',
     back: 'Back',
     projectList: 'Projects',
     newProject: 'New Project',
@@ -716,6 +726,7 @@ const UI_MESSAGES: Record<BlocklyLocale, Record<string, string>> = {
     newWorkspaceConfirmTitle: 'Confirm New',
     unnamed: 'Untitled',
     saveError: 'Save failed',
+    saveBeforeLeave: 'This project has unsaved changes. Save before leaving?',
     exported: 'Workspace exported',
     exportError: 'Export failed',
     docs: 'Docs',
@@ -725,6 +736,10 @@ const UI_MESSAGES: Record<BlocklyLocale, Record<string, string>> = {
     docsWelcome: 'Welcome to Algorithm Reference',
     docsWelcomeDesc:
       'Browse FIPS standard algorithm specifications, parameters, and implementation references from the sidebar.',
+    docsNotFound: 'Document not found',
+    docsRenderFailed: 'Failed to render document',
+    docsSourceFallback:
+      'No English translation is available for this entry; the source-language page is shown.',
   },
 };
 

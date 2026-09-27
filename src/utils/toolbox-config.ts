@@ -16,7 +16,6 @@ import {
   PQ_ADVANCED_BLOCK_TYPES,
 } from '@/blocks/post-quantum';
 import { getSboxCategoryKey } from '@/blocks/sbox/category';
-import { toolboxTemplates } from '@/blocks/procedure/toolbox-state';
 import { SYMMETRIC_BLOCK_TYPES } from '@/blocks/symmetric';
 import { CMAC_BLOCK_TYPES } from '@/blocks/cmac';
 import { CCM_BLOCK_TYPES } from '@/blocks/ccm';

@@ -1,5 +1,5 @@
 <template>
-  <div ref="editorViewRef" class="editor-view" @click="closeMenus">
+  <div ref="editorViewRef" class="editor-view" :inert="navigationPending" @click="closeMenus">
     <div class="view-left" :style="editorStyle">
       <div class="toolbar">
         <div class="toolbar-section">
@@ -184,7 +184,11 @@
           </div>
         </div>
       </div>
-      <BlocklyEditor ref="blocklyEditor" @change="onWorkspaceChanged" />
+      <BlocklyEditor
+        ref="blocklyEditor"
+        :read-only="navigationPending"
+        @change="onWorkspaceChanged"
+      />
     </div>
 
     <div class="split-handle" @mousedown="onSplitDragStart">
@@ -255,6 +259,10 @@ import { useRouter } from 'vue-router';
 import BlocklyEditor from '@/components/BlocklyEditor.vue';
 import CodePreviewer from '@/components/CodePreviewer.vue';
 import CryptoFunctionPanel from '@/components/CryptoFunctionPanel.vue';
+// 编辑器专属注册只在 /editor 路由加载，避免污染项目列表首屏。
+import '@/blocks';
+import '@/generators/javascript';
+import '@/generators/python';
 import {
   CODE_LANGUAGES,
   LANGUAGE_LABELS,
@@ -265,6 +273,7 @@ import {
   ui,
 } from '@/composables/locale';
 import { useEditorProject } from '@/composables/useEditorProject';
+import { errorHandler } from '@/utils/errorHandler';
 
 const blocklyLocale = useBlocklyLocale();
 
@@ -303,13 +312,14 @@ const {
   saving,
   saveStatus,
   lastSaveTime,
+  navigationPending,
   doSave,
   handleNewWorkspace,
 } = useEditorProject({
   getWorkspaceXml: () => {
     return blocklyEditor.value?.exportWorkspace('xml') || '';
   },
-  getLanguage: () => selectedLanguage.value,
+  language: selectedLanguage,
   loadWorkspaceXml: (xml: string) => {
     return blocklyEditor.value?.loadWorkspace(xml, 'xml') || false;
   },
@@ -336,8 +346,8 @@ function onNameBlur() {
   if (autoSaveEnabled.value) doSave();
 }
 
-function onManualSave() {
-  doSave();
+async function onManualSave() {
+  if (!(await doSave())) return;
   toastMessage.value = ui('saved');
   toastVisible.value = true;
   if (toastTimer) clearTimeout(toastTimer);
@@ -355,12 +365,19 @@ const toastVisible = ref(false);
 const toastMessage = ref('');
 let toastTimer: number | undefined;
 
+const removeWorkspaceErrorListener = errorHandler.addListener((error) => {
+  if (error.type !== 'WORKSPACE_ERROR') return;
+  toastMessage.value = error.message;
+  toastVisible.value = true;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => {
+    toastVisible.value = false;
+  }, 6000);
+});
+
 const currentWorkspace = computed(() => {
   return blocklyEditor.value?.workspaceRef || null;
 });
-
-// ---- 监听导出完成事件 ----
-window.addEventListener('ciphercat:workspace-saved', onWorkspaceSaved);
 
 // ---- 下拉菜单 ----
 const openMenu = ref<string>('');
@@ -400,8 +417,7 @@ const onImportFile = (event: Event): void => {
     blocklyEditor.value
       .handleFileUpload(file)
       .then((success: boolean) => {
-        if (success) console.log('文件导入成功:', file.name);
-        else console.error('文件导入失败:', file.name);
+        if (!success) console.error('文件导入失败:', file.name);
       })
       .catch((error: Error) => {
         console.error('文件导入错误:', error);
@@ -410,43 +426,31 @@ const onImportFile = (event: Event): void => {
   target.value = '';
 };
 
-function handleExport() {
+async function handleExport() {
   openMenu.value = '';
   if (blocklyEditor.value) {
     const filename =
       exportFormat.value === 'xml'
         ? 'blockly_workspace.xml'
         : 'blockly_workspace.json';
-    blocklyEditor.value.downloadWorkspace(filename);
-    // 先显示短 toast，Tauri 保存成功后通过自定义事件更新路径
-    toastMessage.value = ui('exported') || 'Exported';
-    toastVisible.value = true;
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = window.setTimeout(() => {
-      toastVisible.value = false;
-    }, 4000);
-  }
-}
-
-// 监听 Tauri 保存事件
-function onWorkspaceSaved(e: Event) {
-  const detail = (e as { detail?: { path?: string; error?: string } }).detail;
-  if (!detail) return;
-  if (detail.error) {
-    toastMessage.value =
-      (ui('exportError') || 'Export failed') + ': ' + detail.error;
-    toastVisible.value = true;
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = window.setTimeout(() => {
-      toastVisible.value = false;
-    }, 6000);
-  } else if (detail.path) {
-    toastMessage.value = (ui('exported') || 'Exported') + ': ' + detail.path;
-    toastVisible.value = true;
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = window.setTimeout(() => {
-      toastVisible.value = false;
-    }, 8000);
+    try {
+      const savedTo = await blocklyEditor.value.downloadWorkspace(filename);
+      if (!savedTo) return;
+      toastMessage.value = `${ui('exported') || 'Exported'}: ${savedTo}`;
+      toastVisible.value = true;
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        toastVisible.value = false;
+      }, 4000);
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error);
+      toastMessage.value = `${ui('exportError') || 'Export failed'}: ${detail}`;
+      toastVisible.value = true;
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        toastVisible.value = false;
+      }, 6000);
+    }
   }
 }
 
@@ -570,7 +574,7 @@ function onSplitDragEnd() {
 }
 
 onUnmounted(() => {
-  window.removeEventListener('ciphercat:workspace-saved', onWorkspaceSaved);
+  removeWorkspaceErrorListener();
   if (toastTimer) clearTimeout(toastTimer);
   if (splitDragging) {
     window.removeEventListener('mousemove', onSplitDragMove, { capture: true });

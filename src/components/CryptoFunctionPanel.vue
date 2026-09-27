@@ -47,6 +47,7 @@ import { ref, watch, onUnmounted } from 'vue';
 import * as Blockly from 'blockly/core';
 import { toolboxTemplates, toggleTemplate } from '@/blocks/procedure/toolbox-state';
 import { TEMPLATE_REGISTRY } from '@/blocks/procedure/blocks';
+import { createToolboxConfig } from '@/utils/toolbox-config';
 
 const msg = Blockly.Msg as Record<string, string>;
 const props = defineProps<{ visible: boolean; workspace: Blockly.WorkspaceSvg | null }>();
@@ -74,6 +75,7 @@ const SUBCAT_LABEL_KEYS: Record<string, string> = {
   hash: 'CRYPTO_SUBCAT_HASH_MAC_KDF',
   mode: 'CRYPTO_SUBCAT_MODE',
   pqc: 'CRYPTO_SUBCAT_ITERATE_SPONGE_PQC',
+  zuc: 'CRYPTO_SUBCAT_ZUC',
 };
 
 function buildCategories(): SubCategory[] {
@@ -178,8 +180,8 @@ function isInToolbox(type: string): boolean {
 
 function toggleTpl(type: string) {
   toggleTemplate(type);
-  // 刷新 toolbox 显示（null = 用原配置重新渲染）
-  try { props.workspace?.updateToolbox(null); }
+  // 传入新配置，Blockly 不接受 null 重建已有 toolbox。
+  try { props.workspace?.updateToolbox(createToolboxConfig() as Blockly.utils.toolbox.ToolboxDefinition); }
   catch (e) { console.warn('[FunctionManager] toolbox refresh failed:', e); }
 }
 

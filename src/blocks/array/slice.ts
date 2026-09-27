@@ -2,7 +2,7 @@
  * 数组切片原子块
  *
  * arr_slice(list, start, length) → list[start : start+length]
- * 通用数组工具（编码基 xgcd 展平输出 [len_u, u…, len_v, v…, g…] 的解析基础）。
+ * 通用数组工具（解析多项式扩展欧几里得展平输出 [len_u, u…, len_v, v…, g…]）。
  */
 import * as Blockly from 'blockly/core';
 import { TYPE_INT_LIST, TYPE_NUMBER } from '@/constants/block-types';

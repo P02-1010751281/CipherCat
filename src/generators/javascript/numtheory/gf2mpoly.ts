@@ -1,5 +1,5 @@
 /**
- * GF(2^m) 系数多项式 JavaScript 生成器（McEliece/Goppa 编码基）
+ * GF(2^m) 系数多项式 JavaScript 生成器（McEliece/Goppa 基于纠错码方案）
  *
  * 内嵌完整闭包（gf2mPoly）：GF(2^8) AES 域（0x11B，与 codebased 同域同实现），
  * 系数数组低位在前。gfInv 用 Fermat 快速幂 a^254；polyDivmod 除数归一化为首一；

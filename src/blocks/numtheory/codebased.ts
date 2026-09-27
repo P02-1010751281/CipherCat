@@ -1,5 +1,5 @@
 /**
- * 编码基（Code-based）数学基础块定义
+ * 基于纠错码（code-based）数学构件块定义
  *
  * 教学研究用途：基于编码的后量子密码（McEliece / HQC / BIKE）底层数学。
  * - GF(2) 多项式运算（乘/除/模/欧几里得）：Goppa 码构造与纠错译码核心
@@ -100,7 +100,7 @@ Blockly.Blocks['bin_mat_mul'] = {
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(COLOUR);
     this.setTooltip(
-      'GF(2) 二进制矩阵乘法：n×n 展平矩阵（按行优先），元素模 2。编码基生成矩阵/校验矩阵运算基础',
+      'GF(2) 二进制矩阵乘法：n×n 展平矩阵（按行优先），元素模 2。基于纠错码方案中的生成矩阵/校验矩阵运算基础',
     );
   },
 };

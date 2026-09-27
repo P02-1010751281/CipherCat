@@ -3,6 +3,7 @@
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
+import { TYPE_MAP } from '@/constants/block-types';
 import { TEMPLATE_TYPES } from '@/blocks/procedure/blocks';
 
 javascriptGenerator.forBlock['crypto_return'] = function (
@@ -21,6 +22,7 @@ const TYPE_MAP_JS: Record<string, string> = {
 /** Generate JS for crypto_defreturn (typed multi-param def). */
 export function generateDefreturnJS(block: Block): string {
   const funcName = (block.getFieldValue('NAME') as string) || 'unnamed';
+  const hasReturn = block.type === 'procedures_defreturn';
   const mutation = // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (block as any).mutationToDom?.() as Element | null;
   const argNodes = mutation ? Array.from(mutation.getElementsByTagName('arg')) : [];
@@ -33,38 +35,47 @@ export function generateDefreturnJS(block: Block): string {
     params.push(name);
     jsdoc.push(' * @param {' + jsType + '} ' + name + ' — ' + type + ' 类型参数');
   });
-  const body = (block.getInput('STACK')
+  const stackBody = (block.getInput('STACK') && block.getInputTargetBlock('STACK')
     ? javascriptGenerator.statementToCode(block, 'STACK')
-    : '') ||
-    '  // TODO: implement ' + funcName + ' algorithm\n';
+    : '');
   const returnValue =
-    (block.getInput('RETURN')
+    (hasReturn && block.getInput('RETURN')
       ? javascriptGenerator.valueToCode(block, 'RETURN', Order.NONE)
-      : '') || params[0] || 'undefined';
-  const firstType = argNodes.length ? (TYPE_MAP_JS[argNodes[0].getAttribute('type') || 'bytes'] || 'Uint8Array') : 'Uint8Array';
-  return [
+      : '');
+  const returnTarget = hasReturn && returnValue ? block.getInputTargetBlock('RETURN') : null;
+  const returnChecks = returnTarget?.outputConnection?.getCheck();
+  const returnType = returnChecks?.length === 1 ? TYPE_MAP[returnChecks[0]]?.javascript : undefined;
+  const body = stackBody || (returnValue
+    ? ''
+    : '  // TODO: implement ' + funcName + ' algorithm\n');
+  const lines = [
     '/**',
     ' * Crypto function: ' + funcName,
     jsdoc.join('\n'),
-    ' * @returns {' + firstType + '} 算法输出',
+    hasReturn
+      ? ' * @returns {' + (returnValue ? (returnType || '*') : 'undefined') + '} 算法输出'
+      : ' * @returns {void} 算法输出',
     ' */',
     'function ' + funcName + '(' + params.join(', ') + ') {',
     body,
-    '  return ' + returnValue + ';',
-    '}',
-    '',
-  ].join('\n');
+  ];
+  if (hasReturn) lines.push('  return ' + (returnValue || 'undefined') + ';');
+  lines.push('}', '');
+  return lines.join('\n');
 }
 
 /** Generate JS for crypto_callreturn. */
-function generateCallreturnJS(block: Block): string {
+function generateCallreturnJS(block: Block): string | [string, Order] {
   const funcName = (block.getFieldValue('NAME') as string) || 'unnamed';
   const mutation = // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (block as any).mutationToDom?.() as Element | null;
   const argNodes = mutation ? Array.from(mutation.getElementsByTagName('arg')) : [];
   const args = argNodes.map((arg, i) =>
     javascriptGenerator.valueToCode(block, 'ARG' + i, Order.NONE) || 'undefined');
-  return funcName + '(' + args.join(', ') + ')';
+  const call = funcName + '(' + args.join(', ') + ')';
+  return block.type === 'procedures_callreturn'
+    ? [call, Order.FUNCTION_CALL]
+    : call + ';\n';
 }
 
 /** Generate JS for all template blocks. */

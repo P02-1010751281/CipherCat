@@ -474,8 +474,9 @@ function syncCallParams(block: AnyBlock, funcName: string) {
     } else {
       const tpl = Object.values(TEMPLATE_REGISTRY).find(function (t) { return t.name === funcName; });
       if (tpl) {
-        args = [tpl.paramName];
-        types = [tpl.paramType];
+        const params = tpl.params || [{ name: tpl.paramName, type: tpl.paramType }];
+        args = params.map(function (param) { return param.name; });
+        types = params.map(function (param) { return param.type; });
       }
     }
   }
@@ -1031,7 +1032,8 @@ function _makeTemplateBlock(
         .appendField(label)
         .appendField(funcNameField, 'FUNC_NAME');
       // 多参数模板：每参数一行 PARAM_NAME_i/PARAM_TYPE_i（生成器/syncCallParams 按字段存在性探测）
-      paramsArr.forEach((p, i) => {
+      const usesIndexedParams = paramsArr.length > 1;
+      (usesIndexedParams ? paramsArr : []).forEach((p, i) => {
         const pf = new Blockly.FieldTextInput(p.name);
         pf.setValidator(identifierValidator);
         pf.setSpellcheck(false);
@@ -1135,7 +1137,7 @@ _makeTemplateBlock('proc_md_iterate', 'iv', 'int_list', MSG.PROC_MD_ITERATE_LABE
 _makeTemplateBlock('proc_sponge_duplex', 'state', 'int_list', MSG.PROC_SPONGE_DUPLEX_LABEL || '🔧 Sponge_Duplex', 'pqc');
 _makeTemplateBlock('proc_mlkem_keygen', 'seed', 'seed', MSG.PROC_MLKEM_KEYGEN_LABEL || '🔧 ML_KEM_KeyGen', 'pqc');
 _makeTemplateBlock('proc_mlkem_encaps', [{ name: 'ek', type: 'bytes' }, { name: 'm', type: 'bytes' }], 'bytes', MSG.PROC_MLKEM_ENCAPS_LABEL || '🔧 ML_KEM_Encaps', 'pqc');
-_makeTemplateBlock('proc_zuc_keystream', 'key', 'bytes', MSG.PROC_ZUC_KEYSTREAM_LABEL || '🔧 ZUC_Keystream', 'pqc');
+_makeTemplateBlock('proc_zuc_keystream', 'key', 'bytes', MSG.PROC_ZUC_KEYSTREAM_LABEL || '🔧 ZUC_Keystream', 'zuc');
 _makeTemplateBlock('proc_mode_ecb', 'data', 'bytes', MSG.PROC_MODE_ECB_LABEL || '🔧 ECB', 'mode');
 _makeTemplateBlock('proc_mode_cbc', 'data', 'bytes', MSG.PROC_MODE_CBC_LABEL || '🔧 CBC', 'mode');
 _makeTemplateBlock('proc_mode_ctr', 'data', 'bytes', MSG.PROC_MODE_CTR_LABEL || '🔧 CTR', 'mode');

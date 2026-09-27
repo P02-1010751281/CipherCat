@@ -5,7 +5,7 @@
  * - sm4_linear_transform: L(B) 线性变换
  */
 import * as Blockly from 'blockly/core';
-import { TYPE_BYTES, TYPE_INT_LIST, TYPE_NUMBER } from '@/constants/block-types';
+import { TYPE_INT_LIST, TYPE_NUMBER } from '@/constants/block-types';
 
 export const SM4_BLOCK_TYPES = [
   'sm4_sbox',
@@ -55,4 +55,3 @@ Blockly.Blocks['sm4_linear_transform'] = {
     this.setHelpUrl('');
   },
 };
-

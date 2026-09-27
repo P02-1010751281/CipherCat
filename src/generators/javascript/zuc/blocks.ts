@@ -8,6 +8,8 @@
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
 
+const MAX_ZUC_OUTPUT_WORDS = 1024 * 1024 / 4;
+
 /** ZUC S0 S-box (GB/T 33133 附录 A.1) */
 const ZUC_S0 = [
   0x3e,0x72,0x5b,0x47,0xca,0xe0,0x00,0x33,0x04,0xd1,0x54,0x98,0x09,0xb9,0x6d,0xcb,
@@ -176,10 +178,7 @@ javascriptGenerator.forBlock['zuc_f'] = function (block: Block): [string, number
  * 实现：16 字 LFSR（31-bit，模 2^31-1 加法）+ 比特重组 BR + 非线性函数 F。
  * 流程：密钥装入 → 32 轮初始化（LFSRWithInitialisationMode）→ 丢弃一轮 → 工作模式逐字输出。
  */
-javascriptGenerator.forBlock['zuc_keystream'] = function (block: Block): [string, number] {
-  const key = javascriptGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
-  const iv = javascriptGenerator.valueToCode(block, 'IV', Order.ATOMIC) || '[]';
-  const len = javascriptGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '1';
+function registerZucKeystream(): string {
   const zucF = javascriptGenerator.provideFunction_('zucF', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(X0, X1, X2, R1, R2) {',
     '  var rotl = ' + registerZucRotl() + ';',
@@ -199,6 +198,7 @@ javascriptGenerator.forBlock['zuc_keystream'] = function (block: Block): [string
   const D = '[' + [0x44D7,0x26BC,0x626B,0x135E,0x5789,0x35E2,0x7135,0x09AF,0x4D78,0x2F13,0x6BC4,0x1AF1,0x5E26,0x3C4D,0x789A,0x47AC].join(',') + ']';
   const fn = javascriptGenerator.provideFunction_('zucKeystream', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, iv, len) {',
+    '  if (!Number.isSafeInteger(len) || len < 0 || len > ' + MAX_ZUC_OUTPUT_WORDS + ') throw new RangeError("ZUC output length must be an integer from 0 to ' + MAX_ZUC_OUTPUT_WORDS + ' words");',
     '  var M = 0x7FFFFFFF;',
     '  var addm = function (a, b) { var c = (a >>> 0) + (b >>> 0); return ((c & M) + (c >>> 31)) >>> 0; };',
     '  var mulByPow2 = function (x, k) { x = x >>> 0; return ((x << k) | (x >>> (31 - k))) & M; };',
@@ -232,5 +232,38 @@ javascriptGenerator.forBlock['zuc_keystream'] = function (block: Block): [string
     '  return out;',
     '}',
   ]);
-  return [fn + '(' + key + ', ' + iv + ', ' + len + ')', Order.ATOMIC];
+  return fn;
+}
+
+javascriptGenerator.forBlock['zuc_keystream'] = function (block: Block): [string, number] {
+  const key = javascriptGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
+  const iv = javascriptGenerator.valueToCode(block, 'IV', Order.ATOMIC) || '[]';
+  const len = javascriptGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '1';
+  return [registerZucKeystream() + '(' + key + ', ' + iv + ', ' + len + ')', Order.ATOMIC];
+};
+
+function registerZucEia3(): string {
+  const keystream = registerZucKeystream();
+  return javascriptGenerator.provideFunction_('zucEia3', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, count, bearer, direction, message, length) {',
+    '  var isBytes = function (value) { return (Array.isArray(value) || value instanceof Uint8Array) && Array.from(value).every(function (byte) { return Number.isInteger(byte) && byte >= 0 && byte <= 255; }); };',
+    '  if (!isBytes(key) || key.length !== 16 || !isBytes(message) || !Number.isInteger(count) || count < 0 || count > 0xFFFFFFFF || !Number.isInteger(bearer) || bearer < 0 || bearer > 31 || !Number.isInteger(direction) || (direction !== 0 && direction !== 1) || !Number.isInteger(length) || length < 1 || length > 0xFFFFFFFF || message.length < Math.ceil(length / 8)) throw new RangeError("invalid ZUC-128-EIA3 parameters");',
+    '  var iv = new Array(16).fill(0);',
+    '  iv[0] = (count >>> 24) & 0xFF; iv[1] = (count >>> 16) & 0xFF; iv[2] = (count >>> 8) & 0xFF; iv[3] = count & 0xFF;',
+    '  iv[4] = bearer << 3; iv[8] = iv[0] ^ (direction << 7); iv[9] = iv[1]; iv[10] = iv[2]; iv[11] = iv[3]; iv[12] = iv[4]; iv[14] = direction << 7;',
+    '  var words = ' + keystream + '(key, iv, Math.ceil(length / 32) + 2);',
+    '  var wordAt = function (bit) { var i = Math.floor(bit / 32), shift = bit % 32; return shift === 0 ? words[i] >>> 0 : ((words[i] << shift) | (words[i + 1] >>> (32 - shift))) >>> 0; };',
+    '  var tag = 0;',
+    '  for (var i = 0; i < length; i++) if ((message[Math.floor(i / 8)] >>> (7 - (i % 8))) & 1) tag ^= wordAt(i);',
+    '  return (tag ^ wordAt(length) ^ words[words.length - 1]) >>> 0;',
+    '}',
+  ]);
+}
+
+javascriptGenerator.forBlock['zuc_eia3'] = function (block: Block): [string, number] {
+  const args = ['KEY', 'COUNT', 'BEARER', 'DIRECTION', 'MESSAGE', 'LENGTH'].map(
+    (input) => javascriptGenerator.valueToCode(block, input, Order.ATOMIC) ||
+      (input === 'KEY' || input === 'MESSAGE' ? '[]' : '0'),
+  );
+  return [registerZucEia3() + '(' + args.join(', ') + ')', Order.ATOMIC];
 };

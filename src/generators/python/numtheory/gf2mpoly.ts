@@ -1,5 +1,5 @@
 /**
- * GF(2^m) 系数多项式 Python 生成器（McEliece/Goppa 编码基）
+ * GF(2^m) 系数多项式 Python 生成器（McEliece/Goppa 基于纠错码方案）
  *
  * 内嵌完整闭包（gf2m_poly）：GF(2^8) AES 域（0x11B，与 codebased 的 gf_mul 同域同实现），
  * 系数数组低位在前。gf_inv 用 Fermat 快速幂 a^254（群阶 255）；poly_divmod 除数归一化为

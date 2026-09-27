@@ -234,21 +234,21 @@ javascriptGenerator.forBlock['sm2_encrypt'] = function (block: Block): [string, 
 };
 
 javascriptGenerator.forBlock['sm2_decrypt'] = function (block: Block): [string, number] {
-  const ct = javascriptGenerator.valueToCode(block, 'CT', Order.ATOMIC) || '\"\"';
-  const da = javascriptGenerator.valueToCode(block, 'DA', Order.ATOMIC) || '\"\"';
+  const ct = javascriptGenerator.valueToCode(block, 'CT', Order.ATOMIC) || '""';
+  const da = javascriptGenerator.valueToCode(block, 'DA', Order.ATOMIC) || '""';
   registerSm2Enc();
   return ['sm2Decrypt(' + ct + ', ' + da + ')', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['sm2_key_exchange'] = function (block: Block): [string, number] {
-  const db = javascriptGenerator.valueToCode(block, 'DB', Order.ATOMIC) || '\"\"';
-  const rb = javascriptGenerator.valueToCode(block, 'RBVAL', Order.ATOMIC) || '\"\"';
-  const pax = javascriptGenerator.valueToCode(block, 'PAX', Order.ATOMIC) || '\"\"';
-  const pay = javascriptGenerator.valueToCode(block, 'PAY', Order.ATOMIC) || '\"\"';
-  const ra = javascriptGenerator.valueToCode(block, 'RA', Order.ATOMIC) || '\"\"';
-  const rbp = javascriptGenerator.valueToCode(block, 'RBP', Order.ATOMIC) || '\"\"';
-  const za = javascriptGenerator.valueToCode(block, 'ZA', Order.ATOMIC) || '\"\"';
-  const zb = javascriptGenerator.valueToCode(block, 'ZB', Order.ATOMIC) || '\"\"';
+  const db = javascriptGenerator.valueToCode(block, 'DB', Order.ATOMIC) || '""';
+  const rb = javascriptGenerator.valueToCode(block, 'RBVAL', Order.ATOMIC) || '""';
+  const pax = javascriptGenerator.valueToCode(block, 'PAX', Order.ATOMIC) || '""';
+  const pay = javascriptGenerator.valueToCode(block, 'PAY', Order.ATOMIC) || '""';
+  const ra = javascriptGenerator.valueToCode(block, 'RA', Order.ATOMIC) || '""';
+  const rbp = javascriptGenerator.valueToCode(block, 'RBP', Order.ATOMIC) || '""';
+  const za = javascriptGenerator.valueToCode(block, 'ZA', Order.ATOMIC) || '""';
+  const zb = javascriptGenerator.valueToCode(block, 'ZB', Order.ATOMIC) || '""';
   const wlen = javascriptGenerator.valueToCode(block, 'WLEN', Order.ATOMIC) || '128';
   registerSm2Enc();
   return [

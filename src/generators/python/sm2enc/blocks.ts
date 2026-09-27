@@ -229,21 +229,21 @@ pythonGenerator.forBlock['sm2_encrypt'] = function (block: Block): [string, numb
 };
 
 pythonGenerator.forBlock['sm2_decrypt'] = function (block: Block): [string, number] {
-  const ct = pythonGenerator.valueToCode(block, 'CT', Order.ATOMIC) || '\"\"';
-  const da = pythonGenerator.valueToCode(block, 'DA', Order.ATOMIC) || '\"\"';
+  const ct = pythonGenerator.valueToCode(block, 'CT', Order.ATOMIC) || '""';
+  const da = pythonGenerator.valueToCode(block, 'DA', Order.ATOMIC) || '""';
   registerSm2Enc();
   return ['sm2_decrypt(' + ct + ', ' + da + ')', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['sm2_key_exchange'] = function (block: Block): [string, number] {
-  const db = pythonGenerator.valueToCode(block, 'DB', Order.ATOMIC) || '\"\"';
-  const rb = pythonGenerator.valueToCode(block, 'RBVAL', Order.ATOMIC) || '\"\"';
-  const pax = pythonGenerator.valueToCode(block, 'PAX', Order.ATOMIC) || '\"\"';
-  const pay = pythonGenerator.valueToCode(block, 'PAY', Order.ATOMIC) || '\"\"';
-  const ra = pythonGenerator.valueToCode(block, 'RA', Order.ATOMIC) || '\"\"';
-  const rbp = pythonGenerator.valueToCode(block, 'RBP', Order.ATOMIC) || '\"\"';
-  const za = pythonGenerator.valueToCode(block, 'ZA', Order.ATOMIC) || '\"\"';
-  const zb = pythonGenerator.valueToCode(block, 'ZB', Order.ATOMIC) || '\"\"';
+  const db = pythonGenerator.valueToCode(block, 'DB', Order.ATOMIC) || '""';
+  const rb = pythonGenerator.valueToCode(block, 'RBVAL', Order.ATOMIC) || '""';
+  const pax = pythonGenerator.valueToCode(block, 'PAX', Order.ATOMIC) || '""';
+  const pay = pythonGenerator.valueToCode(block, 'PAY', Order.ATOMIC) || '""';
+  const ra = pythonGenerator.valueToCode(block, 'RA', Order.ATOMIC) || '""';
+  const rbp = pythonGenerator.valueToCode(block, 'RBP', Order.ATOMIC) || '""';
+  const za = pythonGenerator.valueToCode(block, 'ZA', Order.ATOMIC) || '""';
+  const zb = pythonGenerator.valueToCode(block, 'ZB', Order.ATOMIC) || '""';
   const wlen = pythonGenerator.valueToCode(block, 'WLEN', Order.ATOMIC) || '128';
   registerSm2Enc();
   return [

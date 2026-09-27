@@ -1,5 +1,4 @@
 import { javascriptGenerator } from 'blockly/javascript';
-import { registerKeccakF1600 } from '../hash/helpers';
 
 export function registerSeedWithNonce(): string {
   return javascriptGenerator.provideFunction_('seedWithNonce', [

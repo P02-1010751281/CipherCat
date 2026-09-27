@@ -105,7 +105,7 @@ javascriptGenerator.forBlock['gf2m_inv'] = function (block: Block): [string, num
     '  return out;',
     '}',
   ]);
-  const fnMul = javascriptGenerator.provideFunction_('gf2mMulGCMBig', [
+  javascriptGenerator.provideFunction_('gf2mMulGCMBig', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, b){',
     '  var MOD = (1n << 128n) ^ (0xE1n << 120n);',
     '  var p = 0n;',

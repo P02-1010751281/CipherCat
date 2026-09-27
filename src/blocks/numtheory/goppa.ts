@@ -1,5 +1,5 @@
 /**
- * Goppa 码 Patterson 译码块定义（McEliece 编码基，完整算法黑盒）
+ * Goppa 码 Patterson 译码块定义（McEliece 基于纠错码方案，完整算法黑盒）
  *
  * goppa_decode(Y, G, L) → 纠正后的接收字（0/1 位向量）
  *

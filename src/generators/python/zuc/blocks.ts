@@ -8,6 +8,8 @@
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
 
+const MAX_ZUC_OUTPUT_WORDS = 1024 * 1024 / 4;
+
 /** ZUC S0 S-box (GB/T 33133 附录 A.1) */
 const ZUC_S0 = [
   0x3e,0x72,0x5b,0x47,0xca,0xe0,0x00,0x33,0x04,0xd1,0x54,0x98,0x09,0xb9,0x6d,0xcb,
@@ -161,15 +163,14 @@ pythonGenerator.forBlock['zuc_f'] = function (block: Block): [string, number] {
  * ZUC 完整密钥流生成 (GB/T 33133 §5.6)。
  * 实现：16 字 LFSR（31-bit，模 2^31-1 加法）+ 比特重组 BR + 非线性函数 F。
  */
-pythonGenerator.forBlock['zuc_keystream'] = function (block: Block): [string, number] {
-  const key = pythonGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
-  const iv = pythonGenerator.valueToCode(block, 'IV', Order.ATOMIC) || '[]';
-  const len = pythonGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '1';
+function registerZucKeystream(): string {
   const rotl = registerZucRotl();
   const s32 = registerZucS32();
 
   const fn = pythonGenerator.provideFunction_('zuc_keystream', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, iv, length):',
+    '    if type(length) not in (int, float) or (type(length) is float and not length.is_integer()) or not 0 <= length <= ' + MAX_ZUC_OUTPUT_WORDS + ': raise ValueError("ZUC output length must be an integer from 0 to ' + MAX_ZUC_OUTPUT_WORDS + ' words")',
+    '    length = int(length)',
     '    M = 0x7FFFFFFF',
     '    def addm(a, b):',
     '        c = (a & 0xFFFFFFFF) + (b & 0xFFFFFFFF)',
@@ -224,5 +225,45 @@ pythonGenerator.forBlock['zuc_keystream'] = function (block: Block): [string, nu
     '        lfsr(0)',
     '    return out',
   ]);
-  return [fn + '(' + key + ', ' + iv + ', ' + len + ')', Order.ATOMIC];
+  return fn;
+}
+
+pythonGenerator.forBlock['zuc_keystream'] = function (block: Block): [string, number] {
+  const key = pythonGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
+  const iv = pythonGenerator.valueToCode(block, 'IV', Order.ATOMIC) || '[]';
+  const len = pythonGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '1';
+  return [registerZucKeystream() + '(' + key + ', ' + iv + ', ' + len + ')', Order.ATOMIC];
+};
+
+function registerZucEia3(): string {
+  const keystream = registerZucKeystream();
+  return pythonGenerator.provideFunction_('zuc_eia3', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, count, bearer, direction, message, length):',
+    '    key, message = bytes(key), bytes(message)',
+    '    if len(key) != 16 or type(count) is not int or not 0 <= count <= 0xFFFFFFFF or type(bearer) is not int or not 0 <= bearer <= 31 or type(direction) is not int or direction not in (0, 1) or type(length) is not int or not 1 <= length <= 0xFFFFFFFF or len(message) < (length + 7) // 8:',
+    '        raise ValueError("invalid ZUC-128-EIA3 parameters")',
+    '    iv = [0] * 16',
+    '    iv[0:4] = [(count >> 24) & 0xFF, (count >> 16) & 0xFF, (count >> 8) & 0xFF, count & 0xFF]',
+    '    iv[4] = bearer << 3',
+    '    iv[8:12] = [iv[0] ^ (direction << 7), iv[1], iv[2], iv[3]]',
+    '    iv[12] = iv[4]',
+    '    iv[14] = direction << 7',
+    '    words = ' + keystream + '(key, iv, (length + 31) // 32 + 2)',
+    '    def word_at(bit):',
+    '        i, shift = divmod(bit, 32)',
+    '        return words[i] if shift == 0 else ((words[i] << shift) | (words[i + 1] >> (32 - shift))) & 0xFFFFFFFF',
+    '    tag = 0',
+    '    for i in range(length):',
+    '        if (message[i >> 3] >> (7 - (i & 7))) & 1:',
+    '            tag ^= word_at(i)',
+    '    return (tag ^ word_at(length) ^ words[-1]) & 0xFFFFFFFF',
+  ]);
+}
+
+pythonGenerator.forBlock['zuc_eia3'] = function (block: Block): [string, number] {
+  const args = ['KEY', 'COUNT', 'BEARER', 'DIRECTION', 'MESSAGE', 'LENGTH'].map(
+    (input) => pythonGenerator.valueToCode(block, input, Order.ATOMIC) ||
+      (input === 'KEY' || input === 'MESSAGE' ? '[]' : '0'),
+  );
+  return [registerZucEia3() + '(' + args.join(', ') + ')', Order.ATOMIC];
 };

@@ -1,5 +1,5 @@
 /**
- * Goppa 码 Patterson 译码 Python 生成器（McEliece 编码基，完整算法闭包）
+ * Goppa 码 Patterson 译码 Python 生成器（McEliece 基于纠错码方案，完整算法闭包）
  *
  * 闭包 goppa_core：GF(2^8) AES 域（0x11B）+ 多项式环运算 + 16×16 Frobenius 开方。
  * 算法见块定义头注释；σ = r² + z·B²（余数 r 与 T 系数 B，经 50/50 双错随机验证）。

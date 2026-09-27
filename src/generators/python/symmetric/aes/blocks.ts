@@ -75,9 +75,10 @@ pythonGenerator.forBlock['aes_mix_columns'] = function (block: Block): [string, 
     '        c[2] = xtime(t[2]^t[3]) ^ t[3] ^ t[0] ^ t[1]',
     '        c[3] = xtime(t[3]^t[0]) ^ t[0] ^ t[1] ^ t[2]',
     '    for c in range(4):',
-    '        col = [s[c], s[c+4], s[c+8], s[c+12]]',
+    '        i = 4 * c',
+    '        col = [s[i], s[i+1], s[i+2], s[i+3]]',
     '        mix(col)',
-    '        s[c]=col[0]; s[c+4]=col[1]; s[c+8]=col[2]; s[c+12]=col[3]',
+    '        s[i]=col[0]; s[i+1]=col[1]; s[i+2]=col[2]; s[i+3]=col[3]',
     '    return s',
   ]);
   return [fn + '(' + state + ')', Order.ATOMIC];

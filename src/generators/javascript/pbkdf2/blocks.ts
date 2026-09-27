@@ -7,7 +7,7 @@
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
-import { registerHmacSha256, registerSha256Hash } from '../hash/hmac-sha256';
+import { registerHmacSha256 } from '../hash/hmac-sha256';
 
 /** SM3-HMAC（与 hash_hmac SM3 分支完全同体） */
 function registerSm3Hmac(): string {

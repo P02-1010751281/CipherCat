@@ -1,5 +1,5 @@
 /**
- * 编码基数学块 JavaScript 生成器
+ * 基于纠错码数学块 JavaScript 生成器
  *
  * GF(2) 多项式（系数数组 index=幂次，低位在前）+ 二进制矩阵（展平 n×n）+ 汉明量。
  * 全部内嵌实现（一次 registerCodeBased 注册 8 个纯函数）。

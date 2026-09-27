@@ -19,6 +19,7 @@ export const ZUC_BLOCK_TYPES = [
   'zuc_l2',
   'zuc_f',
   'zuc_keystream',
+  'zuc_eia3',
 ] as const;
 export type ZucBlockType = (typeof ZUC_BLOCK_TYPES)[number];
 
@@ -118,8 +119,25 @@ Blockly.Blocks['zuc_keystream'] = {
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(180);
     this.setTooltip(
-      'ZUC 密钥流生成 (GB/T 33133 §5.6)：输入 16 字节 key/iv 与输出字数 len，返回密钥流字数组（32 轮初始化 + 工作模式）',
+      'ZUC 密钥流生成 (GB/T 33133 §5.6)：输入 16 字节 key/iv 与输出字数 len，返回密钥流字数组（32 轮初始化 + 工作模式）；playground 单次最多输出 262144 个字（1 MiB，资源限制，非标准算法限制）',
     );
+    this.setHelpUrl('');
+  },
+};
+
+Blockly.Blocks['zuc_eia3'] = {
+  init: function () {
+    this.appendValueInput('KEY').setCheck(TYPE_BYTES).appendField('ZUC-128-EIA3(');
+    this.appendValueInput('COUNT').setCheck(TYPE_NUMBER).appendField('count:');
+    this.appendValueInput('BEARER').setCheck(TYPE_NUMBER).appendField('bearer:');
+    this.appendValueInput('DIRECTION').setCheck(TYPE_NUMBER).appendField('direction:');
+    this.appendValueInput('MESSAGE').setCheck(TYPE_BYTES).appendField('message:');
+    this.appendValueInput('LENGTH').setCheck(TYPE_NUMBER).appendField('bits:');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(false);
+    this.setOutput(true, TYPE_NUMBER);
+    this.setColour(180);
+    this.setTooltip('128-EIA3 消息完整性码 (GB/T 33133.3 §5.2)：输入 16 字节密钥、32-bit COUNT、5-bit BEARER、DIRECTION、消息字节和有效比特长度，输出 32-bit MAC-I');
     this.setHelpUrl('');
   },
 };

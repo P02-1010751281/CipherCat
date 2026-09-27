@@ -13,6 +13,20 @@ function isTemplateBlock(block: Blockly.Block): boolean {
   return block.getField('FUNC_NAME') !== null && block.type !== 'procedures_defreturn' && block.type !== 'procedures_defnoreturn';
 }
 
+function getTemplateParameterNames(block: Blockly.Block): string[] {
+  if (block.getField('PARAM_NAME_0') !== null) {
+    const names: string[] = [];
+    for (let i = 0; ; i++) {
+      const name = block.getFieldValue('PARAM_NAME_' + i);
+      if (name === null || name === undefined) break;
+      names.push(name as string);
+    }
+    return names;
+  }
+  const name = (block.getFieldValue('PARAM_NAME') as string) || '';
+  return name ? [name] : [];
+}
+
 /** 生成 Functions flyout 内容。 */
 export function createProcedureFlyout(workspace: Blockly.WorkspaceSvg): Blockly.utils.toolbox.FlyoutItemInfoArray {
   const items: Blockly.utils.toolbox.FlyoutItemInfoArray = [];
@@ -33,7 +47,9 @@ export function createProcedureFlyout(workspace: Blockly.WorkspaceSvg): Blockly.
     };
     pushCall(tuples[0], 'procedures_callnoreturn');
     pushCall(tuples[1], 'procedures_callreturn');
-  } catch { /* 忽略 */ }
+  } catch (error) {
+    console.warn('[procedure flyout] failed to load workspace procedures', error);
+  }
 
   // 3. 工作区中的模板块（proc_* / crypto_*）→ 生成 call 块
   const seen = new Set<string>();
@@ -42,13 +58,12 @@ export function createProcedureFlyout(workspace: Blockly.WorkspaceSvg): Blockly.
     const name = (block.getFieldValue('FUNC_NAME') as string) || block.type;
     if (seen.has(name)) continue;
     seen.add(name);
-    const paramName = (block.getFieldValue('PARAM_NAME') as string) || '';
-    const paramType = (block.getFieldValue('PARAM_TYPE') as string) || 'bytes';
+    const params = getTemplateParameterNames(block);
     items.push({
       kind: 'block',
       type: 'procedures_callreturn',
       gap: 16,
-      extraState: { name, params: paramName ? [paramName] : [] },
+      extraState: { name, params },
     });
   }
 

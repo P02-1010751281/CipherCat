@@ -6,10 +6,4 @@
  *
  * 参考: FIPS 203 — https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
  */
-import { pythonGenerator, Order } from 'blockly/python';
-import type { Block } from 'blockly/core';
-
-import {
-} from '../helpers';
-
 // ── 块生成器（当前空，M2.5 将在此注册便利块生成器）──

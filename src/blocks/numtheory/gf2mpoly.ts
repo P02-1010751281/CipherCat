@@ -1,5 +1,5 @@
 /**
- * GF(2^m) 系数多项式原子块定义（McEliece/Goppa 编码基核心运算）
+ * GF(2^m) 系数多项式原子块定义（McEliece/Goppa 基于纠错码方案的核心运算）
  *
  * 系数 ∈ GF(2^8)（AES 域，不可约 x⁸+x⁴+x³+x+1 = 0x11B，与 goppa_gen_poly/gf2m 块同域），
  * 多项式表示为系数数组（index = 幂次，低位在前，与 goppa_gen_poly 输出一致）。

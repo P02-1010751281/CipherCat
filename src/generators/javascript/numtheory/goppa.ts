@@ -1,5 +1,5 @@
 /**
- * Goppa 码 Patterson 译码 JavaScript 生成器（McEliece 编码基，完整算法闭包）
+ * Goppa 码 Patterson 译码 JavaScript 生成器（McEliece 基于纠错码方案，完整算法闭包）
  *
  * 闭包 goppaCore：GF(2^8) AES 域（0x11B）+ 多项式环运算 + 16×16 Frobenius 开方。
  * 与 Python 生成器逐行镜像（σ = r² + z·B²）。

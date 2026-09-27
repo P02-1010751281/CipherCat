@@ -1,6 +1,6 @@
 # 🧪 Demo Workspaces
 
-预构建的 Blockly 工作区示例，全部使用**原子块**（无便利封装），展示密码学底层原语。
+预构建的 Blockly 工作区示例都以**原子块**为基础：有些 Demo 用值接口连接算法阶段；AES 原子 Demo 则用顶层顺序调用和共享状态原地修改演示单轮。Procedure Demo 展示可复用函数封装；不使用便利封装块。
 
 > 搭建步骤教程（按算法）：[docs/demos/](../docs/demos/)，索引 [docs/DEMO.md](../docs/guides/DEMO.md)。本文件为文件清单 + 验证命令。
 
@@ -9,15 +9,15 @@
 | Demo | 文件 | 原子块 |
 |------|------|--------|
 | SM4 轮函数 | `SM4-Atomic-Round.json` | `sm4_round_func` + `sm4_linear_transform` |
-| AES 单轮 | `AES-Atomic-Round.json` | `aes_sub_bytes` → `aes_shift_rows` → `aes_mix_columns` → `aes_add_round_key` |
+| AES 单轮 | `AES-Atomic-Round.json` | 四个顶层原语按工作区顺序原地修改共享状态；没有值接口连线 |
 | SHA-256 哈希 | `SHA256-Atomic-Hash.json` | `hash_sha256_pad` → `hash_sha256_compress` |
 | ML-KEM 底层 | `ML-KEM-Atomic.json` | `pq_sample_poly_cbd` + `pq_ntt` + `pq_sample_ntt` + `pq_mat_vec_mul` |
 
-## Procedure 封装 Demo（官方向量验证通过）
+## Procedure 封装 Demo（向量与交叉验证）
 
-以下 demos 用 `procedures_defreturn`（自定义函数）封装原子块链，**不使用 `proc_*` 模板块**；生成代码（Python + JavaScript）经 `scripts/verify-demo.ts --exec` 实测通过官方测试向量（57 项向量，见 `demos/tests.json`）：
+以下 demos 用 `procedures_defreturn`（自定义函数）封装原子块链，**不使用 `proc_*` 模板块**；生成代码（Python + JavaScript）经 `scripts/verify-demo.ts --exec` 实测通过各自登记的测试规格。规格包括标准向量、独立实现交叉验证和性质断言；当前共登记 59 个 Demo，详见 `demos/tests.json`：
 
-| Demo | 文件 | 官方向量 |
+| Demo | 文件 | 测试依据 |
 |------|------|----------|
 | SM4 S-box | `procedures/SM4-Sbox.json` | GM/T 0002-2012（S(0x01)=0x90） |
 | SM3 哈希 | `procedures/SM3-Hash.json` | GB/T 32905-2016 A.1（SM3("abc")） |
@@ -39,10 +39,11 @@
 | HKDF | `procedures/HKDF-SHA256.json` | RFC 5869 |
 | PBKDF2 | `procedures/PBKDF2-SHA256.json` `procedures/PBKDF2-SM3.json` | RFC 8018 / GM/T 0091（SM3 同构） |
 | ZUC EEA3 流加密 | `procedures/EEA3.json` | GB/T 33133.2 附录 A.1 |
+| ZUC EIA3 消息完整性 | `procedures/EIA3.json` | GB/T 33133.3-2021 附录 B 示例 1、2（1/577 bit） |
 | GCM | `procedures/GCM-Encrypt.json` | SP 800-38D TC2/TC3/TC16 |
 | CCM | `procedures/CCM-Encrypt.json` | SP 800-38C 附录 C Example 1-3 |
 | XTS | `procedures/XTS-Encrypt.json` | SP 800-38E + IEEE 1619-2007 |
-| ASCON | `procedures/ASCON.json` | SP 800-232（ascon-c KAT 1089 例） |
+| ASCON | `procedures/ASCON.json` · `procedures/ASCON-Extended.json` | SP 800-232（AEAD 加密 1089 例；Hash/XOF/CXOF、解密和错误标签扩展核验） |
 
 ## Procedure 封装 Demo（PQC 数学基础 / 性质向量验证）
 
@@ -64,8 +65,8 @@
 | Demo | 文件 | 封装内容 |
 |------|------|----------|
 | SM4 函数封装 | `Procedure-SM4-Round.json` | `procedures_defreturn` 封装 `sm4_round_func` → `SM4_Round(state_0..3, rk)` |
-| AES 函数封装 | `Procedure-AES-Round.json` | `procedures_defreturn` 封装四步 → `AES_Round(state, round_key)` |
-| AES 轮链 | `procedures/AES-Round.json` / `procedures/AES-LastRound.json` | 全轮 + 末轮（去 MixColumns） |
+| AES 函数封装 | `Procedure-AES-Round.json` | 显式值连接 `AddRoundKey(MixColumns(ShiftRows(SubBytes(state))), round_key)`；固定输入回归值 `4807…c59f`，非官方附录向量 |
+| AES 轮链 | `procedures/AES-Round.json` / `procedures/AES-LastRound.json` | 正常轮 + 末轮（去 MixColumns）；固定输入回归，不声称为官方完整加密向量 |
 | SHA-256 哈希 | `procedures/SHA256-Hash.json` | 垫块 + 压缩函数链 |
 | HMAC-SHA256 | `procedures/HMAC-SHA256.json` | HMAC 双哈希链 |
 | HKDF / PBKDF2 | `procedures/HKDF.json` / `procedures/PBKDF2.json` | 密钥派生链 |

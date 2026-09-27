@@ -28,7 +28,7 @@
         "inputs": {
           "RETURN": {
             "block": {
-              "type": "aes_sub_bytes",
+              "type": "aes_add_round_key",
               "id": "cd6337746647ac5b43d6",
               "inputs": {
                 "STATE": {
@@ -38,7 +38,7 @@
                     "inputs": {
                       "STATE": {
                         "block": {
-                          "type": "aes_add_round_key",
+                          "type": "aes_sub_bytes",
                           "id": "e50a8f4959e7b2bc37b0",
                           "inputs": {
                             "STATE": {
@@ -51,20 +51,20 @@
                                   }
                                 }
                               }
-                            },
-                            "ROUND_KEY": {
-                              "block": {
-                                "type": "variables_get",
-                                "id": "41fdf385f663f7c2971f",
-                                "fields": {
-                                  "VAR": {
-                                    "id": "param_round_key"
-                                  }
-                                }
-                              }
                             }
                           }
                         }
+                      }
+                    }
+                  }
+                },
+                "ROUND_KEY": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "41fdf385f663f7c2971f",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_round_key"
                       }
                     }
                   }

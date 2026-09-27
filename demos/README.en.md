@@ -1,7 +1,7 @@
 # 🧪 Demo Workspaces
 
 
-Pre-built Blockly workspace examples, all using **atomic blocks** (no convenience wrappers), showcasing low-level crypto primitives.
+Pre-built Blockly workspace examples use **atomic blocks** (no convenience wrappers). Some connect algorithm stages with value sockets; the AES atomic demo uses ordered top-level calls that mutate shared state in place. Procedure demos show reusable function wrappers.
 
 > Step-by-step tutorials (per algorithm): [docs/demos/](../docs/demos/), index [docs/DEMO.md](../docs/guides/DEMO.en.md). This file is the file index + verification commands.
 
@@ -10,13 +10,13 @@ Pre-built Blockly workspace examples, all using **atomic blocks** (no convenienc
 | Demo | File | Atomic blocks |
 |------|------|--------|
 | SM4 round | `SM4-Atomic-Round.json` | `sm4_round_func` + `sm4_linear_transform` |
-| AES single round | `AES-Atomic-Round.json` | `aes_sub_bytes` → `aes_shift_rows` → `aes_mix_columns` → `aes_add_round_key` |
+| AES single round | `AES-Atomic-Round.json` | Four top-level calls mutate shared state in workspace order; no value-socket wiring |
 | SHA-256 hash | `SHA256-Atomic-Hash.json` | `hash_sha256_pad` → `hash_sha256_compress` |
 | ML-KEM primitives | `ML-KEM-Atomic.json` | `pq_sample_poly_cbd` + `pq_ntt` + `pq_sample_ntt` + `pq_mat_vec_mul` |
 
-## Procedure-Wrapped Demos (official-vector verified)
+## Procedure-Wrapped Demos (registered-specification verified)
 
-The demos below wrap atomic-block chains with `procedures_defreturn` (custom functions), **without using `proc_*` template blocks**; generated code (Python + JavaScript) passes official test vectors via `scripts/verify-demo.ts --exec` (57 vectors, see `demos/tests.json`):
+The demos below wrap atomic-block chains with `procedures_defreturn` (custom functions), **without using `proc_*` template blocks**; generated code (Python + JavaScript) is checked against each registered specification via `scripts/verify-demo.ts --exec` (59 demos; specifications include standard vectors, independent cross-checks, and property assertions; see `demos/tests.json`):
 
 | Demo | File | Official vector |
 |------|------|----------|
@@ -40,10 +40,11 @@ The demos below wrap atomic-block chains with `procedures_defreturn` (custom fun
 | HKDF | `procedures/HKDF-SHA256.json` | RFC 5869 |
 | PBKDF2 | `procedures/PBKDF2-SHA256.json` `procedures/PBKDF2-SM3.json` | RFC 8018 / GM/T 0091 (SM3 variant) |
 | ZUC EEA3 stream | `procedures/EEA3.json` | GB/T 33133.2 Annex A.1 |
+| ZUC EIA3 message integrity | `procedures/EIA3.json` | GB/T 33133.3-2021 Appendix B Examples 1 and 2 (1/577 bits) |
 | GCM | `procedures/GCM-Encrypt.json` | SP 800-38D TC2/TC3/TC16 |
 | CCM | `procedures/CCM-Encrypt.json` | SP 800-38C Annex C Example 1-3 |
 | XTS | `procedures/XTS-Encrypt.json` | SP 800-38E + IEEE 1619-2007 |
-| ASCON | `procedures/ASCON.json` | SP 800-232 (ascon-c KAT 1089 cases) |
+| ASCON | `procedures/ASCON.json` · `procedures/ASCON-Extended.json` | SP 800-232 (1089 AEAD cases; Hash/XOF/CXOF, decryption, and bad-tag rejection extension checks) |
 
 ## Procedure-Wrapped Demos (PQC math foundations / property-vector verification)
 
@@ -65,8 +66,8 @@ The demos below are the PQC gap-fill batch outputs, verified dual-language with 
 | Demo | File | Wrapped content |
 |------|------|----------|
 | SM4 function wrap | `Procedure-SM4-Round.json` | `procedures_defreturn` wrapping `sm4_round_func` → `SM4_Round(state_0..3, rk)` |
-| AES function wrap | `Procedure-AES-Round.json` | `procedures_defreturn` wrapping the four steps → `AES_Round(state, round_key)` |
-| AES round chain | `procedures/AES-Round.json` / `procedures/AES-LastRound.json` | full rounds + last round (no MixColumns) |
+| AES function wrap | `Procedure-AES-Round.json` | Explicit `AddRoundKey(MixColumns(ShiftRows(SubBytes(state))), round_key)` connections; fixed-input regression `4807…c59f`, not an official appendix vector |
+| AES round chain | `procedures/AES-Round.json` / `procedures/AES-LastRound.json` | Normal round + final round (without MixColumns); fixed-input regression, not a full official encryption vector |
 | SHA-256 hash | `procedures/SHA256-Hash.json` | pad + compress chain |
 | HMAC-SHA256 | `procedures/HMAC-SHA256.json` | double-hash HMAC chain |
 | HKDF / PBKDF2 | `procedures/HKDF.json` / `procedures/PBKDF2.json` | KDF chains |

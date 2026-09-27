@@ -28,22 +28,22 @@
         "inputs": {
           "RETURN": {
             "block": {
-              "type": "aes_sub_bytes",
+              "type": "aes_add_round_key",
               "id": "e838f7d19fa555c8dbed",
               "inputs": {
                 "STATE": {
                   "block": {
-                    "type": "aes_shift_rows",
+                    "type": "aes_mix_columns",
                     "id": "67eb6361bba5e5a6bd97",
                     "inputs": {
                       "STATE": {
                         "block": {
-                          "type": "aes_mix_columns",
+                          "type": "aes_shift_rows",
                           "id": "e17e334e34e7c4a9cf01",
                           "inputs": {
                             "STATE": {
                               "block": {
-                                "type": "aes_add_round_key",
+                                "type": "aes_sub_bytes",
                                 "id": "9fed0fd9c3c566d20ca9",
                                 "inputs": {
                                   "STATE": {
@@ -56,23 +56,23 @@
                                         }
                                       }
                                     }
-                                  },
-                                  "ROUND_KEY": {
-                                    "block": {
-                                      "type": "variables_get",
-                                      "id": "b69c4cf5d544f6fc79ec",
-                                      "fields": {
-                                        "VAR": {
-                                          "id": "param_round_key"
-                                        }
-                                      }
-                                    }
                                   }
                                 }
                               }
                             }
                           }
                         }
+                      }
+                    }
+                  }
+                },
+                "ROUND_KEY": {
+                  "block": {
+                    "type": "variables_get",
+                    "id": "b69c4cf5d544f6fc79ec",
+                    "fields": {
+                      "VAR": {
+                        "id": "param_round_key"
                       }
                     }
                   }

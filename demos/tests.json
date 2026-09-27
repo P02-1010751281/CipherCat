@@ -89,6 +89,16 @@
    "expect": "96107d8a29a7529a7941bdc7df1fe3c6c7ea70d7986e7b59cd0d357239f5d25bf5\n4f9c278211bec9316bf68f46ee8b2ec6"
   }
  },
+ "procedures/ASCON-Extended.json": {
+  "py": {
+   "driver": "print(''.join(f'{x:02x}' for x in Ascon_Hash256_Empty()))\nprint(''.join(f'{x:02x}' for x in Ascon_XOF128_Empty()))\nprint(''.join(f'{x:02x}' for x in Ascon_CXOF128_ABC()))\nprint(''.join(f'{x:02x}' for x in Ascon_Decrypt_Empty()))\nbad = [0x4f,0x9c,0x27,0x82,0x11,0xbe,0xc9,0x31,0x6b,0xf6,0x8f,0x46,0xee,0x8b,0x2e,0xc6]\nbad[-1] ^= 1\ntry:\n    ascon_decrypt([0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f], [0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x1a,0x1b,0x1c,0x1d,0x1e,0x1f], [], bad)\n    print('bad-tag-not-rejected')\nexcept ValueError:\n    print('bad-tag-rejected')\ntry:\n    ascon_hash_xof([], 0, None, 0x0000080000CC0003)\n    print('bad-length-not-rejected')\nexcept ValueError:\n    print('bad-length-rejected')\ntry:\n    ascon_hash_xof([], 1, [0] * 257, 0x0000080000CC0004)\n    print('bad-custom-not-rejected')\nexcept ValueError:\n    print('bad-custom-rejected')",
+   "expect": "0b3be5850f2f6b98caf29f8fdea89b64a1fa70aa249b8f839bd53baa304d92b2\n473d5e6164f58b39dfd84aacdb8ae42ec2d91fed33388ee0d960d9b3993295c6\n8535ba15bd37e405b49035ddeee78c9e3f12c269d3f9228e370720bab1b054f6\n\nbad-tag-rejected\nbad-length-rejected\nbad-custom-rejected"
+  },
+  "js": {
+   "driver": "console.log(Ascon_Hash256_Empty().map(x => x.toString(16).padStart(2,'0')).join(''));\nconsole.log(Ascon_XOF128_Empty().map(x => x.toString(16).padStart(2,'0')).join(''));\nconsole.log(Ascon_CXOF128_ABC().map(x => x.toString(16).padStart(2,'0')).join(''));\nconsole.log(Ascon_Decrypt_Empty().map(x => x.toString(16).padStart(2,'0')).join(''));\nvar bad = [0x4f,0x9c,0x27,0x82,0x11,0xbe,0xc9,0x31,0x6b,0xf6,0x8f,0x46,0xee,0x8b,0x2e,0xc6]; bad[15] ^= 1; try { asconDecrypt([0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f], [0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x1a,0x1b,0x1c,0x1d,0x1e,0x1f], [], bad); console.log('bad-tag-not-rejected'); } catch (e) { console.log('bad-tag-rejected'); }\ntry { asconHashXof([], 0, null, 0x0000080000cc0003n); console.log('bad-length-not-rejected'); } catch (e) { console.log('bad-length-rejected'); }\ntry { asconHashXof([], 1, new Array(257).fill(0), 0x0000080000cc0004n); console.log('bad-custom-not-rejected'); } catch (e) { console.log('bad-custom-rejected'); }",
+   "expect": "0b3be5850f2f6b98caf29f8fdea89b64a1fa70aa249b8f839bd53baa304d92b2\n473d5e6164f58b39dfd84aacdb8ae42ec2d91fed33388ee0d960d9b3993295c6\n8535ba15bd37e405b49035ddeee78c9e3f12c269d3f9228e370720bab1b054f6\n\nbad-tag-rejected\nbad-length-rejected\nbad-custom-rejected"
+  }
+ },
  "procedures/HKDF-SHA256.json": {
   "py": {
    "driver": "print(''.join(f'{x:02x}' for x in HKDF_Sha256()))\nprint(''.join(f'{x:02x}' for x in hkdf([], [0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b], [], 32)))",
@@ -157,6 +167,16 @@
   "js": {
    "driver": "const ksb = EEA3_Encrypt().flatMap(w => [Math.floor(w/16777216)&0xff, Math.floor(w/65536)&0xff, Math.floor(w/256)&0xff, w&0xff]).slice(0,25);\nconst ibs = [0x6c,0xf6,0x53,0x40,0x73,0x55,0x52,0xab,0x0c,0x97,0x52,0xfa,0x6f,0x90,0x25,0xfe,0x0b,0xd6,0x75,0xd9,0x00,0x58,0x75,0xb2,0x00];\nconst obs = ibs.map((b,i)=>(b^ksb[i])&0xff);\nconst out = obs.slice(0,24).concat([obs[24] & 0x80]);\nconsole.log(out.map(x=>x.toString(16).padStart(2,'0')).join(''));\nconsole.log(ksb.slice(0,24).map(x=>x.toString(16).padStart(2,'0')).join(''));",
    "expect": "a6c85fc66afb8533aafc2518dfe784940ee1e4b030238cc800\nca3e0c8619aed798a66b77e2b077a16a05379169307bf97a"
+  }
+ },
+ "procedures/EIA3.json": {
+  "py": {
+   "driver": "for vector in (EIA3_Vector_1(), EIA3_Vector_2()):\n    print(f'{vector:08x}')\nfor args in (([0] * 15, 0, 0, 0, [0], 1), ([0] * 16, 0, 32, 0, [0], 1), ([0] * 16, 0, 0, 0, [0], 0), ([0] * 16, 0, 0, 0, [0], 9)):\n    try:\n        zuc_eia3(*args)\n        print('ACCEPTED')\n    except ValueError:\n        print('REJECTED')",
+   "expect": "c8a9595e\nfae8ff0b\nREJECTED\nREJECTED\nREJECTED\nREJECTED"
+  },
+  "js": {
+   "driver": "[EIA3_Vector_1(), EIA3_Vector_2()].forEach(value => console.log(value.toString(16).padStart(8, '0')));\n[[Array(15).fill(0), 0, 0, 0, [0], 1], [Array(16).fill(0), 0, 32, 0, [0], 1], [Array(16).fill(0), 0, 0, 0, [0], 0], [Array(16).fill(0), 0, 0, 0, [0], 9]].forEach(args => { try { zucEia3(...args); console.log('ACCEPTED'); } catch (error) { if (!(error instanceof RangeError)) throw error; console.log('REJECTED'); } });",
+   "expect": "c8a9595e\nfae8ff0b\nREJECTED\nREJECTED\nREJECTED\nREJECTED"
   }
  },
  "procedures/ECDSA.json": {
@@ -292,31 +312,31 @@
  "procedures/AES-Round.json": {
   "py": {
    "driver": "state = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff]\nround_key = [0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c]\nprint(''.join(f'{b:02x}' for b in AES_Round(state, round_key)))",
-   "expect": "f29372caedf32bb5fc63a9670a8d754b"
+   "expect": "4807f3cfdcc929d006f1297cdb24c59f"
   },
   "js": {
    "driver": "var state = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff];\nvar round_key = [0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c];\nconsole.log(AES_Round(state, round_key).map(b=>b.toString(16).padStart(2,'0')).join(''));",
-   "expect": "f29372caedf32bb5fc63a9670a8d754b"
+   "expect": "4807f3cfdcc929d006f1297cdb24c59f"
   }
  },
  "procedures/AES-LastRound.json": {
   "py": {
    "driver": "state = [0x63,0x53,0xe0,0x8c,0x09,0x60,0xd1,0x04,0xcd,0xb7,0xd1,0x0c,0x0c,0x5c,0x4e,0x7d]\nround_key = [0xd0,0x14,0xf9,0xa8,0xc9,0xee,0x25,0x89,0xe1,0x3f,0x0c,0xc8,0xb6,0x63,0x0c,0xa6]\nprint(''.join(f'{b:02x}' for b in AES_LastRound(state, round_key)))",
-   "expect": "6d19c1b9bac42c367175d45df4a0bf1c"
+   "expect": "2bc4c757c8470aed5c75ed3a488e3258"
   },
   "js": {
    "driver": "var state = [0x63,0x53,0xe0,0x8c,0x09,0x60,0xd1,0x04,0xcd,0xb7,0xd1,0x0c,0x0c,0x5c,0x4e,0x7d];\nvar round_key = [0xd0,0x14,0xf9,0xa8,0xc9,0xee,0x25,0x89,0xe1,0x3f,0x0c,0xc8,0xb6,0x63,0x0c,0xa6];\nconsole.log(AES_LastRound(state, round_key).map(b=>b.toString(16).padStart(2,'0')).join(''));",
-   "expect": "6d19c1b9bac42c367175d45df4a0bf1c"
+   "expect": "2bc4c757c8470aed5c75ed3a488e3258"
   }
  },
  "Procedure-AES-Round.json": {
   "py": {
    "driver": "state = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff]\nround_key = [0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c]\nprint(''.join(f'{b:02x}' for b in AES_Round(state, round_key)))",
-   "expect": "f29372caedf32bb5fc63a9670a8d754b"
+   "expect": "4807f3cfdcc929d006f1297cdb24c59f"
   },
   "js": {
    "driver": "var state = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff];\nvar round_key = [0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c];\nconsole.log(AES_Round(state, round_key).map(b=>b.toString(16).padStart(2,'0')).join(''));",
-   "expect": "f29372caedf32bb5fc63a9670a8d754b"
+   "expect": "4807f3cfdcc929d006f1297cdb24c59f"
   }
  },
  "procedures/SM4-Round.json": {
@@ -401,12 +421,12 @@
  },
  "AES-Atomic-Round.json": {
   "py": {
-   "driver": "print(''.join(f'{b:02x}' for b in aes_sub_bytes(i)))\nprint(''.join(f'{b:02x}' for b in aes_shift_rows(i)))\nprint(''.join(f'{b:02x}' for b in aes_mix_columns(i)))\nprint(''.join(f'{b:02x}' for b in aes_add_round_key(i, j)))",
-   "expect": "84681921ef846d2e5ef899a7d9e1ff16\n84849916eff8ff215ee1192ed9686da7\nbe8947c67a3f3a81a71de3998f5e8c60\n95f752d05291e8270ceaf6118691c35c"
+   "driver": "print(''.join(f'{b:02x}' for b in i))",
+   "expect": "4807f3cfdcc929d006f1297cdb24c59f"
   },
   "js": {
-   "driver": "console.log(aesSubBytes(i).map(b=>b.toString(16).padStart(2,'0')).join(''));\nconsole.log(aesShiftRows(i).map(b=>b.toString(16).padStart(2,'0')).join(''));\nconsole.log(aesMixColumns(i).map(b=>b.toString(16).padStart(2,'0')).join(''));\nconsole.log(aesAddRoundKey(i, j).map(b=>b.toString(16).padStart(2,'0')).join(''));",
-   "expect": "84681921ef846d2e5ef899a7d9e1ff16\n84849916eff8ff215ee1192ed9686da7\nbe8947c67a3f3a81a71de3998f5e8c60\n95f752d05291e8270ceaf6118691c35c"
+   "driver": "console.log(i.map(b=>b.toString(16).padStart(2,'0')).join(''));",
+   "expect": "4807f3cfdcc929d006f1297cdb24c59f"
   }
  },
  "SM4-Atomic-Round.json": {

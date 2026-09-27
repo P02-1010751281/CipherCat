@@ -1,0 +1,149 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "procedures_defreturn",
+        "id": "demo_ascon_hash_def_0001",
+        "x": 80,
+        "y": 80,
+        "extraState": { "params": [], "hasStatements": false },
+        "fields": { "NAME": "Ascon_Hash256_Empty" },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "ascon_hash256",
+              "id": "demo_ascon_hash_0002",
+              "inputs": {
+                "MSG": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_ascon_hash_msg_0003",
+                    "fields": { "NUM": "[]" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "demo_ascon_xof_def_0004",
+        "x": 80,
+        "y": 360,
+        "extraState": { "params": [], "hasStatements": false },
+        "fields": { "NAME": "Ascon_XOF128_Empty" },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "ascon_xof128",
+              "id": "demo_ascon_xof_0005",
+              "inputs": {
+                "MSG": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_ascon_xof_msg_0006",
+                    "fields": { "NUM": "[]" }
+                  }
+                },
+                "LEN": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_ascon_xof_len_0007",
+                    "fields": { "NUM": "32" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "demo_ascon_cxof_def_0008",
+        "x": 80,
+        "y": 640,
+        "extraState": { "params": [], "hasStatements": false },
+        "fields": { "NAME": "Ascon_CXOF128_ABC" },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "ascon_cxof128",
+              "id": "demo_ascon_cxof_0009",
+              "inputs": {
+                "MSG": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_ascon_cxof_msg_0010",
+                    "fields": { "NUM": "[]" }
+                  }
+                },
+                "CUSTOM": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_ascon_cxof_custom_0011",
+                    "fields": { "NUM": "[0x61,0x62,0x63]" }
+                  }
+                },
+                "LEN": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_ascon_cxof_len_0012",
+                    "fields": { "NUM": "32" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "procedures_defreturn",
+        "id": "demo_ascon_dec_def_0013",
+        "x": 80,
+        "y": 920,
+        "extraState": { "params": [], "hasStatements": false },
+        "fields": { "NAME": "Ascon_Decrypt_Empty" },
+        "inputs": {
+          "RETURN": {
+            "block": {
+              "type": "ascon_decrypt",
+              "id": "demo_ascon_dec_0014",
+              "inputs": {
+                "KEY": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_ascon_dec_key_0015",
+                    "fields": { "NUM": "[0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f]" }
+                  }
+                },
+                "NONCE": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_ascon_dec_nonce_0016",
+                    "fields": { "NUM": "[0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x1a,0x1b,0x1c,0x1d,0x1e,0x1f]" }
+                  }
+                },
+                "AD": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_ascon_dec_ad_0017",
+                    "fields": { "NUM": "[]" }
+                  }
+                },
+                "CT": {
+                  "block": {
+                    "type": "data_value",
+                    "id": "demo_ascon_dec_ct_0018",
+                    "fields": { "NUM": "[0x4f,0x9c,0x27,0x82,0x11,0xbe,0xc9,0x31,0x6b,0xf6,0x8f,0x46,0xee,0x8b,0x2e,0xc6]" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

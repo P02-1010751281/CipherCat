@@ -1,0 +1,27 @@
+schema_version: 2
+goal: quality-followups
+status: complete
+objective: "完成审查后的质量改进：正式单元测试、标准元数据与 Errata 核验、前端拆包、循环依赖扫描和 CI 检查。"
+start_point: "已有 29/29 模板和 57/57 Demo 回归通过；审计留下 3 项 P2 开放项，madge 与 CI 尚未接入。"
+acceptance:
+  - "正式单元测试命令可重复运行并通过，覆盖核心纯函数与关键边界。"
+  - "标准目录元数据可机器检查，且当前标准的版本、来源、哈希和 Errata 状态有记录。"
+  - "生产构建完成按需拆包，关键大 chunk 得到可量化改善或有明确残余风险。"
+  - "循环依赖检查和质量检查已纳入 CI 配置。"
+  - "全量 lint、type-check、build、文档链接、模板、Demo、Rust 和依赖审计通过。"
+non_goals:
+  - "本轮不宣称密码实现获得 CAVP、CMVP 或其他正式认证。"
+  - "本轮不改变前端试运行与后端可信测评的职责边界。"
+  - "本轮不提交或 push。"
+budget:
+  kind: none
+  limit: null
+current_iteration: 1
+next_action: "Goal complete；后续可单独安排动态 chunk 优化、标准逐目录证据补全和生成器/composables 单测扩展。"
+blocker_signature: null
+blocker_count: 0
+owner_stop:
+  status: none
+  reason: null
+  decision: null
+updated_at: "2026-09-12"

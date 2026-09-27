@@ -1,5 +1,16 @@
 # 哈希块参考 (SHA + SM3 + Keccak + XOF)
 
+## 文档定位与证据入口
+
+本页是[积木块总览](INDEX.md)的分类详情页。这里的“哈希”包含摘要、XOF、海绵、HMAC 及明确标注的哈希基构件；FIPS 205 的完整方案仍以独立后量子文档为准。
+
+| 入口 | 内容 |
+|------|------|
+| 标准原文与结构化条目 | [FIPS 180-4 SHA-2](../standards/fips180-4-SHA2/)、[FIPS 202 SHA-3](../standards/fips202-SHA3/)、[GB/T 32905 SM3](../standards/gbt32905-SM3/)、[FIPS 198-1 HMAC](../standards/fips198-1-hmac/)、[标准覆盖矩阵](../standards/COVERAGE.md) |
+| 实现 | `src/blocks/hash/`、`src/blocks/sha512/`、`src/blocks/hkdf/`、`src/blocks/pbkdf2/`、`src/blocks/argon2/` |
+| Demo 与测试 | [Demo 指南](../guides/DEMO.md)、[Demo 测试登记](../../demos/tests.json)、`demos/procedures/` 中的 SHA/SM3/HMAC/HKDF/PBKDF2/ARGON2 工作区 |
+| 边界 | 已登记算法、向量和后量子哈希构件分别核对；哈希块存在不等于完整签名方案或所有参数集已实现 |
+
 
 ## SHA-256 (FIPS 180-4)
 

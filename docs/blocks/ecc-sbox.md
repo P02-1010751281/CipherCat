@@ -1,5 +1,16 @@
 # ECC + S-Box 块参考
 
+## 文档定位与证据入口
+
+本页是[积木块总览](INDEX.md)的经典公钥与椭圆曲线分类详情页；RSA 数论构件在[数论块参考](numtheory.md)中，后量子公钥方案在[后量子块参考](post-quantum.md)中。
+
+| 入口 | 内容 |
+|------|------|
+| 标准原文与结构化条目 | [FIPS 186-5 ECDSA](../standards/fips186-5-ecdsa/)、[RFC 5903 ECDH](../standards/rfc5903-ecdh/)、[RFC 7748 X25519](../standards/rfc7748-x25519/)、[RFC 8032 EdDSA](../standards/rfc8032-eddsa/)、[GB/T 32918 SM2](../standards/gbt32918-SM2/)、[GB/T 38635 SM9](../standards/gbt38635-SM9/)、[标准覆盖矩阵](../standards/COVERAGE.md) |
+| 实现 | `src/blocks/ecc/`、`src/blocks/ecdh/`、`src/blocks/ecdsa/`、`src/blocks/eddsa/`、`src/blocks/x25519/`、`src/blocks/sm2sig/`、`src/blocks/sm2enc/`、`src/blocks/sm9/` |
+| Demo 与测试 | [Demo 指南](../guides/DEMO.md)、[Demo 测试登记](../../demos/tests.json)、ECDH/ECDSA/EdDSA/X25519/SM2/SM9 工作区 |
+| 边界 | 仅对页面列出的曲线、编码和协议链作结论；Demo 通过不代表通用公钥安全、侧信道安全或认证 |
+
 
 ## 椭圆曲线 (SEC 2)
 

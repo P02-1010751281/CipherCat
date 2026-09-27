@@ -1,5 +1,16 @@
 # 对称密码块参考 (AES + SM4 + 模式 + 填充)
 
+## 文档定位与证据入口
+
+本页是[积木块总览](INDEX.md)的分类详情页。它说明对称密码块的输入输出、组合方式和当前工程边界，不以页面篇幅表示能力权重。
+
+| 入口 | 内容 |
+|------|------|
+| 标准原文与结构化条目 | [FIPS 197 AES](../standards/fips197-AES/)、[GB/T 32907 SM4](../standards/gbt32907-SM4/)、[SP 800-38A](../standards/sp800-38a-modes/)、[标准覆盖矩阵](../standards/COVERAGE.md) |
+| 实现 | `src/blocks/symmetric/`、`src/blocks/cmac/`、`src/blocks/ccm/`、`src/blocks/gcm/`、`src/blocks/xts/`、`src/blocks/ascon/` |
+| Demo 与测试 | [Demo 指南](../guides/DEMO.md)、[Demo 测试登记](../../demos/tests.json)、`demos/procedures/` 中的 AES/SM4/CCM/GCM/XTS/ASCON 工作区 |
+| 边界 | 原子轮、模式和选定向量不等于所有参数集、拒绝路径或生产安全性；逐算法缺项以覆盖矩阵为准 |
+
 
 ## AES (FIPS 197)
 
@@ -55,7 +66,8 @@
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
-| `ascon_encrypt` | 1 | value(→) | Bytes&IntList&IntList&Bytes→Bytes | Ascon-AEAD128(key, nonce, ad, msg) → 密文‖128 位标签；320 位置换（rate 128 位，12/8 轮），little-endian；官方向量（ascon-c 仓 LWC KAT 1089 例全过） |
+| `ascon_encrypt` / `ascon_decrypt` | 1 | value(→) | Bytes&IntList&IntList&Bytes→Bytes | Ascon-AEAD128 加解密；解密验证 128 位标签，错误标签抛出异常；官方向量（ascon-c 仓 LWC KAT 1089 例全过） |
+| `ascon_hash256` / `ascon_xof128` / `ascon_cxof128` | 1 | value(→) | Bytes[&Bytes][&Number]→Bytes | SP 800-232 Hash256、XOF128、CXOF128；输出长度单位为字节，CXOF 定制字符串最多 256 字节；空消息与 `abc` 定制字符串扩展 Demo 双语言通过 |
 
 ## 认证加密 GCM (NIST SP 800-38D)
 

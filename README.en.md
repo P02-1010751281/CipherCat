@@ -9,30 +9,48 @@
 
 ## Features
 
-- 🔮 **Post-quantum cryptography** — a full suite of post-quantum primitives such as NTT/INTT, encode/compress, SampleNTT (the core highlight)
+- 🔮 **Post-quantum cryptography** — lattice-focused components and algorithm stages such as NTT/INTT, encode/compress, and SampleNTT
 - 🔐 **Comprehensive crypto coverage** — symmetric ciphers (S-Box, bitwise operations), hash functions (SM3/SHA), number-theoretic operations
 - 🧩 **Visual programming** — drag and drop blocks to write crypto code like building with LEGO
 - 🌐 **Multilingual** — Chinese/English UI, Blockly blocks switch in sync
 - 💻 **Code generation** — generate executable JavaScript / Python code in one click
+- ✅ **Vector regression** — 29 templates and 59 registered demos are checked by a headless JavaScript/Python harness
 - 📁 **Project management** — multi-project local management based on IndexedDB, with auto-save
 - 🖥️ **Desktop app** — Tauri wrapper, runs natively on Windows / Linux / macOS
 - 📱 **Responsive** — adapts to wide and narrow screens, panels resizable by dragging
 
 ## Quick Start
 
+New users: start with the [setup and acceptance guide](docs/guides/SETUP.en.md), [user guide](docs/guides/USER-GUIDE.en.md), [capability map](docs/guides/CAPABILITY-MAP.en.md), and [demo index](demos/README.en.md).
+
 ```bash
 # Install dependencies
-npm install
+npm ci
 
 # Start the development server
 npm run dev          # → http://localhost:3001
 
 # Build the production bundle
 npm run build
+npm run build:check-bundle
 
 # Tauri desktop app
 npm run tauri:dev    # development mode
 npm run tauri:build  # package
+
+# Quality gates
+npm run test:unit
+npm run standards:check
+npm run standards:inventory
+# Regenerate the entry-by-entry source inventory when source metadata changes:
+# npm run standards:inventory:write
+npm run cycles:check
+
+# Regression gates
+npm run lint:check
+npm run type-check
+npm run verify:all
+npm run docs:check-links
 ```
 
 ## Tech Stack
@@ -40,16 +58,16 @@ npm run tauri:build  # package
 | Layer | Technology |
 |---|---|
 | Frontend framework | Vue 3 (Composition API + TypeScript) |
-| Visual programming | Blockly 12.x |
+| Visual programming | Blockly 13.2.x |
 | Code highlighting | highlight.js |
 | Desktop wrapper | Tauri 2.x |
 | Build tooling | Vite + vue-tsc |
-| Code standards | ESLint 9.x |
-| Local storage | IndexedDB (idb) |
+| Code standards | ESLint 10.x |
+| Local storage | Browser IndexedDB |
 
 ## Project Structure
 
-```
+```text
 src/
 ├── App.vue                     # Main editor view
 ├── main.ts                     # Application entry
@@ -81,26 +99,25 @@ src/
 └── assets/                     # Static assets
 ```
 
-## Supported Crypto Modules (98 custom blocks, 13 categories)
+## Supported Crypto Modules (194 custom blocks, 17 toolbox categories)
 
-| Category | Blocks | Blocks |
-|------|------|--------|
-| Control flow | 1 | Loop iteration |
-| Basic math | 7 | Modular arithmetic (Mod/ModPow/DivRem), big-number BN add/sub/mul/div |
-| Array | 1 | Array partition |
-| Data & conversion | 9 | Value input, seed (bytes/hex), key derivation, bit/byte length, type conversion |
-| Bitwise | 8 | AND/OR/XOR, NOT, shifts, rotate, byte substitution, infix expression |
-| Logic | 3 | Logical operations, compound operations, NOT |
-| S-Box | 4 | S-Box define/substitute, S-Box variable read/write |
-| Hash | 18 | SM3 compress/pad, SHA-256 compress/pad, SHA-3 Keccak-f/absorb/squeeze/pad, SHAKE XOF/PRF, HMAC |
-| Symmetric ciphers | 12 | AES four-step operations, SM4 round function/linear transform, ECB/CBC/CTR modes, PKCS#7/zero padding |
-| Number theory | 10 | NTT/INTT, NTT butterfly/multiply, field addition, modular inverse, GF(2⁸) multiplication, polynomial add/sub, matrix×vector |
-| Elliptic curves | 5 | Curve parameter load, point load, point doubling, point addition, scalar multiplication |
-| Post-quantum | 11 | Encode/decode, compress/decompress, byte concat/slice, SampleNTT, SamplePolyCBD |
-| Encoding utilities | 5 | Base64 encode/decode, Hex↔Bytes, byte order conversion |
-| Function wrappers | 4 | crypto_return, encrypt/decrypt/hash function templates |
+| Category | Representative capabilities |
+|------|--------|
+| Control flow | Iteration and Blockly control composition |
+| Data and conversion | Byte/seed inputs, lengths, type conversion, Base64/Hex and endianness |
+| Bitwise | Logic, shifts, rotates, substitution and expressions |
+| S-Box | Custom S-box plus AES/SM4/ZUC presets |
+| Hashing and padding | SHA-2, SHA-3, SHAKE, SM3, HMAC, KDF and DRBG |
+| Symmetric cryptography | AES, SM4, block modes, CMAC/CCM/GCM/XTS and Ascon |
+| Number theory and KDF | NTT, GF(2^m), polynomials, RSA and related primitives |
+| Elliptic curves and public-key cryptography | ECDH, X25519, ECDSA, EdDSA, SM2 and SM9 |
+| Stream ciphers | ZUC state transformations, keystream and EEA3 components |
+| Post-quantum cryptography | ML-KEM/ML-DSA lattice components and stages; SLH-DSA and code-based teaching components |
+| Functions and Blockly-native categories | 29 function-template registrations and native variables, math, arrays and logic |
 
-> 98 custom blocks in total (`ALL_BLOCK_TYPES` in `src/blocks/index.ts`); plus 27 `proc_*` function templates and Blockly native procedure blocks (function wrapper category).
+> The authoritative total is 194 custom block types after recursively expanding and deduplicating `ALL_BLOCK_TYPES` in `src/blocks/index.ts`. There are 29 function-template registrations: three base `crypto_*` blocks are already included in the 194, while 26 `proc_*` templates are additional types. The deduplicated union contains 220 types. The 17 toolbox categories include four Blockly-native categories. The table describes scope, not additive category counts. This educational surface is not a CAVP/ACVTS, CMVP/FIPS 140-3 or formal-verification claim.
+
+The browser is for Blockly editing, code generation and user trials. Trusted randomness assessment, statistical testing, isolated execution and final reports belong to the `metacrypt_server` backend.
 
 ## Code Generation Example
 

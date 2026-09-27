@@ -1,6 +1,8 @@
 # 数据类型规范
 
-> 版本 v1.0 | 2026-07-18 | 所有块实现的类型参考标准
+> 版本 v1.1 | 2026-09-25 | 所有块实现的类型参考标准
+
+> 连接检查与运行时转换是两回事。下文的转换表只给出显式表达式，不表示 Blockly 允许不同类型直接连接；是否可连接以类型连接规则和积木端口声明为准。
 
 ## 一、类型总览
 
@@ -9,16 +11,21 @@
 | `Bytes` | `TYPE_BYTES` | 字节序列 | `[0x00, 0xFF]` 每元素 | `bytes` / `bytearray` | `Uint8Array` |
 | `IntList` | `TYPE_INT_LIST` | 整数列表 | 依上下文 | `list[int]` | `number[]` |
 | `Bits` | `TYPE_BITS` | 比特数组 | `{0, 1}` 每元素 | `list[int]` | `number[]` |
-| `Number` | `TYPE_NUMBER` | 标量整数 | `[0, 2^53)` JS / 任意 Python | `int` | `number` |
+| `Number` | `TYPE_NUMBER` | 数值标量；密码块按各自约束使用 | JavaScript binary64；Python int/float | `int` / `float` | `number` |
 | `SBox` | `TYPE_SBOX` | S-box 查找表 | 二维 4×4 ~ 32×32 | `list[list[int]]` | `number[][]` |
 | `Matrix` | `TYPE_MATRIX` | 矩阵（标签） | 二维 IntList | `list[list[int]]` | `number[][]` |
 | `Vector` | `TYPE_VECTOR` | 向量（标签） | 一维 IntList | `list[int]` | `number[]` |
+| `String` | `TYPE_STRING` | 文本 | Unicode 字符串 | `str` | `string` |
+| `Boolean` | `TYPE_BOOLEAN` | 布尔值 | `True` / `False` | `bool` | `boolean` |
+| `Array` | `TYPE_ARRAY` | 通用数组标签（当前原语端口未使用） | 依元素而定 | `list[Any]` | `Array<unknown>` |
+
+这些名称是项目用于 Blockly 连接检查的类型标签，不会验证运行时值或自动转换数据。`String`、`Boolean` 分别用于若干文本/曲线参数和验证结果；`Array` 当前只保留为通用标签，未用于密码原语端口。具体密码原语的整数要求及取值范围，以该原语文档为准。
 
 ## 二、各类型详细规范
 
 ### 2.1 Bytes — 字节序列
 
-```
+```text
 定义：有序字节序列，每个元素是 [0x00, 0xFF] 的无符号整数。
 密码学语义：密钥、消息、密文、IV、哈希值、种子、填充后数据。
 ```
@@ -33,7 +40,7 @@
 | 索引操作 | 0-based, `data[i]` 返回 int |
 | 切片操作 | `data[start:end]` 返回新的 Bytes |
 
-**转换规则：**
+**显式转换写法：**以下是目标语言中的转换表达式；它们不会自动改变 Blockly 的连接检查。
 
 | 从 | 到 | Python | JavaScript |
 |----|----|--------|-----------|
@@ -52,7 +59,7 @@
 
 ### 2.2 IntList — 整数列表
 
-```
+```text
 定义：有序整数列表。密码学中承载三种语义：
   1. 多项式系数：范围 [0, q-1], 长度 = 256 (Kyber)
   2. NTT 域元素：同上但代数结构不同
@@ -83,15 +90,17 @@
 
 | 从 | 到 | Python | JavaScript |
 |----|----|--------|-----------|
-| `IntList` | `Bytes` | `bytes(lst)` (每元素截断到 0-255) | `new Uint8Array(lst)` |
+| `IntList` | `Bytes` | `bytes(lst)`（要求整数元素在 0-255 内；越界抛出 `ValueError`） | `new Uint8Array(lst)`（越界值按 256 取模，小数向 0 截断） |
 | `IntList`（大数 limbs） | `Number` | `int.from_bytes(b''.join(x.to_bytes(4,'big') for x in limbs), 'big')` | limbs 合成大整数 |
 | `Number` | `IntList`（大数 limbs） | `[(n>>(i*32))&0xFFFFFFFF for i in range(limbs)]` | 同上逻辑 |
+
+Python `bytes(lst)` 与 JavaScript `Uint8Array.from(lst)` 的越界行为不同；需要一致、严格的输入时，应先显式验证每个元素是 0–255 的整数，再转换。
 
 ---
 
 ### 2.3 Bits — 比特数组
 
-```
+```text
 定义：有序比特序列，每个元素严格为 0 或 1。
 密码学语义：比特流、编码转换中间表示。
 ```
@@ -110,30 +119,30 @@
 |----|----|------|
 | `Bytes` | `Bits` | 每字节展开为 8 比特（小端序：bit j = (byte>>j)&1） |
 | `Bits` | `Bytes` | 每 8 比特打包为 1 字节（Σ bit_j · 2^j） |
-| `Bits` | `IntList` | 直接赋值（类型兼容，语义不同） |
-| `IntList` | `Bits` | ⚠️ 运行时无检查，Blockly 类型系统阻止 |
+| `Bits` | `IntList` | 运行时容器可直接赋值；类型受限的端口不能直接连接，语义须另行确认 |
+| `IntList` | `Bits` | 先检查每个元素是否为 0 或 1；类型受限的端口不能直接连接 |
 
 **使用 Bits 的块：**
 `pq_bytes_to_bits`(输出 → Bits)、`pq_bits_to_bytes`(输入 ← Bits)
 
 ---
 
-### 2.4 Number — 标量整数
+### 2.4 Number — 数值标量
 
-```
-定义：单个整数值。Blockly 原生类型。
-密码学中使用：长度、索引、模数、轮数、位偏移。
+```text
+定义：Blockly 数值标量；Python 可为 `int` 或 `float`，JavaScript 为 binary64 `number`。
+密码学端口常要求整数；此标签本身不检查整数性或取值范围。整数用途包括长度、索引、模数、轮数和位偏移。
 ```
 
 | 属性 | 值 |
 |------|-----|
-| Python 类型 | `int` (任意精度) |
-| JavaScript 类型 | `number` (安全范围 [0, 2^53-1]，位运算范围 [0, 2^32-1]) |
+| Python 类型 | `int` / `float`；整数运算使用任意精度 `int` |
+| JavaScript 类型 | `number` (binary64；安全整数范围为 [−(2^53−1), 2^53−1]) |
 | Blockly 默认 | `0` |
 | 密码学典型范围 | `[0, q-1]` (模数), `[1, 256]` (长度), `[0, 31]` (比特偏移) |
 
 **⚠️ JavaScript 限制：**
-位运算在 JS 中自动截断到 32-bit。正确做法用 `>>> 0` 确保无符号。
+普通位运算会先转换为 32-bit 有符号整数；只有需要 32-bit 无符号结果时才用 `>>> 0`。更宽整数应使用 `BigInt`。
 
 **转换规则：**
 
@@ -147,7 +156,7 @@
 
 ### 2.5 SBox — S-box 查找表
 
-```
+```text
 定义：二维字节矩阵，用于非线性替换。
 通过 Blockly 变量系统管理，变量类型为 'SBox'。
 ```
@@ -169,7 +178,7 @@
 
 ### 2.6 Matrix / Vector — 矩阵和向量标签
 
-```
+```text
 定义：仅作为 Blockly 类型标签，没有独立的运行时表示。
 Matrix：二维 IntList (number[][])
 Vector：一维 IntList (number[])
@@ -185,23 +194,25 @@ Vector：一维 IntList (number[])
 
 ---
 
-## 三、类型兼容矩阵
+### 2.7 String / Boolean / Array — 通用及内置标签
 
-表示"类型 A 的块输出能否连接到类型 B 的块输入"：
+| 类型 | 常见用途 | Python | JavaScript | 注意事项 |
+|---|---|---|---|---|
+| `String` | 标识文本、十六进制或曲线参数文本 | `str` | `string` | 不是 `Bytes`；需要编码时显式选择 UTF-8、十六进制等规则 |
+| `Boolean` | 签名、解密等验证结果 | `bool` | `boolean` | 表示真假，不表示 0/1 字节 |
+| `Array` | 通用数组类型标签 | `list[Any]` | `Array<unknown>` | 不表达元素类型或密码学结构；当前原语端口未使用 |
 
-| 输出 ↓ / 输入 → | Bytes | IntList | Bits | Number | SBox | Matrix |
-|-----------------|-------|---------|------|--------|------|--------|
-| **Bytes** | ✅ | ⚠️ 隐式转 | ❌ | ❌ | ❌ | ❌ |
-| **IntList** | ⚠️ 隐式转 | ✅ | ❌ | ❌ | ❌ | ⚠️ 隐式 |
-| **Bits** | ⚠️ 隐式转 | ✅ 允许 | ✅ | ❌ | ❌ | ❌ |
-| **Number** | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
-| **SBox** | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
-| **Matrix** | ❌ | ⚠️ 隐式 | ❌ | ❌ | ❌ | ✅ |
+## 三、类型连接规则
 
-**图例：**
-- ✅ 类型完全匹配，直接连接
-- ⚠️ 运行时兼容但需隐式转换（生成器会插入转换代码）
-- ❌ Blockly 阻止连接
+Blockly 按连接器声明的类型检查连接，不按生成代码中的底层表示推断兼容关系：
+
+| 输出类型与输入检查 | 连接结果 |
+|---|---|
+| 两端声明相同类型 | 可以连接 |
+| 两端声明不同且均有限制 | 不能连接 |
+| 输入未指定类型检查（`setCheck(null)`） | 可接收任意输出类型 |
+
+Blockly 不会因 `Bits`、`IntList`、`Bytes` 等在目标语言中采用相似的数组表示而自动允许连接，也不会自动插入通用转换。转换辅助函数只在生成器明确调用的代码路径中生效，不扩展 Blockly 的连接规则。
 
 ---
 
@@ -218,19 +229,30 @@ W: list[int]         # 消息扩展（32-bit 字列表）
 H: list[int]         # 哈希链值列表
 result: bytes        # 最终输出
 
-# 隐式转换模式
-isinstance(msg, list): msg = bytes(msg)     # IntList → Bytes
-isinstance(x, (bytes, bytearray)): ...      # Bytes 检测
-int.from_bytes(data[start:end], 'big')       # Bytes → Number
+# IntList → Bytes：拒绝超出字节范围的值
+if any(type(value) is not int or not 0 <= value <= 255 for value in msg):
+    raise ValueError("IntList items must be bytes")
+msg_bytes = bytes(msg)
+
+is_bytes = isinstance(data, (bytes, bytearray))
+number = int.from_bytes(data[start:end], "big")
 ```
 
 ### JavaScript
 
 ```javascript
-// 隐式转换模式
-Array.isArray(msg) ? msg = new Uint8Array(msg)   // IntList → Bytes
-data instanceof Uint8Array                        // Bytes 检测
-(data[0] << 24) | (data[1] << 16) | ...          // Bytes → Number (big-endian)
+const msgBytes = Uint8Array.from(msg, (value) => {
+  if (!Number.isInteger(value) || value < 0 || value > 255) {
+    throw new RangeError("IntList items must be bytes")
+  }
+  return value
+})
+
+const isBytes = data instanceof Uint8Array
+const number = data.slice(start, end).reduce(
+  (value, byte) => (value << 8n) | BigInt(byte),
+  0n,
+)
 ```
 
 ## 五、新增块时的类型检查清单
@@ -238,7 +260,7 @@ data instanceof Uint8Array                        // Bytes 检测
 - [ ] 每个值输入声明了 `setCheck(TYPE_*)`
 - [ ] 每个值输出声明了 `setOutput(true, TYPE_*)`
 - [ ] 生成器代码产生的运行时类型与声明一致
-- [ ] 如涉及类型转换，生成器中包含隐式转换代码
+- [ ] 如涉及类型转换，生成器中包含明确的转换代码
 - [ ] `TYPE_MAP` 中已有该类型的三语言映射
 - [ ] 文档 `BLOCK-REFERENCE.md` 中记录了类型信息
 - [ ] 测试 JSON 验证了类型链路的正确性

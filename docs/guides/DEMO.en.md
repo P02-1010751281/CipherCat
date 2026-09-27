@@ -1,7 +1,7 @@
-# Demo Guide
+# Demo guide
 
 
-Pre-built Blockly workspace examples, **all using atomic blocks** (no convenience wrappers), to understand the low-level implementation of each cryptographic primitive. Split into per-algorithm docs; corresponding demo files are listed in the [demos/README.md](../../demos/README.en.md) file index:
+Pre-built Blockly workspace examples built from atomic blocks: top-level atomic demos show the block chain directly, while Procedure demos place the same chains inside reusable functions; no convenience-wrapper blocks are used. Split into per-algorithm docs; corresponding demo files are listed in the [demos/README.md](../../demos/README.en.md) file index:
 
 | Algorithm | Build steps | Demo files |
 |------|----------|----------------|
@@ -16,23 +16,37 @@ Pre-built Blockly workspace examples, **all using atomic blocks** (no convenienc
 
 ---
 
-## Quick Start
+## Quick start
 
-1. Open the editor → Menu "More → Import Workspace" → pick a `.json` file from `demos/`
-2. Inspect the block wiring → "▶ Generate" to view JS/Python output
-3. Procedure demo → see how the wrapped function is called elsewhere
+The recommended entry point for platform operation is the [user tutorial](./TUTORIALS.en.md). This page is the algorithm-oriented demo index and records the corresponding workspace, vector, and function-wrapping information.
 
-## Official-Vector Verification (scenarios 6-9)
+1. Open the editor → choose "More → Import Workspace" → select a `.json` file from `demos/`;
+2. Check the block wiring → choose "Generate" to view JavaScript/Python output;
+3. Open a function-wrapping demo and inspect its calls from other flows.
 
-All official-vector demos are verified end-to-end (Python + JavaScript) via the headless harness; verification commands live in [demos/README.md](../../demos/README.en.md).
+![Import-workspace entry in the More menu (interface example)](/docs-assets/tutorials/03-import-menu.png)
+
+_Figure: Start by choosing Import Workspace from the More menu._
+
+![Imported AES atomic-round workspace (interface screenshot)](/docs-assets/tutorials/04-editor-imported.png)
+
+_Figure: The imported workspace shows the AES atomic-block chain. Choose Generate to display its code._
+
+![Generated Python code (interface screenshot)](/docs-assets/tutorials/05-generated-python.png)
+
+_Figure: The generated-code panel displays Python for the current workspace._
+
+## Demo verification status
+
+All 59 registered demos are checked by the automated harness in both Python and JavaScript. Test specifications include standard vectors, property assertions, and independent cross-checks; commands and results are listed in [demos/README.en.md](../../demos/README.en.md).
 
 ---
 
-## Going Further
+## Going further
 
 ### Atomic block chains
-All round functions are direct atomic-block chains (convenience composites removed):
-- AES round = `aes_sub_bytes` → `aes_shift_rows` → `aes_mix_columns` → `aes_add_round_key`
+The following round-function examples are direct atomic-block chains (convenience composites removed):
+- The AES atomic demo calls four primitives on shared state in workspace order; explicit value connections are in `demos/procedures/AES-Round.json`.
 - SM4 round = `sm4_round_func` (includes S-box + L transform details)
 
 ### Custom function wrapping
@@ -41,19 +55,16 @@ All round functions are direct atomic-block chains (convenience composites remov
 3. Set parameter types (bytes / int_list / poly / seed)
 4. Export via right-click → import in another project
 
-### Type system
-- `Bytes` (yellow): Uint8Array / bytes — keys, ciphertext, seeds
-- `IntList` (blue): number[] / list[int] — polynomial coefficients, state words
-- `Number` (pink): native Blockly number — scalar parameters
+### Data types and connections
 
-Blockly enforces connection types — mismatched connections are rejected.
+Types determine which blocks can connect and describe what the data means. See the [user guide’s introduction to data types and block connections](./USER-GUIDE.en.md) for the basics; runtime mappings, value ranges, and full compatibility rules are in the [Type System specification for developers](./TYPE-SYSTEM.en.md).
 
 ---
 
-## Related Docs
+## Related docs
 
-- [demo file index](../../demos/README.en.md) — all pre-built workspaces + official-vector verification commands
-- [Block index](../blocks/INDEX.md) — complete list of all custom blocks
+- [demo file index](../../demos/README.en.md) — all pre-built workspaces + test-specification verification commands
+- [Block index](../blocks/INDEX.en.md) — complete list of all custom blocks
 - [Architecture](./ARCHITECTURE.en.md) — system architecture and data flow
 - [Development guide](./DEVELOPMENT.en.md) — environment setup, adding blocks
-- [Type system](./TYPE-SYSTEM.en.md) — data type spec and conversion rules
+- [Type System specification](./TYPE-SYSTEM.en.md) — developer reference for type mappings, ranges, and conversions

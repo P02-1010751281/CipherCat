@@ -1,5 +1,16 @@
 # 后量子密码块参考 (ML-KEM + ML-DSA)
 
+## 文档定位与证据入口
+
+本页是[积木块总览](INDEX.md)的后量子密码分类详情页。这里的“后量子”按密码体制分类，不把采样、哈希、NTT、多项式和编码等公共构件误写成独立方案。
+
+| 入口 | 内容 |
+|------|------|
+| 标准原文与结构化条目 | [FIPS 203 ML-KEM](../standards/fips203-ML-KEM/)、[FIPS 204 ML-DSA](../standards/fips204-ML-DSA/)、[FIPS 205 SLH-DSA](../standards/fips205-SLH-DSA/)、[McEliece/Goppa 参考](../standards/mceliece-goppa/)、[标准覆盖矩阵](../standards/COVERAGE.md) |
+| 实现 | `src/blocks/post-quantum/`、`src/blocks/mldsa/`、`src/blocks/hash/` 中被明确复用的公共构件 |
+| Demo 与测试 | [Demo 指南](../guides/DEMO.md)、[Demo 测试登记](../../demos/tests.json)、ML-KEM/ML-DSA/SLH-DSA/FORS/Goppa 工作区 |
+| 边界 | 公共原语、选定参数和教学链分别标记；不宣称全部参数族、完整认证实现、抗侧信道或正式后量子安全证明 |
+
 
 ## FIPS 204 ML-DSA 签名
 

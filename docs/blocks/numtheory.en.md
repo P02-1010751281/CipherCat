@@ -48,7 +48,7 @@
 | `gf2m_add` | 1 | value(→) | IntList&IntList→IntList | field addition = bitwise XOR (AES/GCM dual field) |
 | `gf2m_inv` | 1 | value(→) | IntList→IntList | multiplicative inverse (polynomial extended Euclid, Fermat check) |
 
-## GF(2) Polynomials + Binary Matrices (Coding Basis)
+## GF(2) Polynomials + Binary Matrices (Code-Based Math)
 
 | Block | Layer | Connection | Input→Output | Notes |
 |----|----|------|----------|------|
@@ -58,7 +58,7 @@
 | `bin_mat_mul` / `bin_mat_inv` | 1 | value(→) | IntList&IntList→IntList | GF(2) matrix multiply / inverse (augmented Gaussian elimination, flattened n×n) |
 | `ham_weight` / `ham_dist` | 1 | value(→) | IntList→Number | Hamming weight / distance |
 
-## Goppa Codes (McEliece, Coding Basis)
+## Goppa Codes (McEliece Code-Based Cryptography Components)
 
 | Block | Layer | Connection | Input→Output | Notes |
 |----|----|------|----------|------|

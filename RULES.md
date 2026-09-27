@@ -76,12 +76,24 @@ src/
 ```bash
 npm run lint:check      # ESLint 检查
 npm run type-check      # TypeScript 类型检查
+npm run test:unit       # Vitest 单元测试
 npm run build           # 构建验证
+npm run build:check-bundle # 首屏入口体积回归阈值
+npm run verify:all      # 全部模板与 demo 的结构/生成/向量回归
+npm run docs:check-links # Markdown 本地链接检查
+npm run standards:check # 标准元数据、PDF 哈希和 Errata 检查
+npm run cycles:check    # TypeScript/Vue 循环依赖检查
 ```
-**验证标准**：在 `.git/hooks/pre-commit` 中配置 simple-git-hooks 自动执行上述命令，任一失败则阻止提交。
+**验证标准**：CI/PR 必须执行上述命令，任一失败则阻止合并。若配置本地 hook，必须与 CI 命令保持一致；当前仓库不假定存在未登记的 `simple-git-hooks` 配置。
 
-### R-TEST-02 引入 Vitest 单元测试（待实施）
-引入 Vitest 后，所有公共 API 必须有单元测试覆盖：`generators/` 代码生成逻辑、`composables/` 状态管理逻辑、`utils/` 纯函数。**验证标准**：运行 `npm run test`，覆盖率不低于 80%。
+### R-TEST-02 可执行回归与单元测试
+当前使用 `test:unit` 覆盖核心工具函数，使用 `verify:all` 覆盖 29 个函数模板和 `demos/tests.json` 注册的 59 个 demo，并分别执行 JavaScript/Python 生成结果。新增稳定公共 API 后，应为 `generators/`、`composables/` 和 `utils/` 补充边界与异常单元测试；覆盖率门槛待测试面稳定后再设定，目标为不低于 80%。
+
+### R-TEST-04 标准证据链
+标准相关目录必须记录精确版本/发布日期、官方来源 URL、向量来源、已知 errata、实现状态和安全边界。通过 demo 或选定向量只表示功能回归通过，不得表述为 CAVP/ACVTS、CMVP/FIPS 140-3、constant-time 或形式化验证通过。
+
+### R-TEST-05 可信测评执行面
+CipherCat 前端只提供 Blockly 编辑、代码生成和用户试运行；随机性样本生成、统计测评、隔离执行和最终报告必须在 `metacrypt_server` 后端完成。前端结果不得替代后端可信测评。
 
 ### R-TEST-03 测试可维护性
 测试必须编码「为什么」而非仅「是什么」：
@@ -106,7 +118,7 @@ test('SM4 block generates valid Kasm51 IV', () => {
 Vue 组件中使用 `computed` 缓存派生状态，大型列表使用 `v-memo` 或虚拟滚动。**验证标准**：Chrome DevTools Performance 面板检查组件重渲染次数。
 
 ### R-LOG-01 生产环境禁用 console
-生产构建中必须移除 `console.log`、`console.debug`，仅保留 `console.error`。**验证标准**：在 Vite 构建配置中添加 `drop: ['console', 'debugger']`。
+生产构建中必须移除 `console.log`、`console.debug` 和 `debugger`，仅保留 `console.warn/error`。**验证标准**：Vite 的 Terser 配置使用 `drop_debugger: true` 与 `pure_funcs: ['console.log', 'console.debug']`，并在构建产物中抽查确认。
 
 ## 禁止事项
 
@@ -137,4 +149,4 @@ Vue 组件中使用 `computed` 缓存派生状态，大型列表使用 `v-memo` 
 废弃的 API 必须保留至少一个主版本周期（如 v2.x 中标记废弃，v3.0.0 才能删除）。**为什么**：给调用方足够时间迁移，避免破坏性变更。
 
 ---
-**最后更新**：2026-05-27 | **下次审查**：2026-08-27（每季度审查）
+**最后更新**：2026-09-12 | **下次审查**：2026-12-12（每季度审查）

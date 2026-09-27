@@ -1,31 +1,35 @@
-# CipherCat Development Guide
+# CipherCat development guide
 
 
-## Environment Setup
+## Environment setup
 
-Please refer to the "Quick Start" section of the project root [README.md](../README.en.md):
+Environment setup and browser acceptance are documented in the [Setup and acceptance guide](./SETUP.en.md). This page focuses on the developer workflow and code changes.
+
+Minimal startup commands:
 
 ```bash
 npm install          # 安装依赖
 npm run dev          # 启动开发服务器 → http://localhost:3001
 npm run build        # 构建生产版本
+npm run build:check-bundle # Check the first-screen entry size
 npm run tauri:dev    # Tauri 桌面开发模式
 npm run tauri:build  # Tauri 打包
+npm run test:unit    # Vitest unit tests
 ```
 
-> **Note**: The project currently has no formal test framework configured. Confirm the test toolchain adopted by the project before adding tests.
+> **Note**: The project uses executable harnesses for template and demo verification. They cover structure, code generation and selected vectors; they are not CAVP/CMVP validation or formal verification.
 
 ---
 
-## How to Add a New Blockly Block
+## How to add a new Blockly block
 
 Using the addition of a post-quantum basic block as an example, the full workflow is as follows:
 
-### Step 1: Define the Block
+### Step 1: Define the block
 
 Create a file under `src/blocks/<category>/`, placing it in the directory matching its category:
 
-```
+```text
 src/blocks/post-quantum/basic/your-block.ts
 ```
 
@@ -62,7 +66,7 @@ Blockly.Blocks['pq_your_block'] = {
 
 > See the existing implementation: `src/blocks/post-quantum/basic/encoding.ts`
 
-### Step 2: Register in the Category's index.ts
+### Step 2: Register in the category's index.ts
 
 Export the new file and merge the types in the `index.ts` of the owning category:
 
@@ -81,7 +85,7 @@ export const PQ_BASIC_BLOCK_TYPES = [
 export type PqBasicBlockType = YourBlockType | OtherBlockType;
 ```
 
-### Step 3: Add to the Toolbox Configuration
+### Step 3: Add to the toolbox configuration
 
 In `src/utils/toolbox-config.ts`, if the block type is newly defined, import it and add it to the `contents` array of the corresponding category:
 
@@ -101,7 +105,7 @@ const postquantumBasic = {
 
 > Note: If the block type is already included in the `PQ_BASIC_BLOCK_TYPES` union type (exported from the parent index.ts), the existing code usually picks it up automatically, and no manual changes to `toolbox-config.ts` are needed.
 
-### Step 4: Add the JavaScript Code Generator
+### Step 4: Add the JavaScript code generator
 
 Create the corresponding file under `src/generators/javascript/<category>/`:
 
@@ -130,7 +134,7 @@ Then import it in `src/generators/javascript/<category>/index.ts`:
 import './basic/your-block';
 ```
 
-### Step 5: Add the Python Code Generator
+### Step 5: Add the Python code generator
 
 Create the corresponding file under `src/generators/python/<category>/` (the pattern is symmetric to the JS generator):
 
@@ -158,7 +162,7 @@ Then import it in `src/generators/python/<category>/index.ts`:
 import './basic/your-block';
 ```
 
-### Step 6: Top-Level Generator Imports
+### Step 6: Add top-level generator imports
 
 Make sure `src/generators/javascript/index.ts` and `src/generators/python/index.ts` import the corresponding category's `index.ts` (this is usually already the case, so no duplicate work is needed):
 
@@ -170,7 +174,7 @@ import './postquantum';  // 已导入 postquantum/index.ts → 递归导入所�
 import './postquantum';  // 同上
 ```
 
-### Step 7: Add Internationalization Translations
+### Step 7: Add internationalization translations
 
 Add the translation keys for the block label and tooltip to both the `MESSAGES_ZH_HANS` and `MESSAGES_EN` objects in `src/composables/locale.ts`.
 
@@ -202,7 +206,7 @@ Blockly.Blocks['pq_your_block'] = {
 
 ---
 
-## Block Category Quick Reference
+## Block category quick reference
 
 | Category | blocks directory | generators JS directory | generators Python directory |
 |------|------------|-------------------|----------------------|
@@ -222,21 +226,27 @@ Blockly.Blocks['pq_your_block'] = {
 
 ---
 
-## Build and Type-Check Commands
+## Build and type-check commands
 
 ```bash
 npm run dev          # 开发服务器 (Vite)
 npm run build        # 生产构建 (vue-tsc + Vite)
+npm run build:check-bundle # First-screen entry regression check (64 KiB)
 npm run preview      # 预览生产构建
 npm run tauri:dev    # Tauri 桌面开发
 npm run tauri:build  # Tauri 桌面打包
-npm run lint         # ESLint 检查
-npm run typecheck    # vue-tsc 类型检查 (如有配置)
+npm run lint:check   # ESLint 检查（不改文件）
+npm run type-check   # vue-tsc 类型检查
+npm run test:unit    # Vitest unit tests
+npm run verify:all   # build verification output + 29 templates + 59 demos
+npm run docs:check-links # 文档本地链接检查
+npm run standards:check   # Standards metadata, PDF hash and errata checks
+npm run cycles:check      # TypeScript/Vue circular-dependency check
 ```
 
 ---
 
-## Code Style Conventions
+## Code style conventions
 
 - **TypeScript**: strict mode, Vue 3 Composition API + `<script setup lang="ts">`
 - **File naming**: PascalCase for Vue components, camelCase for TS modules
@@ -250,37 +260,46 @@ For the complete engineering behavior guidelines, see [RULES.md](../../RULES.md)
 
 ## Testing
 
-The project currently has no formal test framework configured. During development:
+Run at least the following before submitting changes:
 
-- Manually verify block rendering and interaction in the browser
-- Manually verify the correctness of the generated JavaScript / Python code
-- Run the TypeScript type check (`npm run typecheck`)
-- Run ESLint (`npm run lint`)
+```bash
+npm run lint:check
+npm run type-check
+npm run test:unit
+npm run build
+npm run build:check-bundle
+npm run verify:all
+npm run docs:check-links
+npm run standards:check
+npm run cycles:check
+```
 
-If you have testing needs, Vitest (compatible with the Vite ecosystem) or Playwright (for end-to-end testing) is recommended.
+`verify:all` loads all 29 function templates and executes the 59 demos registered in `demos/tests.json`, checking JavaScript and Python generation separately. Python subprocesses default to `python3` on Linux/macOS and `python` on Windows; set `CIPHER_CAT_PYTHON` when the interpreter has another name. Browser checks remain useful for UI interaction, but they cannot replace trusted backend assessment.
+
+Vitest currently covers `utils/markdown`, workspace migration, error handling and type compatibility. When stable public APIs are added under `utils/`, `composables/` or the generators, continue adding boundary and error cases. Randomness assessment belongs in the isolated `metacrypt_server` backend.
 
 ---
 
-## Common Tasks
+## Common tasks
 
-### Modifying Block Appearance
+### Modifying block appearance
 
 Modify the `setColour()` setting in the block definition to change the color, or modify `setInputsInline()` / `setOutput()` to change how connections work.
 
-### Adding a New Code Generation Language
+### Adding a new code-generation language
 
 1. Create a new language directory under `src/generators/`
 2. Register a generation function for the new language for each block
 3. Add a language enum in `src/constants/code-languages.ts`
 4. Update the `generateCode()` function in `src/composables/generator.ts`
 
-### Block Type Migration
+### Block type migration
 
 If an old block type is renamed or deprecated, add a mapping entry to `BLOCK_TYPE_MIGRATION_MAP` in `src/utils/migration.ts`. This mapping automatically converts old block names when a workspace is loaded.
 
 ---
 
-## Reference Links
+## Reference links
 
 - [Blockly Developer Documentation](https://developers.google.com/blockly/guides/overview)
 - [Vue 3 Documentation](https://vuejs.org/guide/introduction)

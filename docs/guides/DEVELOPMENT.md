@@ -2,17 +2,21 @@
 
 ## 环境搭建
 
-请参阅项目根目录 [README.md](../README.md) 的"快速开始"部分：
+环境准备和浏览器验收步骤见[环境搭建与验收指南](./SETUP.md)。本页只保留开发者工作流和代码修改步骤。
+
+最小启动命令如下：
 
 ```bash
 npm install          # 安装依赖
 npm run dev          # 启动开发服务器 → http://localhost:3001
 npm run build        # 构建生产版本
+npm run build:check-bundle # 检查首屏入口体积
 npm run tauri:dev    # Tauri 桌面开发模式
 npm run tauri:build  # Tauri 打包
+npm run test:unit    # Vitest 单元测试
 ```
 
-> **注意**：当前项目没有正式的测试框架配置。添加测试前请先确认项目采用的测试工具链。
+> **注意**：项目使用可执行 harness 验证模板和 Demo；它覆盖结构、代码生成和选定向量，不等同于 CAVP/CMVP 或形式化验证。
 
 ---
 
@@ -24,7 +28,7 @@ npm run tauri:build  # Tauri 打包
 
 在 `src/blocks/<category>/` 下创建文件，按照类别放入对应目录：
 
-```
+```text
 src/blocks/post-quantum/basic/your-block.ts
 ```
 
@@ -114,7 +118,7 @@ javascriptGenerator.forBlock['pq_your_block'] = function (block: Block): [string
 
   const funcName = javascriptGenerator.provideFunction_('yourFunction', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data) {',
-    '  // 你的实现逻辑',
+    '  // 实现逻辑',
     '  return data;',
     '}'
   ]);
@@ -143,7 +147,7 @@ pythonGenerator.forBlock['pq_your_block'] = function (block: Block): [string, nu
 
   const funcName = pythonGenerator.provideFunction_('your_function', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data):',
-    '    # 你的实现逻辑',
+    '    # 实现逻辑',
     '    return data',
   ]);
 
@@ -226,11 +230,17 @@ Blockly.Blocks['pq_your_block'] = {
 ```bash
 npm run dev          # 开发服务器 (Vite)
 npm run build        # 生产构建 (vue-tsc + Vite)
+npm run build:check-bundle # 首屏入口体积回归检查（64 KiB）
 npm run preview      # 预览生产构建
 npm run tauri:dev    # Tauri 桌面开发
 npm run tauri:build  # Tauri 桌面打包
-npm run lint         # ESLint 检查
-npm run typecheck    # vue-tsc 类型检查 (如有配置)
+npm run lint:check   # ESLint 检查（不改文件）
+npm run type-check   # vue-tsc 类型检查
+npm run test:unit    # Vitest 单元测试
+npm run verify:all   # 构建验证产物 + 29 个模板 + 59 个 Demo
+npm run docs:check-links # 文档本地链接检查
+npm run standards:check   # 标准元数据、PDF 哈希和 Errata 检查
+npm run cycles:check      # TypeScript/Vue 循环依赖检查
 ```
 
 ---
@@ -243,20 +253,29 @@ npm run typecheck    # vue-tsc 类型检查 (如有配置)
 - **生成器风格**: 使用 `generator.forBlock['block_name']` + `generator.provideFunction_()` 注入辅助函数
 - **导入顺序**: 标准库 → 第三方库 → 项目内部模块 (alias `@/`)
 
-完整的工程行为准则请参阅 [RULES.md](../../RULES.md)，涵盖文件规范、类型规范、命名约定等。
+完整的工程行为准则见 [RULES.md](../../RULES.md)，包括文件规范、类型规范和命名约定。
 
 ---
 
 ## 测试
 
-当前项目没有正式的测试框架配置。在开发过程中：
+提交前至少运行：
 
-- 手动验证积木块在浏览器中的渲染和交互
-- 手动验证生成的 JavaScript / Python 代码的正确性
-- 检查 TypeScript 类型 (`npm run typecheck`)
-- 检查 ESLint (`npm run lint`)
+```bash
+npm run lint:check
+npm run type-check
+npm run test:unit
+npm run build
+npm run build:check-bundle
+npm run verify:all
+npm run docs:check-links
+npm run standards:check
+npm run cycles:check
+```
 
-如果有测试需求，建议使用 Vitest（与 Vite 生态兼容）或 Playwright（端到端测试）。
+`verify:all` 会加载全部 29 个函数模板，并执行 `demos/tests.json` 注册的 59 个 Demo；其中会分别检查 JavaScript 和 Python 生成结果。Python 子进程默认在 Linux/macOS 使用 `python3`，Windows 使用 `python`，也可通过 `CIPHER_CAT_PYTHON` 指定解释器。浏览器手动检查仍用于 UI 交互，但不能替代平台后端随机性测评。
+
+当前 Vitest 单元测试覆盖 `utils/markdown`、工作区迁移、错误处理和类型兼容规则；新增稳定的 `utils/`、`composables/` 或生成器公共 API 后，应继续补充边界/异常用例。随机性测评则在 `metacrypt_server` 后端隔离环境中执行。
 
 ---
 

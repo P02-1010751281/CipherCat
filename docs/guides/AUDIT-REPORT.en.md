@@ -1,93 +1,44 @@
-# Primitive Completeness Audit Report
+# Primitive and teaching-surface audit report
 
->
-> Audit date: 2026-08-02 | Version: v3.0 (current-state reconciliation) | Previous: v2.0 (2026-07-18, pre-symmetric era)
->
-> Counts last refreshed: 2026-08-05 (139 blocks + 29 templates, recursive expansion of `ALL_BLOCK_TYPES`).
+> Snapshot date: 2026-09-24. This report distinguishes checks actually run in this review from unfinished audit work. “Covered” does not mean production cryptographic certification. See the [web research report](../research/CRYPTO-RESEARCH-2026-09-12.md) for standards and literature findings.
 
-## 1. Coverage Overview
+## Current snapshot
 
-**139 custom blocks + 29 function templates**, 17 toolbox categories (15 custom block categories + Function Wrapping + Crypto Templates; includes 4 Blockly native categories — Variables/Math/Arrays/Logic):
+- **194 custom block types**: recursively expanding and deduplicating `ALL_BLOCK_TYPES` from `src/blocks/index.ts` yields 194 unique types.
+- **29 function templates**: counted from `TEMPLATE_REGISTRY` in `src/blocks/procedure/blocks.ts`.
+- **17 toolbox categories**: including custom crypto categories, Function Wrapping, Crypto Templates, and Blockly-native categories.
+- **59 registered demos**: `demos/tests.json` matches 59 demo workspace `.json` files one-to-one (excluding the registry itself).
+- **Function templates**: the 29 template registrations include three base `crypto_*` blocks already counted among the block types and 26 additional `proc_*` template types. Demo regressions cover registered workspaces; they do not prove that every block type is individually exercised.
 
-| Toolbox Category | Blocks | Assessment |
-|----------|--------|------------|
-| Control Flow | 12 | ✅ Basic (ctrl_iterate loop + native) |
-| Data & Conversion | 20 | ✅ Good (bytes/bits/encoding/seed) |
-| Bitwise | 8 | ✅ Excellent |
-| Logic | 3 | Blockly native |
-| S-Box | 4 | ✅ Excellent (CSV custom + 4 presets: AES/SM4/ZUC S0/S1) |
-| Hash & Padding | 31 | ✅ **Complete** (SHA-256/SHA-3/SM3/SHAKE/HMAC/KDF family) |
-| Symmetric Cipher | 18 | ✅ **Complete** (AES/SM4 full rounds + modes + CMAC/CCM/XTS/GCM/ASCON) |
-| Number Theory & KDF | 37 | ✅ (NTT/GF(2^m)/mod-inverse/mod-pow/RSA/DRBG/Argon2) |
-| Elliptic Curve | 19 | ✅ **Complete** (point ops + EdDSA/ECDSA/SM2 sig+enc + SM9 + ECDH + X25519) |
-| ZUC Stream Cipher | 6 | ✅ (GB/T 33133 official vectors) |
-| Post-Quantum Basic | 10 | ✅ (ML-KEM bottom + ML-DSA bottom) |
-| Post-Quantum Advanced | 9 | ✅ (ML-KEM/ML-DSA top) |
-| Arrays / Math / Variables | — | Blockly native categories |
-| Function Wrapping | 3+ | ✅ Templated (29 algorithm templates with prefilled chains) |
-| Crypto Templates | dynamic | ✅ (appears after Manager add) |
+## Coverage conclusions
 
-## 2. Coverage Assessment
+- FIPS 180-4: SHA-224/256/384/512 blocks and demos are present; SHA-1, SHA-512/224, and SHA-512/256 are not implemented.
+- FIPS 202: Keccak, SHA-3, and SHAKE atomic chains and wrapper demos are present.
+- FIPS 203/204/205: ML-KEM, ML-DSA, and SLH-DSA primitives/structures plus property demos are present; complete FN-DSA/Falcon is not implemented.
+- RSA, ECDH, ECDSA, EdDSA, X25519, Argon2, DRBG, PBKDF2, HKDF, AES/SM4 modes, and multiple AEAD/MAC primitives have standards directories and implementation records.
+- SM2 includes point operations, signing/verification, encryption/decryption, and `sm2_key_exchange`; ZUC includes the EEA3 keystream block and demo.
+- Three matrix entries intentionally have no Blockly atomic block: GB/T 36624 AEAD, GM/T 0005 randomness testing (Go backend), and China PQC public-information tracking. They must not be described as “all standards gaps closed.”
 
-### ✅ Fully covered (★ = new since v2.0)
+## Demo and generator audit
 
-- ★ **AES full rounds**: SubBytes/ShiftRows/MixColumns/AddRoundKey/KeyExpansion + full AES-128 enc/dec helpers inside `mode_*` blocks
-- ★ **SM4 full rounds**: S-box (dedicated `sm4_sbox` block) / round function / key schedule + 32-round template
-- ★ **Block modes**: ECB/CBC/CTR (atomic blocks + templates) + PKCS#7/Zero padding
-- ★ **HMAC**: HMAC-SHA256 / HMAC-SM3 (JS/Python generators)
-- ★ **KDF**: PBKDF2 (atomic `pbkdf2`, HASH dropdown SHA-256 official vectors + SM3 国密 iso, cross-language) / HKDF (atomic `hkdf`, RFC 5869 §A.1 official vectors); templates retained
-- ★ **ML-KEM one-click wrappers**: KeyGen / Encaps templates (FIPS 203 atomic chains)
-- ★ **Official-vector verification**: SM4-Sbox (GM/T 0002) / SM3 (GB/T 32905) / SM2 point-mul (GB/T 32918.5) / ML-KEM-512 Encaps (FIPS 203) — PASS in both languages (`scripts/verify-demo.ts` harness)
-- Existing: bitwise family / CSV S-box / SHA-256 / Keccak-SHA-3 sponge / SM3 pad+compress / SHAKE / modular arithmetic / NTT-INTT / ECC point ops / ML-KEM low-level primitives / type system
-- **Post-2026-08-02 batch (signature/KDF/DRBG family)**: EdDSA (RFC 8032), ECDSA (RFC 6979 deterministic P-256), SM2 signature (GB/T 32918.2), ML-DSA (FIPS 204 ACVP 30/30), SM9 4 blocks (GB/T 38635.2 bilinear pairing), DRBG (SP 800-90A CAVP 480 cases), Argon2 (RFC 9106), 国密 RNG (GM/T 0103 + SM3-HMAC-DRBG) — all official vectors, both languages
-- **RSA closure (2026-08-02)**: 5 blocks (FIPS 186-4 keygen + PKCS#1 v1.5 enc/dec/sign), cryptography cross-validation — **standards gap fully closed**
-- **PQC math foundations (2026-08-03)**: ML-DSA signature primitives (FIPS 204), hash-based structure blocks (SPHINCS+), coding-theory basics, multivariate + GF(2^m), LLL/Berlekamp-Massey/discrete Gaussian
-- **Full algorithm-level batch (2026-08-04)**: FORS signature (FIPS 205 §8), GF(2^m) coefficient polynomials, Goppa Patterson decoding, PQC gap fills (`pq_rej_sample`/`pq_poly_mul`/`slh_adrs_full`/`wots_checksum`), Merkle auth path + FORS leaf index
+The `demos/tests.json` key set matches the demo-file set: 59 registered items, with no missing or stale keys. Every workspace loads through the Blockly headless harness; demos with test specifications execute generated Python and JavaScript and compare their expected output. Run `npm run verify:all`; local documentation links are checked with `npm run docs:check-links`.
 
-### ⚠️ Partially covered
+The template harness checks template injection, chain shape, Python/JavaScript generation, and execution. The multi-parameter ML-KEM Encaps template additionally checks the `ek/m` signature, statement chain, and return reference.
 
-| Primitive | Present | Missing |
-|-----------|---------|---------|
-| SHA-2 family | SHA-256/384/512 (sha512 64-bit core) + SHA-224 (`hash_sha224_hash` standalone block, 2026-08-05) | — |
-| SHA-3 family | Keccak primitives + template + standalone `sha3_hash` (224-512) | — |
-| ECC | curve ops + ECDH (RFC 5903 P-256, 2026-08-03) + SM2 enc | — |
-| SM2 | point-mul / curve params (template) + sign/verify (`sm2_sign`/`sm2_verify`) + enc/dec (`sm2_encrypt`/`sm2_decrypt`) | key-exchange wrapper |
-| ZUC | S0/S1 atomic + L1/L2 + nonlinear F + `zuc_keystream` | templated assembly |
+## Known boundaries
 
-### ❌ Missing (by priority)
+1. Passing a vector proves agreement for the tested input; it is not third-party certification and does not make the generated code suitable for protecting production keys.
+2. SHA-1, MD5, SHA-512/224, SHA-512/256, and Falcon/FN-DSA must not be described as implemented in README or coverage documents.
+3. CMAC, Base64, and PKCS#7 have blocks but no independent procedure demo. Keep the distinction “block present, demo absent”; do not summarize this as complete demo coverage.
+4. Frontend generated-code trials are not platform-side backend randomness assessment. Sampling, statistical testing, isolated execution, and decisions run in the `metacrypt_server` backend pipeline; this is not certification or proof of entropy-source quality.
 
-| Priority | Primitive | Notes |
-|----------|-----------|-------|
-| P3 | Falcon full signature | FIPS 206, the only open complete-algorithm-level item (large; block-vs-blackbox form to be decided per user preference) |
-| P3 | Falcon full signature | FIPS 206, sole open complete-algorithm-level item |
-| P2 | SHA-1 / MD5 | textbook common, low priority |
+## Acceptance status and limits (2026-09-24)
 
-## 3. GM Standards (v3.0 status)
-
-| Algorithm | Standard | v2.0 | v3.0 |
-|-----------|----------|------|------|
-| **SM3** | GM/T 0004 / GB/T 32905 | ✅ pad+compress | ✅ + HMAC-SM3 + one-click hash (template) |
-| **SM4** | GM/T 0002 / GB/T 32907 | ❌ P0 | ✅ full rounds + 32-round template + official vector |
-| **SM2** | GM/T 0003 / GB/T 32918 | ⚠️ composable | ✅ point-mul + sign/verify (`sm2_sign`/`sm2_verify`, GB/T 32918.2 Appendix A vectors) + enc/dec (`sm2_encrypt`/`sm2_decrypt`, GB/T 32918.4) + key exchange (`sm2_key_exchange`, GB/T 32918.3 Appendix A.2 vectors, 2026-08-05) |
-| **ZUC** | GM/T 0001 / GB/T 33133 | ❌ | ✅ S0/S1/L1/L2/F atomic + `zuc_keystream` (official vectors both languages), template assembly pending |
-| **SM9** | GM/T 0044 / GB/T 38635 | ❌ | ✅ 4 blocks (`sm9_master_key`/`sm9_user_key`/`sm9_sign`/`sm9_verify`, GB/T 38635.2 official vectors, BN curve R-ate pairing) |
-| SM1 / SM7 | — | N/A | N/A (undisclosed algorithms) |
-
-Domestic PQC: CAC post-quantum working group in progress; The full ML-KEM primitive set (lattice direction) will be largely reusable.
-
-## 4. Roadmap Status
-
-| Milestone | Planned blocks | Content | Status |
-|-----------|------|---------|--------|
-| **M1: Cleanup** | 71 | remove compound blocks, type-system consolidation | ✅ |
-| **M2: Symmetric** | 85 | AES + SM4 + modes + padding | ✅ |
-| **M3: Math+helpers** | 94 | mod-pow / GF(2^m) / HMAC | ✅ |
-| **M4: Protocol wrappers** | 111 | ML-KEM wrappers / KDF / encoding | ✅ |
-| **M5: Extensions** | ~130 | RSA / ZUC / ML-DSA / AEAD family | ✅ complete (139 blocks; standards gaps fully closed) |
-
-## 5. Conclusion
-
-- **v2.0's biggest gap (symmetric crypto) is closed**: AES/SM4/modes/padding/HMAC/KDF all present, with 4 core algorithms passing official test vectors in both languages.
-- Strongest: full ML-KEM primitive set + official-vector verification (leading among visual programming platforms).
-- **Standards gaps fully closed**: protocol wrappers closed 2026-08-03 (ECDH P-256 RFC 5903 §8.1 vectors + cryptography cross-check; SM2 enc/dec GB/T 32918.4 Appendix A vectors); RSA closed 2026-08-02 (5 blocks, cryptography cross-validated); signature/KDF/DRBG family closed 2026-08-02; AEAD family (CMAC/CCM/XTS/GCM/ASCON) + X25519/HKDF/PBKDF2 closed 2026-08-02 — all official vectors both languages.
-- Remaining: Falcon full signature (FIPS 206, sole open complete-algorithm-level item).
+- Passed: `npm run test:unit` (49/49 across 8 files); `npm run type-check`; `npm run cycles:check` (357 files, no circular dependencies); `npm run build`; `npm run verify:all` (standards metadata/split/formula/inventory checks, 29/29 templates, 59/59 demos, and local-link checks across 388 Markdown files with 0 broken links).
+- Procedure generators: Python and JavaScript no longer treat the first parameter as a missing return value or infer the return type from it. A connected return block supplies its own Blockly output type for annotations; no-return procedures emit no `return`; call expressions and statements follow their respective shapes. Focused regression tests pass 4/4.
+- AES: atomic MixColumns now processes contiguous four-byte columns in the column-major state layout. The explicit normal-round expression runs SubBytes → ShiftRows → MixColumns → AddRoundKey; the final round omits MixColumns. Python/JavaScript regression outputs pass for project-fixed inputs, not the full FIPS Appendix C.1 encryption vector. AES-Atomic-Round mutates shared state in top-level workspace order for a single-round demonstration; it is not a complete AES-128 interface. The specified order follows [NIST FIPS 197](https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf).
+- Backend regression boundary: `metacrypt_server` backend unit tests report 534 passed, 1 skipped, and 103 warnings; `go test ./...` in the randomness module passes. The sandbox single-slot lock waits at most five seconds; atomic request claiming prevents duplicate execution; user code cannot enumerate the shared queue or create work-directory subdirectories, and cleanup failures return an explicit error. Undispatched Celery queue backlog remains uncapped. A Python `multiprocessing.resource_tracker` `KeyError` was observed after pytest exited with code 0; its source remains unisolated.
+- Podman runtime: a single `randomness-sandbox` container was built and started with an isolated rootless VFS store. The backend-client request/result round trip, runner UID 1002, EACCES on the queue directory, denied nested `mkdir`, one-time request claiming while running, and an empty `/tmp` after jobs were exercised. This covers the sandbox service only—not the full Compose stack, GPU path, backend/Nginx 401 behavior, or production deployment. The host's default store still has an old `mc-randomness-sandbox` instance without the current `CAP_KILL`/`CAP_SETUID` requirements; it was not restarted or replaced in this review.
+- Full `npm run lint:check` exited 0 with no error or warning diagnostics; `npm run type-check` also passes in this repository. The 384 TypeScript diagnostics previously found belong to `metacrypt_server/frontend` and must not be attributed to this repository.
+- Review-round status: the 2026-09-22 baseline records three primary reviews with independent rebuttals, but its conclusion was **not accepted** and listed unresolved code, backend-assessment architecture, and delivery issues. This incremental pass also reviewed the crypto-category navigation, bilingual capability tables, and block/template counts alongside the AES/procedure-generator/sandbox slices. Two reviewers independently confirmed 194 unique block types and a 220-type deduplicated block/template union; a separate reviewer found no issue in the documentation diff. Unit tests, type-check, lint, cycle check, `verify:all`, and production build pass. This is not a current whole-repository three-round acceptance: manual UI walkthroughs, screenshot/environment consistency, and other algorithm and architecture areas remain unaccepted.
+- These checks demonstrate engineering regressions and behavior on selected inputs only. They are not evidence of CAVP/ACVTS, CMVP/FIPS 140-3, constant-time, side-channel security, or formal verification.

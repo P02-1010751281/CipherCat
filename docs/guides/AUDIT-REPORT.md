@@ -1,96 +1,59 @@
-# 密码原语完整性审计报告
+# 密码原语与教学表面审计报告
 
->
-> 审计日期：2026-08-02 | 版本：v3.0（现状对账）| 上一版：v2.0（2026-07-18，对称密码缺失时代）
+> 核对日期：2026-09-24。本文区分本轮实际执行的检查与尚未完成的审查；算法是否“完整”不等于生产密码库安全认证。标准和论文调研见 [全网调研报告](../research/CRYPTO-RESEARCH-2026-09-12.md)。
 
-## 一、当前覆盖概况
+## 当前快照
 
-**139 个自定义块 + 29 个函数模板**，**17 个工具箱类目**（15 自定义块类目 + 函数封装空间 + Crypto Templates；含 4 个 Blockly 原生类目——基础变量/基础数学/数组空间/逻辑运算单元；块数为 2026-08-05 递归展开 `ALL_BLOCK_TYPES` 实测）：
+- **194 个自定义块类型**：递归展开 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`，去重后为 194；没有重复类型。
+- **29 个函数模板**：以 `src/blocks/procedure/blocks.ts` 的 `TEMPLATE_REGISTRY` 为准。
+- **17 个工具箱类目**：包括自定义密码学类目、函数封装空间、Crypto Templates 和 Blockly 原生类目。
+- **59 个 Demo 注册项**：`demos/tests.json` 与 59 个 Demo 工作区一一对应（不含注册表自身）。
+- **函数模板**：29 个模板注册项中有 3 个基础 `crypto_*` 块已计入块类型总数；另有 26 个 `proc_*` 模板类型。Demo 回归覆盖登记的工作区，不等同于逐一执行全部块类型。
 
-| 工具箱类目 | 块数 | 覆盖评价 |
-|------|------|---------|
-| 控制流编排 | 12 | ✅ 基础（ctrl_iterate 循环 + 原生） |
-| 数据处理与转换 | 20 | ✅ 良好（字节/位/编码/seed） |
-| 位运算单元 | 8 | ✅ 优秀 |
-| 逻辑运算单元 | 3 | Blockly 原生 |
-| 非线性运算单元（S-Box） | 4 | ✅ 优秀（CSV 自定义 + 4 预设：AES/SM4/ZUC S0/S1） |
-| 哈希与填充单元 | 31 | ✅ **完整**（SHA-256/SHA-3/SM3/SHAKE/HMAC/KDF 族） |
-| 对称密码 | 18 | ✅ **完整**（AES/SM4 全轮 + 模式 + CMAC/CCM/XTS/GCM/ASCON） |
-| 数论与密钥推导单元 | 37 | ✅（NTT/GF(2^m)/模逆/模幂/RSA/DRBG/Argon2） |
-| 椭圆曲线运算单元 | 19 | ✅ **完整**（点运算 + EdDSA/ECDSA/SM2 签名加密 + SM9 + ECDH + X25519） |
-| 祖冲之序列密码 | 6 | ✅（GB/T 33133 官方向量） |
-| 后量子基础块 | 10 | ✅（ML-KEM 底层 + ML-DSA 底层） |
-| 后量子高级块 | 9 | ✅（ML-KEM/ML-DSA 顶层） |
-| 数组空间 / 基础数学 / 基础变量 | — | Blockly 原生类目 |
-| 函数封装空间 | 3+ | ✅ 模板化（29 个算法模板预填链） |
-| Crypto Templates | 动态 | ✅（Manager 添加模板后出现） |
+## 能力分组
 
-## 二、覆盖评价
+| 能力家族 | 代表范围 |
+|---|---|
+| 控制流与数据处理 | 自定义循环、字节/位/编码/种子/长度处理及 Blockly 原生组合 |
+| 位运算与 S-Box | 逻辑、移位、循环移位、字节替换及 AES/SM4/ZUC 预设 |
+| 散列、XOF 与填充 | SHA-2、SHA-3、SHAKE、SM3、HMAC、KDF、DRBG |
+| 对称密码与分组模式 | AES、SM4、CMAC、CCM、GCM、XTS、ASCON |
+| 序列密码 | ZUC 状态变换、密钥流与 EEA3 构件 |
+| 公钥与椭圆曲线 | RSA、ECDH、X25519、ECDSA、EdDSA、SM2、SM9 |
+| 后量子密码 | ML-KEM/ML-DSA 格基构件、SLH-DSA 哈希基构件及纠错码教学原语 |
+| 数学与数据编码 | NTT、GF(2^m)、多项式、矩阵、编码和密钥推导等共享构件 |
 
-### ✅ 已完整覆盖（相对 v2.0 新增标 ★）
+> 上表是能力分组，不与 17 个运行时工具箱类目一一对应，也不提供可相加的小计。总数以 `ALL_BLOCK_TYPES` 的去重展开为准；共享原语可服务于多个算法家族。
 
-- ★ **AES 全轮**：SubBytes/ShiftRows/MixColumns/AddRoundKey/KeyExpansion + `mode_*` 原子块内置完整 AES-128 加密/解密 helper
-- ★ **SM4 全轮**：S-box（独立 `sm4_sbox` 块）/轮函数/密钥扩展 + 32 轮模板
-- ★ **分组模式**：ECB/CBC/CTR（原子块 + 模板）+ PKCS#7/Zero 填充
-- ★ **HMAC**：HMAC-SHA256 / HMAC-SM3（JS/Python 双生成器）
-- ★ **KDF**：PBKDF2（原子块 `pbkdf2`，HASH 下拉 SHA-256 官方向量 + SM3 国密同构，双语言交叉一致）/ HKDF（原子块 `hkdf`，RFC 5869 §A.1 官方向量双语言通过）；模板保留
-- ★ **ML-KEM 一键封装**：KeyGen / Encaps 模板（FIPS 203 原子链）
-- ★ **官方向量验证**：SM4-Sbox（GM/T 0002）/ SM3（GB/T 32905）/ SM2 点乘（GB/T 32918.5）/ ML-KEM-512 Encaps（FIPS 203）双语言 PASS（`scripts/verify-demo.ts` harness）
-- 原有：位运算全系列 / CSV 自定义 S-box / SHA-256 / Keccak-SHA-3 海绵 / SM3 pad+compress / SHAKE / 模运算 / NTT-INTT / ECC 点运算 / ML-KEM 底层原语 / 类型约束系统
+## 规范映射结论
 
-### ⚠️ 部分覆盖
+- FIPS 180-4：SHA-224/256/384/512 已有块和 Demo；SHA-1、SHA-512/224、SHA-512/256 尚未实现。
+- FIPS 202：Keccak、SHA-3、SHAKE 的原子链和封装 Demo 已覆盖。
+- FIPS 203/204/205：ML-KEM、ML-DSA、SLH-DSA 的核心原语、结构块和相应性质 Demo 已覆盖；完整 FN-DSA/Falcon 仍未实现。
+- RSA、ECDH、ECDSA、EdDSA、X25519、Argon2、DRBG、PBKDF2、HKDF、AES/SM4 模式和多个 AEAD/MAC 原语均有标准目录与实现记录。
+- SM2 已覆盖点运算、签名/验签、加解密和 `sm2_key_exchange`；ZUC 已覆盖 EEA3 密钥流块和 Demo。
+- 仍列入覆盖矩阵但不对应 Blockly 原子块的目录：GB/T 36624 AEAD、GM/T 0005 随机性检测（Go 后端）、中国抗量子密码公开进展追踪。这些是明确的边界，不应写成“标准缺口全部清零”。
 
-| 原语 | 已有 | 缺失 |
-|------|------|------|
-| SHA-2 系列 | SHA-256/384/512（sha512 64 位核）+ SHA-224（`hash_sha224_hash` 独立块，2026-08-05） | — |
-| SHA-3 系列 | Keccak 原语 + 模板 + 独立 `sha3_hash` 封装块（224-512） | — |
-| ECC | 曲线运算 + ECDH（RFC 5903 P-256，2026-08-03） + SM2 加密 | — |
-|| SM2 | 点乘 / 曲线参数（模板）+ 签名/验签（`sm2_sign`/`sm2_verify`）+ 加密/解密（`sm2_encrypt`/`sm2_decrypt`） | 密钥交换封装 |
-|| ZUC | S0/S1 原子块 + L1/L2 + 非线性函数 F + `zuc_keystream` 密钥流 | 模板化拼接 |
+## Demo 与生成器审计
 
-### ❌ 完全缺失（按优先级）
+`demos/tests.json` 的键集合与 Demo 文件集合已核对：59 个注册项、无遗漏、无陈旧键。每个 Demo 工作区都通过 Blockly headless 加载；带测试规格的 Demo 由 Python 和 JavaScript 生成器分别执行并比对期望值。可重复命令为 `npm run verify:all`，文档本地链接使用 `npm run docs:check-links` 检查。
 
-| 优先级 | 原语 | 说明 |
-|--------|------|------|
-|| **P0** | RSA | ✅ 已补 5 块（`rsa_keygen`/`rsa_encrypt`/`rsa_decrypt`/`rsa_sign`/`rsa_verify`，FIPS 186-4 + PKCS#1 v1.5，cryptography 双向交叉验证） |
-| P1 | AEAD 族 | 已全部补齐：CMAC（`cmac_mac`，SP 800-38B）、CCM（`ccm_encrypt`，SP 800-38C）、XTS（`xts_encrypt`，SP 800-38E）、GCM（`gcm_encrypt`，SP 800-38D）、ASCON（`ascon_encrypt`，SP 800-232）——均官方向量双语言通过 |
-|| P1 | DRBG | ✅ 已补 `drbg_generate`（SP 800-90A HMAC-DRBG SHA-256，NIST CAVP 480 例双语言通过） |
-|| P2 | Argon2 / BLAKE2 / SHA-1 / MD5 | ✅ Argon2 已补（`argon2_hash`，RFC 9106 三组官方向量含中间块双语言通过）；SHA-1/MD5 仍缺（低优先） |
-|| P3 | SM9 | ✅ 已补 4 块（`sm9_master_key`/`sm9_user_key`/`sm9_sign`/`sm9_verify`，GB/T 38635.2 官方向量双语言通过，BN 曲线 R-ate 双线性对） |
-|| P0 | EdDSA | ✅ 已补（`eddsa_sign`/`eddsa_verify`，RFC 8032 官方向量 3 组双语言通过） |
-|| P0 | ECDSA | ✅ 已补（`ecdsa_sign`/`ecdsa_verify`，RFC 6979 确定性 P-256 官方向量双语言通过） |
-|| P1 | SM2 签名 | ✅ 已补（`sm2_sign`/`sm2_verify`，GB/T 32918.2 附录 A 含 ZA/e/r/s 中间值双语言通过） |
-|| P1 | ML-DSA | ✅ 已补（`mldsa_sign`/`mldsa_verify`，FIPS 204，NIST ACVP 30/30 双语言通过） |
-|| P2 | 国密 RNG | ✅ 已补 `gm_rng`（GM/T 0103 框架 + SM3-HMAC-DRBG 实例化，SHA-256 版 480 例对拍 + SM3 双语言交叉） |
+函数模板的测试脚本覆盖模板注入、链结构、Python/JavaScript 生成和可执行性；多参数 ML-KEM Encaps 模板还检查 `ek/m` 签名、语句链和返回值引用。
 
-## 三、国密标准专项（v3.0 状态）
+## 已知边界
 
-| 算法 | 标准号 | v2.0 状态 | v3.0 状态 |
-|------|--------|----------|----------|
-| **SM3** | GM/T 0004 / GB/T 32905 | ✅ pad+compress | ✅ + HMAC-SM3 + 一键哈希（模板） |
-| **SM4** | GM/T 0002 / GB/T 32907 | ❌ P0 | ✅ 全轮 + 32 轮模板 + 官方向量 |
-|| **SM2** | GM/T 0003 / GB/T 32918 | ⚠️ 可组合 | ✅ 点乘 + 签名/验签（`sm2_sign`/`sm2_verify`，GB/T 32918.2 附录 A 官方向量双语言通过）+ 加密/解密（`sm2_encrypt`/`sm2_decrypt`，GB/T 32918.4 附录 A 示例 2）+ **密钥交换**（`sm2_key_exchange`，GB/T 32918.3 附录 A.2 官方向量双语言通过，2026-08-05） |
-|| **ZUC** | GM/T 0001 / GB/T 33133 | ❌ | ✅ S0/S1/L1/L2/F 原子块（官方向量双语言通过），密钥流拼接待模板 |
-|| **SM9** | GM/T 0044 / GB/T 38635 | ❌ | ✅ 4 块（`sm9_master_key`/`sm9_user_key`/`sm9_sign`/`sm9_verify`，GB/T 38635.2 官方向量双语言通过） |
-| SM1 / SM7 | — | 无法实现 | 无法实现（算法未公开） |
+1. Demo 向量通过只说明当前输入下与标准/性质断言一致，不代表实现已经通过第三方认证或适合直接保护生产密钥。
+2. SHA-1、MD5、SHA-512/224、SHA-512/256 和 Falcon/FN-DSA 不应在 README 或覆盖矩阵中被表述为已实现。
+3. CMAC、Base64、PKCS#7 等已有块但没有独立 Procedure Demo 的项目，应保持“有块、无 Demo”的事实表述，不能用“全量 Demo 已覆盖”概括。
+4. 前端生成代码的试运行不是平台后端随机性测评；样本、统计检验、隔离执行和判定由 `metacrypt_server` 后端链路负责，且不代表认证或熵源质量证明。
 
-国产后量子：中国密码学会后量子标准化工作组推进中，ML-KEM 全套原语（格基方向）届时可大幅复用。
+## 验收状态与边界（2026-09-24）
 
-## 四、路线图状态
-
-
-| 里程碑 | 计划块数 | 内容 | 状态 |
-|--------|------|------|------|
-| **M1: 清理** | 71 | 移除复合块、类型系统收敛 | ✅ |
-| **M2: 对称密码** | 85 | AES + SM4 + 模式 + 填充 | ✅ |
-| **M3: 数学+辅助** | 94 | 模幂 / GF(2^m) / HMAC | ✅ |
-| **M4: 协议封装** | 111 | ML-KEM 封装 / KDF / 编码 | ✅ |
-|| **M5: 扩展** | ~130 | RSA / ZUC / ML-DSA / AEAD 族 | ✅ 完成（139 块，standards 缺口全部清零） |
-
-## 五、核心结论
-
-- **v2.0 最大缺口（对称密码）已闭环**：AES/SM4/模式/填充/HMAC/KDF 全齐，且 4 个核心算法通过官方测试向量双语言验证。
-- 最强项：ML-KEM 全套底层 + 官方向量验证（国内可视化编程平台领先）。
-- **standards 缺口全部清零**（现 139 块；2026-08-03 时点 134 块）。协议封装于 2026-08-03 闭环：ECDH 1 块（P-256，RFC 5903 §8.1 官方向量 + cryptography 交叉）、SM2 加密/解密 2 块（GB/T 32918.4 附录 A 示例 2 官方向量，双语言 PASS）；25/25 向量 demo 全绿。ZUC 序列密码原子块已于 2026-08-02 补齐（S0/S1/L1/L2/F/Keystream，官方向量验证通过）；CMAC 同日补齐（SP 800-38B）；CCM 同日补齐（SP 800-38C）；XTS 同日补齐（SP 800-38E）；X25519 同日补齐（RFC 7748）；ASCON 同日补齐（SP 800-232）；HKDF 同日补齐（RFC 5869）；PBKDF2 同日补齐（RFC 8018）；GCM 同日补齐（SP 800-38D）——AEAD 族全部闭环。
-- **2026-08-02 第二波补齐（签名/KDF/DRBG 族）**：EdDSA（RFC 8032）、ECDSA（RFC 6979 确定性 P-256）、SM2 签名（GB/T 32918.2）、ML-DSA（FIPS 204 ACVP 30/30）、SM9 4 块（GB/T 38635.2 双线性对）、DRBG（SP 800-90A CAVP 480 例）、Argon2（RFC 9106）、国密 RNG（GM/T 0103 + SM3-HMAC-DRBG）——全部官方向量双语言通过。
-- **RSA 收官（2026-08-02）**：5 块（FIPS 186-4 密钥生成 + PKCS#1 v1.5 加解密/签名），cryptography 双向交叉验证（1024 位生成代码被 cryptography 接受）——**standards 缺口全部清零**。
+- 通过：`npm run test:unit`（49/49，8 个测试文件）；`npm run type-check`；`npm run cycles:check`（357 个文件，无循环依赖）；`npm run build`；`npm run verify:all`（标准元数据/拆分/公式/清单检查、29/29 模板、59/59 Demo、388 个 Markdown 文件的本地链接检查，0 个失效链接）。
+- 过程生成器：Python/JavaScript 不再把首个参数伪装成缺失返回值或据此猜返回类型；连接的返回块按自身 Blockly 输出类型生成注解；无返回过程不输出 `return`；调用表达式与调用语句按各自形态生成。定向回归测试 4/4 通过。
+- AES：原子 MixColumns 已按列优先状态布局处理连续四字节；普通轮嵌套执行 SubBytes → ShiftRows → MixColumns → AddRoundKey，末轮省略 MixColumns。显式 Demo 的 Python/JavaScript 回归值通过，但它们是项目固定输入值，不是 FIPS 附录 C.1 完整加密向量。AES-Atomic-Round 是按工作区顺序原地修改共享状态的单轮演示，不是完整 AES-128 接口。顺序依据 [NIST FIPS 197](https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf)。
+- 后端边界回归：`metacrypt_server` 后端单元测试为 534 passed、1 skipped（103 warnings）；随机性 Go 模块 `go test ./...` 通过。sandbox 单槽锁最多等待 5 秒；worker 请求通过原子认领避免重复执行；用户代码不能列举共享队列或创建工作目录子目录，清理失败会返回明确错误。这不限制尚未派发的 Celery 队列积压。pytest 退出后曾观察到 Python `multiprocessing.resource_tracker` 的 `KeyError` 输出，虽 pytest 退出码为 0，来源仍待定位。
+- Podman 运行态：使用独立 rootless VFS 存储构建并启动单个 `randomness-sandbox` 容器；后端客户端请求/结果往返、runner UID 1002、队列目录 EACCES、嵌套 `mkdir` 拒绝、运行中单次请求认领及 `/tmp` 无任务残留均已实测。仅验证 sandbox 单服务，不代表完整 Compose、GPU、后端/Nginx 401 或生产部署验收。宿主默认存储仍有一个旧的 `mc-randomness-sandbox` 实例，缺少当前配置要求的 `CAP_KILL`/`CAP_SETUID`，本轮未重启或替换它。
+- 全量 `npm run lint:check` 本轮退出码为 0，未输出错误或警告诊断；本仓库 `npm run type-check` 也通过。此前发现的 384 项 TypeScript 诊断来自 `metacrypt_server/frontend`，不应归到本仓库。不能把一个仓库的静态检查结果转记到另一个仓库。
+- 审查轮次：2026-09-22 基线报告记录三轮主审与独立批驳，但结论是未通过，仍留有代码、后端测评架构和交付问题。本轮增量复核了 AES/过程生成器/sandbox 切片，以及密码分类导航、双语分类表和块类型统计；两位审查者独立确认 194 个唯一块类型及 220 个块/模板并集，另一位审查者复核本轮文档差异未发现问题。`npm run test:unit`、类型检查、lint、循环依赖检查、`npm run verify:all` 和生产构建通过。旧基线仍不能视为当前工作树通过三轮全仓审查；UI 手工逐步点验、截图与运行环境一致性、其他算法和架构区域也未因这些回归而自动验收。
+- 这些检查证明工程回归和选定输入下的行为，不构成 CAVP/ACVTS、CMVP/FIPS 140-3、constant-time、侧信道安全或形式化验证证据。

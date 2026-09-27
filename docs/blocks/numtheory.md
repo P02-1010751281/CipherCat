@@ -48,7 +48,7 @@
 | `gf2m_add` | 1 | value(→) | IntList&IntList→IntList | 域加法 = 按位 XOR（AES/GCM 双域） |
 | `gf2m_inv` | 1 | value(→) | IntList→IntList | 乘法逆元（多项式扩展欧几里得，Fermat 校验） |
 
-## GF(2) 多项式 + 二进制矩阵（编码基）
+## GF(2) 多项式与二进制矩阵（基于纠错码的数学构件）
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
@@ -58,7 +58,7 @@
 | `bin_mat_mul` / `bin_mat_inv` | 1 | value(→) | IntList&IntList→IntList | GF(2) 矩阵乘 / 求逆（增广高斯消元，展平 n×n） |
 | `ham_weight` / `ham_dist` | 1 | value(→) | IntList→Number | 汉明重量 / 距离 |
 
-## Goppa 码（McEliece，编码基）
+## Goppa 码（McEliece，基于纠错码的公钥密码构件）
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|

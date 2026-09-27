@@ -1,5 +1,16 @@
 # Hash Block Reference (SHA + SM3 + Keccak + XOF)
 
+## Document role and evidence entry points
+
+This is the category detail page under the [block overview](INDEX.en.md). “Hash” here includes digests, XOFs, sponges, HMAC, and explicitly marked hash-based components; the complete FIPS 205 scheme remains in the post-quantum documentation.
+
+| Entry | Contents |
+|-------|----------|
+| Normative source and structured entries | [FIPS 180-4 SHA-2](../standards/fips180-4-SHA2/), [FIPS 202 SHA-3](../standards/fips202-SHA3/), [GB/T 32905 SM3](../standards/gbt32905-SM3/), [FIPS 198-1 HMAC](../standards/fips198-1-hmac/), [coverage matrix](../standards/COVERAGE.en.md) |
+| Implementation | `src/blocks/hash/`, `src/blocks/sha512/`, `src/blocks/hkdf/`, `src/blocks/pbkdf2/`, `src/blocks/argon2/` |
+| Demos and tests | [Demo guide](../guides/DEMO.en.md), [demo test registry](../../demos/tests.json), and SHA/SM3/HMAC/HKDF/PBKDF2/ARGON2 workspaces under `demos/procedures/` |
+| Boundary | Registered algorithms, vectors, and hash-based PQ components are checked separately; a hash block does not imply a complete signature scheme or every parameter set |
+
 
 ## SHA-256 (FIPS 180-4)
 

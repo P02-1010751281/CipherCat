@@ -1,5 +1,16 @@
 # ECC + S-Box Block Reference
 
+## Document role and evidence entry points
+
+This is the classical public-key and elliptic-curve detail page under the [block overview](INDEX.en.md). RSA number-theoretic components are documented in the [number-theory block reference](numtheory.en.md), while post-quantum public-key schemes are documented in the [post-quantum block reference](post-quantum.en.md).
+
+| Entry | Contents |
+|-------|----------|
+| Normative source and structured entries | [FIPS 186-5 ECDSA](../standards/fips186-5-ecdsa/), [RFC 5903 ECDH](../standards/rfc5903-ecdh/), [RFC 7748 X25519](../standards/rfc7748-x25519/), [RFC 8032 EdDSA](../standards/rfc8032-eddsa/), [GB/T 32918 SM2](../standards/gbt32918-SM2/), [GB/T 38635 SM9](../standards/gbt38635-SM9/), [coverage matrix](../standards/COVERAGE.en.md) |
+| Implementation | `src/blocks/ecc/`, `src/blocks/ecdh/`, `src/blocks/ecdsa/`, `src/blocks/eddsa/`, `src/blocks/x25519/`, `src/blocks/sm2sig/`, `src/blocks/sm2enc/`, `src/blocks/sm9/` |
+| Demos and tests | [Demo guide](../guides/DEMO.en.md), [demo test registry](../../demos/tests.json), and ECDH/ECDSA/EdDSA/X25519/SM2/SM9 workspaces |
+| Boundary | Claims apply only to the curves, encodings, and protocol chains listed here; a passing demo does not imply general public-key security, side-channel security, or certification |
+
 
 ## Elliptic Curves (SEC 2)
 

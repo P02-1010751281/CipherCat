@@ -7,9 +7,9 @@
 
 ## 特性
 
-- 🔮 **后量子密码** — NTT/INTT、编码压缩、SampleNTT 等全套后量子原语（最核心特色）
-- 🔐 **密码学全覆盖** — 对称密码（AES/SM4 全轮 + 模式）、哈希函数（SM3/SHA/HMAC）、数论运算
-- 🧮 **算法模板** — 28 个密码算法模板（拖出即用，自动预填原子链）
+- 🔮 **后量子密码** — 以格基密码为核心，覆盖 NTT/INTT、编码压缩、SampleNTT 等公共原语与算法阶段
+- 🔐 **密码学教学覆盖** — AES 单轮原语与模式、SM4 全轮、哈希函数（SM3/SHA/HMAC）和数论运算
+- 🧮 **算法模板** — 29 个密码算法模板（拖出即用，自动预填原子链）
 - ✅ **官方向量验证** — SM4/SM3/SM2/ML-KEM 双语言通过官方测试向量
 - 🧩 **可视化编程** — 拖拽积木块，像搭乐高一样写密码学代码
 - 🌐 **多语言** — 中英文界面，Blockly 积木块同步切换
@@ -20,19 +20,33 @@
 
 ## 快速开始
 
+第一次使用请先看：[环境搭建与验收](docs/guides/SETUP.md) · [用户完整指南](docs/guides/USER-GUIDE.md) · [能力地图](docs/guides/CAPABILITY-MAP.md) · [Demo 清单](demos/README.md)。
+
 ```bash
 # 安装依赖
-npm install
+npm ci
 
 # 启动开发服务器
 npm run dev          # → http://localhost:3001
 
 # 构建生产版本
 npm run build
+npm run build:check-bundle
 
 # Tauri 桌面应用
 npm run tauri:dev    # 开发模式
 npm run tauri:build  # 打包
+
+# 质量门禁
+npm run test:unit
+npm run standards:check
+npm run standards:inventory
+# 重新生成逐项 source 清单时使用：npm run standards:inventory:write
+npm run cycles:check
+npm run lint:check
+npm run type-check
+npm run verify:all
+npm run docs:check-links
 ```
 
 ## 技术栈
@@ -40,17 +54,17 @@ npm run tauri:build  # 打包
 | 层 | 技术 |
 |---|---|
 | 前端框架 | Vue 3 (Composition API + TypeScript) |
-| 可视化编程 | Blockly 12.x |
+| 可视化编程 | Blockly 13.x |
 | 代码高亮 | highlight.js |
 | 文档渲染 | marked + mermaid |
 | 桌面封装 | Tauri 2.x |
 | 构建工具 | Vite + vue-tsc |
-| 代码规范 | ESLint 9.x |
-| 本地存储 | IndexedDB (idb) |
+| 代码规范 | ESLint 10.x |
+| 本地存储 | 浏览器 IndexedDB |
 
 ## 项目结构
 
-```
+```text
 src/
 ├── App.vue                     # 主编辑器视图
 ├── main.ts                     # 应用入口
@@ -80,30 +94,27 @@ src/
 ├── utils/                      # 工具函数（toolbox-config / migration / markdown）
 ├── styles/                     # 全局样式 / CSS 变量
 └── assets/                     # 静态资源
-docs/                           # 文档体系（guides/ 核心 + blocks/ 索引 + demos/ + standards/ 33 算法规范）
+docs/                           # 文档体系（guides/ 核心 + blocks/ 索引 + demos/ + standards/ 37 算法目录 + papers/ 文献索引）
 demos/                          # Blockly 工作区示例（含官方向量期望）
 ```
 
-## 支持的密码学模块（138 个自定义积木块，17 类目）
+## 支持的密码学模块（194 个自定义积木块，17 个工具箱类目）
 
-| 类目 | 块数 | 积木块 |
-|------|------|--------|
-| 控制流编排 | 12 | 循环迭代（ctrl_iterate） |
-| 数据处理与转换 | 20 | 值输入、种子（bytes/hex）、位/字节长度、类型转换、Base64/Hex 编解码、字节序 |
-| 位运算单元 | 8 | AND/OR/XOR、NOT、移位、循环移位、字节替换、中缀表达式 |
-| 非线性运算单元（S-Box） | 4 | S-Box 定义/替换（CSV 自定义 + AES/SM4/ZUC 预设） |
-| 哈希与填充单元 | 26 | SM3 压缩/填充、SHA-256 压缩/填充、SHA-3 Keccak-f/吸收/挤出/填充、SHAKE XOF/PRF、HMAC、HKDF、PBKDF2、DRBG、Argon2、国密 RNG |
-| 对称密码 | 18 | AES 四步/SM4 轮函数、ECB/CBC/CTR、PKCS#7/零填充、CMAC、CCM、XTS、GCM、ASCON |
-| 数论与密钥推导单元 | 15 | NTT/INTT/蝶形/乘法、GF(2^m)、模逆、模幂、多项式、RSA（keygen/加解密/签名） |
-| 椭圆曲线运算单元 | 19 | 曲线/点加载、倍点/点加/点乘、EdDSA、ECDSA、SM2 签名/加密、SM9、ECDH、X25519 |
-| 祖冲之序列密码 | 6 | ZUC S0/S1/L1/L2/F、密钥流 |
-| 后量子基础块 | 9 | 编码/解码、压缩/解压、SampleNTT、SamplePolyCBD、ML-DSA 底层 |
-| 后量子高级块 | 4 | ML-KEM KeyGen/Encaps、ML-DSA 签名/验签 |
-| 函数封装空间 | 3+ | crypto_return/ifreturn + 函数模板（28 个，见下） |
-| Crypto Templates | 动态 | 函数管理面板添加后出现 |
-| （Blockly 原生） | — | 基础变量 / 基础数学 / 数组空间 / 逻辑运算单元 |
+| 类目 | 代表能力 |
+|------|----------|
+| 控制流编排 | 循环迭代（`ctrl_iterate`）及 Blockly 控制组合 |
+| 数据处理与转换 | 值与种子输入、位/字节长度、类型转换、Base64/Hex 编解码、字节序 |
+| 位运算单元 | AND/OR/XOR、NOT、移位、循环移位、字节替换、中缀表达式 |
+| 非线性运算单元（S-Box） | 自定义 S-Box 与 AES/SM4/ZUC 预设 |
+| 散列与填充 | SM3、SHA-2/SHA-3、SHAKE、HMAC、HKDF、PBKDF2、DRBG、Argon2 |
+| 对称密码 | AES、SM4、分组模式、CMAC、CCM、XTS、GCM、ASCON |
+| 数论与密钥推导 | NTT、GF(2^m)、模逆/模幂、多项式、RSA |
+| 椭圆曲线与公钥 | EdDSA、ECDSA、ECDH、X25519、SM2、SM9 与曲线/点运算 |
+| 序列密码 | ZUC 状态变换、密钥流及 EEA3 构件 |
+| 后量子密码 | ML-KEM/ML-DSA 格基构件与阶段；另含 SLH-DSA、纠错码教学构件 |
+| 函数与 Blockly 原生类目 | 29 个函数模板及变量、数学、数组、逻辑等 Blockly 原生块 |
 
-> 合计 138 个自定义积木块（`src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`），工具箱 17 类目（含 4 个 Blockly 原生）；另有 28 个函数模板（25 个 `proc_*` 算法模板 + 3 个基础封装）与 Blockly 原生 procedure 块。
+> 总数按 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES` 递归展开、去重得到 194 个自定义块类型。另有 29 个函数模板注册项，其中 3 个基础 `crypto_*` 块已计入这 194 个类型，26 个 `proc_*` 模板是额外类型；块与模板合并去重后共 220 个类型。工具箱 17 类目含 4 个 Blockly 原生类目。上表用于说明能力范围，不提供可能重叠的分类小计。
 
 ## 代码生成示例
 

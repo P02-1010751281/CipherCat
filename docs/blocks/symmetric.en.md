@@ -1,5 +1,16 @@
 # Symmetric Crypto Block Reference (AES + SM4 + Modes + Padding)
 
+## Document role and evidence entry points
+
+This is the category detail page under the [block overview](INDEX.en.md). It records block inputs/outputs, composition, and current engineering boundaries; page length is not a capability weight.
+
+| Entry | Contents |
+|-------|----------|
+| Normative source and structured entries | [FIPS 197 AES](../standards/fips197-AES/), [GB/T 32907 SM4](../standards/gbt32907-SM4/), [SP 800-38A](../standards/sp800-38a-modes/), [coverage matrix](../standards/COVERAGE.en.md) |
+| Implementation | `src/blocks/symmetric/`, `src/blocks/cmac/`, `src/blocks/ccm/`, `src/blocks/gcm/`, `src/blocks/xts/`, `src/blocks/ascon/` |
+| Demos and tests | [Demo guide](../guides/DEMO.en.md), [demo test registry](../../demos/tests.json), and AES/SM4/CCM/GCM/XTS/ASCON workspaces under `demos/procedures/` |
+| Boundary | Atomic rounds, modes, and selected vectors do not imply every parameter set, rejection path, or production security property; use the coverage matrix for per-algorithm gaps |
+
 
 ## AES (FIPS 197)
 

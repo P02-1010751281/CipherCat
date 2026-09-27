@@ -1,39 +1,29 @@
-# Blockly Usage Guide
+# Blockly usage guide
 
 
-Build crypto algorithms with the Blockly 12 visual editor: drag blocks, connect by type, generate Python / JavaScript with one click. This guide covers editor operations, the type system, function templates, and algorithm assembly examples.
+Build crypto algorithms with the Blockly 13 visual editor: drag blocks, connect by type, generate Python / JavaScript with one click. This guide covers editor operations, the type system, function templates, and algorithm assembly examples.
 
 ---
 
-## 1. Interface Overview
+## 1. Interface overview
 
-```
-┌──────────┬──────────────────────────────────────────┐
-│ Toolbox  │          Workspace                       │
-│ (categories)                                        │
-│          │    Blocks dragged here connect & edit    │
-│  ▸ Control flow                                     │
-│  ▸ Variables                                       │
-│  ▸ Math                                            │
-│  ▸ Data                                            │
-│  ▸ Bitwise                                         │
-│  ▸ S-Box                                           │
-│  ▸ Hash                                            │
-│  ▸ Number theory                                   │
-│  ▸ ECC                                             │
-│  ▸ Post-quantum                                    │
-│  ▸ Symmetric                                       │
-│  ▸ Modes                                           │
-│  ▸ Functions                                       │
-│                                   ▶ Generate (JS/Py) │
-└──────────┴──────────────────────────────────────────┘
+```mermaid
+flowchart LR
+  TOOLBOX[Toolbox<br/>Control flow · Data · Hash · Number theory · Post-quantum · Functions]
+  WORKSPACE[Workspace<br/>Drag, connect, and edit blocks]
+  GENERATOR[Code generation<br/>JavaScript / Python]
+  TOOLBOX --> WORKSPACE --> GENERATOR
 ```
 
 - **Toolbox**: category list on the left. Click a category to reveal blocks, drag one onto the workspace.
 - **Workspace**: central canvas. Zoom with Ctrl+scroll, pan by dragging.
 - **Generate**: toolbar button that translates the workspace into JavaScript or Python.
 
-## 2. Basic Operations
+![Editor after importing a workspace (interface example)](/docs-assets/tutorials/04-editor-imported.png)
+
+_Figure: The actual page shows the toolbox, connected workspace chain, and code area together; the screenshot documents control locations and does not replace generator tests._
+
+## 2. Basic operations
 
 | Action | How |
 |--------|-----|
@@ -46,7 +36,7 @@ Build crypto algorithms with the Blockly 12 visual editor: drag blocks, connect 
 | Zoom | Ctrl+scroll / right-click → Zoom |
 | Clean up | right-click → Clean up blocks (auto-arrange) |
 
-## 3. Data & Type System
+## 3. Data and type system
 
 Crypto blocks carry type annotations; **mismatched types refuse to connect** (Blockly connection checks):
 
@@ -61,9 +51,9 @@ On mismatch the plug turns red and connection is blocked — the first line of d
 
 **Variables**: create variables (e.g. `state`, `rk`, `block`) in the Variables category. Crypto blocks are mostly pure (return new values rather than mutating variables), which keeps generated code verifiable.
 
-## 4. Functions & Algorithm Templates
+## 4. Functions and algorithm templates
 
-### 4.1 Custom Functions
+### 4.1 Custom functions
 
 The Functions category uses Blockly's native procedure system:
 
@@ -71,23 +61,31 @@ The Functions category uses Blockly's native procedure system:
 - Function body is assembled from atomic blocks; `RETURN` yields the result
 - Call: drag a **call block**, pick the function from the dropdown; params sync automatically
 
-### 4.2 Algorithm Templates (Function Manager)
+### 4.2 Algorithm templates (function manager)
 
-The "Crypto Templates / Function Manager" area provides **28 crypto algorithm templates** (AES/SM4 encryption, hashing, HMAC, PBKDF2, ML-KEM KeyGen/Encaps, ...). **Drag-and-go**: the template auto-prefills the full atomic chain — no manual assembly:
+The "Crypto Templates / Function Manager" area provides **29 visual templates and algorithm scaffolds**, including AES/SM4 rounds and key-schedule fragments, hashing, HMAC, PBKDF2, and ML-KEM KeyGen/Encaps. Dragging one in pre-fills only its represented fragment; not every template is a complete, validated end-to-end algorithm:
 
-- Round-function templates (e.g. AES round): auto-build `AES SubBytes → ShiftRows → MixColumns → AddRoundKey`
-- Loop templates (key schedule / iterated hash): auto-inject `ctrl_iterate` loops (10/16/32 rounds)
-- Template parameters (key/iv/nonce etc.) are left open for you to fill with data blocks
+- AES templates provide a single-round structure; the key-expansion template is currently only a `ctrl_iterate` loop scaffold, not a complete AES-128 key schedule or encryption flow
+- Other loop templates may prefill `ctrl_iterate` loops (e.g. 10/16/32 iterations); inspect each template's contents and algorithm boundary
+- Template parameters (key/iv/nonce, etc.) remain open for connection to data blocks.
 
 > Templates are **teaching aids that reveal algorithm structure**: every atomic step is visible and inspectable after dragging out.
 
-### 4.3 Function Manager Panel
+### 4.3 Function manager panel
 
 Toolbar "Function Manager": ＋new function, 📥 import (.json), 📤 export, and add/remove templates from the toolbox (＋📦).
 
-## 5. Code Generation
+![Function-definition Demo (interface example)](/docs-assets/tutorials/08-function-demo.png)
 
-Click **▶ Generate**; toggle between Python and JavaScript. Generated code is runnable (helpers inlined). Example — SM3 hash workspace generates:
+_Figure: The function Demo shows the parameter, function body, and return-value state._
+
+## 5. Code generation
+
+Choose **▶ Generate** and select Python or JavaScript. Generated code includes the required helpers. Example — an SM3 hash workspace generates:
+
+![Generated Python code panel (interface example)](/docs-assets/tutorials/05-generated-python.png)
+
+_Figure: The code panel is the viewing and copying entry point for generated code._
 
 ```python
 def hash_sm3_pad(msg):  # ...
@@ -99,51 +97,49 @@ result = sm3_compress(IV, hash_sm3_pad(b"abc"))
 
 Official-vector verification: the 4 demos in `demos/procedures/` (SM4-Sbox / SM3-Hash / SM2-PointMul / ML-KEM-Encaps) generate output matching official test vectors in both languages (see `scripts/verify-demo.ts`).
 
-## 6. Import / Export
+## 6. Import and export
 
 - **Workspace import**: menu → Import Workspace → pick `.json` (Blockly standard serialization)
 - **Workspace export**: menu → Export Workspace → save `.json`
 - **Function export**: Function Manager → select → 📤 export `.json`
 - **Samples**: `demos/` ships atomic-block workspaces (`demos/README.md` is the authoritative index)
 
-## 7. Algorithm Assembly Examples
+To avoid stack overflow in Blockly's recursive serialization, workspace import and export are limited to 256 nested block levels. Operations exceeding the limit are rejected without replacing the current workspace.
+
+## 7. Algorithm assembly examples
 
 > Full walkthroughs: [DEMO.en.md](./DEMO.en.md) and `docs/demos/{sm4,aes,hash,sm2,post-quantum}.en.md`. Minimal runnable chains below.
 
 ### 7.1 SM4 S-box lookup
 
-```
+```text
 sm4_sbox( 0x01 )  →  0x90   (GM/T 0002 official vector)
 ```
 
 ### 7.2 SM3 hash
 
-```
+```text
 hash_sm3_pad("abc")  →  64-byte padded block
 sm3_compress(IV, block)  →  66c7f0f4…ba8e0 (GB/T 32905 official vector)
 ```
 
 ### 7.3 AES-128 single round
 
-```
-AES AddRoundKey(
-  AES MixColumns(
-    AES ShiftRows(
-      AES SubBytes(state)     ← byte substitution (S-box)
-    )
-  ), rk)
+```mermaid
+flowchart TD
+  A[AES SubBytes<br/>byte substitution] --> B[AES ShiftRows]
+  B --> C[AES MixColumns]
+  C --> D[AES AddRoundKey]
 ```
 
 ### 7.4 ML-KEM-512 Encaps (FIPS 203)
 
-```
-1. Parse ek: t̂ = ByteDecode12(ek[0:768]), ρ = ek[768:800]
-2. K = first 32 bytes of G(m ‖ H(ek)) (SHA3-512)
-3. Â ← SampleNTT(ρ): chain pq_seed_with_nonce (ρ‖j‖i, 34 bytes)
-4. ŝ ← pq_sample_poly_cbd(η₁, PRF(r, 0)); e₁/e₂ likewise (η₂, nonce offset)
-5. u = INTT(Âᵀ∘ŝ) + e₁; v = INTT(t̂ᵀ∘ŝ) + e₂ + Decompress₁(m)
-6. c = ByteEncode₁₀(Compress₁₀(u)) ‖ ByteEncode₄(Compress₄(v))
-```
+1. Parse `ek`: `t̂ = ByteDecode₁₂(ek[0:768])`, `ρ = ek[768:800)`.
+2. Compute `K = G(m ‖ H(ek))` and take the first 32 bytes (`SHA3-512`).
+3. Compute `Â ← SampleNTT(ρ)` by concatenating `ρ‖j‖i` with `pq_seed_with_nonce`.
+4. Generate `ŝ`, `e₁`, and `e₂` with `pq_sample_poly_cbd` and distinct nonces.
+5. Compute `u = INTT(Âᵀ∘ŝ) + e₁` and `v = INTT(t̂ᵀ∘ŝ) + e₂ + Decompress₁(m)`.
+6. Compute `c = ByteEncode₁₀(Compress₁₀(u)) ‖ ByteEncode₄(Compress₄(v))`.
 
 > ML-KEM has no matrix block; unroll `ntt_mul` + `poly_add` for k=2. t̂ from ek is already in NTT domain — **do NOT apply NTT again**.
 
@@ -154,4 +150,4 @@ AES AddRoundKey(
 | Plug turns red, won't connect | type mismatch (check Bytes/IntList/Number) |
 | Template chain incomplete after drag | template inputs (key/iv/nonce) are open; fill with data blocks |
 | Generated code errors | check the template is on the main workspace (flyout preview doesn't generate) |
-| Want to verify results | open `demos/procedures/*.json` and ▶ Generate against official vectors |
+| Result verification | open `demos/procedures/*.json` and choose ▶ Generate against official vectors |

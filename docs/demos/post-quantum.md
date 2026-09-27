@@ -118,7 +118,7 @@
 ## 场景 11：Goppa 码与 Patterson 译码（McEliece，20 分钟）
 
 ### 目标
-理解编码基后量子签名的基础：Goppa 码构造（GF(2^m) 系数多项式）+ 错误纠正（Patterson 译码）。
+本 Demo 展示 McEliece/Goppa 基于纠错码的公钥密码所用数学构件：Goppa 码构造（GF(2^m) 系数多项式）与错误纠正（Patterson 译码）。它不是签名算法，也不实现完整 KEM。
 
 ### 步骤
 

@@ -1,36 +1,27 @@
 # Blockly 使用指南
 
 
-使用 Blockly 12 可视化编程编辑器搭建密码算法：拖拽积木块、按类型连接、一键生成 Python / JavaScript 代码。本指南覆盖编辑器操作、类型系统、函数模板与算法拼装样例。
+使用 Blockly 13 可视化编程编辑器搭建密码算法：拖拽积木块、按类型连接、一键生成 Python / JavaScript 代码。本指南覆盖编辑器操作、类型系统、函数模板与算法拼装样例。
 
 ---
 
 ## 1. 界面概览
 
-```
-┌──────────┬──────────────────────────────────────────┐
-│ 工具箱    │          工作区 (Workspace)               │
-│ (类目列表)│                                          │
-│          │   拖入的积木块在此连接与编辑              │
-│  ▸ 控制流 │                                          │
-│  ▸ 变量   │                                          │
-│  ▸ 数学   │                                          │
-│  ▸ 数据   │                                          │
-│  ▸ 位运算 │                                          │
-│  ▸ S-Box  │                                          │
-│  ▸ 哈希   │                                          │
-│  ▸ 数论   │                                          │
-│  ▸ ECC    │                                          │
-│  ▸ 后量子 │        ▶ Generate (JS / Python)          │
-│  ▸ 对称   │                                          │
-│  ▸ 模式   │                                          │
-│  ▸ 函数   │                                          │
-└──────────┴──────────────────────────────────────────┘
+```mermaid
+flowchart LR
+  TOOLBOX[工具箱<br/>控制流 · 数据 · 哈希 · 数论 · 后量子 · 对称 · 函数]
+  WORKSPACE[工作区<br/>拖入、连接和编辑积木]
+  GENERATOR[代码生成<br/>JavaScript / Python]
+  TOOLBOX --> WORKSPACE --> GENERATOR
 ```
 
 - **工具箱（Toolbox）**：左侧类目列表。点击类目展开积木块，拖到工作区使用。
 - **工作区（Workspace）**：中央画布，积木块在此连接。支持缩放（Ctrl+滚轮）与拖动。
-- **生成器（Generate）**：工具栏按钮，把工作区积木块翻译为 JavaScript 或 Python 代码。
+- **生成代码**：工具栏按钮，将工作区积木块转换为 JavaScript 或 Python 代码。
+
+![导入工作区后的编辑器界面（界面示例）](/docs-assets/tutorials/04-editor-imported.png)
+
+_图：截图显示工具箱、工作区块和代码区域，用于说明控件位置；不替代生成器测试。_
 
 ## 2. 基本操作
 
@@ -58,7 +49,7 @@
 
 连接时若类型不匹配，插头变红且拒绝连接——这是防止算法语义错误的第一道防线。
 
-**变量**：Variables 类目可创建变量（如 `state`、`rk`、`block`）。注意变量在代码生成中对应语言变量，密码学块通常直接返回新值而非修改变量（纯函数式，便于验证）。
+**变量**：变量类目可创建变量（如 `state`、`rk`、`block`）。变量在代码生成中对应目标语言变量；密码学块通常返回新值而不修改原变量，以便验证。
 
 ## 4. 函数与算法模板
 
@@ -72,21 +63,29 @@ Functions 类目使用 Blockly 原生 procedure 系统：
 
 ### 4.2 算法模板（函数管理）
 
-工具箱「Crypto Templates / 函数管理」提供 **28 个密码算法模板**（AES/SM4 加密、哈希、HMAC、PBKDF2、ML-KEM KeyGen/Encaps 等）。**拖出即用**：模板自动预填完整算法链（原子块序列），无需手工拼装：
+工具箱“函数管理 / Crypto Templates”提供 **29 个可视化模板与结构骨架**，包括 AES/SM4 轮与密钥扩展片段、哈希、HMAC、PBKDF2、ML-KEM KeyGen/Encaps 等。拖入后只会预填对应片段，不代表模板都是完整、已验证的端到端算法：
 
-- 轮函数类模板（如 AES 轮）：自动生成 `AES SubBytes → ShiftRows → MixColumns → AddRoundKey` 链
-- 循环类模板（密钥扩展/迭代哈希）：自动注入 `ctrl_iterate` 循环（10/16/32 轮）
+- AES 模板提供单轮结构；密钥扩展模板目前只是 `ctrl_iterate` 循环骨架，不含完整 AES-128 密钥扩展或加密流程
+- 其他循环类模板可预填 `ctrl_iterate` 循环（如 10/16/32 轮）；仍需核对模板内容与算法边界
 - 模板参数（key/iv/nonce 等）留空输入，由用户填入数据块
 
-> 模板是**展示算法结构**的教学工具：拖出后可以看到每个原子步骤，也可以右键展开核对。
+> 模板用于**展示算法结构**：展开后可查看每个原子步骤，并核对块链。
 
 ### 4.3 函数管理面板
 
 工具栏「函数管理」面板支持：＋新建函数、📥 导入函数（.json）、📤 导出函数、模板加入/移出工具箱（＋📦）。
 
+![函数定义 Demo（界面示例）](/docs-assets/tutorials/08-function-demo.png)
+
+_图：函数定义 Demo 展示参数、函数体和返回值的界面状态。_
+
 ## 5. 代码生成
 
-点击 **▶ Generate** 生成代码，可在 Python / JavaScript 间切换。生成的代码是**可直接运行的**（含 helper 函数展开）。示例——SM3 哈希工作区生成：
+点击“生成”生成代码，可在 Python / JavaScript 间切换。生成结果包含所需辅助函数展开。示例——SM3 哈希工作区生成：
+
+![生成 Python 代码后的代码面板（界面示例）](/docs-assets/tutorials/05-generated-python.png)
+
+_图：代码面板是生成结果的查看和复制入口。_
 
 ```python
 def hash_sm3_pad(msg):  # ...
@@ -97,61 +96,59 @@ def sm3_compress(v, block):  # ...
 result = sm3_compress(IV, hash_sm3_pad(b"abc"))
 ```
 
-官方向量验证：`demos/procedures/` 下的 4 个 demo（SM4-Sbox / SM3-Hash / SM2-PointMul / ML-KEM-Encaps）双语言生成结果与官方测试向量一致（见 `scripts/verify-demo.ts`）。
+官方向量验证：`demos/procedures/` 下的 4 个 Demo（SM4-Sbox / SM3-Hash / SM2-PointMul / ML-KEM-Encaps）双语言生成结果与官方测试向量一致（见 `scripts/verify-demo.ts`）。
 
 ## 6. 导入 / 导出
 
-- **工作区导入**：菜单 → Import Workspace → 选择 `.json`（Blockly 标准序列化格式）
-- **工作区导出**：菜单 → Export Workspace → 保存 `.json`（可重新导入/分享）
+- **工作区导入**：菜单“更多 → 导入工作区” → 选择 `.json`（Blockly 标准序列化格式）
+- **工作区导出**：菜单“更多 → 导出工作区” → 保存 `.json`（可重新导入或分享）
 - **函数级导出**：函数管理面板 → 选中函数 → 📤 导出 `.json`
 - **样例文件**：`demos/` 目录预置多个原子块工作区（`demos/README.md` 是唯一权威清单）
 
+为避免 Blockly 原生递归序列化导致栈溢出，导入和导出的块嵌套深度上限为 256 层；超过上限时操作会被拒绝，当前工作区会保留不变。
+
 ## 7. 密码算法拼装样例
 
-> 完整搭建步骤见 [DEMO.md](./DEMO.md) 与 `docs/demos/{sm4,aes,hash,sm2,post-quantum}.md`。以下为最小可运行的原子链示意。
+> 完整搭建步骤见 [Demo 指南](./DEMO.md) 与 `docs/demos/{sm4,aes,hash,sm2,post-quantum}.md`。以下为最小可运行的原子链示意。
 
 ### 7.1 SM4 S-box 查表
 
-```
+```text
 sm4_sbox( 0x01 )  →  0x90   （GM/T 0002 官方向量）
 ```
 
 ### 7.2 SM3 哈希
 
-```
+```text
 hash_sm3_pad("abc")  →  64 字节填充块
 sm3_compress(IV, 填充块)  → 66c7f0f4…ba8e0（GB/T 32905 官方向量）
 ```
 
 ### 7.3 AES-128 单轮加密
 
-```
-AES AddRoundKey(
-  AES MixColumns(
-    AES ShiftRows(
-      AES SubBytes(state)   ← 字节替换（S-box 查表）
-    )
-  ), rk)
+```mermaid
+flowchart TD
+  A[AES SubBytes<br/>字节替换] --> B[AES ShiftRows]
+  B --> C[AES MixColumns]
+  C --> D[AES AddRoundKey]
 ```
 
 ### 7.4 ML-KEM-512 Encaps（FIPS 203）
 
-```
-1. 解析 ek：t̂ = ByteDecode12(ek[0:768])，ρ = ek[768:800]
-2. K = G(m ‖ H(ek)) 前 32 字节（SHA3-512）
-3. Â ← SampleNTT(ρ)：pq_seed_with_nonce 链式拼接（ρ‖j‖i，34 字节）
-4. ŝ ← pq_sample_poly_cbd(η₁, PRF(r, 0))；e₁/e₂ 同理（η₂，nonce 偏移）
-5. u = INTT(Âᵀ∘ŝ) + e₁；v = INTT(t̂ᵀ∘ŝ) + e₂ + Decompress₁(m)
-6. c = ByteEncode₁₀(Compress₁₀(u)) ‖ ByteEncode₄(Compress₄(v))
-```
+1. 解析 `ek`：`t̂ = ByteDecode₁₂(ek[0:768])`，`ρ = ek[768:800)`。
+2. 计算 `K = G(m ‖ H(ek))`，取前 32 字节（`SHA3-512`）。
+3. 计算 `Â ← SampleNTT(ρ)`，由 `pq_seed_with_nonce` 拼接 `ρ‖j‖i`。
+4. 生成 `ŝ`、`e₁` 和 `e₂`：使用 `pq_sample_poly_cbd` 处理不同 nonce 的伪随机输入。
+5. 计算 `u = INTT(Âᵀ∘ŝ) + e₁`，`v = INTT(t̂ᵀ∘ŝ) + e₂ + Decompress₁(m)`。
+6. 计算 `c = ByteEncode₁₀(Compress₁₀(u)) ‖ ByteEncode₄(Compress₄(v))`。
 
 > ML-KEM 无矩阵乘法块，k=2 时手展 `ntt_mul` + `poly_add`；ek 中 t̂ 已是 NTT 域，**不可再过 NTT**。
 
-## 8. 常见问题
+## 8. 故障排查
 
 | 问题 | 解决 |
 |------|------|
 | 插头变红连不上 | 类型不匹配（Bytes/IntList/Number 检查） |
 | 模板拖出后链不完整 | 模板缺输入（key/iv/nonce）留空，需手动填入数据块 |
 | 生成代码报错 | 检查函数模板是否被拖到主工作区（flyout 预览不生成） |
-| 想验证结果 | 打开 `demos/procedures/*.json` 并 ▶ Generate 对照官方向量 |
+| 结果验证 | 打开 `demos/procedures/*.json` 并点击“生成”对照官方向量 |

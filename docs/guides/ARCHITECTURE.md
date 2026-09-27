@@ -27,7 +27,7 @@ flowchart TB
             MG["migration.ts"]
         end
         subgraph BLK["Blockly 核心"]
-            BKS["Blocks (积木块) · 10 类目"]
+            BKS["Blocks (积木块) · 11 个定义目录"]
             GNS["Generators · JavaScript / Python"]
         end
         PL --> CMPO
@@ -53,20 +53,11 @@ flowchart TB
 
 CipherCat 不使用繁琐的第三方 Blockly-Vue 封装库，而是直接通过 Vue 组件管理 Blockly 工作区的生命周期：
 
-```
-BlocklyEditor.vue (组件)
-├── onMounted
-│   └── workspaceApi.initWorkspace(container)
-│       ├── Blockly.inject(container, {toolbox, theme, ...})
-│       └── 注册 S-Box 分类回调
-├── 暴露方法 (defineExpose)
-│   ├── exportWorkspace / loadWorkspace
-│   ├── clearWorkspace / zoomIn/Out/Reset
-│   └── setTheme / refreshBlocks
-└── 事件监听
-    └── workspace.addChangeListener → emit('change')
-        → App.vue 处理 → 更新保存状态 / 自动保存
-```
+组件生命周期按以下顺序协作：
+
+1. `onMounted` 调用 `workspaceApi.initWorkspace(container)`，完成 `Blockly.inject` 和 S-Box 分类回调注册。
+2. `defineExpose` 暴露 `exportWorkspace`、`loadWorkspace`、`clearWorkspace`、缩放、主题和刷新方法。
+3. `workspace.addChangeListener` 发出 `change` 事件，由 `App.vue` 更新保存状态并触发自动保存。
 
 **关键设计原则**：
 - Blockly 工作区是"受控组件"——所有操作通过 `utils/workspace/` 层封装
@@ -80,6 +71,8 @@ BlocklyEditor.vue (组件)
 ### 积木块定义 (`src/blocks/`)
 
 按密码学领域分为 11 个类目，每个类目有独立的 `index.ts` 导出类型和块定义：
+
+这里的 11 指 `src/blocks/` 下的领域定义目录；运行时工具箱另有 17 个可见类目，其中包含 Blockly 内置类目以及把部分领域拆分后的入口。两项统计口径不同。
 
 | 目录 | 类目 | 说明 |
 |------|------|------|
@@ -121,7 +114,7 @@ CipherCat 定义了**密码学领域类型常量**，用于 Blockly 的 `setChec
 
 与 `blocks/` 镜像的目录结构：
 
-```
+```text
 src/generators/
 ├── javascript/
 │   ├── index.ts            ← 导入所有 JS 生成器
@@ -168,7 +161,7 @@ src/generators/
 
 ## 代码生成管道
 
-```
+```text
 用户拖拽积木块
        │
        ▼
@@ -197,7 +190,7 @@ Blockly 工作区 (WorkspaceSvg)
 
 ## 关键数据流
 
-```
+```text
 1. 用户拖拽积木块到工作区
        │
        ▼
@@ -225,7 +218,7 @@ Blockly 工作区 (WorkspaceSvg)
 ```
 
 导出流程：
-```
+```text
 用户点击"导出" → exportWorkspace(format)
                   │
                   ├─ XML 模式: Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace))

@@ -1,7 +1,7 @@
-# CipherCat System Architecture
+# CipherCat system architecture
 
 
-## Overall Architecture
+## Overall architecture
 
 ```mermaid
 flowchart TB
@@ -28,7 +28,7 @@ flowchart TB
             MG["migration.ts"]
         end
         subgraph BLK["Blockly Core"]
-            BKS["Blocks · 10 categories"]
+            BKS["Blocks · 11 definition directories"]
             GNS["Generators · JavaScript / Python"]
         end
         PL --> CMPO
@@ -50,24 +50,15 @@ flowchart TB
 
 ---
 
-## Vue 3 Frontend + Blockly Integration Pattern
+## Vue 3 frontend and Blockly integration pattern
 
 CipherCat does not use a heavyweight third-party Blockly-Vue wrapper library. Instead, it manages the Blockly workspace lifecycle directly through Vue components:
 
-```
-BlocklyEditor.vue (component)
-├── onMounted
-│   └── workspaceApi.initWorkspace(container)
-│       ├── Blockly.inject(container, {toolbox, theme, ...})
-│       └── Register the S-Box category callback
-├── Exposed methods (defineExpose)
-│   ├── exportWorkspace / loadWorkspace
-│   ├── clearWorkspace / zoomIn/Out/Reset
-│   └── setTheme / refreshBlocks
-└── Event listeners
-    └── workspace.addChangeListener → emit('change')
-        → handled by App.vue → update save status / autosave
-```
+The component lifecycle is organized as follows:
+
+1. `onMounted` calls `workspaceApi.initWorkspace(container)`, which performs `Blockly.inject` and registers the S-Box category callback.
+2. `defineExpose` exposes `exportWorkspace`, `loadWorkspace`, `clearWorkspace`, zoom, theme, and refresh methods.
+3. `workspace.addChangeListener` emits `change`; `App.vue` updates save state and triggers autosave.
 
 **Key design principles**:
 - The Blockly workspace is a "controlled component" — all operations are wrapped through the `utils/workspace/` layer
@@ -76,11 +67,13 @@ BlocklyEditor.vue (component)
 
 ---
 
-## Module Organization
+## Module organization
 
-### Block Definitions (`src/blocks/`)
+### Block definitions (`src/blocks/`)
 
 Organized into 11 categories by cryptographic domain, each with its own `index.ts` exporting types and block definitions:
+
+Here, 11 counts domain-definition directories under `src/blocks/`. The runtime toolbox has 17 visible categories, including Blockly built-ins and separate entries for some domains; these counts use different scopes.
 
 | Directory | Category | Description |
 |------|------|------|
@@ -98,7 +91,7 @@ Organized into 11 categories by cryptographic domain, each with its own `index.t
 
 All block types are aggregated into the `ALL_BLOCK_TYPES` union type in `src/blocks/index.ts`.
 
-### Type System (`src/constants/block-types.ts`)
+### Type system (`src/constants/block-types.ts`)
 
 CipherCat defines **cryptographic domain type constants** used for Blockly's `setCheck()`/`setOutput()` connection constraints:
 
@@ -118,11 +111,11 @@ The type system also includes a **`TYPE_MAP`** mapping table that defines the un
 | `Number` | `int` | `number` |
 | `SBox` | `list[list[int]]` | `number[][]` |
 
-### Code Generators (`src/generators/`)
+### Code generators (`src/generators/`)
 
 A directory structure mirroring `blocks/`:
 
-```
+```text
 src/generators/
 ├── javascript/
 │   ├── index.ts            ← imports all JS generators
@@ -136,7 +129,7 @@ src/generators/
 
 Each generator file registers its generation functions via `javascriptGenerator.forBlock['block_type']` or `pythonGenerator.forBlock['block_type']`.
 
-### Utility Functions (`src/utils/`)
+### Utility functions (`src/utils/`)
 
 | File | Responsibility |
 |------|------|
@@ -167,9 +160,9 @@ Each generator file registers its generation functions via `javascriptGenerator.
 
 ---
 
-## Code Generation Pipeline
+## Code-generation pipeline
 
-```
+```text
 User drags blocks
        │
        ▼
@@ -196,9 +189,9 @@ Generation functions are invoked uniformly through `generateCode(workspace, lang
 
 ---
 
-## Key Data Flows
+## Key data flows
 
-```
+```text
 1. User drags blocks onto the workspace
        │
        ▼
@@ -226,7 +219,7 @@ Generation functions are invoked uniformly through `generateCode(workspace, lang
 ```
 
 Export flow:
-```
+```text
 User clicks "Export" → exportWorkspace(format)
                   │
                   ├─ XML mode: Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace))
@@ -236,16 +229,16 @@ User clicks "Export" → exportWorkspace(format)
 
 ---
 
-## Internationalization (i18n) Strategy
+## Internationalization (i18n) strategy
 
 CipherCat uses **two-layer i18n**:
 
-### Layer 1: Built-in Blockly Mechanism
+### Layer 1: Built-in Blockly mechanism
 
 `Blockly.setLocale()` switches Blockly's built-in language packs (`blockly/msg/zh-hans` / `en`).
 Labels, tooltips, and menus of built-in blocks switch automatically.
 
-### Layer 2: Custom Message System (`src/composables/locale.ts`)
+### Layer 2: Custom message system (`src/composables/locale.ts`)
 
 - `MESSAGES_ZH_HANS` / `MESSAGES_EN`: block labels (e.g. `CRYPTO_BITWISE_AND`, `CRYPTO_SHA3_KECCAK_F_TOOLTIP`)
 - `UI_MESSAGES`: UI text (buttons, hints, status)
@@ -257,7 +250,7 @@ Labels, tooltips, and menus of built-in blocks switch automatically.
 
 ---
 
-## Project Storage (IndexedDB)
+## Project storage (IndexedDB)
 
 Database name: `blockly-crypto-editor` / object store: `projects`
 
@@ -277,7 +270,7 @@ Accessed through the async CRUD operations in `useProjectDB.ts`, with autosave s
 
 ---
 
-## Cross-Platform Considerations
+## Cross-platform considerations
 
 | Capability | Web browser | Tauri desktop |
 |------|-----------|-----------|

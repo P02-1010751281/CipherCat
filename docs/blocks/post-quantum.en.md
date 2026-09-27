@@ -1,5 +1,16 @@
 # Post-Quantum Block Reference (ML-KEM + ML-DSA)
 
+## Document role and evidence entry points
+
+This is the post-quantum detail page under the [block overview](INDEX.en.md). “Post-quantum” is a cryptosystem family classification; sampling, hashing, NTT, polynomial, and encoding components are shared primitives, not independent schemes.
+
+| Entry | Contents |
+|-------|----------|
+| Normative source and structured entries | [FIPS 203 ML-KEM](../standards/fips203-ML-KEM/), [FIPS 204 ML-DSA](../standards/fips204-ML-DSA/), [FIPS 205 SLH-DSA](../standards/fips205-SLH-DSA/), [McEliece/Goppa references](../standards/mceliece-goppa/), [coverage matrix](../standards/COVERAGE.en.md) |
+| Implementation | `src/blocks/post-quantum/`, `src/blocks/mldsa/`, and explicitly reused shared components under `src/blocks/hash/` |
+| Demos and tests | [Demo guide](../guides/DEMO.en.md), [demo test registry](../../demos/tests.json), and ML-KEM/ML-DSA/SLH-DSA/FORS/Goppa workspaces |
+| Boundary | Shared primitives, selected parameters, and teaching chains are marked separately; no claim is made for all parameter families, complete certification, side-channel resistance, or a formal post-quantum security proof |
+
 
 ## FIPS 204 ML-DSA Signature
 

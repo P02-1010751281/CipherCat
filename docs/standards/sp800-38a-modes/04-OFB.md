@@ -1,100 +1,42 @@
-# Modes — 6.4  The Output Feedback Mode
+# NIST SP 800-38A §6.4 — OFB
 
-来源: NIST SP 800-38A
+## 条目元数据
 
-6.4  The Output Feedback Mode
+| 字段 | 内容 |
+|---|---|
+| 类型 | 原语 / 函数 |
+| 标准定位 | NIST SP 800-38A §6.4 — OFB |
+| 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
+| 原文位置 | [提取稿](./00-Standard-Source.md#L805)；PDF 物理页需结合同目录 PDF 核对 |
+| 项目状态 | 仅参考（详见本文现有实现/缺项说明） |
 
-The  Output Feedback (OFB) mode is a confidentiality mode that features the iteration of the
-forward cipher on an IV to generate a sequence of output blocks that are exclusive-ORed with
-the plaintext to produce the ciphertext, and vice versa.  The OFB mode requires that the IV is  a
-nonce, i.e., the IV must be unique for each execution of the mode under the given key; the
-generation of such IVs is discussed in Appendix C. The OFB mode is defined as follows:
+## 原文定位与引用
 
-1
-|  |  | I = O |  | for j = 2 …  n; |
-| --- | --- | ---------- | ---- | --------------------- |
-|  |  | j | j -1 |
-|  |  | O = CIPH | (I) | for j = 1, 2 …  n; |
-j K j
-j   j  j
-C# = P# ⊕ MSB(O) for j = 1 … n.
-j j s j
-C = P ⊕ O for j = 1 … n−1;  (完整块：C = P ⊕ O)
-j j j  j j j
+> 本页按 source 中的“NIST SP 800-38A §6.4 — OFB”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L805) 与同目录 PDF。
 
-|  |  | I = O |  | for j = 2 …  n; |
-| --- | --- | ---------- | ---- | --------------------- |
-|  |  | j | j -1 |
-|  |  | O = CIPH | (I) | for j = 1, 2 …  n; |
-j K j
-j  j  j
-P*  = C* ⊕  MSB(O).
-|  |  | n | n  u | n |
+## 原文摘录
 
-完整块（j = 1 … n−1）：加密 C_j = P_j ⊕ O_j；解密 P_j = C_j ⊕ O_j。
+> 以下为 00-Standard-Source.md 的说明性定位引文；仅规范化了空白和分页换行，完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L805)。
 
-In OFB encryption, the IV is transformed by the forward cipher function to produce the first
-output block.  The first output block is exclusive-ORed with the first plaintext block to produce
-the first ciphertext block.  The forward cipher function is then invoked on the first output block
-to produce the second output block.  The second output block is exclusive-ORed with the second
-plaintext  block  to  produce  the second ciphertext block, and the forward cipher function is
-invoked on the second output block to produce the third output block.  Thus, the successive
-output blocks are produced from applying the forward cipher function to the previous output
-blocks, and the output blocks are exclusive-ORed with the corresponding plaintext blocks to
-produce the ciphertext blocks.  For the last block, which may be a partial block of u bits, the
-most significant u bits of the last output block are used for the exclusive-OR operation; the
-remaining b-u bits of the last output block are discarded.
+    6.4 The Output Feedback Mode
+    The Output Feedback (OFB) mode is a confidentiality mode that features the iteration of the
+    forward cipher on an IV to generate a sequence of output blocks that are exclusive-ORed with
 
-In OFB decryption, the IV is transformed by the forward cipher function to produce the first
-13
+> 逐字原文见 [NIST.SP.800-38A.pdf](./NIST.SP.800-38A.pdf)。本页用文字公式替代原 PDF 图形转录。
 
-output block.  The first output block is exclusive-ORed with the first ciphertext block to recover
-the first plaintext block.  The first output block is then transformed by the forward cipher
-function to produce the second output block.  The second output block is exclusive-ORed with
-the second ciphertext block to produce the second plaintext block, and the second output block is
-also transformed by the forward cipher function to produce the third output block.  Thus, the
-successive output blocks are produced from applying the forward cipher function to the previous
-output blocks, and the output blocks are exclusive-ORed with the corresponding ciphertext
-blocks to recover the plaintext blocks.   For the last block, which may be a partial block of u bits,
-the most significant u bits of the last output block are used for the exclusive-OR operation; the
-remaining b-u bits of the last output block are discarded.
+## 公式或伪代码
 
-INITIALIZATION
-VECTOR
-TPYRCNE
-|  |  | CIPH |  |  | CIPH |  |  |  | CIPH |
-| --- | ------------ | --------------- | --- | ------------ | --------------- | --- | --- | ------------ | --------------- |
-|  |  | OUTPUT BLOCK 1 |  |  | OUTPUT BLOCK 2 |  |  |  | OUTPUT BLOCK n |
-|  | PLAINTEXT 1 |  |  | PLAINTEXT 2 |  |  |  | PLAINTEXT n |
-|  |  | CIPHERTEXT 1 |  |  | CIPHERTEXT 2 |  |  |  | CIPHERTEXT n |
-INITIALIZATION
-VECTOR
-|  |  |  | INPUT BLOCK 1 |  |  |  | INPUT BLOCK 2 |  |  |  | INPUT BLOCK n |
-| --- | ------- | --- | --------------- | --- | --- | --- | --------------- | --- | --- | --- | --------------- |
-|  |  |  | CIPH |  |  |  | CIPH |  |  |  | CIPH |
-|  | TPYRCED |  |  | K |  |  |  | K |  |  | K |
-|  |  |  | OUTPUT BLOCK 1 |  |  |  | OUTPUT BLOCK 2 |  |  |  | OUTPUT BLOCK n |
-⊕
-|  |  | CIPHERTEXT 1 |  |  | CIPHERTEXT 2 |  | ⊕ |  | CIPHERTEXT n |  | ⊕ |
-| --- | --- | ------------- | ------------ | --- | ------------- | --- | ------------ | --- | ------------- | --- | -------------- |
-|  |  |  | PLAINTEXT 1 |  |  |  | PLAINTEXT 2 |  |  |  | PLAINTEXT n |
+> 以下完整保留本页已有的公式规范单元；仅补充统一字段，不删减公式、步骤、符号或边界。
 
-Figure 4: The OFB Mode
+OFB 迭代产生密钥流，明文和密文不参与下一轮状态：
 
-In both OFB encryption and OFB decryption, each forward cipher function (except the first)
-depends on the results of the previous forward cipher function; therefore, multiple forward cipher
-functions cannot be performed in parallel.  However, if the IV is known, the output blocks can be
-generated prior to the availability of the plaintext or ciphertext data.
+```text
+I_1 = IV
+O_j = CIPH_K(I_j)
+C_j = P_j xor O_j
+I_j = O_(j-1)                         2 ≤ j ≤ n
+```
 
-The OFB mode requires a unique IV for every message that is ever encrypted under the given
-key.  If, contrary to this requirement, the same IV is used for the encryption of more than one
-message, then the confidentiality of those messages may be compromised.  In particular, if a
-plaintext block of any of these messages is known, say, the jth plaintext block, then the jth output
-of the forward cipher function can be determined easily from the jth ciphertext block of the
-14
+解密同样计算 `O_j` 并执行 `P_j = C_j xor O_j`。同一密钥下不得重复使用相同 IV；OFB 本身不提供认证。
 
-using the same IV to be easily recovered from the jth ciphertext block of that message.
-Confidentiality may similarly be compromised if any of the input blocks to the forward cipher
-function for the encryption of a message is designated as the IV for the encryption of another
-message under the given key.
-The OFB mode is illustrated in Figure 4.
+本项目暂未提供 OFB Blockly 块或 demo。

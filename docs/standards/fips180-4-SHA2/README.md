@@ -1,5 +1,7 @@
 # FIPS 180-4 — SHA-2 算法参考
 
+标准原文提取参考：[00-Standard-Source.md](./00-Standard-Source.md)。
+
 来源: NIST FIPS 180-4 — Secure Hash Standard (SHS)
       https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf
       PDF: [NIST.FIPS.180-4.pdf](./NIST.FIPS.180-4.pdf)
@@ -17,7 +19,11 @@
 
 | 序号 | 文件 | 名称 | § | 块实现 |
 |:--:|------|------|---|---|
-| 1 | [01-SHA2.md](./01-SHA2.md) | SHA-2 完整算法 | §4–§6 | — |
+| 1 | [01-SHA2.md](./01-SHA2.md) | SHA-2 总览 | §4–§6 | — |
+| 2 | [02-Padding.md](./02-Padding.md) | 消息填充 | §5 | `hash_sha256_pad` · `hash_sha512_pad` |
+| 3 | [03-MessageExpansion.md](./03-MessageExpansion.md) | 消息扩展 | §6 | 压缩块内部 |
+| 4 | [04-Compression.md](./04-Compression.md) | 压缩函数 | §6 | `hash_sha256_compress` · `hash_sha512_compress` |
+| 5 | [05-Digest.md](./05-Digest.md) | 摘要输出与变体 | §6 | `hash_sha224_hash` · `hash_sha512_hash` |
 
 ## 其他 SHA-2 变体
 

@@ -1,95 +1,46 @@
-# Modes — 6.3 The Cipher Feedback Mode
+# NIST SP 800-38A §6.3 — CFB
 
-来源: NIST SP 800-38A
+## 条目元数据
 
-6.3 The Cipher Feedback Mode
-The Cipher Feedback (CFB) mode is a confidentiality mode that features the feedback of
-successive ciphertext segments into the input blocks of the forward cipher to generate output
-blocks that are exclusive-ORed with the plaintext to produce the ciphertext, and vice versa. The
-CFB mode requires an IV as the initial input block. The IV need not be secret, but it must be
-unpredictable; the generation of such IVs is discussed in Appendix C.
-The CFB mode also requires an integer parameter, denoted s, such that 1 ≤ s ≤ b. In the
-specification of the CFB mode below, each plaintext segment (P# ) and ciphertext segment (C# )
-j j
-consists of s bits. The value of s is sometimes incorporated into the name of the mode, e.g., the
-1-bit CFB mode, the 8-bit CFB mode, the 64-bit CFB mode, or the 128-bit CFB mode.
-The CFB mode is defined as follows:
-CFB Encryption: I = IV;
-1
-I = LSB (I ) | C# for j = 2 … n;
-j b-s j –1 j -1
-O = CIPH (I) for j = 1, 2 … n;
-j K j
-C# = P# ⊕ MSB(O) for j = 1, 2 … n.
-j j s j
-CFB Decryption: I = IV;
-1
-I = LSB (I )| C# for j = 2 … n;      # 输入块由前一块的 b−s 个低有效位与 C# 拼接生成
-j b-s j -1 j -1                        # （CFB encryption, by concatenating the b−s least significant
-                                        #  bits of the previous input block with）
-O = CIPH (I) for j = 1, 2 … n;
-j K j
-P# = C# ⊕ MSB(O) for j = 1, 2 … n.
-j j s j
+| 字段 | 内容 |
+|---|---|
+| 类型 | 原语 / 函数 |
+| 标准定位 | NIST SP 800-38A §6.3 — CFB |
+| 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
+| 原文位置 | [提取稿](./00-Standard-Source.md#L672)；PDF 物理页需结合同目录 PDF 核对 |
+| 项目状态 | 仅参考（详见本文现有实现/缺项说明） |
 
-In CFB encryption, the first input block is the IV, and the forward cipher operation is applied to
-the IV to produce the first output block.  The first ciphertext segment is produced by exclusive-
-ORing the first plaintext segment with the  s most significant bits of the first output block.  (The
-remaining b-s bits of the first output block are discarded.)  The b-s least significant bits of the IV
-are then concatenated with the s bits of the first ciphertext segment to form the second input
-block.   An alternative description of the formation of the second input block is that the bits of
-the first input block circularly shift s  positions to the  left, and then the ciphertext segment
-replaces the s least significant bits of the result.
+## 原文定位与引用
 
-The process is repeated with the successive input blocks until a ciphertext segment is produced
-from every plaintext segment.  In general, each successive input block is enciphered to produce
-an output block.  The s most significant bits of each output block are exclusive-ORed with  the
-corresponding plaintext segment to form a ciphertext segment.  Each ciphertext segment (except
-the last one) is “fed back” into the previous input block, as described above, to form a new input
-block. The feedback can be described in terms of the individual bits in the strings as follows: if
-i i …i  is the  jth input block, and cc…c is the  jth ciphertext segment, then the (j+1)th input block
+> 本页按 source 中的“NIST SP 800-38A §6.3 — CFB”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L672) 与同目录 PDF。
 
-INITIALIZATION
-VECTOR
-INPUT BLOCK 1
-|  |  |  |  |  |  | (b-s) Bits s Bits |  |  | (b-s) Bits s Bits |
-| --- | ------- | ------------ | --------------- | ----------- | ------------ | ------------------ | --------------- | ------------ | ------------------ | --------------- |
-|  | TPYRCNE |  | CIPH |  |  | CIPH |  |  | CIPH |
-|  |  |  | OUTPUT BLOCK 1 |  |  | OUTPUT BLOCK 2 |  |  | OUTPUT BLOCK n |
-|  |  |  | Select | Discard |  | Select | Discard |  | Select | Discard |
-|  |  |  | s Bits | (b-s) Bits |  | s Bits | (b-s) Bits |  | s Bits | (b-s) Bits |
-|  |  | PLAINTEXT 1 |  | ⊕ | PLAINTEXT 2 | ⊕ |  | PLAINTEXT n | ⊕ |
-|  |  | s Bits |  |  | s Bits |  |  | s Bits |
-|  |  |  | CIPHERTEXT 1 |  |  | CIPHERTEXT 2 |  |  | CIPHERTEXT n |
-|  |  |  | s Bits |  |  | s Bits |  |  | s Bits |
-INITIALIZATION
-VECTOR
-|  |  |  |  |  |  |  | INPUT BLOCK 2 |  |  | INPUT BLOCK n |
-| --- | ------- | --- | ------------- | --------------- | ----------- | ------------- | ------------------ | --------------- | ------------- | ------------------ | --------------- |
-|  |  |  |  | INPUT BLOCK 1 |  |  | (b-s) Bits s Bits |  |  | (b-s) Bits s Bits |
-|  | TPYRCED |  |  | CIPH |  |  | CIPH |  |  | CIPH |
-|  |  |  |  | OUTPUT BLOCK 1 |  |  | OUTPUT BLOCK 2 |  |  | OUTPUT BLOCK n |
-|  |  |  |  | Select | Discard |  | Select | Discard |  | Select | Discard |
-|  |  |  |  | s Bits | (b-s) Bits |  | s Bits | (b-s) Bits |  | s Bits | (b-s) Bits |
-|  |  |  | CIPHERTEXT 1 | ⊕ |  | CIPHERTEXT 2 | ⊕ |  | CIPHERTEXT n | ⊕ |
-|  |  |  | s Bits |  |  | s Bits |  |  | s Bits |
-|  |  |  |  | PLAINTEXT 1 |  |  | PLAINTEXT 2 |  |  | PLAINTEXT n |
-|  |  |  |  | s Bits |  |  | s Bits |  |  | s Bits |
+## 原文摘录
 
-Figure 3: The CFB Mode
+> 以下为 00-Standard-Source.md 的说明性定位引文；仅规范化了空白和分页换行，完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L672)。
 
-In CFB decryption, the IV is the first input block, and each successive input block is formed as in
-12
+    6.3 The Cipher Feedback Mode
+    The Cipher Feedback (CFB) mode is a confidentiality mode that features the feedback of
+    successive ciphertext segments into the input blocks of the forward cipher to generate output
 
-the  s  most significant bits of the previous ciphertext.  The forward cipher function is applied to
-each input block to produce the output blocks.  The s most significant bits of the output blocks
-are  exclusive-ORed  with  the  corresponding  ciphertext  segments  to  recover  the  plaintext
-segments.
+> 逐字原文见 [NIST.SP.800-38A.pdf](./NIST.SP.800-38A.pdf)。本页只保留公式与适用边界。
 
-In CFB encryption, like CBC encryption, the input block to each forward cipher function (except
-the first) depends on the result of the previous forward cipher function; therefore,  multiple
-forward cipher operations cannot be performed in parallel.  In CFB decryption, the required
-forward cipher operations can be performed in parallel if the input blocks are first constructed (in
-series) from the IV and the ciphertext.
+## 公式或伪代码
 
-The CFB mode is illustrated in Figure 3.
+> 以下完整保留本页已有的公式规范单元；仅补充统一字段，不删减公式、步骤、符号或边界。
+
+CFB 使用 `s` bit 分段，`1 ≤ s ≤ b`，并以 IV 初始化输入寄存器 `I_1`：
+
+```text
+I_1 = IV
+C_1 = P_1 xor MSB_s(CIPH_K(I_1))
+I_j = LSB_(b-s)(I_(j-1)) || C_(j-1)
+C_j = P_j xor MSB_s(CIPH_K(I_j))       2 ≤ j ≤ n
+```
+
+解密使用相同的密钥加密函数和寄存器更新，只把 `C_j` 与密钥流异或得到 `P_j`：
+
+```text
+P_j = C_j xor MSB_s(CIPH_K(I_j))
+```
+
+本项目暂未提供 CFB Blockly 块或 demo；不要将当前 CBC/CTR 实现标成 CFB 覆盖。

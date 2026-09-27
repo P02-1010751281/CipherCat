@@ -1,4 +1,24 @@
-# SLH-DSA — 完整签名方案（FIPS 205 §9-10）
+## 条目元数据
+
+| 字段 | 内容 |
+|---|---|
+| 类型 | 原语 / 函数 |
+| 标准定位 | SLH-DSA — 完整签名方案（FIPS 205 §9-10） |
+| 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
+| 原文位置 | [提取稿 Algorithm 19](./00-Standard-Source.md#L1881)；PDF 物理页需结合同目录 PDF 核对 |
+| 项目状态 | 部分实现（详见本文现有实现/缺项说明） |
+
+## 原文定位与引用
+
+> 本页按 source 中的“SLH-DSA — 完整签名方案（FIPS 205 §9-10）”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L1881) 与同目录 PDF。
+
+## 原文摘录
+
+> 以下为 00-Standard-Source.md 的说明性定位引文；仅规范化了空白和分页换行，完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L1881)。
+
+    Algorithm 19 slh_sign_internal(𝑀, SK, 𝑎𝑑𝑑𝑟𝑛𝑑)
+    Generates an SLH-DSA signature.
+    Input: Message 𝑀, private key SK, optional additional randomness 𝑎𝑑𝑑𝑟𝑛𝑑.
 
 SLH-DSA 用 **超树（hypertree）** 把海量一次性密钥对压缩进一棵根：
 d 层 XMSS 子树，第 0 层叶子是 WOTS+ 公钥，上层叶子是下层子树的根；
@@ -14,7 +34,11 @@ FORS 一次性密钥对挂在最底层。签名 = FORS 签名 + 每层的 WOTS+ 
   - 消息摘要 `md = H_msg(R, PK.seed, PK.root, M)`（m 字节，Algorithm 19 L5）
   - HT 签名 = d 层 × (WOTS+ 签名 `len·n` + XMSS 认证路径 `h′·n`)
 
-## 算法
+## 公式或伪代码
+
+> 以下是面向用户的结构化公式/伪代码摘要，不是标准原文的完整逐字摘录；完整规范单元请以本页“原文摘录”、source 提取稿和 PDF 为准。
+
+### 算法
 
 ### KeyGen（内部 Algorithm 18 §9.1 / 外部 slh_keygen Algorithm 21 §10.1）
 

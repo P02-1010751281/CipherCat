@@ -1,8 +1,17 @@
 # GB/T 32918 — SM2 椭圆曲线公钥密码算法
 
+标准原文提取参考：[00-Standard-Source.md](./00-Standard-Source.md)。
+
 来源: GB/T 32918-2016 — 信息安全技术 SM2椭圆曲线公钥密码算法
-      下载: https://openstd.samr.gov.cn/ (需登录)
-      PDF✅ 已下载 (5部分)
+      [国家标准全文公开系统](https://openstd.samr.gov.cn/bzgk/gb/std_list_type?p.p2=GB%2FT+32918)
+      PDF✅ 已下载 (5部分)，条款导航见 [01-SM2.md](./01-SM2.md)
+
+## 函数/原语索引
+
+- [02-Curve-Operations.md](./02-Curve-Operations.md)：曲线、点加、倍点、标量乘
+- [03-Signature.md](./03-Signature.md)：`sm2_sign` / `sm2_verify`
+- [04-Encryption.md](./04-Encryption.md)：`sm2_encrypt` / `sm2_decrypt`
+- [05-Key-Exchange.md](./05-Key-Exchange.md)：`sm2_key_exchange` 与角色边界
 
 ## 组成
 
@@ -33,10 +42,9 @@
 | `ecc_multiply` | 标量乘法 k*P |
 | `sm2_sign` / `sm2_verify` | SM2 数字签名/验签（GB/T 32918.2） |
 | `sm2_encrypt` / `sm2_decrypt` | SM2 加密/解密（GB/T 32918.4） |
-| `sm3_hash` | SM3 哈希 (签名/加密需要) |
+| `sm3_hash` | 生成器内部 helper（签名/加密需要）；模板 `proc_sm3_hash` |
 
 Demo：`demos/procedures/SM2-PointMul.json` · `SM2-Sign.json` · `SM2-Encrypt.json`。
 
-> ⚠️ 扫描版 PDF 提取：本目录拆分/提取文件来自扫描版 PDF 的 OCR 文本层，
-> 数学公式的上下标与特殊符号可能丢失/粘连（如 SM3/SM4 已修复核心公式区）；
-> 精确公式以目录内 PDF 原文为准。
+> 说明：`01-SM2.md` 已从本地 PDF 的标题、条款、公式和示例重新整理为结构化参考；
+> 原 PDF 保留用于逐条核验。该目录不宣称完整实现 GB/T 32918 的全部协议细节。

@@ -1,5 +1,7 @@
 # FIPS 203 — 全算法索引
 
+标准原文提取参考：[00-Standard-Source.md](./00-Standard-Source.md)。
+
 来源: NIST FIPS 203 — Module-Lattice-Based Key-Encapsulation Mechanism Standard
       https://csrc.nist.gov/pubs/fips/203/final      (2024-08-13)
       https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf

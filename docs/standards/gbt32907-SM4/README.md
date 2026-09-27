@@ -1,5 +1,7 @@
 # GB/T 32907 — SM4 分组密码算法参考
 
+标准原文提取参考：[00-Standard-Source.md](./00-Standard-Source.md)。
+
 来源: GB/T 32907-2016 — SM4分组密码算法
       PDF: [GBT-32907-2016-SM4.pdf](./GBT-32907-2016-SM4.pdf)
 
@@ -26,9 +28,7 @@
 |----|------|
 | `sm4_round_func` | 轮函数 F |
 | `sm4_linear_transform` | 线性变换 L |
-| `sm4_round` | 完整轮(含密钥异或) |
-| `sm4_key_schedule` | 32轮密钥生成 |
+| `proc_sm4_round` | 完整轮(含密钥异或)模板 |
+| `proc_sm4_key_schedule` | 32轮密钥生成模板 |
 
-> ⚠️ 扫描版 PDF 提取：本目录拆分/提取文件来自扫描版 PDF 的 OCR 文本层，
-> 数学公式的上下标与特殊符号可能丢失/粘连（如 SM3/SM4 已修复核心公式区）；
-> 精确公式以目录内 PDF 原文为准。
+> 算法主线见 [01-SM4.md](./01-SM4.md)，其余页面按标准章节拆分；原 PDF 保留用于逐条核验。

@@ -1,6 +1,8 @@
 # GB/T 33133 — ZUC 祖冲之序列密码算法
 
-来源: GB/T 33133-2016 — 信息安全技术 祖冲之序列密码算法（第 1-3 部分）
+标准原文提取参考：[00-Standard-Source.md](./00-Standard-Source.md)。
+
+来源: GB/T 33133-2016/2021 — 信息安全技术 祖冲之序列密码算法（第 1-3 部分）
       第1部分 [GBT-33133.1-2016.pdf](./GBT-33133.1-2016.pdf) · 第2部分 [GBT+33133.2-2021.pdf](./GBT+33133.2-2021.pdf) · 第3部分 [GBT+33133.3-2021.pdf](./GBT+33133.3-2021.pdf)
 
 ## 参数
@@ -26,10 +28,16 @@
 - [ZUC-KeyStream-搭建指南.md](guides/ZUC-KeyStream-搭建指南.md)（中文）
 - [ZUC-KeyStream-搭建指南.en.md](guides/ZUC-KeyStream-搭建指南.en.md)（English）
 
+## 函数/原语索引
+
+- [02-SBox-Linear.md](./02-SBox-Linear.md)：`S0/S1/L1/L2`
+- [03-F-and-LFSR.md](./03-F-and-LFSR.md)：比特重组、F 和 LFSR
+- [04-Keystream.md](./04-Keystream.md)：密钥流生成
+- [05-EEA3-EIA3.md](./05-EEA3-EIA3.md)：EEA3 与 EIA3 的完整公式、Blockly 块及向量覆盖
+
 ## 实现状态
 
-已实现：`src/blocks/zuc/` 6 块（S0/S1/L1/L2/F 原子块 + zuc_keystream 完整块）+ `proc_zuc_keystream` 模板（🔧 ZUC_Keystream），demo 见 `demos/procedures/EEA3.json`。搭建方法见上方指南。
+已实现：`src/blocks/zuc/` 7 块（S0/S1/L1/L2/F 原子块、`zuc_keystream` 和 `zuc_eia3`）+ `proc_zuc_keystream` 模板。EEA3 与 EIA3 Demo 分别见 `demos/procedures/EEA3.json` 和 `demos/procedures/EIA3.json`；后者使用 GB/T 33133.3-2021 附录 B 示例 1、2，并验证双语言输出及非法参数拒绝。搭建方法见上方指南。
 
-> ⚠️ 扫描版 PDF 提取：本目录拆分/提取文件来自扫描版 PDF 的 OCR 文本层，
-> 数学公式的上下标与特殊符号可能丢失/粘连（如 SM3/SM4 已修复核心公式区）；
-> 精确公式以目录内 PDF 原文为准。
+> 说明：算法主线已在 [01-ZUC.md](./01-ZUC.md) 重新整理；PDF 保留用于逐条核验。
+> 128-EIA3 的块和选定官方向量已接入；覆盖范围不等于认证或生产安全证明。

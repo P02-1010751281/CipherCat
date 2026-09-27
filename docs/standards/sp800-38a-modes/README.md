@@ -1,5 +1,7 @@
 # NIST SP 800-38A — 分组密码操作模式
 
+标准原文提取参考：[00-Standard-Source.md](./00-Standard-Source.md)。
+
 来源: NIST SP 800-38A — Recommendation for Block Cipher Modes of Operation
       PDF: [NIST.SP.800-38A.pdf](./NIST.SP.800-38A.pdf)
 

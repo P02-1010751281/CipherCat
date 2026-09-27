@@ -1,6 +1,6 @@
 # ML-KEM-768 Encaps — Advanced Composite Blocks Build Guide
 
-> FIPS 203 Algorithm 10 + 13, k=3, η₁=2, η₂=2, d_u=10, d_v=4, q=3329
+> FIPS 203 Algorithms 20, 17, and 14; k=3, η₁=2, η₂=2, d_u=10, d_v=4, q=3329
 > **5 composite blocks.** ~45 visible blocks, ~10 minute build.
 > Input: `ek` (1184 bytes), `m` (32 bytes). Output: `c` (1088 bytes), `K_hat` (32 bytes).
 
@@ -8,28 +8,14 @@
 
 ## Algorithm Chain
 
-```
-Algorithm 10 (ML-KEM.Encaps)
-  └─ m ←$ {0,1}³²           // 32 random bytes
-  └─ ek length check         // must be 1184 bytes (384·3+32)
-  └─ call 
-
-
-  └─ (K̂, r) ← G(m ‖ H(ek))   // G=SHA3-512, H=SHA3-256
-  └─ c ← Algorithm 13(ek, m, r)
-
-Algorithm 13 (K-PKE.Encrypt)
-  └─ t̂ ← ByteDecode₁₂(ek[0:1152])
-  └─ ρ ← ek[1152:1184]
-  └─ Â ← SampleNTTMat(ρ)     // k × k matrix
-  └─ ŷ ← CBDNTTVec(r, η₁)    // k vectors
-  └─ e₁ ← CBDNTTVec(r, η₂)   // k vectors (offset nonce)
-  └─ u ← INTT(Âᵀ ∘ ŷ) + e₁
-  └─ μ ← Decompress₁(ByteDecode₁(m))
-  └─ v ← INTT(t̂ᵀ ∘ ŷ) + e₂ + μ
-  └─ c₁ ← CompressEncode₁₀(u)
-  └─ c₂ ← CompressEncode₄(v)
-  └─ c ← c₁ ‖ c₂
+```mermaid
+flowchart TD
+  A["Algorithm 20: ML-KEM.Encaps\ngenerate m; check ek"] --> B["Algorithm 17: ML-KEM.Encaps_internal\ncompute K and r"]
+  B --> C["Algorithm 14: K-PKE.Encrypt\nparse t_hat and rho"]
+  C --> D["SampleNTTMat: generate A_hat"]
+  D --> E["CBDNTTVec: generate y_hat, e1, e2"]
+  E --> F["Compute u and v: INTT, addition, Decompress"]
+  F --> G["CompressEncode: produce c1, c2, and c"]
 ```
 
 ---
@@ -50,9 +36,9 @@ Before dragging any logic, create every variable. This prevents Blockly from aut
 | 6 | `r_seed` | bytes | Randomness seed = G output bytes 32..64 |
 | 7 | `t_bytes` | bytes | ek[0:1152] — encoded t̂ (3 × 384 bytes at d=12) |
 | 8 | `rho` | bytes | ek[1152:1184] — 32-byte matrix seed |
-| 9 | `t0_ntt` | poly[256] | NTT(ByteDecode₁₂(ek[0:384])) |
-| 10 | `t1_ntt` | poly[256] | NTT(ByteDecode₁₂(ek[384:768])) |
-| 11 | `t2_ntt` | poly[256] | NTT(ByteDecode₁₂(ek[768:1152])) |
+| 9 | `t0_ntt` | poly[256] | ByteDecode₁₂(ek[0:384])；已处于 NTT 域 |
+| 10 | `t1_ntt` | poly[256] | ByteDecode₁₂(ek[384:768])；已处于 NTT 域 |
+| 11 | `t2_ntt` | poly[256] | ByteDecode₁₂(ek[768:1152])；已处于 NTT 域 |
 | 12 | `t_hat` | vec3 | BuildVec₃(t0_ntt, t1_ntt, t2_ntt) |
 | 13 | `A` | mat3×3 | SampleNTTMat(ρ, k=3) |
 | 14 | `r_hat` | vec3 | CBDNTTVec(r_seed, k=3, η=2) |
@@ -99,9 +85,7 @@ FIPS 203 Algorithm 10 line 1. Empty text placeholders — real values injected a
 | 2 | Snap 1b's top notch into 1a's bottom bump (`──next──`). |
 | 3 | **Text** → drag `""` into VALUE socket. Leave empty. |
 
-```
-[set ek → ""]──next──[set m → ""]
-```
+Block order: `set ek to ""` → `set m to ""`.
 
 **Blocks used**: 2× `variables_set`, 2× `text`
 
@@ -230,7 +214,7 @@ set g_out = Squeeze(rate=576, outLen=64,
 
 ## Step 4: Parse ek
 
-FIPS 203 Algorithm 13 line 2–3. FIPS 203 Algorithm 6: `ByteDecode_d` input = `32·d` bytes. d=12 → 384 bytes per polynomial. k=3 → |t̂| = 1152 bytes, |ρ| = 32 bytes, |ek| = 1184 bytes.
+FIPS 203 Algorithm 14, lines 2–3. FIPS 203 Algorithm 6: `ByteDecode_d` input = `32·d` bytes. d=12 → 384 bytes per polynomial. k=3 → |t̂| = 1152 bytes, |ρ| = 32 bytes, |ek| = 1184 bytes.
 
 |ek| = |ByteEncode₁₂(t̂)| + |ρ| = 384×3 + 32 = 1184.
 
@@ -258,7 +242,7 @@ FIPS 203 Algorithm 13 line 2–3. FIPS 203 Algorithm 6: `ByteDecode_d` input = `
 
 ## Step 5: Decode t̂ → BuildVec₃
 
-FIPS 203 Algorithm 13 line 2. ByteDecode₁₂ each 384-byte slice. `t_bytes` encodes `t̂` (already in NTT domain), so no NTT is needed after decoding.
+FIPS 203 Algorithm 14, line 2. ByteDecode₁₂ each 384-byte slice. The encoded public-key vector `t̂` is already in the NTT domain; decoding recovers those NTT-domain coefficients, so do not apply NTT again.
 
 ### 5a — t0_ntt
 
@@ -305,7 +289,7 @@ Each composite block internally expands to ~10–30 basic blocks at codegen time
 
 ### Step 6 — SampleNTTMat → A
 
-FIPS 203 Algorithm 13 line 4–8. Generates k×k SampleNTT matrix from seed ρ.
+FIPS 203 Algorithm 14, lines 4–8. Generates k×k SampleNTT matrix from seed ρ.
 
 | # | Action |
 |---|--------|
@@ -316,7 +300,7 @@ FIPS 203 Algorithm 13 line 4–8. Generates k×k SampleNTT matrix from seed ρ.
 
 ### Step 7 — CBDNTTVec → r_hat
 
-FIPS 203 Algorithm 13 line 9–12. Generates k CBD-sampled, NTT-transformed polynomials. Nonces 0,1,2.
+FIPS 203 Algorithm 14, lines 9–12. Generates k CBD-sampled, NTT-transformed polynomials. Nonces 0,1,2.
 
 | # | Action |
 |---|--------|
@@ -327,7 +311,7 @@ FIPS 203 Algorithm 13 line 9–12. Generates k CBD-sampled, NTT-transformed poly
 
 ### Step 8 — ML-KEM-EncapsU → u
 
-FIPS 203 Algorithm 13 line 13–19. Computes u = INTT(Âᵀ∘r̂) + e₁. Nonces k..2k-1 (3,4,5).
+FIPS 203 Algorithm 14, lines 13–19. Computes u = INTT(Âᵀ∘r̂) + e₁. Nonces k..2k-1 (3,4,5).
 
 | # | Action |
 |---|--------|
@@ -338,7 +322,7 @@ FIPS 203 Algorithm 13 line 13–19. Computes u = INTT(Âᵀ∘r̂) + e₁. Nonce
 
 ### Step 9 — Decompress → mu
 
-FIPS 203 §4.2.1, Algorithm 13 line 20. Decompress₁(m): each bit scaled back to Z_q.
+FIPS 203 §4.2.1, Algorithm 14, line 20. Decompress₁(m): each bit scaled back to Z_q.
 
 | # | Action |
 |---|--------|
@@ -348,7 +332,7 @@ FIPS 203 §4.2.1, Algorithm 13 line 20. Decompress₁(m): each bit scaled back t
 
 ### Step 10 — ML-KEM-EncapsV → v
 
-FIPS 203 Algorithm 13 line 21. Computes v = INTT(t̂ᵀ∘r̂) + e₂ + μ. Nonce 2k (6).
+FIPS 203 Algorithm 14, line 21. Computes v = INTT(t̂ᵀ∘r̂) + e₂ + μ. Nonce 2k (6).
 
 | # | Action |
 |---|--------|
@@ -363,7 +347,7 @@ FIPS 203 Algorithm 13 line 21. Computes v = INTT(t̂ᵀ∘r̂) + e₂ + μ. Nonc
 
 ## Steps 11–13: Compress-Encode & Concat
 
-FIPS 203 Algorithm 13 line 22–24.
+FIPS 203 Algorithm 14, lines 22–24.
 
 ### Step 11 — VecCompressEncode(d=10) → c1
 
@@ -455,7 +439,7 @@ v is a single polynomial — wrap in 1-element list before feeding to VecCompres
 | 2 | Alg 17 ln 1 | SHA3-256 (FIPS 202 §6) |
 | 3 | Alg 17 ln 1 | SHA3-512 (FIPS 202 §6) → (K̂, r) |
 | 4 | Alg 14 ln 2–3 | Parse ek → t̂_bytes, ρ |
-| 5 | Alg 14 ln 2, Alg 6, Alg 9 | ByteDecode₁₂ + NTT t̂ |
+| 5 | Alg 14 ln 2, Alg 6 | ByteDecode₁₂ t̂; decoded coefficients are already in NTT domain |
 | 6 | Alg 14 ln 4–8, Alg 7 | SampleNTTMat → Â |
 | 7 | Alg 14 ln 9–12, Alg 8 | CBDNTTVec → r̂ (η₁=2, nonces 0,1,2) |
 | 8 | Alg 14 ln 13–19, Alg 10, Alg 11 | ML-KEM-EncapsU → u (nonces 3,4,5) |

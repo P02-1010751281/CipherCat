@@ -2,6 +2,7 @@
 
 来源: RFC 8032 — Edwards-Curve Digital Signature Algorithm (EdDSA)
       全文: [rfc8032.txt](./rfc8032.txt)
+      在线原文: https://www.rfc-editor.org/rfc/rfc8032.txt
 
 ## 关键算法
 

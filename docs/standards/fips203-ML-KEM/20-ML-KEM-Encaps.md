@@ -1,58 +1,68 @@
 # Algorithm 20  ML-KEM.Encaps(ek)
 
-**章节**: §7.2 ML-KEM 公开接口  
-**类别**: ML-KEM 封装  
-**优先级**: 最高——用户直接调用的封装入口
+## 条目元数据
 
-### 规范
+| 字段 | 内容 |
+|---|---|
+| 类型 | 算法阶段 / 原语 / 函数 |
+| 标准定位 | §7.2 ML-KEM 公开接口 |
+| 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
+| 原文位置 | [提取稿](./00-Standard-Source.md#L2068)；PDF 物理页需结合同目录 PDF 核对 |
+| 项目状态 | 已实现（详见本文现有实现/缺项说明） |
 
-```
-Checked input: encapsulation key ek ∈ 𝔹^{384k+32}
-Output: shared secret key K ∈ 𝔹^{32}
-        ciphertext c ∈ 𝔹^{32(d_u·k + d_v)}
+## 原文定位与引用
 
- 1: m ←$ 𝔹^{32}                              ▷ 32 random bytes
- 2: if m == NULL then
- 3:    return ⊥
+> 本页按 source 中的“§7.2 ML-KEM 公开接口”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L2068) 与同目录 PDF。
+
+## 原文摘录
+> 以下为 source 中 Algorithm 20 的完整原文算法块；仅移除了 PDF 分页标记和页眉页码。
+
+```text
+Algorithm 20 ML-KEM.Encaps(ek)
+Uses the encapsulation key to generate a shared secret key and an associated ciphertext.
+Checked input: encapsulation key ek ∈ 𝔹384𝑘+32 .
+Output: shared secret key 𝐾 ∈ 𝔹32 .
+Output: ciphertext 𝑐 ∈ 𝔹32(𝑑𝑢 𝑘+𝑑𝑣 ) .
+        $
+ 1: 𝑚 ← − 𝔹32                                         ▷ 𝑚 is 32 random bytes (see Section 3.3)
+ 2: if 𝑚 == NULL then
+ 3:     return ⊥                     ▷ return an error indication if random bit generation failed
  4: end if
- 5: (K, c) ← ML-KEM.Encaps_internal(ek, m)
- 6: return (K, c)
-
-Encapsulation key check (§7.2):
-  1. Type check: ek length = 384k+32
-  2. Modulus check:
-       test ← ByteEncode₁₂(ByteDecode₁₂(ek[0:384k]))
-       Verify: test == ek[0:384k]
+ 5: (𝐾, 𝑐) ← ML-KEM.Encaps_internal(ek, 𝑚)               ▷ run internal encapsulation algorithm
+ 6: return (𝐾, 𝑐)
 ```
 
-### 备注
+## 标准定义
 
-Algorithm 20 在 Algorithm 17 外增加随机数生成 (§3.3 RBG 要求) 和输入检查。
+本页的规范性定义由下方完整算法块给出；不得用项目实现或摘要替代标准语义。
 
-封装密钥检查确保 ek 中的系数在合法范围 [0, q−1] 内。
+## 公式或伪代码
 
-**ML-KEM-768 参数**: k=3, |ek|=1184, |c|=1088, d_u=10, d_v=4。
+> 以下完整保留本条目的标准算法块；只移除了 PDF 页眉、页脚、页码和分页标记。
 
-**调用链**: Alg 20 → Alg 17 (Encaps_internal) → Alg 14 (K-PKE.Encrypt)。
-Alg 14 内部调用 Alg 7 (SampleNTT)、Alg 8 (SamplePolyCBD)、Alg 9 (NTT)、Alg 10 (INTT)、Alg 11 (MultiplyNTTs)、Compress/Decompress (§4.2.1)、ByteEncode/ByteDecode (Alg 5/6)。
+```text
+Algorithm 20 ML-KEM.Encaps(ek)
+Uses the encapsulation key to generate a shared secret key and an associated ciphertext.
+Checked input: encapsulation key ek ∈ 𝔹384𝑘+32 .
+Output: shared secret key 𝐾 ∈ 𝔹32 .
+Output: ciphertext 𝑐 ∈ 𝔹32(𝑑𝑢 𝑘+𝑑𝑣 ) .
+        $
+ 1: 𝑚 ← − 𝔹32                                         ▷ 𝑚 is 32 random bytes (see Section 3.3)
+ 2: if 𝑚 == NULL then
+ 3:     return ⊥                     ▷ return an error indication if random bit generation failed
+ 4: end if
+ 5: (𝐾, 𝑐) ← ML-KEM.Encaps_internal(ek, 𝑚)               ▷ run internal encapsulation algorithm
+ 6: return (𝐾, 𝑐)
+```
 
-### 块实现
+## 输入与输出
 
-已实现。完整搭建路径见 `guides/ML-KEM-768-Encaps-搭建指南.md`。
+输入、输出、取值域和错误返回以完整算法块中的 `Input`、`Output` 及其步骤为准；标准未列出的字段不由项目自行补写。
 
-**两种搭建方式**:
+## 项目映射
 
-| 方式 | 块数 | 耗时 | 适用 | 详见 |
-|------|:---:|------|------|------|
-| 高级复合块 | ~45 | ~10 min | 快速原型 | `guides/ML-KEM-768-Encaps-搭建指南.md` |
-| 纯基础原语块 | ~120 | ~45 min | 教学验证 | `guides/ML-KEM-768-Encaps-纯基础块.md` |
+本页是标准结构化参考条目；项目是否有同名 Blockly 块、源码入口或 demo，按本目录 README 和覆盖矩阵核对。本页不把文档条目等同于已实现。
 
-**涉及块清单** (高级方式):
-- 哈希: Keccak Init, SHA-3 Pad, Absorb, Squeeze
-- 后量子基础: BytesConcat, BytesSlice, ByteDecode(d=12), Decompress(d=1)
-- 后量子高级: SampleNTTMat, CBDNTTVec, ATrINTTAddE1, TrINTTAddE2Mu, BuildVec₃, VecCompressEncode
-- 数论: NTT(q=3329)
+## 核验与缺项
 
-**Nonce 计算**: `SeedWithNonce(r_seed, k+i)` 可通过 Math 分类的 `math_arithmetic` 块（`+` 运算）在循环内表达。参见纯基础块指南。
-
-**加密密钥检查**: 当前实现基于 Alg 17，密钥检查为可选增强。
+已机械核对完整算法块与 source 算法标题及行号；标准向量、实现语义、边界负例和认证结论仍须按本目录记录分别核验。

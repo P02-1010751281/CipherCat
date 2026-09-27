@@ -1,9 +1,30 @@
-# Patterson 代数译码（1975）
+## 条目元数据
+
+| 字段 | 内容 |
+|---|---|
+| 类型 | 译码原语 / 教学分解 |
+| 标准定位 | Patterson 代数译码、错误定位多项式与 Chien 搜索 |
+| 原文证据 | [来源索引](./00-Research-Source.md#L17)（Patterson 1975、ISO Clause 13） |
+| 原文位置 | Patterson 1975 pp. 203–207；ISO/IEC 18033-2:2006/Amd 2:2026 Clause 13；完整 ISO 文本未本地保存 |
+| 项目状态 | 已实现教学译码原语；未实现 ISO Classic McEliece KEM 参数集或符合性 |
+
+## 原文定位与引用
+
+> 本页是 Patterson 译码的教学推导和实现说明，不是标准全文转录。原始来源与访问限制见[来源索引](./00-Research-Source.md#L17)。
+
+## 来源要点（转述，非逐字引用）
+
+> 参考原文入口：Patterson 1975《The algebraic decoding of Goppa codes》；书目信息和可访问来源见 [00-Research-Source.md](./00-Research-Source.md#L17)。
 
 Patterson 算法对二元 Goppa 码做**代数译码**：由 syndrome 直接解出错误定位
 多项式 σ(z)，无需查表——这是 McEliece 码基密码能实际纠错的核心。
 
-## 算法
+## 公式或伪代码
+
+> 本页没有可直接核对的单一标准原件；下面内容是项目教学推导和实现笔记，不是完整标准原文，不能把它当作标准公式或伪代码摘录。
+> 完整书目信息与待核对原始文献见 [README.md](./README.md)。
+
+### 算法
 
 输入：支持集 L、生成多项式 G(z)（次数 t）、接收字 y 的 syndrome S(z)（deg < t）。
 

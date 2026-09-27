@@ -107,9 +107,7 @@ FIPS 203 Algorithm 10 line 1. Empty text placeholders — real byte values injec
 | 2 | Snap 1b's top notch into 1a's bottom bump (`──next──`). |
 | 3 | **Text** → drag `""` into VALUE socket. Leave empty. |
 
-```
-[set ek → ""]──next──[set m → ""]
-```
+Block order: `set ek to ""` → `set m to ""`.
 
 | Category | Block | Qty |
 |----------|-------|:---:|

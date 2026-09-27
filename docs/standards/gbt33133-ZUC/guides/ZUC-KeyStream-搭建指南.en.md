@@ -110,9 +110,7 @@ Empty text placeholders — real byte values are injected at runtime (EEA3 test 
 | 1 | **Variables** → drag `set len to`. Snap below 1b. |
 | 2 | VALUE ← **Math** → number block. Change `0` to `2` (or desired word count), Enter. |
 
-```
-[set key → ""]──next──[set iv → ""]──next──[set len → 2]
-```
+Block order: `set key to ""` → `set iv to ""` → `set len to 2`.
 
 **Block count**: 3× `variables_set`, 2× `text`, 1× `math_number`
 
@@ -130,9 +128,7 @@ The `zuc_keystream` block expands to the full ZUC flow at code-generation time (
 | 4 | IV socket ← **Variables** → `iv`. |
 | 5 | LEN socket ← **Variables** → `len`. |
 
-```
-set z = ZUC Keystream(key=key, iv=iv, len=len)
-```
+Call: `set z to ZUC Keystream(key=key, iv=iv, len=len)`.
 
 **Block count**: 1× `set`, 1× `zuc_keystream`, 3× variable references
 

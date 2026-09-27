@@ -1,5 +1,23 @@
 # ADRS — 地址格式（FIPS 205 §3.4）
 
+## 条目元数据
+
+| 字段 | 内容 |
+|---|---|
+| 类型 | 原语 / 函数 |
+| 标准定位 | ADRS — 地址格式（FIPS 205 §3.4） |
+| 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
+| 原文位置 | [提取稿 §4.2，行 798–939](./00-Standard-Source.md#L798-L939)；PDF 物理页需结合同目录 PDF 核对 |
+| 项目状态 | 已实现（详见本文现有实现/缺项说明） |
+
+## 原文定位与引用
+
+> 本页按 source 中的“ADRS — 地址格式（FIPS 205 §3.4）”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md) 与同目录 PDF。
+
+## 原文摘录
+
+> 本页正文是按 source 的“ADRS — 地址格式（FIPS 205 §3.4）”拆出的结构化说明；该定位是概览/组合页，未强行截取不唯一的行号。需要核对时请按 [source 提取稿](./00-Standard-Source.md) 的章节标题和同目录 PDF 查看原文。
+
 SLH-DSA 用 32 字节地址（ADRS）对哈希调用做**域分隔**：同一哈希函数 H 服务所有
 用途（WOTS+ 链、Merkle 节点、FORS 树……），靠 ADRS 的 type + 位置字段区分，
 避免跨用途碰撞。
@@ -38,3 +56,7 @@ offset  大小  字段
 
 哈希函数 H = SHAKE-256（32 字节输出）。演示：`demos/procedures/Hash-Based-Structures.json`
 ADRS 32B 确定性 + `demos/procedures/PQC-Gaps.json` type 字段位置/域分隔（TREE vs ROOTS）。
+
+## 公式或伪代码
+
+> 本条目不定义独立公式或伪代码；ADRS 的字段布局和 type 表已在上文完整列出，相关哈希算法见同目录函数条目。

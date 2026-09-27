@@ -1,7 +1,8 @@
 # RFC 7748 — X25519 椭圆曲线 Diffie-Hellman 密钥交换
 
 来源: RFC 7748 — Elliptic Curves for Security
-      全文: [rfc7748.txt](./rfc7748.txt)
+      全文: [本地 rfc7748.txt](./rfc7748.txt)
+      在线原文: https://www.rfc-editor.org/rfc/rfc7748.txt
 
 ## 关键算法
 

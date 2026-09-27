@@ -1,62 +1,66 @@
-# AES — 5.1.1  SUBBYTES()
+# AES — SubBytes 原语
 
-来源: NIST FIPS 197
+## 条目元数据
 
-5.1.1  SUBBYTES()
-SUBBYTES() is an invertible, non-linear transformation of the state in which a substitution table,
-called an S-box, is applied independently to each byte in the state. The AES S-box is denoted by
-SBOX().
-Let b denote an input byte to SBOX(), and let c denote the constant byte {01100011}. The
-0
-output byte b = SBOX(b) is constructed by composing the following two transformations:
-1. Defne an intermediate value b˜, as follows, where b−1 is the multiplicative inverse of b, as
-described in Section 4.4:
+| 字段 | 内容 |
+|---|---|
+| 类型 | 原语 / 非线性字节代换 |
+| 标准定位 | FIPS 197 §5.1.1，Eq. (5.2)–(5.4) |
+| 原文证据 | [FIPS 197 原文提取](./00-Standard-Source.md) · [PDF](./NIST.FIPS.197.pdf) |
+| 原文位置 | PDF 物理第 21 页（标准页 12–13）；[提取稿 §5.1.1](./00-Standard-Source.md#L798) |
+| 项目状态 | 已实现；也可作为 AES 轮变换中的独立步骤核对 |
 
-b˜ = { b⁻¹  if b ≠ 0        (5.2)
-     { 0     if b = 0
+## 原文定位与引用
 
-2. Apply the following affne transformation of the bits of b˜ to produce the bits of b 0
-:
+> “S UB B YTES() is an invertible, non-linear transformation of the state.”
+>
+> — FIPS 197 §5.1.1；[提取稿第 798 行](./00-Standard-Source.md#L798)
 
-b′ᵢ = b̃ᵢ ⊕ b̃₍ᵢ₊₄₎ mod 8 ⊕ b̃₍ᵢ₊₅₎ mod 8 ⊕ b̃₍ᵢ₊₆₎ mod 8 ⊕ b̃₍ᵢ₊₇₎ mod 8 ⊕ cᵢ  (5.3)
+## 原文摘录
 
-其中 c = {01100011}，cᵢ 为 c 的第 i 位。
+> 以下为 00-Standard-Source.md 的说明性定位引文；仅规范化了空白和分页换行，完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L798)。
 
-The matrix form of Eq. (5.3) is given by Eq. (5.4) below:
+    5.1.1 S UB B YTES()
+    S UB B YTES() is an invertible, non-linear transformation of the state in which a substitution table,
+    called an S-box, is applied independently to each byte in the state. The AES S-box is denoted by
 
-| b′₀ |   | 1 0 0 0 1 1 1 1 |   | b̃₀ |   | 1 |
-| b′₁ |   | 1 1 0 0 0 1 1 1 |   | b̃₁ |   | 1 |
-| b′₂ |   | 1 1 1 0 0 0 1 1 |   | b̃₂ |   | 0 |
-| b′₃ | = | 1 1 1 1 0 0 0 1 | · | b̃₃ | ⊕ | 0 |   (5.4)
-| b′₄ |   | 1 1 1 1 1 0 0 0 |   | b̃₄ |   | 0 |
-| b′₅ |   | 0 1 1 1 1 1 0 0 |   | b̃₅ |   | 1 |
-| b′₆ |   | 0 0 1 1 1 1 1 0 |   | b̃₆ |   | 1 |
-| b′₇ |   | 0 0 0 1 1 1 1 1 |   | b̃₇ |   | 0 |
-Figure 2. Illustration of SUBBYTES()
-The AES S-box is presented in hexadecimal form in Table 4. For example, if s = {53}, then
-r,c
-13
+## 标准定义
 
-FIPS 197 ADVANCED ENCRYPTION STANDARD (AES)
-Table 4. SBOX(): substitution values for the byte xy (in hexadecimal format)
-y
-0 1 2 3 4 5 6 7 8 9 a b c d e f
-0 63 7c 77 7b f2 6b 6f c5 30 01 67 2b fe d7 ab 76
-1 ca 82 c9 7d fa 59 47 f0 ad d4 a2 af 9c a4 72 c0
-2 b7 fd 93 26 36 3f f7 cc 34 a5 e5 f1 71 d8 31 15
-3 04 c7 23 c3 18 96 05 9a 07 12 80 e2 eb 27 b2 75
-4 09 83 2c 1a 1b 6e 5a a0 52 3b d6 b3 29 e3 2f 84
-5 53 d1 00 ed 20 fc b1 5b 6a cb be 39 4a 4c 58 cf
-6 d0 ef aa fb 43 4d 33 85 45 f9 02 7f 50 3c 9f a8
-x 7 51 a3 40 8f 92 9d 38 f5 bc b6 da 21 10 ff f3 d2
-8 cd 0c 13 ec 5f 97 44 17 c4 a7 7e 3d 64 5d 19 73
-9 60 81 4f dc 22 2a 90 88 46 ee b8 14 de 5e 0b db
-a e0 32 3a 0a 49 06 24 5c c2 d3 ac 62 91 95 e4 79
-b e7 c8 37 6d 8d d5 4e a9 6c 56 f4 ea 65 7a ae 08
-c ba 78 25 2e 1c a6 b4 c6 e8 dd 74 1f 4b bd 8b 8a
-d 70 3e b5 66 48 03 f6 0e 61 35 57 b9 86 c1 1d 9e
-e e1 f8 98 11 69 d9 8e 94 9b 1e 87 e9 ce 55 28 df
-f 8c a1 89 0d bf e6 42 68 41 99 2d 0f b0 54 bb 16
-the substitution value would be determined by the intersection of the row with index ‘5’ and the
-column with index ‘3’ in Table 4, so that s0 = {ed}.
-r,c
+SubBytes 对状态的每个字节独立应用 AES S 盒。S 盒先在 `GF(2^8)` 中求乘法逆元（零的逆元定义为零），
+再做固定仿射变换；结果仍是一个 8-bit 字节。逆变换使用 `InvSBox`。
+
+## 公式或伪代码
+
+```text
+SubBytes(state):
+    for r = 0..3, c = 0..3:
+        x = state[r,c]
+        y = 0                         if x = 0
+            x^(-1) in GF(2^8)        otherwise
+        state[r,c] = y xor rotl8(y,1) xor rotl8(y,2)
+                         xor rotl8(y,3) xor rotl8(y,4) xor 0x63
+    return state
+```
+
+等价的位公式为 `b'[i] = y[i] xor y[(i+4) mod 8] xor y[(i+5) mod 8] xor
+y[(i+6) mod 8] xor y[(i+7) mod 8] xor c[i]`，其中 `c = 0x63`；域多项式为
+`x^8 + x^4 + x^3 + x + 1`（`0x11B`）。
+
+## 输入与输出
+
+| 项目 | 约束 |
+|---|---|
+| 输入 | 4×4 AES 状态，每格 1 字节 |
+| 输出 | 相同形状的代换状态 |
+| 示例 | `SBox(0x53) = 0xED` |
+| 错误条件 | 非 16-byte 状态由调用方拒绝；本原语不处理填充 |
+
+## 项目映射
+
+`aes_sub_bytes` 对应本原语；AES 完整流程见 [01-AES.md](./01-AES.md)。S 盒查表和 GF(2^8)
+运算是实现细节，不把 PDF 中的查表复制到用户块输入中。
+
+## 核验与缺项
+
+使用 FIPS 197 Appendix B/C 的 AES-128 轮状态和 `0x53 → 0xED` 单点向量核验。AES-192/256
+共用同一 SubBytes 原语；本页不声称实现了侧信道防护或模块认证。

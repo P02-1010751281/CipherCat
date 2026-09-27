@@ -1,19 +1,20 @@
-# McEliece / Goppa 码 — 全算法索引
+# Classic McEliece / Goppa 码 — 算法与来源索引
 
-来源:
-- R. J. McEliece, "A Public-Key Cryptosystem Based on Algebraic Coding Theory",
-  DSN Progress Report 42-44, 1978
-- V. D. Goppa, "A new class of linear error-correcting codes", Problems of
-  Information Transmission, 1970
-- Classic McEliece — NIST PQC Round-4 submission (2023):
-  https://classic.mceliece.org/
-- E. R. Berlekamp, "Goppa codes", IEEE Trans. Inf. Theory, 1973
-- N. J. Patterson, "The algebraic decoding of Goppa codes", IEEE Trans. Inf.
-  Theory, 1975
+来源与标准化状态见 [00-Research-Source.md](./00-Research-Source.md)；其中区分算法原始论文、ISO 标准记录和 NIST 流程状态。
 
-> CipherCat 编码基块族（`src/blocks/numtheory/codebased.ts` + `gf2mpoly.ts` +
+## 标准化状态
+
+| 组织 | 可核实状态 | 证据边界 |
+|---|---|---|
+| ISO/IEC | ISO/IEC 18033-2:2006/Amd 2:2026 于 2026-06-05 发布；修正案新增 Classic McEliece KEM。 | ISO 目录确认修正案已发布；算法团队页面列出纳入的算法与参数集。标准全文受版权及付费访问限制，本仓库不保存或转录全文。 |
+| NIST | NIST IR 8545 和 2025-03-11 公告记录：Classic McEliece 是第四轮候选，但未获选；HQC 获选进入 NIST 标准化。NIST 当前 PQC 项目页（2026-08-05 更新）说明 HQC 标准化正在进行。 | 额外数字签名项目页虽于 2026-09-22 更新，正文仍保留“第四轮 KEM 候选仍在考虑”的旧段落，与已发布的第四轮结果不符；按陈旧页面内容处理，不把它视作未决的现行流程结论。 |
+
+## 实现范围
+
+> CipherCat 基于纠错码的数学构件（`src/blocks/numtheory/codebased.ts` + `gf2mpoly.ts` +
 > `src/blocks/numtheory/` 二进制矩阵/汉明）覆盖 Goppa 码构造、syndrome 计算与
-> Patterson 译码——McEliece 公钥密码与 Goppa 码纠错的教学原语。
+> Patterson 译码——McEliece 公钥密码与 Goppa 码纠错的教学原语。它不实现 ISO
+> Classic McEliece KEM 的密钥生成、封装/解封装接口或所列参数集，也不构成标准符合性声明。
 > 教学参数（固定）：GF(2^8) AES 域（不可约 x⁸+x⁴+x³+x+1 = 0x11B）、t = 2、n = 14。
 
 ## 教学参数
@@ -50,8 +51,8 @@
 
 ## 相关标准
 
-- Goppa 码 + Patterson 译码是 **McEliece 公钥密码**（经典码基候选）的数学基础；
-  NIST 未将其选为标准（FIPS 206 FN-DSA 为格基 Falcon，非码基）。
+- Goppa 码 + Patterson 译码是 Classic McEliece 码基 KEM 的数学背景；本项目只实现小参数教学原语，不能据此宣称实现 ISO/IEC 18033-2:2006/Amd 2:2026。
+- NIST IR 8545 的 NIST 流程结论与 ISO 已发布标准是两种不同状态；详见本页“标准化状态”及来源索引，不得合并成“NIST/国际均未标准化”。
 - `demos/procedures/Goppa-Decode.json`：G=[176,92,1] 根判定、逆元 u·(z−α)≡1、
   syndrome 原子链==已知值、无错/单错/双错往返、篡改 G 不可纠。
 - 教程：docs/demos/post-quantum.md 场景 11（Goppa/Patterson）。

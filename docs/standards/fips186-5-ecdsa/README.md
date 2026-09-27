@@ -1,5 +1,7 @@
 # FIPS 186-5 — ECDSA 数字签名标准
 
+标准原文提取参考：[00-Standard-Source.md](./00-Standard-Source.md)。
+
 来源: NIST FIPS 186-5 — Digital Signature Standard (DSS)
       https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
       PDF: [NIST.FIPS.186-5.pdf](./NIST.FIPS.186-5.pdf)
@@ -16,5 +18,8 @@ Demo：`demos/procedures/ECDSA.json`（RFC 6979 sample/test 向量）。
 
 ## 文档文件
 
-- `01-ECDSA.md` — ECDSA 算法参考
+- `01-ECDSA.md` — ECDSA 总览
+- `02-Curve-Operations.md` — 曲线与点运算原语
+- `03-Sign.md` — 签名原语
+- `04-Verify.md` — 验签原语
 - `NIST.FIPS.186-5.pdf` — 标准原文

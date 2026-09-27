@@ -1,0 +1,82 @@
+# Algorithm 6 — WOTS+ 公钥生成（FIPS 205）
+
+## 条目元数据
+
+| 字段 | 内容 |
+|---|---|
+| 类型 | 函数 |
+| 标准定位 | FIPS 205 §5.1，Algorithm 6 `wots_pkGen` |
+| 原文证据 | [FIPS 205 source](./00-Standard-Source.md#L1136) · [PDF](./NIST.FIPS.205.pdf) |
+| 原文位置 | `00-Standard-Source.md` 第 1136 行起；PDF 物理页以 PDF 视觉版式核对 |
+| 项目状态 | 仅参考 |
+
+## 标准定义
+
+Generates a WOTS+ public key. 本页只承载 Algorithm 6 的独立定义；依赖的函数、地址和参数仍按 FIPS 205 的对应章节解释，不能用项目教学参数反推标准参数。
+
+## 原文定位与引用
+
+该条目从 [FIPS 205 原文提取稿](./00-Standard-Source.md#L1136) 拆出。完整正文、公式、脚注和上下文回到 source 及同目录 PDF 核验。
+
+## 原文摘录
+> 以下为 source 中 Algorithm 6 的完整原文算法块；仅移除了 PDF 分页标记和页眉页码。
+
+```text
+Algorithm 6 wots_pkGen(SK.seed, PK.seed, ADRS)
+Generates a WOTS+ public key.
+Input: Secret seed SK.seed, public seed PK.seed, address ADRS.
+Output: WOTS+ public key 𝑝𝑘.
+  1: skADRS ← ADRS                      ▷ copy address to create key generation key address
+  2: skADRS.setTypeAndClear(WOTS_PRF)
+  3: skADRS.setKeyPairAddress(ADRS.getKeyPairAddress())
+  4: for 𝑖 from 0 to 𝑙𝑒𝑛 − 1 do
+  5:     skADRS.setChainAddress(𝑖)
+  6:     𝑠𝑘 ← PRF(PK.seed, SK.seed, skADRS)              ▷ compute secret value for chain 𝑖
+  7:     ADRS.setChainAddress(𝑖)
+  8:     𝑡𝑚𝑝[𝑖] ← chain(𝑠𝑘, 0, 𝑤 − 1, PK.seed, ADRS) ▷ compute public value for chain 𝑖
+  9: end for
+10: wotspkADRS ← ADRS                    ▷ copy address to create WOTS+ public key address
+11: wotspkADRS.setTypeAndClear(WOTS_PK)
+12: wotspkADRS.setKeyPairAddress(ADRS.getKeyPairAddress())
+13: 𝑝𝑘 ← T𝑙𝑒𝑛 (PK.seed, wotspkADRS, 𝑡𝑚𝑝)                             ▷ compress public key
+14: return 𝑝𝑘
+```
+
+## 公式或伪代码
+
+以下保留 source 提取稿中的算法标题、输入/输出和伪代码；分页造成的空白/字形异常以 PDF 为准。
+
+```text
+Algorithm 6 wots_pkGen(SK.seed, PK.seed, ADRS)
+Generates a WOTS+ public key.
+Input: Secret seed SK.seed, public seed PK.seed, address ADRS.
+Output: WOTS+ public key 𝑝𝑘.
+  1: skADRS ← ADRS                      ▷ copy address to create key generation key address
+  2: skADRS.setTypeAndClear(WOTS_PRF)
+  3: skADRS.setKeyPairAddress(ADRS.getKeyPairAddress())
+  4: for 𝑖 from 0 to 𝑙𝑒𝑛 − 1 do
+  5:     skADRS.setChainAddress(𝑖)
+  6:     𝑠𝑘 ← PRF(PK.seed, SK.seed, skADRS)              ▷ compute secret value for chain 𝑖
+  7:     ADRS.setChainAddress(𝑖)
+  8:     𝑡𝑚𝑝[𝑖] ← chain(𝑠𝑘, 0, 𝑤 − 1, PK.seed, ADRS) ▷ compute public value for chain 𝑖
+  9: end for
+10: wotspkADRS ← ADRS                    ▷ copy address to create WOTS+ public key address
+11: wotspkADRS.setTypeAndClear(WOTS_PK)
+12: wotspkADRS.setKeyPairAddress(ADRS.getKeyPairAddress())
+13: 𝑝𝑘 ← T𝑙𝑒𝑛 (PK.seed, wotspkADRS, 𝑡𝑚𝑝)                             ▷ compress public key
+14: return 𝑝𝑘
+```
+
+## 输入与输出
+
+以算法正文中的 `Input` / `Output` 为准；字节串长度、`n`、`a`、`k`、`h′`、`d`、`len` 和地址类型必须绑定所选标准参数集。算法返回错误或布尔值时，错误语义也属于接口边界。
+
+## 项目映射
+
+没有独立块；WOTS+ 公钥生成由上层 SLH-DSA 流程内部实现。
+
+## 核验与缺项
+
+- 原文覆盖：Algorithm 6 已独立定位到 source 第 1136 行。
+- 结构核验：实现/教学块不得以同名替换标准函数；必须区分“标准算法”“项目映射”和“未实现”。
+- 向量核验：待接入 FIPS 205/CAVP 完整 SLH-DSA KAT；当前项目已有 demo 只能证明明确列出的教学性质。

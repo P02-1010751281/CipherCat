@@ -1,17 +1,41 @@
-# WOTS+ — Winternitz 一次性签名（FIPS 205 §5）
+## 条目元数据
+
+| 字段 | 内容 |
+|---|---|
+| 类型 | 原语 / 函数 |
+| 标准定位 | WOTS+ — Winternitz 一次性签名（FIPS 205 §5） |
+| 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
+| 原文位置 | [提取稿 Algorithm 5](./00-Standard-Source.md#L1113)；PDF 物理页需结合同目录 PDF 核对 |
+| 项目状态 | 已实现（详见本文现有实现/缺项说明） |
+
+## 原文定位与引用
+
+> 本页按 source 中的“WOTS+ — Winternitz 一次性签名（FIPS 205 §5）”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L1113) 与同目录 PDF。
+
+## 原文摘录
+
+> 以下为 00-Standard-Source.md 的说明性定位引文；仅规范化了空白和分页换行，完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L1113)。
+
+    Algorithm 5 chain(𝑋, 𝑖, 𝑠, PK.seed, ADRS)
+    Chaining function used in WOTS+ .
+    Input: Input string 𝑋, start index 𝑖, number of steps 𝑠, public seed PK.seed, address ADRS.
 
 WOTS+ 是 SLH-DSA 的底层一次性签名：把消息拆成 base-w 数字，每个数字对应一条
 哈希链，签名 = 各链上取一步。仅能安全签一条消息（复用即泄露私钥），故 SLH-DSA
 用超树（hypertree）把 WOTS+ 公钥逐层压缩到一棵根。
 
-## 参数（FIPS 205 全部参数集 lgw = 4）
+## 公式或伪代码
+
+> 以下是面向用户的结构化公式/伪代码摘要，不是标准原文的完整逐字摘录；完整规范单元请以本页“原文摘录”、source 提取稿和 PDF 为准。
+
+### 参数（FIPS 205 全部参数集 lgw = 4）
 
 - `w = 2^lgw = 16`：每条哈希链长度（链上 w 个节点）
 - `len1 = ⌈8n/lgw⌉ = 2n`：消息分块数（每个 4-bit 块一个链）
 - `len2 = ⌊log₂(len1·(w−1))/lgw⌋ + 1 = 3`：校验和分块数（lgw=4 时固定 3）
 - `len = len1 + len2 = 2n + 3`：链总数，即私钥/公钥/签名元素个数
 
-## 算法
+### 算法
 
 ### chain（Algorithm 5）：哈希链
 

@@ -1,22 +1,60 @@
 # Algorithm 12  BaseCaseMultiply(a₀, a₁, b₀, b₁, γ)
 
-**章节**: §4.3 NTT 变换  
-**类别**: NTT 乘法基例
+## 条目元数据
 
-### 规范
+| 字段 | 内容 |
+|---|---|
+| 类型 | 原语 / 函数 |
+| 标准定位 | §4.3 NTT 变换 |
+| 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
+| 原文位置 | [提取稿](./00-Standard-Source.md#L1603)；PDF 物理页需结合同目录 PDF 核对 |
+| 项目状态 | 仅参考（详见本文现有实现/缺项说明） |
 
+## 原文定位与引用
+
+> 本页按 source 中的“§4.3 NTT 变换”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L1603) 与同目录 PDF。
+
+## 原文摘录
+> 以下为 source 中 Algorithm 12 的完整原文算法块；仅移除了 PDF 分页标记和页眉页码。
+
+```text
+Algorithm 12 BaseCaseMultiply(𝑎0 , 𝑎1 , 𝑏0 , 𝑏1 , 𝛾)
+Computes the product of two degree-one polynomials with respect to a quadratic modulus.
+Input: 𝑎0 , 𝑎1 , 𝑏0 , 𝑏1 ∈ ℤ𝑞 .                      ▷ the coefficients of 𝑎0 + 𝑎1 𝑋 and 𝑏0 + 𝑏1 𝑋
+Input: 𝛾 ∈ ℤ𝑞 .                                                         ▷ the modulus is 𝑋 2 − 𝛾
+Output: 𝑐0 , 𝑐1 ∈ ℤ𝑞 .                   ▷ the coefficients of the product of the two polynomials
+  1: 𝑐0 ← 𝑎0 ⋅ 𝑏0 + 𝑎1 ⋅ 𝑏1 ⋅ 𝛾                                        ▷ steps 1-2 done modulo 𝑞
+  2: 𝑐1 ← 𝑎0 ⋅ 𝑏1 + 𝑎1 ⋅ 𝑏0
+  3: return (𝑐0 , 𝑐1 )
 ```
-Input:  a₀, a₁, b₀, b₁, γ ∈ ℤ_q
-Output: (c₀, c₁) ∈ ℤ_q × ℤ_q
 
- 1: c₀ ← a₀·b₀ + γ · a₁·b₁ mod q
- 2: c₁ ← a₀·b₁ + a₁·b₀ mod q
- 3: return (c₀, c₁)
+## 标准定义
+
+本页的规范性定义由下方完整算法块给出；不得用项目实现或摘要替代标准语义。
+
+## 公式或伪代码
+
+> 以下完整保留本条目的标准算法块；只移除了 PDF 页眉、页脚、页码和分页标记。
+
+```text
+Algorithm 12 BaseCaseMultiply(𝑎0 , 𝑎1 , 𝑏0 , 𝑏1 , 𝛾)
+Computes the product of two degree-one polynomials with respect to a quadratic modulus.
+Input: 𝑎0 , 𝑎1 , 𝑏0 , 𝑏1 ∈ ℤ𝑞 .                      ▷ the coefficients of 𝑎0 + 𝑎1 𝑋 and 𝑏0 + 𝑏1 𝑋
+Input: 𝛾 ∈ ℤ𝑞 .                                                         ▷ the modulus is 𝑋 2 − 𝛾
+Output: 𝑐0 , 𝑐1 ∈ ℤ𝑞 .                   ▷ the coefficients of the product of the two polynomials
+  1: 𝑐0 ← 𝑎0 ⋅ 𝑏0 + 𝑎1 ⋅ 𝑏1 ⋅ 𝛾                                        ▷ steps 1-2 done modulo 𝑞
+  2: 𝑐1 ← 𝑎0 ⋅ 𝑏1 + 𝑎1 ⋅ 𝑏0
+  3: return (𝑐0 , 𝑐1 )
 ```
 
-### 备注
+## 输入与输出
 
-计算 (a₀ + a₁·X)(b₀ + b₁·X) mod (X² − γ)。
-Algorithm 11 的每个偶数/奇数对以此公式在 ℤ_q[X]/(X² − γ) 中相乘。
-无独立块，内嵌于 ntt_mul。
+输入、输出、取值域和错误返回以完整算法块中的 `Input`、`Output` 及其步骤为准；标准未列出的字段不由项目自行补写。
 
+## 项目映射
+
+本页是标准结构化参考条目；项目是否有同名 Blockly 块、源码入口或 demo，按本目录 README 和覆盖矩阵核对。本页不把文档条目等同于已实现。
+
+## 核验与缺项
+
+已机械核对完整算法块与 source 算法标题及行号；标准向量、实现语义、边界负例和认证结论仍须按本目录记录分别核验。

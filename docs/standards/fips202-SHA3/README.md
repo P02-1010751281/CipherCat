@@ -1,5 +1,7 @@
 # FIPS 202 — 全算法索引
 
+标准原文提取参考：[00-Standard-Source.md](./00-Standard-Source.md)。
+
 来源: NIST FIPS 202 — SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions
       https://csrc.nist.gov/pubs/fips/202/final      (2015-08)
       https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf

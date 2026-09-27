@@ -1,66 +1,47 @@
-# Modes — 6.2  The Cipher Block Chaining Mode
+## 条目元数据
 
-来源: NIST SP 800-38A
+| 字段 | 内容 |
+|---|---|
+| 类型 | 原语 / 函数 |
+| 标准定位 | NIST SP 800-38A §6.2 — CBC |
+| 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
+| 原文位置 | [提取稿](./00-Standard-Source.md#L584)；PDF 物理页需结合同目录 PDF 核对 |
+| 项目状态 | 仅参考（详见本文现有实现/缺项说明） |
 
-6.2  The Cipher Block Chaining Mode
+## 原文定位与引用
 
-The  Cipher Block Chaining (CBC) mode is a confidentiality mode whose encryption process
-features the combining (“chaining”) of the plaintext blocks with the previous ciphertext blocks.
-The  CBC mode  requires an IV to combine with the first plaintext block.  The IV need not be
-secret, but it must be unpredictable; the generation of such IVs is discussed in Appendix C.
-Also, the integrity of the IV should be protected, as discussed in Appendix D.  The  CBC mode  is
-defined as follows:
+> 本页按 source 中的“NIST SP 800-38A §6.2 — CBC”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L584) 与同目录 PDF。
 
-| CBC Encryption:  	 |     |     |     | C =   CIPH |     | (P      | ⊕  IV);
-|                    |     |     |     | C = CIPH   |     | (P ⊕  C | )         | for j = 2 …  n.
+## 原文摘录
 
-|  |  |  |  |  | P =  CIPH -1 (C |  |  | ) ⊕  IV; |
-| --- | ------------------ | --- | --- | --- | -------------------- | --- | --- | --------- | --------------- |
-|  | CBC Decryption: |
-|  |  |  |  |  | P = CIPH -1 (C) ⊕  C |  |  |  | for j = 2 …  n. |
-|  |  |  |  |  | j |  | K j | j-1 |
+> 以下为 00-Standard-Source.md 的说明性定位引文；仅规范化了空白和分页换行，完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L584)。
 
-|  |  |  | INITIALIZATION |  |  |  |  |  | PLAINTEXT  n |
-| --- | --- | --- | --------------- | --- | ------------ | --- | ------------ | --- | ------------- |
-|  |  |  |  |  | PLAINTEXT 1 |  | PLAINTEXT 2 |
-    VECTOR
-⊕
-TPYRCNE
-|  |  |  |  |  | INPUT BLOCK 1 |  | INPUT BLOCK 2 |  | INPUT BLOCK n |
-| --- | --- | --- | --- | --- | --------------- | --- | --------------- | --- | --------------- |
-|  |  |  |  |  | CIPH |  | CIPH |  | CIPH |
-|  |  |  |  |  | OUTPUT BLOCK 1 |  | OUTPUT BLOCK 2 |  | OUTPUT BLOCK n |
-|  |  |  |  |  | CIPHERTEXT 1 |  | CIPHERTEXT 2 |  | CIPHERTEXT n |
-|  |  |  |  |  | CIPHERTEXT 1 |  | CIPHERTEXT 2 |  | CIPHERTEXT n |
- TPYRCED
-|  |  |  |  |  | INPUT BLOCK 1 |  | INPUT BLOCK 2 |  | INPUT BLOCK n |
-| --- | --- | --- | --- | --- | --------------- | --- | --------------- | --- | --------------- |
-|  |  |  |  |  | CIPH-1 |  | CIPH-1 |  | CIPH-1 |
-|  |  |  |  |  | OUTPUT BLOCK 1 |  | OUTPUT BLOCK 2 |  | OUTPUT BLOCK n |
-INITIALIZATION
+    6.2 The Cipher Block Chaining Mode
+    The Cipher Block Chaining (CBC) mode is a confidentiality mode whose encryption process
+    features the combining (“chaining”) of the plaintext blocks with the previous ciphertext blocks.
 
+> 逐字原文见 [NIST.SP.800-38A.pdf](./NIST.SP.800-38A.pdf)。本页用文字公式替代原 PDF 图形转录。
 
-In CBC encryption, the first input block is formed by exclusive-ORing the first block of the
-plaintext with the IV. The forward cipher function is applied to the first input block, and the
-10
+CBC 需要与分组长度相同的 IV。IV 不必保密，但必须不可预测，并应保护其完整性。
 
-resulting output block is the first block of the ciphertext. This output block is also exclusive-
-ORed with the second plaintext data block to produce the second input block, and the forward
-cipher function is applied to produce the second output block. This output block, which is the
-second ciphertext block, is exclusive-ORed with the next plaintext block to form the next input
-block. Each successive plaintext block is exclusive-ORed with the previous output/ciphertext
-block to produce the new input block. The forward cipher function is applied to each input block
-to produce the ciphertext block.
-In CBC decryption, the inverse cipher function is applied to the first ciphertext block, and the
-resulting output block is exclusive-ORed with the initialization vector to recover the first
-plaintext block. The inverse cipher function is also applied to the second ciphertext block, and
-the resulting output block is exclusive-ORed with the first ciphertext block to recover the second
-plaintext block. In general, to recover any plaintext block (except the first), the inverse cipher
-function is applied to the corresponding ciphertext block, and the resulting block is exclusive-
-ORed with the previous ciphertext block.
-In CBC encryption, the input block to each forward cipher operation (except the first) depends on
-the result of the previous forward cipher operation, so the forward cipher operations cannot be
-performed in parallel. In CBC decryption, however, the input blocks for the inverse cipher
-function, i.e., the ciphertext blocks, are immediately available, so that multiple inverse cipher
-operations can be performed in parallel.
-The CBC mode is illustrated in Figure 2.
+## 公式或伪代码
+
+> 以下是面向用户的结构化公式/伪代码摘要，不是标准原文的完整逐字摘录；完整规范单元请以本页“原文摘录”、source 提取稿和 PDF 为准。
+
+### 加密
+
+```text
+C_1 = CIPH_K(P_1 xor IV)
+C_j = CIPH_K(P_j xor C_(j-1))       2 ≤ j ≤ n
+```
+
+### 解密
+
+```text
+P_1 = CIPH_K⁻¹(C_1) xor IV
+P_j = CIPH_K⁻¹(C_j) xor C_(j-1)      2 ≤ j ≤ n
+```
+
+CBC 需要完整分组并配合明确的填充规则；它本身不提供认证。
+
+CipherCat：`mode_cbc_encrypt`；示例见 `demos/procedures/Mode-CBC.json`。

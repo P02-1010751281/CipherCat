@@ -1,38 +1,68 @@
 # Algorithm 13  BytesToBits(𝑧)
 
-**章节**: §7.1
-**类别**: 整数/比特/字节编码
+## 条目元数据
 
-### 规范
+| 字段 | 内容 |
+|---|---|
+| 类型 | 算法阶段 / 原语 / 函数 |
+| 标准定位 | §7.1 |
+| 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
+| 原文位置 | [提取稿](./00-Standard-Source.md#L1708)；PDF 物理页需结合同目录 PDF 核对 |
+| 项目状态 | 部分实现（详见本文现有实现/缺项说明） |
 
-```
+## 原文定位与引用
+
+> 本页按 source 中的“§7.1”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L1708) 与同目录 PDF。
+
+## 原文摘录
+> 以下为 source 中 Algorithm 13 的完整原文算法块；仅移除了 PDF 分页标记和页眉页码。
+
+```text
 Algorithm 13 BytesToBits(𝑧)
 Converts a byte string into a bit string using little-endian order.
 Input: A byte string 𝑧 of length 𝛼.
 Output: A bit string 𝑦 of length 8𝛼.
-1: 𝑧 ′ ← 𝑧
-2: for 𝑖 from 0 to 𝛼 − 1 do
-3:
-for 𝑗 from 0 to 7 do
-4:
-𝑦[8𝑖 + 𝑗] ← 𝑧′ [𝑖] mod 2
-5:
-𝑧 ′ [𝑖] ← ⌊𝑧 ′ [𝑖]/2⌋
-6:
-end for
-7: end for
-8: return 𝑦
-
-▷ convert the byte 𝑧[𝑖] into 8 bits
-
-Algorithms 14 and 15 translate byte strings into coefficients of polynomials in 𝑅. CoeffFromThreeBytes
-uses a 3-byte string to either generate an element of {0, 1, … , 𝑞 − 1} or return the blank symbol ⊥.
-CoeffFromHalfByte uses an element of {0, 1, … , 15} to either generate an element of {−𝜂, −𝜂+1, … , 𝜂}
-or return ⊥. These two procedures will be used in the uniform sampling algorithms RejNTTPoly and
-RejBoundedPoly, which are discussed in Section 7.3.
-
+  1: 𝑧 ′ ← 𝑧
+  2: for 𝑖 from 0 to 𝛼 − 1 do
+  3:     for 𝑗 from 0 to 7 do                                    ▷ convert the byte 𝑧[𝑖] into 8 bits
+  4:          𝑦[8𝑖 + 𝑗] ← 𝑧′ [𝑖] mod 2
+  5:          𝑧 ′ [𝑖] ← ⌊𝑧 ′ [𝑖]/2⌋
+  6:     end for
+  7: end for
+  8: return 𝑦
 ```
 
-### 块实现
+## 标准定义
 
-尚未实现。
+本页的规范性定义由下方完整算法块给出；不得用项目实现或摘要替代标准语义。
+
+## 公式或伪代码
+
+> 以下完整保留本条目的标准算法块；只移除了 PDF 页眉、页脚、页码和分页标记。
+
+```text
+Algorithm 13 BytesToBits(𝑧)
+Converts a byte string into a bit string using little-endian order.
+Input: A byte string 𝑧 of length 𝛼.
+Output: A bit string 𝑦 of length 8𝛼.
+  1: 𝑧 ′ ← 𝑧
+  2: for 𝑖 from 0 to 𝛼 − 1 do
+  3:     for 𝑗 from 0 to 7 do                                    ▷ convert the byte 𝑧[𝑖] into 8 bits
+  4:          𝑦[8𝑖 + 𝑗] ← 𝑧′ [𝑖] mod 2
+  5:          𝑧 ′ [𝑖] ← ⌊𝑧 ′ [𝑖]/2⌋
+  6:     end for
+  7: end for
+  8: return 𝑦
+```
+
+## 输入与输出
+
+输入、输出、取值域和错误返回以完整算法块中的 `Input`、`Output` 及其步骤为准；标准未列出的字段不由项目自行补写。
+
+## 项目映射
+
+本页是标准结构化参考条目；项目是否有同名 Blockly 块、源码入口或 demo，按本目录 README 和覆盖矩阵核对。本页不把文档条目等同于已实现。
+
+## 核验与缺项
+
+已机械核对完整算法块与 source 算法标题及行号；标准向量、实现语义、边界负例和认证结论仍须按本目录记录分别核验。

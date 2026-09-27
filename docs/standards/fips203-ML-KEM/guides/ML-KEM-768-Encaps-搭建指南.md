@@ -8,28 +8,14 @@
 
 ## 算法调用链
 
-```
-（ML-KEM.Encaps）
-  └─ m ←$ {0,1}³²           // 生成 32 随机字节
-  └─ ek 长度检查             // 必须 1184 字节（384×3+32）
-  └─ 调用
-
-（ML-KEM.Encaps_internal）
-  └─ (K̂, r) ← G(m ‖ H(ek))   // G=SHA3-512，H=SHA3-256
-  └─ c ← 算法 13(ek, m, r)
-
-算法 13（K-PKE.Encrypt）
-  └─ t̂ ← ByteDecode₁₂(ek[0:1152])
-  └─ ρ ← ek[1152:1184]
-  └─ Â ← SampleNTTMat(ρ)     // k×k 矩阵
-  └─ ŷ ← CBDNTTVec(r, η₁)    // k 个向量
-  └─ e₁ ← CBDNTTVec(r, η₂)   // k 个向量（偏移 nonce）
-  └─ u ← INTT(Âᵀ ∘ ŷ) + e₁
-  └─ μ ← Decompress₁(ByteDecode₁(m))
-  └─ v ← INTT(t̂ᵀ ∘ ŷ) + e₂ + μ
-  └─ c₁ ← CompressEncode₁₀(u)
-  └─ c₂ ← CompressEncode₄(v)
-  └─ c ← c₁ ‖ c₂
+```mermaid
+flowchart TD
+  A["ML-KEM.Encaps：生成 m，检查 ek 长度"] --> B["ML-KEM.Encaps_internal：计算 K_hat 和 r"]
+  B --> C["K-PKE.Encrypt：解析 t_hat 和 rho"]
+  C --> D["SampleNTTMat：生成 A_hat"]
+  D --> E["CBDNTTVec：生成 y_hat、e1、e2"]
+  E --> F["计算 u、v：INTT、加法、Decompress"]
+  F --> G["CompressEncode：生成 c1、c2，输出 c"]
 ```
 
 ---
@@ -99,9 +85,7 @@ FIPS 203 算法 10 第 1 行。空文本占位符——运行时注入真实字�
 | 2 | 将 1b 顶部凹槽卡入 1a 底部凸起（`──next──`）。 |
 | 3 | **文本** → 拖 `""` 插入 VALUE 插座。留空。 |
 
-```
-[set ek → ""]──next──[set m → ""]
-```
+块顺序：`set ek to ""` → `set m to ""`。
 
 **块数**：2× `variables_set`、2× `text`
 

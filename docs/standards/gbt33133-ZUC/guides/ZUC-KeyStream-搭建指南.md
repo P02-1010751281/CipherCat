@@ -110,9 +110,7 @@ S 盒交织：S(x) = S0(x>>24) ‖ S1(x>>16) ‖ S0(x>>8) ‖ S1(x)（F 内部�
 | 1 | **变量** → 拖 `set len to`。卡入 1b 底部。 |
 | 2 | VALUE ← **数学** → 数字块。将默认值 `0` 改为 `2`（或所需字数），回车。 |
 
-```
-[set key → ""]──next──[set iv → ""]──next──[set len → 2]
-```
+块顺序：`set key to ""` → `set iv to ""` → `set len to 2`。
 
 **块数**：3× `variables_set`、2× `text`、1× `math_number`
 
@@ -130,9 +128,7 @@ S 盒交织：S(x) = S0(x>>24) ‖ S1(x>>16) ‖ S0(x>>8) ‖ S1(x)（F 内部�
 | 4 | IV 插座 ← **变量** → `iv`。 |
 | 5 | LEN 插座 ← **变量** → `len`。 |
 
-```
-set z = ZUC Keystream(key=key, iv=iv, len=len)
-```
+调用关系：`set z to ZUC Keystream(key=key, iv=iv, len=len)`。
 
 **块数**：1× `set`、1× `zuc_keystream`、3× 变量引用
 

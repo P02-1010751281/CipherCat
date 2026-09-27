@@ -1,5 +1,7 @@
 # FIPS 204 — 全算法索引
 
+标准原文提取参考：[00-Standard-Source.md](./00-Standard-Source.md)。
+
 来源: NIST FIPS 204 — Module-Lattice-Based Digital Signature Standard
       https://csrc.nist.gov/pubs/fips/204/final      (2024-08-13)
 

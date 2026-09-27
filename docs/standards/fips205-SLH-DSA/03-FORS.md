@@ -1,7 +1,28 @@
-# FORS — 少时签名（FIPS 205 §8）
+## 条目元数据
 
-FORS（Forest Of Random Subsets）是 SLH-DSA 的"少时"签名部件：一棵密钥对可安全
-签约 `2^a` 次以内，恰好匹配 SLH-DSA 单密钥对签名上限（2^64 消息下的内部随机化）。
+| 字段 | 内容 |
+|---|---|
+| 类型 | 原语 / 函数 |
+| 标准定位 | FORS — 少时签名（FIPS 205 §8） |
+| 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
+| 原文位置 | [提取稿 Algorithm 16](./00-Standard-Source.md#L1699)；PDF 物理页需结合同目录 PDF 核对 |
+| 项目状态 | 已实现（详见本文现有实现/缺项说明） |
+
+## 原文定位与引用
+
+> 本页按 source 中的“FORS — 少时签名（FIPS 205 §8）”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L1699) 与同目录 PDF。
+
+## 原文摘录
+
+> 以下为 00-Standard-Source.md 的说明性定位引文；仅规范化了空白和分页换行，完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L1699)。
+
+    Algorithm 16 fors_sign(𝑚𝑑, SK.seed, PK.seed, ADRS)
+    Generates a FORS signature.
+    Input: Message digest 𝑚𝑑, secret seed SK.seed, address ADRS, public seed PK.seed.
+
+FORS（Forest Of Random Subsets）是 SLH-DSA 的少量消息签名部件。`2^a` 表示每棵 FORS 树的叶子数，
+不是可安全签名的消息数；FIPS 205 不据此给出 `2^a` 次签名额度。SLH-DSA 的密钥和签名使用限制
+应按 FIPS 205 对相应参数集的规定执行。
 
 ## 结构
 
@@ -10,7 +31,11 @@ FORS（Forest Of Random Subsets）是 SLH-DSA 的"少时"签名部件：一棵�
   指定一棵树的叶子索引
 - 签名 = k 个 (叶私钥值 + 认证路径)，共 k·(1+a)·n 字节（不含根压缩值；FORS_ROOTS 压缩仅在 pkFromSig 内部用于派生 FORS 公钥）
 
-## 算法
+## 公式或伪代码
+
+> 以下是面向用户的结构化公式/伪代码摘要，不是标准原文的完整逐字摘录；完整规范单元请以本页“原文摘录”、source 提取稿和 PDF 为准。
+
+### 算法
 
 ### FORS.SigGen（Algorithm 16，§8.3；Algorithm 14 = fors_skGen，§8.1）
 

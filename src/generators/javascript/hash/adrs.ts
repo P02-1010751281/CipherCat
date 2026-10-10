@@ -1,5 +1,5 @@
 /**
- * FIPS 205 完整 ADRS JavaScript 生成器（32 字节，type 相关字段）
+ * SLH-DSA 教学 ADRS 生成器；完整范围/精度限制见块定义与文档。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
@@ -8,13 +8,18 @@ function registerAdrs(): string {
   return javascriptGenerator.provideFunction_('slhAdrsFull', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(layer, tree, typ, kp, height, idx) {',
     '  let a = new Uint8Array(32);',
-    '  a[0] = layer & 0xFF;',
-    '  for (let i = 0; i < 12; i++) a[12 - i] = Math.floor(tree / Math.pow(256, i)) & 0xFF;',
-    '  a[13] = (typ >> 24) & 0xFF; a[14] = (typ >> 16) & 0xFF; a[15] = (typ >> 8) & 0xFF; a[16] = typ & 0xFF;',
-    '  for (let i = 0; i < 4; i++) a[20 - i] = Math.floor(kp / Math.pow(256, i)) & 0xFF;',
-    '  if (typ === 0 || typ === 2 || typ === 3) {',
-    '    for (let i = 0; i < 4; i++) a[24 - i] = Math.floor(height / Math.pow(256, i)) & 0xFF;',
-    '    for (let i = 0; i < 4; i++) a[28 - i] = Math.floor(idx / Math.pow(256, i)) & 0xFF;',
+    '  function writeUint(offset, width, value) {',
+    '    if (!Number.isSafeInteger(value) || value < 0) throw new RangeError("ADRS fields must be non-negative safe integers");',
+    '    let n = BigInt(value); if (n >= (1n << BigInt(width * 8))) throw new RangeError("ADRS field out of range");',
+    '    for (let i = width - 1; i >= 0; i--) { a[offset + i] = Number(n & 0xFFn); n >>= 8n; }',
+    '  }',
+    '  writeUint(0, 4, layer); writeUint(4, 12, tree); writeUint(16, 4, typ);',
+    '  if (typ !== 2) writeUint(20, 4, kp);',
+    '  if (typ === 0 || typ === 2 || typ === 3 || typ === 5) {',
+    '    writeUint(24, 4, height);',
+    '  }',
+    '  if (typ === 0 || typ === 2 || typ === 3 || typ === 6) {',
+    '    writeUint(28, 4, idx);',
     '  }',
     '  return a;',
     '}',

@@ -51,16 +51,15 @@ Generate(requested_bits, additional_input):
 
 | 项目 | 输入 | 输出 |
 |---|---|---|
-| 教学块 | entropy、nonce、personalization、输出长度 | 指定长度字节串 |
+| 教学块 | entropy、nonce、personalization、整数请求位数（最多 `2^19` bit） | 左端指定数量的位；块以字节数组返回。项目将末字节未请求的低位清零，作为字节数组编码约定 |
 | 标准 Generate | 已实例化状态、请求长度、可选 additional input | 随机比特和新状态 |
 | 状态错误 | 未实例化、需 reseed、请求超限 | 应拒绝/报错 |
 
 ## 项目映射
 
-`drbg_generate` 对应一次性 HMAC-DRBG 路径，demo 为 `demos/procedures/DRBG.json`。Hash_DRBG、
+`drbg_generate` 对应一次性 HMAC-DRBG 路径，按 SP 800-90A Rev.1 §10.1 Table 2 拒绝超过 `2^19` bit 的请求；标准定义左端位截取，项目另约定由字节数组承载时采用 MSB-first，末字节的未请求低位清零。该字节表示是项目 API 契约，不是标准规定的字节格式。双语言生成器要求请求值为非负安全整数。Demo 为 `demos/procedures/DRBG.json`。Hash_DRBG、
 CTR_DRBG、公开 reseed/additional-input/prediction-resistance 块均未覆盖。
 
 ## 核验与缺项
 
-核验 NIST CAVP HMAC_DRBG 向量、重复输入确定性、连续 Generate 状态变化和请求长度边界。完整
-实例化/重播种/故障响应矩阵仍需补齐；CAVP 向量通过不等于 CMVP/FIPS 认证。
+[`drbg-block-contract.test.ts`](../../../tests/unit/drbg-block-contract.test.ts) 通过真实 Blockly 块生成并执行 JavaScript/Python，核对零位空输出、`2^19` bit 上限、负数/小数/超上限拒绝，以及 1/8/9/16 bit 左端截取和项目末字节编码约定；另以内部状态 helper 核对 NIST CAVS 14.3 HMAC_DRBG SHA-256、无重播种配置下 COUNT=0 的选定返回值（Instantiate 后连续调用两次 Generate）。NIST 将这些公开向量定位为非正式正确性核验，并明确不能替代 CAVP 验证：[DRBG CAVP 测试与向量](https://csrc.nist.gov/Projects/Cryptographic-Algorithm-Validation-Program/Random-Number-Generators)。当前仍未覆盖完整 CAVP HMAC_DRBG 向量集、实例化熵要求、状态/重播种计数、additional input 生命周期、预测抗性与故障响应矩阵。该有限向量不等于 CMVP/FIPS 认证。

@@ -3,9 +3,11 @@
 
 > [← Back to index](../guides/DEMO.en.md) · [demo file index](../../demos/README.en.md)
 >
-> Scenario 8 (point multiplication), per the `docs/DEMO.md` index.
+> Elliptic-curve point multiplication, per the [Demo guide](../guides/DEMO.en.md).
 
 ---
+
+> Step-by-step block chains live in the [assembly guide](../build/INDEX.en.md); this page covers the scenario, inputs/outputs, and boundaries.
 
 ## Scenario 8: SM2 Point Multiplication (10 min)
 
@@ -36,7 +38,7 @@ Build scalar multiplication on the sm2p256v1 curve with ECC statement blocks; ve
 
 ## Manual Assembly: SM2 Point Multiplication k·G (from scratch)
 
-1. **Curve params**: toolbox "ECC" → drag `ecc_load_curve_params`, fill SM2 recommended curve parameters (p/a/b/G/n; see `gbt32918-SM2/` standards dir)
+1. **Curve params**: toolbox "ECC" → drag `ecc_load_curve_params`, fill SM2 recommended curve parameters (p/a/b/G/n; see the [GB/T 32918 SM2 standard directory](../standards/gbt32918-SM2/README.md))
 2. **Base point**: drag `ecc_load_point` with G's x/y coordinates
 3. **Scalar multiply**: drag `ecc_multiply`, connect curve, base point and scalar k (`data_value`) in order
 4. **Generate**: ▶ Generate (JS generator uses BigInt — no overflow in 256-bit field arithmetic)
@@ -46,7 +48,7 @@ Build scalar multiplication on the sm2p256v1 curve with ECC statement blocks; ve
 
 ---
 
-**Official-vector verification**: `node dist-verify/verify-demo.js demos/procedures/SM2-PointMul.json --exec` → `=== ALL VECTORS PASS ===`
+This point-multiplication example uses a fixed input provided with the repository; the output matches the k·G example value in GB/T 32918.5. That is a fixed-sample check, not full algorithm validation.
 
 ---
 

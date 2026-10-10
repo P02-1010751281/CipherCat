@@ -1,14 +1,16 @@
 /**
- * Demo 官方向量验证 harness
+ * Demo 生成代码回归 harness
  * 用法:
  *   node dist-verify/verify-demo.js <demo.json>            # 仅打印生成代码
- *   node dist-verify/verify-demo.js <demo.json> --exec     # 执行生成代码 + 对比官方向量
+ *   node dist-verify/verify-demo.js <demo.json> --exec     # 执行生成代码 + 对比仓库登记的期望输出
  *
  * 加载 Blockly workspace JSON → 生成 Python/JS 代码（headless + jsdom DOM 桩）
- * --exec 模式: 通过 demos/tests.json 注册表取每 demo 的 driver 片段与期望输出，
+ * --exec 模式: 通过 demos/tests.json 注册表取每 demo 的 driver 片段与期望输出；该回归仅说明
+ * 生成代码符合仓库回归项，不代表独立标准符合性或正式算法验证。
  * 附加到生成代码后执行（python3 / node），对比 stdout。
  */
 import { JSDOM } from 'jsdom';
+import { TYPE_BYTES } from '@/constants/block-types';
 
 const DRIVER_TIMEOUT_MS = 25_000;
 
@@ -76,11 +78,56 @@ async function main() {
   const ws = new Blockly.Workspace();
   Blockly.serialization.workspaces.load(json, ws);
 
+  const byteBlockTypes = execMode
+    ? new Set(
+      ws.getAllBlocks(false)
+        .filter((block) => block.outputConnection?.getCheck()?.includes(TYPE_BYTES))
+        .map((block) => block.type),
+      )
+    : new Set<string>();
+  if (byteBlockTypes.size > 0) {
+    for (const type of byteBlockTypes) {
+      const jsOriginal = javascriptGenerator.forBlock[type];
+      const pyOriginal = pythonGenerator.forBlock[type];
+      if (!jsOriginal || !pyOriginal) throw new Error(`Missing code generator for Bytes block ${type}`);
+      javascriptGenerator.forBlock[type] = function (block, generator) {
+        const result = jsOriginal(block, generator);
+        if (!Array.isArray(result)) throw new Error(`Bytes block ${type} did not generate a value expression`);
+        return [`_ciphercat_assert_bytes_output(${result[0]}, ${JSON.stringify(type)})`, result[1]];
+      };
+      pythonGenerator.forBlock[type] = function (block, generator) {
+        const result = pyOriginal(block, generator);
+        if (!Array.isArray(result)) throw new Error(`Bytes block ${type} did not generate a value expression`);
+        return [`_ciphercat_assert_bytes_output(${result[0]}, ${JSON.stringify(type)})`, result[1]];
+      };
+    }
+  }
+
   const defs = ws.getBlocksByType('procedures_defreturn', false);
   console.log('== def 函数:', defs.map((b) => b.getFieldValue('NAME')));
 
-  const pyCode = pythonGenerator.workspaceToCode(ws) as string;
-  const jsCode = javascriptGenerator.workspaceToCode(ws) as string;
+  let pyCode = pythonGenerator.workspaceToCode(ws) as string;
+  let jsCode = javascriptGenerator.workspaceToCode(ws) as string;
+  if (execMode) {
+    if (byteBlockTypes.size > 0) {
+      pyCode = [
+        'def _ciphercat_assert_bytes_output(value, block_type):',
+        '    if type(value) is not bytes:',
+        '        raise TypeError(f"{block_type} declares Bytes but returned {type(value).__name__}")',
+        '    return value',
+        '',
+        pyCode,
+      ].join('\n');
+      jsCode = [
+        'function _ciphercat_assert_bytes_output(value, blockType) {',
+        '  var typedArrayName = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(Uint8Array.prototype), Symbol.toStringTag).get;',
+        '  if (!ArrayBuffer.isView(value) || typedArrayName.call(value) !== "Uint8Array" || Object.getPrototypeOf(value) !== Uint8Array.prototype) throw new TypeError(blockType + " declares Bytes but returned " + Object.prototype.toString.call(value));',
+        '  return value;',
+        '}',
+        jsCode,
+      ].join('\n');
+    }
+  }
 
   if (!execMode) {
     console.log('\n===== PYTHON =====');
@@ -151,7 +198,7 @@ async function main() {
     }
   }
   fs.rmSync(tmpDir, { recursive: true, force: true });
-  console.log(allPass ? '\n=== ALL VECTORS PASS ===' : '\n=== VECTOR MISMATCH ===');
+  console.log(allPass ? '\n=== DEMO REGRESSION PASS ===' : '\n=== DEMO REGRESSION MISMATCH ===');
   process.exit(allPass ? 0 : 1);
 }
 

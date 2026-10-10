@@ -192,7 +192,7 @@ pythonGenerator.forBlock['eddsa_sign'] = function (block: Block): [string, numbe
   const msg = pythonGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   registerShared();
   const fn = registerSign();
-  return [fn + '(' + secret + ', ' + msg + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + secret + ', ' + msg + '))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['eddsa_verify'] = function (block: Block): [string, number] {

@@ -3,7 +3,7 @@
  * NIST SP 800-232 (Ascon-AEAD128)
  *
  * 320 位状态（5×64 位字），rate 128 位（每块 x0‖x1），初始化/终结 12 轮、数据 8 轮；
- * 字节序 little-endian。官方向量：ascon-c 仓 LWC_AEAD_KAT_128_128.txt（1089 例全过）。
+ * 字节序 little-endian。项目 Demo 登记少量固定回归样例；未运行完整官方 KAT 集。
  */
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
@@ -159,7 +159,7 @@ pythonGenerator.forBlock['ascon_encrypt'] = function (block: Block): [string, nu
   const ad = pythonGenerator.valueToCode(block, 'AD', Order.ATOMIC) || '[]';
   const msg = pythonGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   const fn = registerAsconEncrypt();
-  return [fn + '(' + key + ', ' + nonce + ', ' + ad + ', ' + msg + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + key + ', ' + nonce + ', ' + ad + ', ' + msg + '))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['ascon_decrypt'] = function (block: Block): [string, number] {
@@ -168,20 +168,20 @@ pythonGenerator.forBlock['ascon_decrypt'] = function (block: Block): [string, nu
   const ad = pythonGenerator.valueToCode(block, 'AD', Order.ATOMIC) || '[]';
   const ct = pythonGenerator.valueToCode(block, 'CT', Order.ATOMIC) || '[]';
   const fn = registerAsconDecrypt();
-  return [fn + '(' + key + ', ' + nonce + ', ' + ad + ', ' + ct + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + key + ', ' + nonce + ', ' + ad + ', ' + ct + '))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['ascon_hash256'] = function (block: Block): [string, number] {
   const msg = pythonGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   const fn = registerAsconHashXof();
-  return [fn + '(' + msg + ', 32, None, 0x0000080100CC0002)', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + msg + ', 32, None, 0x0000080100CC0002))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['ascon_xof128'] = function (block: Block): [string, number] {
   const msg = pythonGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   const len = pythonGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '0';
   const fn = registerAsconHashXof();
-  return [fn + '(' + msg + ', ' + len + ', None, 0x0000080000CC0003)', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + msg + ', ' + len + ', None, 0x0000080000CC0003))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['ascon_cxof128'] = function (block: Block): [string, number] {
@@ -189,5 +189,5 @@ pythonGenerator.forBlock['ascon_cxof128'] = function (block: Block): [string, nu
   const custom = pythonGenerator.valueToCode(block, 'CUSTOM', Order.ATOMIC) || '[]';
   const len = pythonGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '0';
   const fn = registerAsconHashXof();
-  return [fn + '(' + msg + ', ' + len + ', ' + custom + ', 0x0000080000CC0004)', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + msg + ', ' + len + ', ' + custom + ', 0x0000080000CC0004))', Order.ATOMIC];
 };

@@ -1,0 +1,7025 @@
+{
+  "aes_add_round_key": {
+    "inputs": [
+      {
+        "name": "STATE",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "ROUND_KEY",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "aes_mix_columns": {
+    "inputs": [
+      {
+        "name": "STATE",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "aes_shift_rows": {
+    "inputs": [
+      {
+        "name": "STATE",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "aes_sub_bytes": {
+    "inputs": [
+      {
+        "name": "STATE",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "argon2_hash": {
+    "inputs": [
+      {
+        "name": "PASSWORD",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "SALT",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "SECRET",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "AD",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "M_COST",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "T_COST",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "LANES",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "TAGLEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "VARIANT",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "Argon2d",
+            "0"
+          ],
+          [
+            "Argon2i",
+            "1"
+          ],
+          [
+            "Argon2id",
+            "2"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "arr_partition_to_array": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "SRC",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "COUNT",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "TARGET",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "MODE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "字节切片",
+            "BYTES"
+          ],
+          [
+            "32 位字",
+            "WORDS32"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "arr_slice": {
+    "inputs": [
+      {
+        "name": "LIST",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "START",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "LENGTH",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ascon_cxof128": {
+    "inputs": [
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "CUSTOM",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "LEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ascon_decrypt": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "NONCE",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "AD",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "CT",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ascon_encrypt": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "NONCE",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "AD",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ascon_hash256": {
+    "inputs": [
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ascon_xof128": {
+    "inputs": [
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "LEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "base64_decode": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "base64_encode": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "String"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "berlekamp_massey": {
+    "inputs": [
+      {
+        "name": "SEQ",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bin_mat_inv": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "N",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bin_mat_mul": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "N",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bit_byte_substitute": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "OUTPUT",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bit_expr_infix": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "name": "OP",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "XOR",
+            "XOR"
+          ],
+          [
+            "AND",
+            "AND"
+          ],
+          [
+            "OR",
+            "OR"
+          ],
+          [
+            "=",
+            "EQ"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bit_not32": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bit_operation": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "name": "OP",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "按位与(&)",
+            "AND"
+          ],
+          [
+            "按位或(|)",
+            "OR"
+          ],
+          [
+            "按位异或(^)",
+            "XOR"
+          ],
+          [
+            "按位右移(>>)",
+            "RIGHT_SHIFT"
+          ],
+          [
+            "按位左移(<<)",
+            "LEFT_SHIFT"
+          ],
+          [
+            "循环右移(>>>)",
+            "RIGHT_ROTATE"
+          ],
+          [
+            "循环左移(<<<)",
+            "LEFT_ROTATE"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bit_rotate_left": {
+    "inputs": [
+      {
+        "name": "Input",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "Output",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "bit",
+        "fieldClass": "_m"
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bit_rotate_left_op": {
+    "inputs": [
+      {
+        "name": "Input",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "Output",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "option",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "ROL32_XOR",
+            "ROL32_XOR"
+          ],
+          [
+            "ROL32_AND",
+            "ROL32_AND"
+          ],
+          [
+            "ROL32_OR",
+            "ROL32_OR"
+          ],
+          [
+            "ROL32_ADD",
+            "ROL32_ADD"
+          ]
+        ]
+      },
+      {
+        "name": "bit",
+        "fieldClass": "_m"
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bit_rotate_right": {
+    "inputs": [
+      {
+        "name": "Input",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "Output",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "bit",
+        "fieldClass": "_m"
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bit_rotate_right_op": {
+    "inputs": [
+      {
+        "name": "Input",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "Output",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "option",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "ROR32_XOR",
+            "ROR32_XOR"
+          ],
+          [
+            "ROR32_AND",
+            "ROR32_AND"
+          ],
+          [
+            "ROR32_OR",
+            "ROR32_OR"
+          ],
+          [
+            "ROR32_ADD",
+            "ROR32_ADD"
+          ]
+        ]
+      },
+      {
+        "name": "bit",
+        "fieldClass": "_m"
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bn_add": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bn_div": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bn_mul": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bn_sub": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "bytes_to_hex": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "String"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ccm_encrypt": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "NONCE",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "AAD",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "TAGLEN",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "4",
+            "4"
+          ],
+          [
+            "6",
+            "6"
+          ],
+          [
+            "8",
+            "8"
+          ],
+          [
+            "10",
+            "10"
+          ],
+          [
+            "12",
+            "12"
+          ],
+          [
+            "14",
+            "14"
+          ],
+          [
+            "16",
+            "16"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "cipher_key_from_seed": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "cmac_mac": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "CIPHER",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "AES-128 (SP 800-38B)",
+            "aes"
+          ],
+          [
+            "SM4 (GB/T 15852)",
+            "sm4"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "comb": {
+    "inputs": [
+      {
+        "name": "N",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "K",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "crypto_decrypt_func": {
+    "inputs": [
+      {
+        "name": "NAME_INPUT",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "PARAM_INPUT",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "BODY",
+        "type": 3,
+        "check": null
+      },
+      {
+        "name": "RETURN",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "FUNC_NAME",
+        "fieldClass": ""
+      },
+      {
+        "name": "PARAM_NAME",
+        "fieldClass": ""
+      },
+      {
+        "name": "PARAM_TYPE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "bytes",
+            "bytes"
+          ],
+          [
+            "int",
+            "int"
+          ],
+          [
+            "int_list",
+            "int_list"
+          ],
+          [
+            "poly",
+            "poly"
+          ],
+          [
+            "seed",
+            "seed"
+          ],
+          [
+            "key",
+            "key"
+          ],
+          [
+            "message",
+            "message"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "crypto_encrypt_func": {
+    "inputs": [
+      {
+        "name": "NAME_INPUT",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "PARAM_INPUT",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "BODY",
+        "type": 3,
+        "check": null
+      },
+      {
+        "name": "RETURN",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "FUNC_NAME",
+        "fieldClass": ""
+      },
+      {
+        "name": "PARAM_NAME",
+        "fieldClass": ""
+      },
+      {
+        "name": "PARAM_TYPE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "bytes",
+            "bytes"
+          ],
+          [
+            "int",
+            "int"
+          ],
+          [
+            "int_list",
+            "int_list"
+          ],
+          [
+            "poly",
+            "poly"
+          ],
+          [
+            "seed",
+            "seed"
+          ],
+          [
+            "key",
+            "key"
+          ],
+          [
+            "message",
+            "message"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "crypto_hash_func": {
+    "inputs": [
+      {
+        "name": "NAME_INPUT",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "PARAM_INPUT",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "BODY",
+        "type": 3,
+        "check": null
+      },
+      {
+        "name": "RETURN",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "FUNC_NAME",
+        "fieldClass": ""
+      },
+      {
+        "name": "PARAM_NAME",
+        "fieldClass": ""
+      },
+      {
+        "name": "PARAM_TYPE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "bytes",
+            "bytes"
+          ],
+          [
+            "int",
+            "int"
+          ],
+          [
+            "int_list",
+            "int_list"
+          ],
+          [
+            "poly",
+            "poly"
+          ],
+          [
+            "seed",
+            "seed"
+          ],
+          [
+            "key",
+            "key"
+          ],
+          [
+            "message",
+            "message"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "crypto_return": {
+    "inputs": [
+      {
+        "name": "VALUE",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ctrl_iterate": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "DO",
+        "type": 3,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "VAR",
+        "fieldClass": ""
+      },
+      {
+        "name": "TIMES",
+        "fieldClass": "_m"
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "data_bit_length": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "X",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "data_byte_length": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "X",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "data_convert_bits_to_bytes": {
+    "inputs": [
+      {
+        "name": "BYTES",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "BITS",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "data_convert_bytes_to_bits": {
+    "inputs": [
+      {
+        "name": "BITS",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "BYTES",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "data_convert_to_int": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "VAR",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "data_value": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "NUM",
+        "fieldClass": ""
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "drbg_generate": {
+    "inputs": [
+      {
+        "name": "ENTROPY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "NONCE",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "PERSO",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "BITS",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ecc_add": {
+    "inputs": [
+      {
+        "name": "value3",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "value1",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "value2",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ecc_load_curve_params": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "a",
+        "fieldClass": ""
+      },
+      {
+        "name": "b",
+        "fieldClass": ""
+      },
+      {
+        "name": "p",
+        "fieldClass": ""
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ecc_load_point": {
+    "inputs": [
+      {
+        "name": "point",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "x",
+        "fieldClass": ""
+      },
+      {
+        "name": "y",
+        "fieldClass": ""
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ecc_multiply": {
+    "inputs": [
+      {
+        "name": "value2",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "value1",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "times",
+        "fieldClass": ""
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ecc_point_double": {
+    "inputs": [
+      {
+        "name": "value2",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "value1",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ecdh_shared_secret": {
+    "inputs": [
+      {
+        "name": "D",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "QX",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "QY",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "String"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ecdsa_sign": {
+    "inputs": [
+      {
+        "name": "PRIV",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ecdsa_verify": {
+    "inputs": [
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "PUB",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "SIG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Boolean"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "eddsa_sign": {
+    "inputs": [
+      {
+        "name": "SECRET",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "eddsa_verify": {
+    "inputs": [
+      {
+        "name": "PUBLIC",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "SIGNATURE",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Boolean"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "endian_swap": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "fors_leaf_index": {
+    "inputs": [
+      {
+        "name": "M",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "I",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "fors_pk_from_sk": {
+    "inputs": [
+      {
+        "name": "SK_SEED",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "fors_root": {
+    "inputs": [
+      {
+        "name": "ROOTS",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "ADRS",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "fors_sign": {
+    "inputs": [
+      {
+        "name": "SK_SEED",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "MESSAGE",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "fors_verify": {
+    "inputs": [
+      {
+        "name": "PUBLIC_KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "MESSAGE",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "SIGNATURE",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Boolean"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gauss_elim": {
+    "inputs": [
+      {
+        "name": "AUG",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "N",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gauss_pmf": {
+    "inputs": [
+      {
+        "name": "X",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "SIGMA",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gcm_encrypt": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "IV",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "AAD",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gf2_poly_div": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gf2_poly_gcd": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gf2_poly_mod": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gf2_poly_mul": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gf2m_add": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "FIELD",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "8 (AES)",
+            "aes"
+          ],
+          [
+            "128 (GCM)",
+            "gcm"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gf2m_inv": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "FIELD",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "8 (AES)",
+            "aes"
+          ],
+          [
+            "128 (GCM)",
+            "gcm"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gf2m_mul": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "FIELD",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "8 (AES)",
+            "aes"
+          ],
+          [
+            "128 (GCM)",
+            "gcm"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gf2m_poly_add": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gf2m_poly_eval": {
+    "inputs": [
+      {
+        "name": "P",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "X",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gf2m_poly_mod": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gf2m_poly_mul": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gf2m_poly_xgcd": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gm_rng": {
+    "inputs": [
+      {
+        "name": "ENTROPY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "NONCE",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "PERSO",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "LEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "goppa_decode": {
+    "inputs": [
+      {
+        "name": "Y",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "G",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "L",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "goppa_gen_poly": {
+    "inputs": [
+      {
+        "name": "ALPHA",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ham_dist": {
+    "inputs": [
+      {
+        "name": "X",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "Y",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ham_weight": {
+    "inputs": [
+      {
+        "name": "X",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_chain": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "ITERATIONS",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_hmac": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "HASH",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "SHA-256",
+            "SHA-256"
+          ],
+          [
+            "SM3",
+            "SM3"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sha224_hash": {
+    "inputs": [
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sha256_compress": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "V",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "W",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sha256_pad": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sha256_pad_hex": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sha256_pad_text": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sha3_pad_hex": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sha3_pad_text": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sha512_compress": {
+    "inputs": [
+      {
+        "name": "V",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "W",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sha512_hash": {
+    "inputs": [
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "SIZE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "384",
+            "384"
+          ],
+          [
+            "512",
+            "512"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sha512_pad": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sm3_compress": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "V",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "W",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "WP",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sm3_pad": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sm3_pad_hex": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hash_sm3_pad_text": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hex_to_bytes": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hkdf": {
+    "inputs": [
+      {
+        "name": "SALT",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "IKM",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "INFO",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "LEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "keccak_f": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "STATE",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "WIDTH",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "200",
+            "200"
+          ],
+          [
+            "400",
+            "400"
+          ],
+          [
+            "800",
+            "800"
+          ],
+          [
+            "1600",
+            "1600"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "keccak_state_init": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "lgc_compound": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "A",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "C",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "instr",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "XOR^XOR",
+            "XOR_XOR"
+          ],
+          [
+            "OR^XOR",
+            "OR_XOR"
+          ],
+          [
+            "AND^XOR",
+            "AND_XOR"
+          ],
+          [
+            "XOR^OR",
+            "XOR_OR"
+          ],
+          [
+            "OR^OR",
+            "OR_OR"
+          ],
+          [
+            "AND^OR",
+            "AND_OR"
+          ],
+          [
+            "XOR^AND",
+            "XOR_AND"
+          ],
+          [
+            "OR^AND",
+            "OR_AND"
+          ],
+          [
+            "AND^AND",
+            "AND_AND"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "lgc_not": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "VALUE1",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "VALUE2",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "NOT_LABEL",
+        "fieldClass": "pf"
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "lgc_operation": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "A",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "C",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "instr",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "XOR",
+            "XOR"
+          ],
+          [
+            "OR",
+            "OR"
+          ],
+          [
+            "AND",
+            "AND"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "lll_reduce": {
+    "inputs": [
+      {
+        "name": "BASIS",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "ROWS",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "COLS",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "merkle_auth_path": {
+    "inputs": [
+      {
+        "name": "LEAVES",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "LEAF_LEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "ADRS",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "INDEX",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "merkle_leaf": {
+    "inputs": [
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "ADRS",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "merkle_node": {
+    "inputs": [
+      {
+        "name": "LEFT",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "RIGHT",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "ADRS",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "merkle_root": {
+    "inputs": [
+      {
+        "name": "LEAVES",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "LEAF_LEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "ADRS",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "mldsa_sign": {
+    "inputs": [
+      {
+        "name": "SECRET_KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "MESSAGE",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "mldsa_verify": {
+    "inputs": [
+      {
+        "name": "PUBLIC_KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "MESSAGE",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "SIGNATURE",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Boolean"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "mode_cbc_encrypt": {
+    "inputs": [
+      {
+        "name": "DATA",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "IV",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "mode_ctr_encrypt": {
+    "inputs": [
+      {
+        "name": "DATA",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "NONCE",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "mode_ecb_decrypt": {
+    "inputs": [
+      {
+        "name": "DATA",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "mode_ecb_encrypt": {
+    "inputs": [
+      {
+        "name": "DATA",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "mv_quad_eval": {
+    "inputs": [
+      {
+        "name": "COEFFS",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "X",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "nt_div_rem": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "nt_field_add": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "P",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "OP",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "+",
+            "ADD"
+          ],
+          [
+            "-",
+            "SUB"
+          ],
+          [
+            "*",
+            "MUL"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "nt_mod": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "nt_mod_inverse": {
+    "inputs": [
+      {
+        "name": "D",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "E",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "PHI",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "nt_mod_pow": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "MODULUS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "3329 (Kyber)",
+            "3329"
+          ],
+          [
+            "8380417 (ML-DSA)",
+            "8380417"
+          ],
+          [
+            "12289 (NewHope)",
+            "12289"
+          ],
+          [
+            "65537",
+            "65537"
+          ],
+          [
+            "1000000007",
+            "1000000007"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pad_pkcs7": {
+    "inputs": [
+      {
+        "name": "DATA",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "BLOCK_SIZE",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pad_zero": {
+    "inputs": [
+      {
+        "name": "DATA",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "BLOCK_SIZE",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pbkdf2": {
+    "inputs": [
+      {
+        "name": "PASSWORD",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "SALT",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "ITER",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "KEYLEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "HASH",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "SHA-256",
+            "sha256"
+          ],
+          [
+            "SM3 (GM/T 0091)",
+            "sm3"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "poly_scale": {
+    "inputs": [
+      {
+        "name": "P",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "K",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_bits_to_bytes": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "Bits"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_byte_concat": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_byte_decode": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "BITS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "12",
+            "12"
+          ],
+          [
+            "11",
+            "11"
+          ],
+          [
+            "10",
+            "10"
+          ],
+          [
+            "5",
+            "5"
+          ],
+          [
+            "4",
+            "4"
+          ],
+          [
+            "1",
+            "1"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_byte_encode": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "BITS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "12",
+            "12"
+          ],
+          [
+            "11",
+            "11"
+          ],
+          [
+            "10",
+            "10"
+          ],
+          [
+            "5",
+            "5"
+          ],
+          [
+            "4",
+            "4"
+          ],
+          [
+            "1",
+            "1"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_bytes_slice": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "START",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "END",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_bytes_to_bits": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bits"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_compress": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "BITS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "11 (ML-KEM-1024 du)",
+            "11"
+          ],
+          [
+            "10 (ML-KEM-512/768 du)",
+            "10"
+          ],
+          [
+            "5 (ML-KEM-1024 dv)",
+            "5"
+          ],
+          [
+            "4 (ML-KEM-512/768 dv)",
+            "4"
+          ],
+          [
+            "12 (project extension)",
+            "12"
+          ],
+          [
+            "6",
+            "6"
+          ],
+          [
+            "3",
+            "3"
+          ],
+          [
+            "1",
+            "1"
+          ]
+        ]
+      },
+      {
+        "name": "MODULUS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "3329",
+            "3329"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_decompose": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "PART",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "r1 (高位)",
+            "r1"
+          ],
+          [
+            "r0 (低位)",
+            "r0"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_decompress": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "BITS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "11 (ML-KEM-1024 du)",
+            "11"
+          ],
+          [
+            "10 (ML-KEM-512/768 du)",
+            "10"
+          ],
+          [
+            "5 (ML-KEM-1024 dv)",
+            "5"
+          ],
+          [
+            "4 (ML-KEM-512/768 dv)",
+            "4"
+          ],
+          [
+            "12 (project extension)",
+            "12"
+          ],
+          [
+            "6",
+            "6"
+          ],
+          [
+            "3",
+            "3"
+          ],
+          [
+            "1",
+            "1"
+          ]
+        ]
+      },
+      {
+        "name": "MODULUS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "3329",
+            "3329"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_intt": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "MODULUS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "3329 (ML-KEM)",
+            "3329"
+          ],
+          [
+            "8380417 (ML-DSA)",
+            "8380417"
+          ],
+          [
+            "12289 (Teaching)",
+            "12289"
+          ]
+        ]
+      },
+      {
+        "name": "DEGREE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "256",
+            "256"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_make_hint": {
+    "inputs": [
+      {
+        "name": "Z",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "R",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_mat_vec_mul": {
+    "inputs": [
+      {
+        "name": "MATRIX",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "VEC",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "MODULUS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "3329",
+            "3329"
+          ],
+          [
+            "8380417",
+            "8380417"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_ntt": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "MODULUS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "3329 (ML-KEM)",
+            "3329"
+          ],
+          [
+            "8380417 (ML-DSA)",
+            "8380417"
+          ],
+          [
+            "12289 (Teaching)",
+            "12289"
+          ]
+        ]
+      },
+      {
+        "name": "DEGREE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "256",
+            "256"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_ntt_butterfly": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "ZETA",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "MODULUS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "3329",
+            "3329"
+          ],
+          [
+            "8380417 (ML-DSA)",
+            "8380417"
+          ],
+          [
+            "12289",
+            "12289"
+          ]
+        ]
+      },
+      {
+        "name": "TYPE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "CT (NTT)",
+            "ct"
+          ],
+          [
+            "GS (INTT)",
+            "gs"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_ntt_mul": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "MODULUS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "3329 (ML-KEM)",
+            "3329"
+          ],
+          [
+            "8380417 (ML-DSA)",
+            "8380417"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_poly_add": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "MODULUS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "3329",
+            "3329"
+          ],
+          [
+            "8380417 (ML-DSA)",
+            "8380417"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_poly_mul": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "MODULUS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "none",
+            "none"
+          ],
+          [
+            "q=3329",
+            "3329"
+          ],
+          [
+            "q=8380417",
+            "8380417"
+          ],
+          [
+            "q=12289 (teaching)",
+            "12289"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_poly_sub": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "MODULUS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "3329",
+            "3329"
+          ],
+          [
+            "8380417 (ML-DSA)",
+            "8380417"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_power2round": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "PART",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "r1 (高位)",
+            "r1"
+          ],
+          [
+            "r0 (低位)",
+            "r0"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_prf": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "SEED",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "NONCE",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "OUTLEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "name": "ALGO",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "SHAKE256",
+            "SHAKE256"
+          ],
+          [
+            "SHAKE128",
+            "SHAKE128"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_rej_sample": {
+    "inputs": [
+      {
+        "name": "X",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "BOUND",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_sample_in_ball": {
+    "inputs": [
+      {
+        "name": "SEED",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_sample_ntt": {
+    "inputs": [
+      {
+        "name": "SEED",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "MODULUS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "3329 (Kyber)",
+            "3329"
+          ],
+          [
+            "8380417 (ML-DSA)",
+            "8380417"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_sample_poly_cbd": {
+    "inputs": [
+      {
+        "name": "SEED",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "ETA",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "3 (ML-KEM-512)",
+            "3"
+          ],
+          [
+            "2 (ML-KEM-768/1024)",
+            "2"
+          ]
+        ]
+      },
+      {
+        "name": "MODULUS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "3329 (Kyber)",
+            "3329"
+          ],
+          [
+            "8380417 (ML-DSA)",
+            "8380417"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_seed_with_nonce": {
+    "inputs": [
+      {
+        "name": "SEED",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "NONCE",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_use_hint": {
+    "inputs": [
+      {
+        "name": "H",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "R",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "pq_xof": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "SEED",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "OUTLEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "name": "ALGO",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "SHAKE128",
+            "SHAKE128"
+          ],
+          [
+            "SHAKE256",
+            "SHAKE256"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "rsa_decrypt": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "CT",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "rsa_encrypt": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "rsa_keygen": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "BITS",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "512",
+            "512"
+          ],
+          [
+            "1024",
+            "1024"
+          ],
+          [
+            "2048",
+            "2048"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "rsa_sign": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "rsa_verify": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "SIG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Boolean"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sbox": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "ROW",
+        "fieldClass": "_m"
+      },
+      {
+        "name": "COL",
+        "fieldClass": "_m"
+      },
+      {
+        "name": "OUTPUT_FORMAT",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "1D Array",
+            "1d"
+          ],
+          [
+            "2D Array",
+            "2d"
+          ]
+        ]
+      },
+      {
+        "name": "PRESET",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "Custom (CSV)",
+            ""
+          ],
+          [
+            "AES S-box (FIPS 197)",
+            "aes"
+          ],
+          [
+            "SM4 S-box (GB/T 32907-2016)",
+            "sm4"
+          ],
+          [
+            "ZUC S0 (GB/T 33133)",
+            "zuc_s0"
+          ],
+          [
+            "ZUC S1 (GB/T 33133)",
+            "zuc_s1"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "SBox"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sbox_sub": {
+    "inputs": [
+      {
+        "name": "INPUT_VAR",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "SBOX_VAR",
+        "type": 1,
+        "check": [
+          "SBox"
+        ]
+      },
+      {
+        "name": "OUTPUT_VAR",
+        "type": 1,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sbox_variables_get": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "VAR",
+        "fieldClass": "gm"
+      }
+    ],
+    "outputCheck": [
+      "SBox"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sbox_variables_set": {
+    "inputs": [
+      {
+        "name": "VALUE",
+        "type": 1,
+        "check": [
+          "SBox"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "name": "VAR",
+        "fieldClass": "gm"
+      }
+    ],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "seed_bytes": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "seed_hex": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": null,
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sha3_hash": {
+    "inputs": [
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "SIZE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "224",
+            "224"
+          ],
+          [
+            "256",
+            "256"
+          ],
+          [
+            "384",
+            "384"
+          ],
+          [
+            "512",
+            "512"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "slh_addr": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "LAYER",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "TREE",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "LEAF",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "TYPE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "WOTS_HASH(0)",
+            "0"
+          ],
+          [
+            "WOTS_PK(1)",
+            "1"
+          ],
+          [
+            "TREE(2)",
+            "2"
+          ],
+          [
+            "FORS_TREE(3)",
+            "3"
+          ],
+          [
+            "FORS_ROOTS(4)",
+            "4"
+          ],
+          [
+            "WOTS_PRF(5)",
+            "5"
+          ],
+          [
+            "FORS_PRF(6)",
+            "6"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "slh_adrs_full": {
+    "inputs": [
+      {
+        "name": "LAYER",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "TREE",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "KEYPAIR",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "HEIGHT",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "INDEX",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "TYPE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "WOTS_HASH",
+            "0"
+          ],
+          [
+            "WOTS_PK",
+            "1"
+          ],
+          [
+            "TREE",
+            "2"
+          ],
+          [
+            "FORS_TREE",
+            "3"
+          ],
+          [
+            "FORS_ROOTS",
+            "4"
+          ],
+          [
+            "WOTS_PRF",
+            "5"
+          ],
+          [
+            "FORS_PRF",
+            "6"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sm2_decrypt": {
+    "inputs": [
+      {
+        "name": "CT",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "DA",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sm2_encrypt": {
+    "inputs": [
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "PX",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "PY",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "K",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "String"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sm2_key_exchange": {
+    "inputs": [
+      {
+        "name": "DB",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "RBVAL",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "PAX",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "PAY",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "RA",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "RBP",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "ZA",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "ZB",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "WLEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "String"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sm2_sign": {
+    "inputs": [
+      {
+        "name": "DA",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "IDA",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "K",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sm2_verify": {
+    "inputs": [
+      {
+        "name": "PAX",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "PAY",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "IDA",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "R",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "S",
+        "type": 1,
+        "check": [
+          "String"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Boolean"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sm4_linear_transform": {
+    "inputs": [
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sm4_round_func": {
+    "inputs": [
+      {
+        "name": "X0",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "X1",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "X2",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "X3",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "RK",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sm4_sbox": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sm9_master_key": {
+    "inputs": [
+      {
+        "name": "KS",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sm9_sign": {
+    "inputs": [
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "DS",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "PPUB",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "R",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sm9_user_key": {
+    "inputs": [
+      {
+        "name": "KS",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "ID",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "HID",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "01 签名",
+            "1"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sm9_verify": {
+    "inputs": [
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "ID",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "H",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "S",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "PPUB",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "HID",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "01 签名",
+            "1"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Boolean"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sponge_absorb": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "STATE",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "BLOCK",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "RATE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "1088",
+            "1088"
+          ],
+          [
+            "576",
+            "576"
+          ],
+          [
+            "1152",
+            "1152"
+          ],
+          [
+            "832",
+            "832"
+          ],
+          [
+            "1344",
+            "1344"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sponge_pad": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "RATE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "1088 (SHA3-256)",
+            "1088"
+          ],
+          [
+            "576 (SHA3-512)",
+            "576"
+          ],
+          [
+            "1152 (SHA3-224)",
+            "1152"
+          ],
+          [
+            "832 (SHA3-384)",
+            "832"
+          ],
+          [
+            "1344 (SHAKE128)",
+            "1344"
+          ]
+        ]
+      },
+      {
+        "name": "SUFFIX",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "0x06 (SHA-3)",
+            "0x06"
+          ],
+          [
+            "0x1F (SHAKE)",
+            "0x1F"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "sponge_squeeze": {
+    "inputs": [
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      },
+      {
+        "name": "STATE",
+        "type": 1,
+        "check": null
+      },
+      {
+        "name": "OUTLEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "RATE",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "1088",
+            "1088"
+          ],
+          [
+            "576",
+            "576"
+          ],
+          [
+            "1152",
+            "1152"
+          ],
+          [
+            "832",
+            "832"
+          ],
+          [
+            "1344",
+            "1344"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "syndrome_calc": {
+    "inputs": [
+      {
+        "name": "H",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "Y",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "ROWS",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "COLS",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "vec_dot": {
+    "inputs": [
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "B",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "wots_checksum": {
+    "inputs": [
+      {
+        "name": "M",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "x25519": {
+    "inputs": [
+      {
+        "name": "SCALAR",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "U",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "xts_encrypt": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "TWEAK",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "zuc_eia3": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "COUNT",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "BEARER",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "DIRECTION",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "MESSAGE",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "LENGTH",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "zuc_f": {
+    "inputs": [
+      {
+        "name": "X0",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "X1",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "X2",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "R1",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "R2",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "zuc_keystream": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "IV",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "LEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "zuc_l1": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "zuc_l2": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "zuc_s0": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "zuc_s1": {
+    "inputs": [
+      {
+        "name": "INPUT",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Number"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  }
+}

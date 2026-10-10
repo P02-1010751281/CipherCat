@@ -4,7 +4,7 @@
  *
  * Montgomery ladder（p = 2^255-19, a24 = 121665）：
  *   k 解码后 clamp（低 3 位 + 最高位清 0、位 254 置 1）；u 坐标清位 255（RFC decodeUCoordinate）。
- *   z2^(-1) = z2^(p-2) 用扩展欧几里得 modInverse（SM2 ecc 生成器同款 BigInt 技巧）。
+ *   z2=0 时按 RFC 的 z2^(p-2) 输出 0；非零 z2 用扩展欧几里得求逆。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
@@ -16,6 +16,9 @@ function registerX25519(): string {
     '  var P = 0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffedn;',
     '  var A24 = 121665n;',
     '  if (scalar.length !== 32 || u.length !== 32) throw new Error("X25519 inputs must be 32 bytes");',
+    '  for (var i = 0; i < 32; i++) {',
+    '    if (!Number.isInteger(scalar[i]) || scalar[i] < 0 || scalar[i] > 255 || !Number.isInteger(u[i]) || u[i] < 0 || u[i] > 255) throw new RangeError("X25519 input bytes must be integers from 0 through 255");',
+    '  }',
     '  // clamp 标量（RFC 7748 §5）',
     '  var k = scalar.slice();',
     '  k[0] &= 248; k[31] &= 127; k[31] |= 64;',
@@ -43,7 +46,7 @@ function registerX25519(): string {
     '    z2 = E * ((AA + A24 * E) % P) % P;',
     '  }',
     '  // x2 / z2 = x2 · z2^(p-2)（z2 的模逆）',
-    '  var r = x2 * modInverse(z2, P) % P;',
+    '  var r = z2 === 0n ? 0n : x2 * modInverse(z2, P) % P;',
     '  var out = [];',
     '  for (var o = 0; o < 32; o++) { out.push(Number(r & 0xffn)); r >>= 8n; }',
     '  return out;',
@@ -73,5 +76,5 @@ javascriptGenerator.forBlock['x25519'] = function (block: Block): [string, numbe
   const u = javascriptGenerator.valueToCode(block, 'U', Order.ATOMIC) || '[]';
   registerModInverse();
   const fn = registerX25519();
-  return [fn + '(' + scalar + ', ' + u + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + scalar + ', ' + u + '))', Order.ATOMIC];
 };

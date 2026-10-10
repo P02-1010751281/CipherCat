@@ -1116,7 +1116,7 @@ string P such that m + len(P) is a positive multiple of x.
 
 Steps:
     1. Let j = (– m – 2) mod x.
-    2. Return P = 1 || 0j || 1.
+    2. Return P = 1 || 0^j || 1.
 
 Thus, the asterisk in “pad10*1” indicates that the “0” bit is either omitted or repeated as
 necessary in order to produce an output string of the desired length.

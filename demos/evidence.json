@@ -1,0 +1,293 @@
+{
+  "procedures/SM4-Sbox.json": {
+    "class": "official-vector",
+    "evidence": "GB/T 32907-2016 附录 A（S(0x01)=0x90）",
+    "parameterSet": "SM4-128 字节代换表"
+  },
+  "procedures/SM3-Hash.json": {
+    "class": "official-vector",
+    "evidence": "GB/T 32905-2016 A.1 SM3(\"abc\")",
+    "parameterSet": "SM3-256",
+    "rechecked": "与 docs/standards/gbt32905-SM3/00-Standard-Source.md 原文值及独立实现 gmssl 一致"
+  },
+  "procedures/SM2-PointMul.json": {
+    "class": "official-vector",
+    "evidence": "GB/T 32918.5-2017（k·G）",
+    "parameterSet": "SM2 推荐曲线（256-bit）"
+  },
+  "procedures/SM2-Sign.json": {
+    "class": "official-vector",
+    "evidence": "GB/T 32918.2-2016 附录 A（ZA/e/r/s）",
+    "parameterSet": "SM2 推荐曲线（256-bit）+ SM3"
+  },
+  "procedures/ML-KEM-Encaps.json": {
+    "class": "fixed-regression",
+    "evidence": "本工作区登记的输入/期望值是项目固定回归，不取自 ACVP；同一实现在 tests/unit/mlkem-acvp-official-vectors.test.ts 中用 NIST ACVP ML-KEM-encapDecap-FIPS203 internalProjection testGroup tgId=1（ML-KEM-512 encapsulation）的 tcId 1–3 单独核对",
+    "parameterSet": "ML-KEM-512（encapsulation；输出 c‖K）",
+    "rechecked": "tests/unit/mlkem-acvp-official-vectors.test.ts 用官方 (ek,m) 驱动本项目 Encaps 双语言实现，与官方 (c,k) 逐字节一致"
+  },
+  "procedures/CCM-Encrypt.json": {
+    "class": "official-vector",
+    "evidence": "SP 800-38C 附录 C Example 1、Example 2、Example 3",
+    "parameterSet": "AES-128 CCM：Example 1（N=7B、A=8B、P=4B、Tlen=4）、Example 2（N=8B、A=16B、P=16B、Tlen=6）、Example 3（N=12B、A=20B、P=24B、Tlen=8）",
+    "rechecked": "本轮用 cryptography AESCCM 复算 Example 1/2/3 的 C‖T 全部一致"
+  },
+  "procedures/XTS-Encrypt.json": {
+    "class": "fixed-regression",
+    "evidence": "IEEE 1619-2007 XTS-AES-128 经典向量（key=00..1f、tweak=00000000000000000102030405060708、64 字节数据单元）；该标准为付费文档且未随仓库分发，仓库内无可离线核对的来源，故不登记为官方向量",
+    "parameterSet": "AES-128 XTS（32B key 拆两半、16B tweak、支持密文窃取）"
+  },
+  "procedures/X25519.json": {
+    "class": "official-vector",
+    "evidence": "RFC 7748 §5.2 V1/V2",
+    "parameterSet": "Curve25519（32B 标量/u 坐标）"
+  },
+  "procedures/ASCON.json": {
+    "class": "official-vector",
+    "evidence": "NIST SP 800-232 Ascon AEAD128 文档示例（固定样例）；Hash256/XOF128/CXOF128 另对齐 NIST ACVP 官方用例（ACVP-Ascon-*-SP800-232，字节对齐子集，含 tgId/tcId）",
+    "parameterSet": "Ascon-AEAD128（固定样例）；Hash256/XOF128/CXOF128（ACVP 字节对齐用例，outLen ≤ 4096 字节子集）",
+    "rechecked": "tests/unit/ascon-acvp-official-vectors.test.ts 用官方用例驱动对应块，双语言逐字节一致（Hash256/XOF128/CXOF128）；AEAD 官方用例为位级输入且 tag 长度可变，与当前字节接口 + 固定 128 位 tag 不适用，已显式跳过并记录"
+  },
+  "procedures/ASCON-Extended.json": {
+    "class": "fixed-regression",
+    "evidence": "扩展固定样例与错误标签/参数拒绝；非完整 KAT"
+  },
+  "procedures/HKDF-SHA256.json": {
+    "class": "official-vector",
+    "evidence": "RFC 5869 A.1 Test Case 1",
+    "parameterSet": "HMAC-SHA-256，L=42 bytes",
+    "rechecked": "本轮用独立实现复算 OKM 3cb25f25… 一致"
+  },
+  "procedures/PBKDF2-SHA256.json": {
+    "class": "cross-implementation",
+    "evidence": "期望值取自 RFC 7914 §11 的 PBKDF2-HMAC-SHA-256 向量（含 password/salt/c/dkLen 与 33 字节尾块截断），并由 Python hashlib.pbkdf2_hmac 现场复算一致；RFC 7914 未作为标准目录随仓库跟踪，故按独立复算登记。RFC 6070 只提供 HMAC-SHA1 附录值，与本变体无关",
+    "parameterSet": "PBKDF2-HMAC-SHA-256，dkLen=32"
+  },
+  "procedures/PBKDF2-SM3.json": {
+    "class": "fixed-regression",
+    "evidence": "SM3-HMAC/PBKDF2 组合为项目实现固定回归；未见公开官方向量登记"
+  },
+  "procedures/GCM-Encrypt.json": {
+    "class": "official-vector",
+    "evidence": "算法定义见 NIST SP 800-38D；测试来源为 NIST ACVP AES-GCM 官方用例（tgId=1，encrypt、tagLen=128、96-bit IV，15 例，含 tcId；这 15 例均为空明文）。注意：SP 800-38D 正文与附录不含测试用例表，TC 编号属 GCM 规范（McGrew & Viega）体系",
+    "parameterSet": "AES-128 GCM；96-bit IV、tagLen=128（ACVP tgId=1 全 15 例）；项目另有 120-bit IV/AAD 变体",
+    "rechecked": "tests/unit/gcm-acvp-official-vectors.test.ts 用官方 (key,iv,aad,pt) 驱动 gcm_encrypt，双语言与官方 ct‖tag 逐字节一致；TC2/TC13 另经 cryptography 复算。注意：SP 800-38D 正文与附录不含测试用例表，TC 编号属 GCM 规范体系"
+  },
+  "procedures/DRBG.json": {
+    "class": "fixed-regression",
+    "evidence": "3 个固定输出（直接生成/实例化后连续生成/重播种）；非完整 CAVP 套件"
+  },
+  "procedures/EDDSA.json": {
+    "class": "official-vector",
+    "evidence": "RFC 8032 TEST 1-3",
+    "parameterSet": "Ed25519（32B 私钥/公钥、64B 签名）"
+  },
+  "procedures/EEA3.json": {
+    "class": "official-vector",
+    "evidence": "GB/T 33133.2 附录 A.1",
+    "parameterSet": "ZUC-128 密钥流（128-bit key/IV）"
+  },
+  "procedures/EIA3.json": {
+    "class": "official-vector",
+    "evidence": "GB/T 33133.3-2021 附录 B 示例 1、2（1/577 bit）",
+    "parameterSet": "ZUC-128 EIA3（128-bit key/IV，1 与 577 bit 消息）"
+  },
+  "procedures/ECDSA.json": {
+    "class": "official-vector",
+    "evidence": "RFC 6979 §A.2.5 P-256/SHA-256（\"sample\"/\"test\"）",
+    "parameterSet": "NIST P-256 + SHA-256 + RFC 6979 确定性 k"
+  },
+  "procedures/ARGON2.json": {
+    "class": "official-vector",
+    "evidence": "RFC 9106 §5.1–5.3 三组向量",
+    "parameterSet": "Argon2d / Argon2i / Argon2id v1.3（RFC §5.1–5.3）"
+  },
+  "procedures/GM-RNG.json": {
+    "class": "fixed-regression",
+    "evidence": "固定输入/输出项目回归；非官方向量，也不是 RNG/熵源验证"
+  },
+  "procedures/ML-DSA-Sign.json": {
+    "class": "official-vector",
+    "evidence": "NIST ACVP ML-DSA-sigGen-FIPS204 internalProjection：ML-DSA-44、hashAlg=none 且空 context 的确定性用例，tgId=1 的 tcId 5、8（共 2 例）",
+    "parameterSet": "ML-DSA-44（确定性签名，rnd=0，空上下文）",
+    "rechecked": "tests/unit/mldsa-acvp-official-vectors.test.ts 用官方 sk/message 驱动 mldsa_sign，双语言与官方 signature 逐字节一致"
+  },
+  "procedures/SM9-Sign.json": {
+    "class": "official-vector",
+    "evidence": "GB/T 38635.2-2020 附录 A",
+    "parameterSet": "GB/T 38635.1-2020 系统参数（256-bit）"
+  },
+  "procedures/RSA-Encrypt.json": {
+    "class": "fixed-regression",
+    "evidence": "PKCS#1 v1.5 教学实现的加解密往返与长度固定回归（明文恢复 'hello RSA'）；仓库内无第三方实现交叉复算",
+    "parameterSet": "项目教学参数：512-bit 模数（密文 64B）；`rsa_keygen` 为项目自定义，不满足 FIPS 186-5 密钥生成要求，也不代表可用密钥长度"
+  },
+  "procedures/RSA-Sign.json": {
+    "class": "fixed-regression",
+    "evidence": "PKCS#1 v1.5 SHA-256 教学实现的签名固定回归与验签正/负例（True/False）；仓库内无第三方实现交叉复算",
+    "parameterSet": "项目教学参数：512-bit 模数（签名 64B）+ SHA-256"
+  },
+  "procedures/SM2-Encrypt.json": {
+    "class": "official-vector",
+    "evidence": "GB/T 32918.4-2016 附录 A 示例 2",
+    "parameterSet": "SM2 推荐曲线（256-bit）+ SM3"
+  },
+  "procedures/ECDH.json": {
+    "class": "official-vector",
+    "evidence": "RFC 5903 §8.1（IKE P-256）",
+    "parameterSet": "NIST P-256 ECDH"
+  },
+  "procedures/SHA224-Hash.json": {
+    "class": "official-vector",
+    "evidence": "FIPS 180-4 定义的 SHA-224；测试来源为 NIST CAVP shabytetestvectors 的 SHA224ShortMsg + SHA224LongMsg 全量字节导向用例（CAVS 11.0）",
+    "parameterSet": "SHA-224（全部字节导向用例）",
+    "rechecked": "tests/unit/sha2-cavp-official-vectors.test.ts 用官方 Msg/MD 驱动 hash_sha224_hash，双语言全量一致"
+  },
+  "procedures/SHA384-Hash.json": {
+    "class": "official-vector",
+    "evidence": "FIPS 180-4 定义的 SHA-384；测试来源为 NIST CAVP shabytetestvectors 的 SHA384ShortMsg 全量字节导向用例（CAVS 11.0）",
+    "parameterSet": "SHA-384（全部字节导向用例）",
+    "rechecked": "tests/unit/sha2-cavp-official-vectors.test.ts 驱动 hash_sha512_hash（SIZE=384），双语言全量一致"
+  },
+  "procedures/SHA512-Hash.json": {
+    "class": "official-vector",
+    "evidence": "FIPS 180-4 定义的 SHA-512；测试来源为 NIST CAVP shabytetestvectors 的 SHA512ShortMsg + SHA512LongMsg 全量字节导向用例（CAVS 11.0）",
+    "parameterSet": "SHA-512（全部字节导向用例）",
+    "rechecked": "tests/unit/sha2-cavp-official-vectors.test.ts 驱动 hash_sha512_hash（SIZE=512），双语言全量一致"
+  },
+  "procedures/SHA3-Hash.json": {
+    "class": "cross-implementation",
+    "evidence": "FIPS 202 定义的 SHA3-256（rate=1088、capacity=512）在 \"abc\" 上的期望值经 Python hashlib 独立复算一致；135 字节用例是项目固定回归。FIPS 202 正文不含附录向量，官方参数化数据须走 CAVP/ACVTS",
+    "parameterSet": "SHA3-256（1600-bit 状态、rate 1088）",
+    "rechecked": "本轮用 Python hashlib.sha3_256 复算 abc 一致"
+  },
+  "procedures/AES-Round.json": {
+    "class": "fixed-regression",
+    "evidence": "正常轮 + 末轮（去 MixColumns）固定输入回归；不声称为官方完整加密向量"
+  },
+  "procedures/AES-LastRound.json": {
+    "class": "fixed-regression",
+    "evidence": "末轮固定输入回归；不声称为官方完整加密向量"
+  },
+  "Procedure-AES-Round.json": {
+    "class": "fixed-regression",
+    "evidence": "显式值连接轮函数的固定输入回归 4807…c59f；非官方附录向量"
+  },
+  "procedures/SM4-Round.json": {
+    "class": "official-vector",
+    "evidence": "GB/T 32907-2016 附录 A 首轮输出 27FAD345（仅此轮向量）",
+    "parameterSet": "SM4-128 轮函数（首轮密钥 0xf12186f9）"
+  },
+  "Procedure-SM4-Round.json": {
+    "class": "official-vector",
+    "evidence": "GB/T 32907-2016 附录 A 首轮输出 27FAD345",
+    "parameterSet": "SM4-128 轮函数"
+  },
+  "procedures/HMAC-SHA256.json": {
+    "class": "official-vector",
+    "evidence": "HMAC 规范见 FIPS 198-1；测试来源为 NIST CAVP hmactestvectors 的 [L=32] 段（HMAC-SHA-256）全部 225 例（CAVS 11.0，按 Tlen 截断比较）",
+    "parameterSet": "HMAC-SHA-256（CAVP [L=32] 全量；Tlen 覆盖用例给定值）",
+    "rechecked": "tests/unit/hmac-cavp-official-vectors.test.ts 用官方 Key/Msg 驱动 hash_hmac(HASH=SHA-256)，双语言全量一致"
+  },
+  "procedures/SHA256-Hash.json": {
+    "class": "official-vector",
+    "evidence": "FIPS 180-4 附录 A.2 指向的 NIST SHA-2 示例页（SHA-256(abc)）；另有 NIST CAVP SHA256ShortMsg 中单块（Len ≤ 440 bit）子集",
+    "parameterSet": "SHA-256（单块 pad→compress 路径；Len ≤ 440 bit）",
+    "rechecked": "tests/unit/sha2-cavp-official-vectors.test.ts 覆盖官方单块子集；项目无多块 SHA-256 块，超出单分组的官方用例未覆盖"
+  },
+  "procedures/PBKDF2.json": {
+    "class": "cross-implementation",
+    "evidence": "期望值经 Python hashlib.pbkdf2_hmac 独立复算一致；非标准附录值",
+    "parameterSet": "PBKDF2-HMAC-SHA-256，dkLen=32"
+  },
+  "procedures/Mode-ECB.json": {
+    "class": "official-vector",
+    "evidence": "FIPS 197 附录 C.1（AES-128 ECB）；并逐例核对 NIST CAVP AESVS KAT 的 128-bit ECB 四文件（ECBGFSbox/ECBKeySbox/ECBVarKey/ECBVarTxt）",
+    "parameterSet": "AES-128 ECB（单块；CAVP KAT 全例）",
+    "rechecked": "tests/unit/aes-cavp-kat-official-vectors.test.ts 用官方 KEY/PLAINTEXT 驱动 mode_ecb_encrypt，双语言与官方 CIPHERTEXT 逐字节一致"
+  },
+  "procedures/Mode-CBC.json": {
+    "class": "official-vector",
+    "evidence": "SP 800-38A F.2.1 CBC-AES128.Encrypt",
+    "parameterSet": "AES-128 CBC（16B key/IV）",
+    "rechecked": "本轮确认期望值 7649abac… 与该附录一致"
+  },
+  "procedures/Mode-CTR.json": {
+    "class": "official-vector",
+    "evidence": "SP 800-38A F.5.1 CTR-AES128.Encrypt",
+    "parameterSet": "AES-128 CTR（16B key、16B 初始计数器块）",
+    "rechecked": "本轮确认期望值 874d6191… 与该附录一致"
+  },
+  "AES-Atomic-Round.json": {
+    "class": "fixed-regression",
+    "evidence": "四个原子轮原语按工作区顺序原地修改共享状态，固定值 4807…c59f；非官方附录向量"
+  },
+  "SM4-Atomic-Round.json": {
+    "class": "official-vector",
+    "evidence": "GB/T 32907-2016 附录 A 首轮输出 27fad345",
+    "parameterSet": "SM4-128 单轮"
+  },
+  "SHA256-Atomic-Hash.json": {
+    "class": "official-vector",
+    "evidence": "NIST SHA-2 示例页（FIPS 180-4 A.2 引用）（SHA-256(abc)，pad→compress 链）",
+    "parameterSet": "SHA-256 单块（<512-bit 消息）",
+    "rechecked": "本轮用 Python hashlib.sha256 复算一致"
+  },
+  "ML-KEM-Atomic.json": {
+    "class": "property",
+    "evidence": "CBD 采样与 NTT 冲激响应性质；pq_mat_vec_mul 为非标准标量教学辅助"
+  },
+  "procedures/ML-DSA-Primitives.json": {
+    "class": "property",
+    "evidence": "P2R 可逆、UseHint(MakeHint) 定理、InBall 计数（FIPS 204 定义）"
+  },
+  "procedures/Hash-Based-Structures.json": {
+    "class": "property",
+    "evidence": "hash chain 边界与半群性、4 叶树根手工组合、ADRS 32B 确定性"
+  },
+  "procedures/Code-Based-Math.json": {
+    "class": "property",
+    "evidence": "GF(2) 多项式结合/除余重建/欧几里得、A·A⁻¹=I、d=wt(x⊕y)"
+  },
+  "procedures/Multivariate-Math.json": {
+    "class": "fixed-regression",
+    "evidence": "线性方程组、二次式、组合数与 GF(2⁸) 算例的项目固定输入回归；非标准 KAT"
+  },
+  "procedures/Wrap-Up-Math.json": {
+    "class": "property",
+    "evidence": "点积/多项式缩放、FORS 确定性、Goppa 多项式与 syndrome 算例（性质/固定回归）"
+  },
+  "procedures/Research-Math.json": {
+    "class": "property",
+    "evidence": "LLL 行列式保持、离散高斯 PMF 对称归一、Berlekamp–Massey 重放性质"
+  },
+  "procedures/FORS-Sign.json": {
+    "class": "property",
+    "evidence": "项目内部往返、确定性、篡改检测；非 FIPS 205 KAT 或符合性证据"
+  },
+  "procedures/GF2m-Poly.json": {
+    "class": "property",
+    "evidence": "GF(2^m) 多项式零元/交换/结合、Bezout 恒等式、Goppa 根判定"
+  },
+  "procedures/Goppa-Decode.json": {
+    "class": "property",
+    "evidence": "根判定与逆元、syndrome 原子链已知值、无错/单错/双错往返、篡改不可纠"
+  },
+  "procedures/PQC-Gaps.json": {
+    "class": "property",
+    "evidence": "Rej 边界排他、卷积代数律、mod 8380417 范围、ADRS 域分隔、WOTS csum 单调、费马同余"
+  },
+  "procedures/Tree-Index.json": {
+    "class": "property",
+    "evidence": "FORS 选叶分块、leaf+auth 重建根与全树根一致（idx ∈ {0,1,3,5,7}）"
+  },
+  "procedures/ML-DSA-NTT.json": {
+    "class": "property",
+    "evidence": "FIPS 204 Alg 41/42/45 定义下的往返与环乘同态性质；不是官方 NTT KAT 集"
+  },
+  "procedures/SM2-KeyExchange.json": {
+    "class": "official-vector",
+    "evidence": "GB/T 32918.3-2016 附录 A.2 示例 1（B 侧共享密钥；未覆盖完整协议双方/确认流程）",
+    "parameterSet": "SM2 推荐曲线（256-bit）+ SM3"
+  }
+}

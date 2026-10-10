@@ -7,7 +7,7 @@
 | 类型 | 算法阶段 / 原语 / 函数 |
 | 标准定位 | §5.3 K-PKE |
 | 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
-| 原文位置 | [提取稿](./00-Standard-Source.md#L1823)；PDF 物理页需结合同目录 PDF 核对 |
+| 原文位置 | [Algorithm 15 提取稿](./00-Standard-Source.md#L1823-L1839)；PDF [物理第 40 页](./NIST.FIPS.203.pdf#page=40)（标准页 31） |
 | 项目状态 | 部分实现（详见本文现有实现/缺项说明） |
 
 ## 原文定位与引用
@@ -15,25 +15,23 @@
 > 本页按 source 中的“§5.3 K-PKE”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L1823) 与同目录 PDF。
 
 ## 原文摘录
-> 以下为 source 中 Algorithm 15 的完整原文算法块；仅移除了 PDF 分页标记和页眉页码。
+> 以下为 source 中 Algorithm 15 的完整原文算法块。为修复 PDF 文本抽取造成的下标断行，已将下标合并写作 `_{...}`；另移除分页标记和页眉页码。PDF 原页链接见上方。
 
 ```text
 Algorithm 15 K-PKE.Decrypt(dkPKE , 𝑐)
 Uses the decryption key to decrypt a ciphertext.
-Input: decryption key dkPKE ∈ 𝔹384𝑘 .
-Input: ciphertext 𝑐 ∈ 𝔹32(𝑑𝑢 𝑘+𝑑𝑣 ) .
-Output: message 𝑚 ∈ 𝔹32 .
-  1: 𝑐1 ← 𝑐[0 ∶ 32𝑑𝑢 𝑘]
-  2: 𝑐2 ← 𝑐[32𝑑𝑢 𝑘 ∶ 32(𝑑𝑢 𝑘 + 𝑑𝑣 )]
-  3: 𝐮′ ← Decompress𝑑 (ByteDecode𝑑 (𝑐1 )) ▷ run Decompress𝑑 and ByteDecode𝑑 𝑘 times
-                        𝑢                𝑢                 𝑢                  𝑢
-  4: 𝑣′ ← Decompress𝑑 (ByteDecode𝑑 (𝑐2 ))
-                        𝑣               𝑣
-  5: 𝐬 ̂ ← ByteDecode12 (dkPKE )                           ▷ run ByteDecode12 𝑘 times
-  6: 𝑤 ← 𝑣 − NTT (𝐬 ̂ ∘ NTT(𝐮 ))                   ▷ run NTT 𝑘 times; run NTT−1 once
-            ′       −1 ⊺              ′
+Input: decryption key dkPKE ∈ 𝔹^{384k}.
+Input: ciphertext 𝑐 ∈ 𝔹^{32(d_u k+d_v)}.
+Output: message 𝑚 ∈ 𝔹^{32}.
+  1: 𝑐1 ← 𝑐[0 ∶ 32d_u k]
+  2: 𝑐2 ← 𝑐[32d_u k ∶ 32(d_u k + d_v)]
+  3: 𝐮′ ← Decompress_{d_u}(ByteDecode_{d_u}(𝑐1)) ▷ run Decompress_{d_u} and ByteDecode_{d_u} 𝑘 times
 
-  7: 𝑚 ← ByteEncode1 (Compress1 (𝑤))             ▷ decode plaintext 𝑚 from polynomial 𝑣
+  4: 𝑣′ ← Decompress_{d_v}(ByteDecode_{d_v}(𝑐2))
+
+  5: 𝐬̂ ← ByteDecode_{12}(dkPKE) ▷ run ByteDecode_{12} 𝑘 times
+  6: 𝑤 ← 𝑣′ − NTT⁻¹(𝐬̂ᵀ ∘ NTT(𝐮′)) ▷ run NTT 𝑘 times; run NTT⁻¹ once
+  7: 𝑚 ← ByteEncode_{1}(Compress_{1}(𝑤)) ▷ decode plaintext 𝑚 from polynomial 𝑣
   8: return 𝑚
 ```
 
@@ -43,25 +41,23 @@ Output: message 𝑚 ∈ 𝔹32 .
 
 ## 公式或伪代码
 
-> 以下完整保留本条目的标准算法块；只移除了 PDF 页眉、页脚、页码和分页标记。
+> 以下完整保留本条目的标准算法块。为修复 PDF 文本抽取造成的下标断行，已将下标合并写作 `_{...}`；另移除 PDF 页眉、页脚、页码和分页标记。PDF 原页链接见上方。
 
 ```text
 Algorithm 15 K-PKE.Decrypt(dkPKE , 𝑐)
 Uses the decryption key to decrypt a ciphertext.
-Input: decryption key dkPKE ∈ 𝔹384𝑘 .
-Input: ciphertext 𝑐 ∈ 𝔹32(𝑑𝑢 𝑘+𝑑𝑣 ) .
-Output: message 𝑚 ∈ 𝔹32 .
-  1: 𝑐1 ← 𝑐[0 ∶ 32𝑑𝑢 𝑘]
-  2: 𝑐2 ← 𝑐[32𝑑𝑢 𝑘 ∶ 32(𝑑𝑢 𝑘 + 𝑑𝑣 )]
-  3: 𝐮′ ← Decompress𝑑 (ByteDecode𝑑 (𝑐1 )) ▷ run Decompress𝑑 and ByteDecode𝑑 𝑘 times
-                        𝑢                𝑢                 𝑢                  𝑢
-  4: 𝑣′ ← Decompress𝑑 (ByteDecode𝑑 (𝑐2 ))
-                        𝑣               𝑣
-  5: 𝐬 ̂ ← ByteDecode12 (dkPKE )                           ▷ run ByteDecode12 𝑘 times
-  6: 𝑤 ← 𝑣 − NTT (𝐬 ̂ ∘ NTT(𝐮 ))                   ▷ run NTT 𝑘 times; run NTT−1 once
-            ′       −1 ⊺              ′
+Input: decryption key dkPKE ∈ 𝔹^{384k}.
+Input: ciphertext 𝑐 ∈ 𝔹^{32(d_u k+d_v)}.
+Output: message 𝑚 ∈ 𝔹^{32}.
+  1: 𝑐1 ← 𝑐[0 ∶ 32d_u k]
+  2: 𝑐2 ← 𝑐[32d_u k ∶ 32(d_u k + d_v)]
+  3: 𝐮′ ← Decompress_{d_u}(ByteDecode_{d_u}(𝑐1)) ▷ run Decompress_{d_u} and ByteDecode_{d_u} 𝑘 times
 
-  7: 𝑚 ← ByteEncode1 (Compress1 (𝑤))             ▷ decode plaintext 𝑚 from polynomial 𝑣
+  4: 𝑣′ ← Decompress_{d_v}(ByteDecode_{d_v}(𝑐2))
+
+  5: 𝐬̂ ← ByteDecode_{12}(dkPKE) ▷ run ByteDecode_{12} 𝑘 times
+  6: 𝑤 ← 𝑣′ − NTT⁻¹(𝐬̂ᵀ ∘ NTT(𝐮′)) ▷ run NTT 𝑘 times; run NTT⁻¹ once
+  7: 𝑚 ← ByteEncode_{1}(Compress_{1}(𝑤)) ▷ decode plaintext 𝑚 from polynomial 𝑣
   8: return 𝑚
 ```
 
@@ -75,4 +71,4 @@ Output: message 𝑚 ∈ 𝔹32 .
 
 ## 核验与缺项
 
-已机械核对完整算法块与 source 算法标题及行号；标准向量、实现语义、边界负例和认证结论仍须按本目录记录分别核验。
+已机械核对完整算法块与 source 算法标题及行号。当前正式原文第 7 步注释保留 `v`；NIST 潜在更新表建议改为 `w`，该建议尚非正式变更，详见 [FIPS 203 README](./README.md)。标准向量、实现语义、边界负例和认证结论仍须按本目录记录分别核验。

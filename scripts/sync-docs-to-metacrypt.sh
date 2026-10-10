@@ -68,6 +68,11 @@ for f in sm4 aes hash sm2 post-quantum; do
   done
 done
 
+echo "== 同步 docs/build/ 分步拼装指南 ==========="
+mkdir -p "$MC_ROOT/docs/build"
+cp -r "$CC_ROOT/docs/build/." "$MC_ROOT/docs/build/"
+echo "  docs/build/（$(ls "$CC_ROOT/docs/build" | wc -l) 个文件）"
+
 # guides/DEMO.md（演示索引）——链接适配：ARCHITECTURE/DEVELOPMENT 不通用，
 # metacrypt 的对应文档在 docs/ 顶层（../ARCHITECTURE.md），而非 guides/ 内
 for ext in md en.md; do
@@ -130,6 +135,32 @@ done
 
 echo "== 平台专属用户指南保留目标仓库版本 =="
 echo "  USER-GUIDE / TUTORIALS 不同步：入口、路由和测评流程按目标平台维护，不做全仓品牌替换。"
+
+echo "== 降级 CipherCat 专属证据链接 ============="
+# 共享文档在 CipherCat 内链接到 src/、tests/、scripts/ 的真实文件；metacrypt
+# 仓库没有这些路径，原样同步会变成死链。目标仓库里把这类链接降级为
+# 「文本（CipherCat：路径）」的代码标记，保留出处但不留死链。
+# 只处理本次同步过去的文件，避免改写目标仓库自有文档。
+sync_targets() {
+  find "$MC_ROOT/docs/standards" "$MC_ROOT/docs/blocks" "$MC_ROOT/docs/demos" "$MC_ROOT/docs/build" -name '*.md' -print0 2>/dev/null
+  for f in CAPABILITY-MAP TYPE-SYSTEM BLOCKLY-GUIDE AUDIT-REPORT DEMO; do
+    for ext in md en.md; do
+      [ -f "$MC_ROOT/docs/guides/$f.$ext" ] && printf '%s\0' "$MC_ROOT/docs/guides/$f.$ext"
+    done
+  done
+}
+# grep 无输出时退出 1，在 `set -euo pipefail` 下会中断脚本；用 `|| true` 放行空集合。
+{ sync_targets | grep -zv '\.en\.md$' || true; } \
+  | xargs -0 -r perl -0pi -e 's/\[([^\]]*)\]\((?:\.\.\/)+((?:tests|src|scripts)\/[^)\s]*)\)/$1（CipherCat：`$2`）/g'
+{ sync_targets | grep -z '\.en\.md$' || true; } \
+  | xargs -0 -r perl -0pi -e 's/\[([^\]]*)\]\((?:\.\.\/)+((?:tests|src|scripts)\/[^)\s]*)\)/$1 (CipherCat: `$2`)/g'
+echo "  CipherCat-only evidence links de-linked in target docs"
+
+# guides/ 内不同步的平台文档：metacrypt 的架构与部署文档位于 docs/ 顶层。
+{ sync_targets || true; } | xargs -0 -r perl -0pi \
+  -e 's!\.\./guides/ARCHITECTURE(?:\.en)?\.md!../ARCHITECTURE.md!g;' \
+  -e 's!\.\./guides/SETUP(?:\.en)?\.md!../DEPLOYMENT.md!g;'
+echo "  guides/ARCHITECTURE and guides/SETUP links remapped to target docs/"
 
 echo "== 同步完成 =="
 echo "提示：backend/docs 是历史冗余副本，不由此脚本生成；同步后需审阅 docs/INDEX.md 并运行死链检查。"

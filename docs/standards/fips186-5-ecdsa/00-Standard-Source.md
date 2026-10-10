@@ -1076,7 +1076,7 @@ are imposed in addition to those specified in the IETF RFC.
           be 256 or 512 bits, respectively.
       (c) For RSASSA-PKCS-v1.5, only approved hash functions shall be used.
       (d) Only two prime factors p and q shall be used to form the modulus n = pq.
-      (e) The exponent e shall be an odd, positive integer such that 216 < 𝑒𝑒 < 2256 .
+      (e) The exponent e shall be an odd, positive integer such that 2^16 < e < 2^256.
       (f) Random numbers shall be generated using an approved random bit generator, as
           specified in SP 800-90A [16].
       (g) For RSASSA-PSS, the length (in bytes) of the salt (sLen) shall satisfy 0 ≤ sLen ≤ hLen,
@@ -1806,25 +1806,25 @@ become 1004 bits, 1515 bits, and 2027 bits, respectively. See Appendix B.9.
 
 
              (b) The exponent e shall be an odd positive integer such that:
-                             216 < e < 2256.
+                             2^16 < e < 2^256.
              Note that the value of e may be any value that meets constraint 1(b) (i.e., e may be
              either a fixed value or a random value).
     2. The primes p and q shall be selected with the following constraints:
              (a) (p – 1) and (q – 1) shall be relatively prime to the public exponent e.
              (b) The private prime factor p shall be selected randomly and shall satisfy
-                 ( 2 )(2(nlen / 2) – 1) ≤ p ≤ (2nlen / 2– 1), where nlen is the appropriate length for the
+                 sqrt(2) × 2^(nlen/2 − 1) ≤ p ≤ 2^(nlen/2) − 1, where nlen is the appropriate length for the
                  desired security_strength.
              (c) The private prime factor q shall be selected randomly and shall satisfy
-                 ( 2 )(2(nlen / 2) – 1) ≤ q ≤ (2nlen / 2– 1), where nlen is the appropriate length for the
+                 sqrt(2) × 2^(nlen/2 − 1) ≤ q ≤ 2^(nlen/2) − 1, where nlen is the appropriate length for the
                  desired security_strength.
-             (d) |p – q| > 2(nlen / 2) – 100.
+             (d) |p – q| > 2^(nlen / 2 − 100).
    3. The private signature exponent d shall be selected with the following constraints after the
       generation of p and q:
              (a) The exponent d shall be a positive integer value such that
-                 2nlen/ 2 < d < LCM(p – 1, q – 1), and
-             (b) d = e–1 mod (LCM(p – 1, q – 1)).
+                 2^(nlen / 2) < d < LCM(p – 1, q – 1), and
+             (b) d = e^−1 mod LCM(p – 1, q – 1).
                   That is, the inequality in (a) holds, and 1 ≡ (ed) mod LCM(p – 1, q – 1).
-         In the extremely rare event that d ≤ 2nlen / 2, then new values for p, q, and d shall be
+         In the extremely rare event that d ≤ 2^(nlen / 2), then new values for p, q, and d shall be
          determined. A different value of e may be used, although this is not required.
 Any hash function used during the generation of the key pair shall be approved.
 
@@ -1869,7 +1869,7 @@ Output:
    p and q      The private prime factors of n.
 Process:
    1. If nlen < 2048, then return (FAILURE, 0, 0).
-   2. If ((e ≤ 216) OR (e ≥ 2256) OR (e is not odd)), then return (FAILURE, 0, 0).
+   2. If ((e ≤ 2^16) OR (e ≥ 2^256) OR (e is not odd)), then return (FAILURE, 0, 0).
    3. Set the value of security_strength in accordance with the value of nlen as specified in SP
       800-57, Part 1.
    4. If (len(seed) < 2 × security_strength), then return (FAILURE, 0, 0).
@@ -1890,7 +1890,7 @@ Process:
                 prime construction method in Appendix B.10 to obtain q and qseed. If FAILURE is
                 returned, then return (FAILURE, 0, 0).
           7.2   working_seed = qseed.
-   8. If ( |p – q| ≤ 2nlen/2 – 100), then go to step 7.
+   8. If ( |p – q| ≤ 2^(nlen/2 − 100)), then go to step 7.
    9. Zeroize the internally generated seeds:
           9.1   pseed = 0
           9.2   qseed = 0
@@ -1919,7 +1919,7 @@ Output:
                  returned as p and q.
 Process:
    1. If nlen < 2048, return (FAILURE, 0, 0).
-   2. If ((e ≤ 216) OR (e ≥ 2256) OR (e is not odd)), then return (FAILURE, 0, 0).
+   2. If ((e ≤ 2^16) OR (e ≥ 2^256) OR (e is not odd)), then return (FAILURE, 0, 0).
    3. Set the value of security_strength in accordance with the value of nlen as specified in SP
       800-57, Part 1.
    4. Generate p:
@@ -1935,13 +1935,13 @@ Process:
              4.2.1 (Optional) The two most significant bits in p may be set arbitrarily.
        4.3   If p is generated with the p ≡ a mod 8 restriction, then p = p + ((a – p) mod 8),
              Else if (p is not odd), then p = p + 1.
-       4.4   If ((p < ( 2 )(2(nlen / 2) – 1)), then go to step 4.2.
+       4.4   If (p < sqrt(2) × 2^(nlen/2 − 1)), then go to step 4.2.
        4.5   If (GCD(p − 1, e) = 1), then
                 4.5.1 Test p for primality as specified in Appendix B.3 using an appropriate
                       value from Table B-1 in Appendix B.3 as the number of iterations.
                 4.5.2 If p is PROBABLY PRIME, then go to step 5.
        4.6 i= i + 1.
-       4.7 If (i ≥ 5 × nlen, then return (FAILURE, 0, 0)
+       4.7 If (i ≥ 5 × nlen), then return (FAILURE, 0, 0)
              Else go to step 4.2.
    5. Generate q:
        5.1   i = 0.
@@ -1949,14 +1949,14 @@ Process:
              5.2.1 The two most significant bits in q may be set arbitrarily.
        5.3   If q is generated with the q ≡ b mod 8 restriction, then q = q + ((b – q) mod 8),
              Else if (q is not odd), then q = q + 1.
-       5.4   If ((q < ( 2 )(2(nlen / 2) – 1)), then go to step 5.2.
-       5.5   If (|p – q| ≤ 2nlen/2 – 100), then go to step 5.2.
+       5.4   If (q < sqrt(2) × 2^(nlen/2 − 1)), then go to step 5.2.
+       5.5   If (|p – q| ≤ 2^(nlen/2 − 100)), then go to step 5.2.
        5.6   If (GCD(q−1, e) = 1) then
                 5.6.1 Test q for primality as specified in Appendix B.3 using an appropriate
                       value from Table B-1 in Appendix B.3 as the number of iterations.
                 5.6.2 If q is PROBABLY PRIME, then return (SUCCESS, p, q).
        5.7   i = i + 1.
-       5.8   If (i ≥ 10 × nlen, then return (FAILURE, 0, 0)
+       5.8   If (i ≥ 10 × nlen), then return (FAILURE, 0, 0)
              Else go to step 5.2.
 
 A.1.4 Generation of Provable Primes with Conditions Based on Auxiliary
@@ -1986,7 +1986,7 @@ Output:
    p and q      The private prime factors of n.
 Process:
    1. If nlen < 2048, then return (FAILURE, 0, 0).
-   2. If ((e ≤ 216) OR (e ≥ 2256) OR (e is not odd)), then return (FAILURE, 0, 0).
+   2. If ((e ≤ 2^16) OR (e ≥ 2^256) OR (e is not odd)), then return (FAILURE, 0, 0).
    3. Set the value of security_strength in accordance with the value of nlen as specified in SP
       800-57, Part 1.
    4. If (len(seed) < 2 × security_strength), then return (FAILURE, 0, 0).
@@ -2001,7 +2001,7 @@ Process:
                the provable prime construction method in Appendix B.10 to obtain q, q1, q2, and
                qseed. If FAILURE is returned, return (FAILURE, 0, 0).
          7.2   working_seed = qseed.
-   8. If ( |p – q| ≤ 2nlen/2 – 100), then go to step 7.
+   8. If ( |p – q| ≤ 2^(nlen/2 − 100)), then go to step 7.
    9. Zeroize the internally generated seeds:
          9.1   pseed = 0.
 
@@ -2041,7 +2041,7 @@ and q.
         p and q     The private prime factors of n.
     Process:
         1. If nlen < 2048, then return (FAILURE, 0, 0).
-        2. If ((e ≤ 216) OR (e ≥ 2256) OR (e is not odd)), then return (FAILURE, 0, 0).
+        2. If ((e ≤ 2^16) OR (e ≥ 2^256) OR (e is not odd)), then return (FAILURE, 0, 0).
         3. Set the value of security_strength in accordance with the value of nlen as specified in
            SP 800-57, Part 1.
         4. If (len(seed) < 2 × security_strength), then return (FAILURE, 0, 0).
@@ -2079,7 +2079,7 @@ and q.
                     e, security_strength, and, optionally, b 12, also obtaining Xq. If FAILURE is
                     returned, then return (FAILURE, 0, 0) and zeroize all internal variables
                     generated.
-         7. If ((|p – q| ≤ 2nlen/2 –100) OR (|Xp – Xq| ≤ 2nlen/2 – 100)), then go to step 6.
+         7. If ((|p – q| ≤ 2^(nlen/2 − 100)) OR (|Xp – Xq| ≤ 2^(nlen/2 − 100))), then go to step 6.
          8. Zeroize the internally generated variables that are not returned:
              8.1    Xp = 0.
              8.2    Xq = 0.
@@ -2129,7 +2129,7 @@ The following process or its equivalent shall be used to generate p and q:
        p and q           The private prime factors of n.
    Process:
        1. If nlen < 2048, then return (FAILURE, 0, 0).
-       2. If ((e ≤ 216) OR (e ≥ 2256) OR (e is not odd)), then return (FAILURE, 0, 0).
+       2. If ((e ≤ 2^16) OR (e ≥ 2^256) OR (e is not odd)), then return (FAILURE, 0, 0).
        3. Set the value of security_strength in accordance with the value of nlen as specified in
           SP 800-57, Part 1.
        4. Generate p:
@@ -2160,7 +2160,7 @@ The following process or its equivalent shall be used to generate p and q:
              5.3    Generate a prime q using the routine in Appendix B.9 with inputs of q1, q2, nlen,
                     e, security_ strength, and, optionally, b, 14 also obtaining Xq. If FAILURE is
                     returned, return (FAILURE, 0, 0) and zeroize all internal variables generated.
-         6. If ((|Xp – Xq| ≤ 2nlen/2 –100) OR (|p – q| ≤ 2nlen/2 – 100))), then go to step 5.
+         6. If ((|Xp – Xq| ≤ 2^(nlen/2 − 100)) OR (|p – q| ≤ 2^(nlen/2 − 100))), then go to step 5.
          7. Zeroize the internally generated values that are not returned:
              7.1    Xp = 0.
              7.2    Xq = 0.
@@ -2732,7 +2732,7 @@ be an approved deterministic random bit generator.
 There are several Lucas probabilistic primality tests available; the version provided in [25] is
 specified in Appendix B.3.3.
 Before applying the probabilistic methods for testing primality, an optional trial division test may
-be performed (see Appendix B.7). Choose a trial division limit L between 103 and 105 and check
+be performed (see Appendix B.7). Choose a trial division limit L between 10^3 and 10^5 and check
 if any of the prime numbers starting with 2 and not exceeding L divide w, where w is the integer
 to be tested for primality. This integer may be either p or q, or one of the auxiliary primes p1, p2,
 q1, or q2. If this trial division demonstrates that w is a multiple of another prime, then return
@@ -2765,13 +2765,13 @@ values for primality when generating RSA primes. See Appendix C for further info
 Table B.1. Minimum number of rounds of M-R testing when generating primes for use in
 RSA Digital Signatures (see Appendix C)
              Parameters                  M-R Tests Only                   M-R Tests Only
-   p1, p2, q1 and q2 > 140 bits       Error probability = 2-100        Error probability = 2-112
-        p and q: 1024 bits            For p1, p2, q1 and q2: 32        For p1, p2, q1 and q2: 38
+   p1, p2, q1 and q2 > 140 bits       Error probability = 2^-100      Error probability = 2^-112
+   p and q: 1024 bits            For p1, p2, q1 and q2: 32        For p1, p2, q1 and q2: 38
                                            For p and q: 4                   For p and q: 5
-   p1, p2, q1 and q2 > 170 bits       Error probability = 2-100       Error probability = 2 –128
+   p1, p2, q1 and q2 > 170 bits       Error probability = 2^-100      Error probability = 2^-128
         p and q: 1536 bits            For p1, p2, q1 and q2: 27        For p1, p2, q1 and q2: 41
                                            For p and q: 3                   For p and q: 4
-   p1, p2, q1 and q2 > 200 bits       Error probability = 2-100       Error probability = 2 –144
+   p1, p2, q1 and q2 > 200 bits       Error probability = 2^-100      Error probability = 2^-144
         p and q: 2048 bits            For p1, p2, q1 and q2: 22        For p1, p2, q1 and q2: 44
                                            For p and q: 2                   For p and q: 4
 
@@ -2794,17 +2794,17 @@ Let DRBG be an approved deterministic random bit generator.
 
 
 
-       1. Let a be the largest integer such that 2a divides w−1.
-       2. m = (w−1) / 2a.
+       1. Let a be the largest integer such that 2^a divides w−1.
+       2. m = (w−1) / 2^a.
        3. wlen = len (w).
        4. For i = 1 to iterations do
              4.1   Obtain a string b of wlen bits from a DRBG. Convert b to an integer using the
                    algorithm in B.2.1.
              4.2   If ((b ≤ 1) or (b ≥ w − 1)), then go to step 4.1.
-             4.3   z = bm mod w.
+             4.3   z = b^m mod w.
              4.4   If ((z = 1) or (z = w − 1)), then go to step 4.7.
              4.5   For j = 1 to a − 1 do.
-                   4.5.1   z = z2 mod w.
+                   4.5.1   z = z^2 mod w.
                    4.5.2   If (z = w − 1), then go to step 4.7.
                    4.5.3   If (z = 1), then go to step 4.6.
              4.6 Return COMPOSITE.
@@ -2828,7 +2828,7 @@ generator.
 
 
    Process:
-       1. Let a be the largest integer such that 2a divides w–1.
+       1. Let a be the largest integer such that 2^a divides w–1.
 
 
                                                     58
@@ -2836,7 +2836,7 @@ generator.
 
 
 
-       2. m = (w – 1) / 2a.
+       2. m = (w – 1) / 2^a.
        3. wlen = len (w).
        4. For i = 1 to iterations do
              4.1    Obtain a string b of wlen bits from a DRBG. Convert b to an integer using the
@@ -2845,17 +2845,17 @@ generator.
              4.3    g = GCD(b, w).
              4.4    If (g > 1), then return PROVABLY COMPOSITE WITH FACTOR and the
                     value of g.
-             4.5    z = bm mod w.
+             4.5    z = b^m mod w.
              4.6    If ((z = 1) or (z = w – 1)), then go to step 4.15.
              4.7    For j = 1 to a – 1 do.
                     4.7.1    x = z.
-                    4.7.2    z = x2 mod w.
+                    4.7.2    z = x^2 mod w.
                     4.7.3    If (z = w – 1), then go to step 4.15.
                     4.7.4    If (z = 1), then go to step 4.12.
-             4.8    x = z.                                 Comment: x = b(w–1)/2 mod w and x ≠ w – 1.
-             4.9    z = x2 mod w.
+             4.8    x = z.                                 Comment: x = b^((w–1)/2) mod w and x ≠ w – 1.
+             4.9    z = x^2 mod w.
              4.10 If (z = 1), then go to step 4.12.
-             4.11 x = z.                                   Comment: x = b(w–1) mod w and x ≠ 1.
+             4.11 x = z.                                   Comment: x = b^(w–1) mod w and x ≠ 1.
              4.12 g = GCD(x – 1, w).
              4.13 If (g > 1), then return PROVABLY COMPOSITE WITH FACTOR and the
                   value of g.
@@ -3197,7 +3197,7 @@ numbers and the Chinese Remainder Theorem (CRT).
                                                       Comment: Apply the CRT so that R ≡ 1 mod
                                                       2𝑟𝑟1 and R ≡ –1 mod 𝑟𝑟2 .
        3. Generate a random number X using an approved random bit generator that supports
-          the security strength, such that √(2^(nlen/2 − 1)) ≤ X ≤ (2^(nlen/2) − 1).
+          the security strength, such that √2 × 2^(nlen/2 − 1) ≤ X ≤ 2^(nlen/2) − 1.
        4. Y = X + ((R – X) mod 2r1r2).                Comment: Y is the first odd integer ≥ X,
                                                       such that r1 is a prime factor of Y–1, and r2
                                                       is a prime factor of Y+1.
@@ -3209,7 +3209,7 @@ numbers and the Chinese Remainder Theorem (CRT).
                                                       candidates from a sequence and performing
                                                       primality tests.
        5. i = 0.
-       6. If (Y ≥ 2nlen/2), then go to step 3.
+       6. If (Y ≥ 2^(nlen/2)), then go to step 3.
        7. If (GCD(Y–1, e) = 1), then
              7.1 Check the primality of Y as specified in Appendix B.3. If PROBABLY PRIME
                  is not returned, go to step 8.

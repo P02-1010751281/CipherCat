@@ -17,7 +17,7 @@
 
 ## 实现状态
 
-✅ 已实现：`ccm_encrypt`，SP 800-38C 附录 C Example 1-3 官方向量（tagLen 4/6/8）+ pycryptodome 交叉。Demo：`demos/procedures/CCM-Encrypt.json`。
+✅ 已实现：`ccm_encrypt`，SP 800-38C 附录 C Example 1-3 官方向量（tagLen 4/6/8），并由独立实现复算一致。Demo：`demos/procedures/CCM-Encrypt.json`。
 
 ## 函数/原语索引
 

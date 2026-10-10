@@ -6,7 +6,7 @@
 | 标准定位 | RFC 5903 §3.1、§8.1 |
 | 原文证据 | [本地 RFC 5903 原文](./rfc5903.txt)、[RFC Editor 在线原文](https://www.rfc-editor.org/rfc/rfc5903.txt) |
 | 原文位置 | [RFC 原文 §3.1，行 195–229](./rfc5903.txt#L195-L229)；[§8.1，行 465–523](./rfc5903.txt#L465-L523) |
-| 项目状态 | 已实现（官方向量与 cryptography 交叉） |
+| 项目状态 | 已实现（RFC 5903 §8.1 官方向量 + 独立实现复算） |
 
 ## 原文定位与引用
 
@@ -43,7 +43,7 @@ h    = 1
 
 - d：私钥 hex（32B，自动模 n 截断，结果须在 [1, n−1]）
 - (qx, qy)：对方公钥坐标 hex（32B，须在曲线上）
-- 官方向量：RFC 5903 §8.1（IKE P-256）两方向 + cryptography 确定性派生 2 组
+- 官方向量：RFC 5903 §8.1（IKE P-256）两方向，另有独立实现复算
 
 曲线原语块（`ecc_load_curve_params` / `ecc_load_point` / `ecc_add` /
 `ecc_point_double` / `ecc_multiply`）与 SM2 族共享（见 `gbt32918-SM2/`）。

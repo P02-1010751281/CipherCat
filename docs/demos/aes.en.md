@@ -3,14 +3,16 @@
 
 > [← Back to index](../guides/DEMO.en.md) · [demo file index](../../demos/README.en.md)
 >
-> Scenario 2 (single-round encryption) + Scenario 5 (function wrapping), per the `docs/DEMO.md` index.
+> Single-round encryption and function wrapping, per the [Demo guide](../guides/DEMO.en.md).
 
 ---
+
+> Step-by-step block chains live in the [assembly guide](../build/INDEX.en.md); this page covers the scenario, inputs/outputs, and boundaries.
 
 ## Scenario 2: AES Single-Round Transformation (10 min)
 
 ### Goal
-Run one AES round in the FIPS 197 §5.1 order. `AES-Atomic-Round.json` places four primitives at the workspace top level; generated code calls them in order and mutates shared state in place. They are not joined by value connections. See `demos/procedures/AES-Round.json` for explicit dataflow connections.
+Run one AES round in the FIPS 197 §5.1 order. `AES-Atomic-Round.json` places four primitives at the workspace top level; generated code calls them in order and mutates shared state in place. The four primitives are not connected to each other; each reads and writes the same state variable through `variables_get`/`variables_set`. See `demos/procedures/AES-Round.json` for the nested, explicit dataflow version.
 
 ### Steps
 
@@ -46,9 +48,10 @@ Use `procedures_defreturn` (Blockly function definition) to wrap an AES single-r
 3. **Generate**: click "▶", pick Python
 4. **Output**:
    ```python
-   def aes_round(state: list[int], round_key: list[int]) -> list[int]:
-       """AES_Round"""
-       # AddRoundKey(MixColumns(ShiftRows(SubBytes(state))), round_key)
+   def AES_Round(state, round_key):
+       """
+       Crypto function: AES_Round
+       """
        ...
    ```
 5. **Call**: find `AES_Round` in the workspace flyout, drag out and feed state and round_key

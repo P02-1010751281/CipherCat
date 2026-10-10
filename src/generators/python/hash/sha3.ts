@@ -1,6 +1,7 @@
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
-import { registerSha3Pad, registerKeccakF1600, registerSha3Absorb, registerSha3Squeeze } from './helpers';
+import { registerHexToBytes } from '../data/helpers';
+import { registerSha3Pad, registerSha3PadText, registerKeccakF, registerSha3Absorb, registerSha3Squeeze } from './helpers';
 
 /** SHA-3 padding (pad10*1) — text input → returns padded bytes. */
 pythonGenerator.forBlock['hash_sha3_pad_text'] = function (
@@ -8,8 +9,7 @@ pythonGenerator.forBlock['hash_sha3_pad_text'] = function (
 ): [string, number] {
   const input =
     pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
-  const padFn = registerSha3Pad();
-  return [padFn + '(' + input + ', rate_bytes=136, suffix=0x06)', Order.ATOMIC];
+  return [registerSha3PadText() + '(' + input + ')', Order.ATOMIC];
 };
 
 /** SHA-3 padding (pad10*1) — hex input → returns padded bytes. */
@@ -18,16 +18,10 @@ pythonGenerator.forBlock['hash_sha3_pad_hex'] = function (
 ): [string, number] {
   const input =
     pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
+  const hexToBytes = registerHexToBytes();
   const padFn = registerSha3Pad();
   return [
-    padFn +
-      '(bytes.fromhex(' +
-      input +
-      ') if isinstance(' +
-      input +
-      ', str) else ' +
-      input +
-      ', rate_bytes=136, suffix=0x06)',
+    padFn + '(' + hexToBytes + '(' + input + '), rate_bytes=136, suffix=0x06)',
     Order.ATOMIC,
   ];
 };
@@ -62,12 +56,11 @@ pythonGenerator.forBlock['keccak_f'] = function (
   const state =
     pythonGenerator.valueToCode(block, 'STATE', Order.ATOMIC) || 'state';
   const width = block.getFieldValue('WIDTH') || '1600';
-  if (width !== '1600') {
-    // 下拉已收窄为 1600；旧工作区可能残留其他宽度，诚实降级为 1600 位置换
-    console.warn(`[sha3] keccak_f width ${width} not supported; generating 1600-bit permutation.`);
+  if (!['200', '400', '800', '1600'].includes(width)) {
+    throw new Error(`Unsupported Keccak-f width: ${width}`);
   }
-  const funcName = registerKeccakF1600();
-  return [funcName + '(' + state + ')', Order.ATOMIC];
+  const funcName = registerKeccakF();
+  return [funcName + '(' + state + ', ' + width + ')', Order.ATOMIC];
 };
 
 /** Absorb — (state, block) → returns new state. */

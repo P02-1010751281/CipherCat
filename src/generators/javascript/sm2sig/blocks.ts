@@ -6,8 +6,9 @@
  *   sm3Hash —— 与 remaining.ts hash_hmac SM3 分支同体（GB/T 32905）
  *   sm2Za   —— ZA = SM3(ENTLA ‖ IDA ‖ a ‖ b ‖ Gx ‖ Gy ‖ PAx ‖ PAy)
  *   sm2Sign —— e = SM3(ZA ‖ M)；r/s 公式；输出 r‖s 各 32 字节大端
- *   sm2Verify —— t = (r+s) mod n，[s]G + [t]PA，R = (e + x0') mod n == r
- * 全部 BigInt。官方向量 ZA/e/r/s 全 PASS（与 /tmp/vectors/sm2_sig.json 一致）。
+ *   sm2Verify —— 校验 PA；t = (r+s) mod n，[s]G + [t]PA，R = (e + x0') mod n == r
+ * 全部 BigInt。GB/T 32918.2-2016 附录 A 示例 1 的 ZA/e/r/s 与 Demo 期望值一致
+ * （demos/tests.json 的 procedures/SM2-Sign.json）。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
@@ -130,6 +131,13 @@ function registerSm2(): string {
     '  return R;',
     '}',
     '',
+    'function sm2PublicKeyIsValid(P) {',
+    '  var C=sm2Params();',
+    '  if (P.x<0n||P.x>=C.p||P.y<0n||P.y>=C.p) return false;',
+    '  if (sm2Mod(P.y*P.y-P.x*P.x*P.x-C.a*P.x-C.b,C.p)!==0n) return false;',
+    '  return sm2PointMul(C.n,P)===null;',
+    '}',
+    '',
     '// ZA = SM3(ENTLA ‖ IDA ‖ a ‖ b ‖ Gx ‖ Gy ‖ PAx ‖ PAy)，ENTLA = IDA 比特长度 2 字节大端',
     'function sm2Za(ida,pax,pay) {',
     '  var C=sm2Params();',
@@ -146,37 +154,42 @@ function registerSm2(): string {
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(da,ida,msg,k) {',
     '  var C=sm2Params();',
     '  var d=sm2ToBig(da);',
-    '  if (d<=0n||d>=C.n) throw new Error("SM2: invalid private key");',
+    '  if (d<=0n||d>=C.n-1n) throw new Error("SM2: invalid private key");',
     '  var PA=sm2PointMul(d,{x:C.gx,y:C.gy});',
     '  var za=sm2Za(ida,PA.x,PA.y);',
     '  var e=sm2ToBig(sm3Hash(za.concat(Array.from(msg))));',
-    '  var kk;',
-    '  if (k===undefined||k===null||k===""||(typeof k==="string"&&k.length===0)) {',
-    '    var rnd=new Uint8Array(32);',
-    '    crypto.getRandomValues(rnd);',
-    '    kk=sm2ToBig(Array.from(rnd));',
-    '  } else {',
+    '  var randomK=k===undefined||k===null||(typeof k==="string"&&k.length===0);',
+    '  var kk,rnd=randomK?new Uint8Array(32):null;',
+    '  if (!randomK) {',
     '    kk=sm2ToBig(k);',
+    '    if (kk<=0n||kk>=C.n) throw new Error("SM2: invalid nonce");',
     '  }',
-    '  kk=sm2Mod(kk,C.n);',
-    '  if (kk===0n) kk=1n;',
-    '  var x1=sm2PointMul(kk,{x:C.gx,y:C.gy});',
-    '  var r=sm2Mod(e+x1.x,C.n);',
-    '  var s=sm2Mod(sm2ModInverse(sm2Mod(1n+d,C.n),C.n)*sm2Mod(kk-r*d,C.n),C.n);',
-    '  if (r===0n||r+kk===C.n||s===0n) throw new Error("SM2: retry (r or s invalid)");',
-    '  return sm2BigToBytes(r,32).concat(sm2BigToBytes(s,32));',
+    '  for (;;) {',
+    '    if (randomK) {',
+    '      do { crypto.getRandomValues(rnd); kk=sm2ToBig(Array.from(rnd)); } while (kk===0n||kk>=C.n);',
+    '    }',
+    '    var x1=sm2PointMul(kk,{x:C.gx,y:C.gy});',
+    '    var r=sm2Mod(e+x1.x,C.n);',
+    '    var s=sm2Mod(sm2ModInverse(sm2Mod(1n+d,C.n),C.n)*sm2Mod(kk-r*d,C.n),C.n);',
+    '    if (r===0n||r+kk===C.n||s===0n) {',
+    '      if (randomK) continue;',
+    '      throw new Error("SM2: invalid nonce for signature");',
+    '    }',
+    '    return sm2BigToBytes(r,32).concat(sm2BigToBytes(s,32));',
+    '  }',
     '}',
     '',
     'function sm2Verify(pax,pay,ida,msg,r,s) {',
     '  var C=sm2Params();',
-    '  var rr=sm2Mod(sm2ToBig(r),C.n),ss=sm2Mod(sm2ToBig(s),C.n);',
-    '  if (rr===0n||rr>=C.n||ss===0n||ss>=C.n) return false;',
+    '  var rr=sm2ToBig(r),ss=sm2ToBig(s);',
+    '  if (rr<=0n||rr>=C.n||ss<=0n||ss>=C.n) return false;',
     '  var t=sm2Mod(rr+ss,C.n);',
     '  if (t===0n) return false;',
+    '  var PA={x:sm2ToBig(pax),y:sm2ToBig(pay)};',
+    '  if (!sm2PublicKeyIsValid(PA)) return false;',
     '  var za=sm2Za(ida,pax,pay);',
     '  var e=sm2ToBig(sm3Hash(za.concat(Array.from(msg))));',
     '  var G={x:C.gx,y:C.gy};',
-    '  var PA={x:sm2ToBig(pax),y:sm2ToBig(pay)};',
     '  var pt=sm2PointAdd(sm2PointMul(ss,G),sm2PointMul(t,PA));',
     '  if (pt===null) return false;',
     '  return sm2Mod(e+pt.x,C.n)===rr;',
@@ -190,7 +203,7 @@ javascriptGenerator.forBlock['sm2_sign'] = function (block: Block): [string, num
   const msg = javascriptGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   const k = javascriptGenerator.valueToCode(block, 'K', Order.ATOMIC) || '""';
   registerSm2();
-  return ['sm2Sign(' + da + ', ' + ida + ', ' + msg + ', ' + k + ')', Order.ATOMIC];
+  return ['Uint8Array.from(sm2Sign(' + da + ', ' + ida + ', ' + msg + ', ' + k + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['sm2_verify'] = function (block: Block): [string, number] {

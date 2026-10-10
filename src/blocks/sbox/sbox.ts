@@ -71,7 +71,7 @@ Blockly.Blocks['sbox'] = {
     const presetDropdown = new Blockly.FieldDropdown(() => [
       [Blockly.Msg.CRYPTO_SBOX_PRESET_NONE || 'Custom (CSV)', ''],
       [Blockly.Msg.CRYPTO_SBOX_PRESET_AES || 'AES S-box (FIPS 197)', 'aes'],
-      [Blockly.Msg.CRYPTO_SBOX_PRESET_SM4 || 'SM4 S-box (GM/T 0002)', 'sm4'],
+      [Blockly.Msg.CRYPTO_SBOX_PRESET_SM4 || 'SM4 S-box (GB/T 32907-2016)', 'sm4'],
       [Blockly.Msg.CRYPTO_SBOX_PRESET_ZUC_S0 || 'ZUC S0 (GB/T 33133)', 'zuc_s0'],
       [Blockly.Msg.CRYPTO_SBOX_PRESET_ZUC_S1 || 'ZUC S1 (GB/T 33133)', 'zuc_s1'],
     ]);
@@ -348,7 +348,9 @@ Blockly.Blocks['sbox'] = {
       y = Math.max(8, Math.min(y, window.innerHeight - ph - 8));
       popup.style.left = x + 'px';
       popup.style.top = y + 'px';
-    } catch {
+    } catch (error) {
+      // 定位失败时退回左上角固定位置，避免弹窗跑到屏幕外；记录原因便于排查。
+      console.warn('sbox: popup positioning failed', error);
       popup.style.left = '80px';
       popup.style.top = '80px';
     }
@@ -447,7 +449,7 @@ Blockly.Blocks['sbox_sub'] = {
     this.setColour(230);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SBOX_SUB_TOOLTIP ||
-        'Execute S-box substitution on 32-bit input variable',
+        'Apply an S-box to an unsigned 32-bit word in big-endian byte order; the first 256 entries must be integer byte values.',
     );
     this.setHelpUrl('');
   },

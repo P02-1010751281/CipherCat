@@ -23,7 +23,7 @@ Blockly.Blocks['x25519'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(230);
     this.setTooltip(
-      'X25519 标量乘法 (RFC 7748)：k 32 字节（自动 clamp），u 坐标 32 字节 → 共享密钥 32 字节。Montgomery ladder，p = 2^255-19。官方向量（RFC 7748 §5.2 V1/V2）验证通过。',
+      'X25519 (RFC 7748)：标量和 u 坐标各为 32 个字节值，标量自动 clamp、u 最高位清零，输出 32 字节。当前高层实现非恒定时间，仅用于教学/回归，不应用于生产私钥。',
     );
     this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc7748');
   },

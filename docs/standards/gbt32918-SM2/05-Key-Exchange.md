@@ -62,7 +62,7 @@ B10. Optionally compute S2 = Hash(0x03 || yV || Hash(xV || ZA || ZB || x1 || y1 
 
 ## CipherCat 映射
 
-`sm2_key_exchange` 当前实现第 3 部分 §6.2 的 B 侧路径：
+`sm2_key_exchange` 当前实现第 3 部分 §6.1 中响应方 B 的 B1–B7 共享密钥派生路径：
 
 ```text
 RB=[rB]G
@@ -71,10 +71,12 @@ V=[h·tB](PA+[x̄1]RA)
 K=KDF(xV||yV||ZA||ZB,klen)
 ```
 
-块还生成 B 侧确认值所需的中间量，输入包含 `dB/rB/PA/RA/RB/ZA/ZB`。
+输入契约：`dB/rB` 是 32 字节十六进制标量且范围为 `[1,n−1]`；`PA` 的坐标是 32 字节十六进制数并须位于曲线上；`RA/RB` 是 `04‖x‖y` 未压缩点编码，`RA` 须通过曲线检查，`RB` 须与 `[rB]G` 完全一致；`ZA/ZB` 各为 32 字节十六进制 SM3 摘要；`klen` 是小于 `(2^32−1)×256` 的正安全整数，单位为 bit。点、标量、摘要或长度无效时拒绝输入；若计算所得 `V` 为无穷远点则中止。
+
+双语言可判定测试位于 `tests/unit/sm2-key-exchange.test.ts`：覆盖附录 A.2 示例 1 的 B 侧共享密钥向量、`RB/rB` 不一致、曲线外的 `RA/PA`、标量边界/编码、摘要长度、KDF 长度及 `V` 为无穷远点。`demos/procedures/SM2-KeyExchange.json` 的 `wlen` 输入绑定到过程参数，不再写死为 128。
 
 ## 缺项
 
-当前缺少角色对称的 A/B 端到端负例、临时点/身份错误处理矩阵和独立互操作向量；不能用一次普通 ECDH 结果替代 SM2 密钥交换验证。
+当前未实现发起方 A 侧，也未实现可选密钥确认 B8/B9、A9/A10、B10；尚无第二组独立互操作向量，错误处理矩阵也未覆盖标准规定的全部失败条件。故此处只证明列明输入契约与 B 侧共享密钥派生路径的回归，不构成完整 SM2 密钥交换符合性结论；不能用普通 ECDH 结果替代 SM2 密钥交换验证。
 
 Demo：`demos/procedures/SM2-KeyExchange.json`。

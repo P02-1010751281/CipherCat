@@ -1,15 +1,13 @@
 /**
- * FORS 完整签名 Python 代码生成器（FIPS 205 §8）
+ * FORS-inspired teaching-variant Python generator; not FIPS 205-compatible.
  *
- * 内嵌完整 FORS（fors_core 闭包）：SHAKE-256 作 PRF/H（标准库 hashlib），
- * ADRS 布局沿用项目 slh_addr 约定（layer 1B | tree 12B | type 4B | keypair 4B |
- * FORS_TREE 追加 height 4B | index 4B）。教学参数 n=32 / k=4 / a=4（每树 16 叶）。
- * 验证用性质向量：确定性、签名-验证往返、篡改检测。
+ * Uses project-specific SHAKE concatenation, not the FIPS 205 PRF/F/T_k functions.
+ * Fixed parameters are n=32, k=4, a=4; tests establish only internal consistency.
  */
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
 
-/** FORS 完整实现（闭包，返回 {fors_sign, fors_verify, fors_pk}） */
+/** Project teaching variant (closure returning sign, verify, and public-key helpers). */
 function registerForsCore(): string {
   return pythonGenerator.provideFunction_('fors_core', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '():',
@@ -17,23 +15,36 @@ function registerForsCore(): string {
     '    def to_bytes(x):',
     '        if isinstance(x, str):',
     '            return x.encode("utf-8")',
-    '        return bytes(x)',
+    '        if isinstance(x, (bytes, bytearray)):',
+    '            return bytes(x)',
+    '        if isinstance(x, list):',
+    '            if any(isinstance(b, bool) or not isinstance(b, (int, float)) or not 0 <= b <= 255 or int(b) != b for b in x):',
+    '                raise ValueError("FORS byte arrays must contain integers from 0 to 255")',
+    '            return bytes(int(b) for b in x)',
+    '        raise TypeError("FORS inputs must be strings, byte arrays, bytes, or bytearray values")',
+    '    def seed_bytes(x):',
+    '        seed = to_bytes(x)',
+    '        if len(seed) != 32:',
+    '            raise ValueError("FORS teaching seed must be 32 bytes")',
+    '        return seed',
     '    def h32(*parts):',
     '        data = b"".join(to_bytes(p) for p in parts)',
     '        return hashlib.shake_256(data).digest(32)',
     '    def adrs(kp, typ, height, idx):',
     '        a = bytearray(32)',
-    '        a[13:17] = typ.to_bytes(4, "big")',
-    '        a[17:21] = kp.to_bytes(4, "big")',
+    '        a[16:20] = typ.to_bytes(4, "big")',
+    '        a[20:24] = kp.to_bytes(4, "big")',
     '        if typ == 3:  # FORS_TREE: height + index',
-    '            a[21:25] = height.to_bytes(4, "big")',
-    '            a[25:29] = idx.to_bytes(4, "big")',
+    '            a[24:28] = height.to_bytes(4, "big")',
+    '            a[28:32] = idx.to_bytes(4, "big")',
+    '        elif typ == 6:  # FORS_PRF: word 5 is zero; word 6 is the tree index',
+    '            a[28:32] = idx.to_bytes(4, "big")',
     '        return bytes(a)',
     '    def fors_sk(sk_seed, tree_i, leaf_j):',
-    '        # FIPS 205 Alg 12: sk = PRF(SK.seed, ADRS(FORS_TREE, kp=i, h=0, idx=j))',
-    '        return h32(sk_seed, adrs(tree_i, 3, 0, leaf_j))',
+    '        # Project-specific derivation; type 6 identifies the FORS_PRF address word.',
+    '        return h32(sk_seed, adrs(tree_i, 6, 0, leaf_j))',
     '    def fors_tree(sk_seed, tree_i, idx):',
-    '        # 16 叶树（叶 = sk），返回 (root, auth_path)；节点 H(ADRS(h, jj) || l || r)',
+    '        # Project-specific 16-leaf tree; nodes hash the custom ADRS/child concatenation.',
     '        level = [fors_sk(sk_seed, tree_i, j) for j in range(16)]',
     '        auth = []',
     '        h = 1',
@@ -46,7 +57,8 @@ function registerForsCore(): string {
     '            h += 1',
     '        return level[0], auth',
     '    def fors_sign(sk_seed, m):',
-    '        # FIPS 205 Alg 13: M 按 a-bit 分块（块 0 最高位）选叶；sig = 每树 (sk, auth)',
+    '        # M is split into fixed 4-bit chunks; sig contains one leaf and path per tree.',
+    '        sk_seed = seed_bytes(sk_seed)',
     '        m = to_bytes(m)',
     '        if len(m) != 2:',
     '            raise ValueError("FORS M must be 2 bytes (k*a = 16 bits)")',
@@ -58,13 +70,21 @@ function registerForsCore(): string {
     '            sig += fors_sk(sk_seed, i, idxs[i]) + b"".join(auth)',
     '        return sig',
     '    def fors_pk(sk_seed):',
-    '        # 根与消息无关：pk = H(ADRS(FORS_ROOTS) || root_0 || ... || root_3)',
+    '        # Project-specific public key: SHAKE(project FORS_ROOTS address || concatenated roots).',
+    '        sk_seed = seed_bytes(sk_seed)',
     '        roots = [fors_tree(sk_seed, i, 0)[0] for i in range(4)]',
     '        return h32(adrs(0, 4, 0, 0), b"".join(roots))',
     '    def fors_verify(pk, m, sig):',
-    '        # PkFromSig 语义：sk + auth 重建每树根 → pk 比对',
+    '        # Rebuild project tree roots from the signature and compare with the project public key.',
+    '        pk = to_bytes(pk)',
     '        m = to_bytes(m)',
     '        sig = to_bytes(sig)',
+    '        if len(pk) != 32:',
+    '            raise ValueError("FORS teaching public key must be 32 bytes")',
+    '        if len(m) != 2:',
+    '            raise ValueError("FORS M must be 2 bytes (k*a = 16 bits)")',
+    '        if len(sig) != 640:',
+    '            raise ValueError("FORS teaching signature must be 640 bytes")',
     '        mv = int.from_bytes(m, "big")',
     '        idxs = [(mv >> (12 - 4 * i)) & 0xF for i in range(4)]',
     '        roots = []',

@@ -1,116 +1,106 @@
-# User tutorials: from editor to verifiable algorithms
+# User tutorial: build an algorithm from blocks
 
-These tutorials are for CipherCat users and walk through the editor; the backend-assessment section separately explains how to continue in the Metacrypto platform. Each step is organized as action, interface state, expected result, and troubleshooting.
+The main path of this tutorial is **assembling an algorithm from blocks**: drag a block, connect it, generate code.
 
-Screenshots illustrate shared-editor operations; the source build is not recorded per image, so they do not prove the current deployment's page state. They do not replace standard formulas, pseudocode, or official test vectors.
+Treat procedure templates and demos as **convenience starting points** (they save repeated dragging), not as the capability itself. The platform's capability boundary is "can this be built from blocks"; the presence of a template or demo does not change that. The steps below therefore **do not start from a demo**; importing one is covered in [Appendix A](#appendix-a-taking-the-demo-shortcut).
 
-## 1. First five minutes: open the editor and import a demo
+## 1. Open the editor and recognise the four areas
 
-### Step 1: Open the editor
+**Do**: on the project list, click "New project".
 
-- **Action**: Click **New Project** on the CipherCat project list.
-- **Interface state**: The project list shows **Docs**, **EN**, and **New Project**; the editor shows a toolbox, workspace, and code panel.
-- **✅ Expected**: A Blockly workspace and code panel are visible.
-- **⚠️ Troubleshooting**: Refresh if the page is empty. If only the toolbox appears, inspect Blockly initialization logs.
+**Observe**: the editor opens with four areas — the toolbox on the left (blocks grouped by category), the workspace in the middle, the language selector (JavaScript / Python) at the top right, and the code panel on the right.
 
-![CipherCat project list and new-project entry (interface example)](/docs-assets/tutorials/01-project-list.png)
+**If it looks wrong**: refresh if the page is blank and confirm the frontend is reachable; if only the toolbox shows, check the browser console for Blockly initialisation errors.
 
-![Blank CipherCat editor (interface example)](/docs-assets/tutorials/02-editor-empty.png)
+![Project list and the new-project entry](/docs-assets/tutorials/01-project-list.png)
 
-_Figure 1: CipherCat project entry and blank editor examples; they do not show Metacrypto's home page or project entry._
+![Empty editor: toolbox, workspace, language selector, code panel](/docs-assets/tutorials/02-editor-empty.png)
 
-### Step 2: Import a workspace
+_Figure 1: project entry and empty editor._
 
-- **Action**: Open **More → Import Workspace** and select `demos/AES-Atomic-Round.json`.
-- **Interface state**: Four AES primitive blocks appear at the workspace top level; they are not joined by value connections.
-- **✅ Expected**: The four primitive blocks are imported and visible in the workspace. The code panel still shows its empty-state placeholder; click Generate in Step 4 to see the code.
-- **⚠️ Troubleshooting**: Make sure the selected file is a Blockly JSON/XML workspace, not Markdown or source code.
+## 2. Drag the first block out of the toolbox
 
-![Import entry in the More menu (interface example)](/docs-assets/tutorials/03-import-menu.png)
+**Do**: expand a toolbox category (for example "Hash / padding") and drag the `SHA-256 padding` block into the workspace.
 
-![Editor after importing the AES demo (interface example)](/docs-assets/tutorials/04-editor-imported.png)
+**Observe**: a block appears with its input sockets (value inputs) or top/bottom connectors (statement blocks). The code panel is still empty — a block that is not connected to an output/return does not reach the generated code.
 
-_Figure 2: The screenshot shows the toolbox, top-level primitive blocks, and code panel; the AES atomic demo performs one round through ordered calls on shared state, not a value-connected chain._
+**If it looks wrong**: expand the toolbox category if the block will not drag; a greyed-out block means a connection-type mismatch, so use a matching socket.
 
-📚 [AES demo](../demos/aes.en.md) · [Block index](../blocks/INDEX.en.md)
+> Tip: each block does one thing (pad, compress, XOR, …); the algorithm comes from connecting them — that is the design premise of this platform.
 
-## 2. Generate code from a block chain
+![Toolbox with the "Hash / padding" category expanded](/docs-assets/tutorials/10-toolbox-category.png)
 
-### Step 3: Select a target language
+![The first block dragged from the toolbox into the workspace](/docs-assets/tutorials/11-first-block.png)
 
-- **Action**: Select Python or JavaScript from the language selector.
-- **Interface state**: The language selector shows the target language while the workspace remains visible.
-- **✅ Expected**: The code panel language matches the selection.
-- **⚠️ Troubleshooting**: Use one output language per verification; fix the language before comparing results.
+_Figure 2: expanding a toolbox category (left), then dragging `SHA-256 padding` into the workspace (right)._
 
-![Editor with Python selected in the language control (interface example)](/docs-assets/tutorials/04-editor-imported.png)
+## 3. Connect blocks into an algorithm stage chain
 
-_Figure: The screenshot shows the collapsed language control with Python selected. It locates the control; the expanded menu and language-switch transition are not shown._
+**Do**: drag a second block (for example `SHA-256 compress`) and connect its left input socket to the first block's output socket; drag data blocks (hex/byte constants) into the most upstream input when you need input material.
 
-### Step 4: Generate and read the code
+**Observe**: connections appear between blocks, forming "data → stage 1 → stage 2"; the chain still ends without an output, so the code panel stays empty.
 
-- **Action**: Click **Generate**.
-- **Interface state**: The code panel shows readable generated code, including inputs, block calls, and the return value.
-- **✅ Expected**: Call order matches the workspace.
-- **⚠️ Troubleshooting**: Check the generator and top-level blocks if the panel is empty. For a type mismatch, start with the [user guide’s explanation of data types and block connections](./USER-GUIDE.en.md).
+**If it looks wrong**: connections usually fail on type mismatch (sockets carry colour/shape hints); see [User guide: data types and block connections](./USER-GUIDE.en.md).
 
-![Editor after generating Python code (interface example)](/docs-assets/tutorials/05-generated-python.png)
+![Connecting the padding block's output to the compress block's input](/docs-assets/tutorials/12-block-chain.png)
 
-_Figure 3: After choosing Python and generating code, the code panel shows the actual syntax-highlighted output._
+_Figure 3: drag the first block's output plug onto the second block's input socket (`V=`); the two blocks now form one chain._
 
-### Step 5: Copy the generated code
+## 4. Generate JavaScript or Python code
 
-- **Action**: Click **Copy Code** to take the generated code to the user's own environment.
-- **Interface state**: The code panel retains the generated result while the workspace remains editable.
-- **✅ Expected**: Pasting into the target environment yields the complete generated code in the selected language. The screenshot locates the copy control; it does not prove that the clipboard operation succeeded.
-- **⚠️ Troubleshooting**: The CipherCat editor builds workspaces and generates code; it does not run backend randomness assessment in the browser. Continue to Metacrypto's task page when platform assessment is needed.
+**Do**: pick the target language at the top right, then click "Generate".
 
-![Generated-code panel and copy control (interface example)](/docs-assets/tutorials/05-generated-python.png)
+**Observe**: the code panel shows complete code whose function order matches the workspace chain; switching language and generating again yields the equivalent code in the other language.
 
-_Figure: The interface example includes the generated-code area and the Copy Code control._
+**If it looks wrong**: empty code means the chain is not connected to a top-level output/return; for type mismatches start with the user guide's data-type section.
 
-## 3. From an algorithm stage to a reusable function
+![Workspace and code panel after generating code](/docs-assets/tutorials/13-generate-code.png)
 
-### Step 6: Define the function boundary
+_Figure 4: after selecting Python and clicking Generate, the code panel shows the matching implementation; switching the language yields the JavaScript version._
 
-- **Action**: Use `procedures_defreturn` to define `SM4_Sbox`, add an `x: int` parameter, and connect the S-box lookup block to the return input.
-- **Interface state**: The function definition, `int` parameter, S-box lookup block, and return input are visible together.
-- **✅ Expected**: Inputs, output, and return block are explicit and compatible.
-- **⚠️ Troubleshooting**: `int` is an S-box index example; it is not a type recommendation for byte strings, polynomials, or unrelated algorithm inputs.
+## 5. (Optional) Wrap the chain into a reusable function
 
-![Function-definition demo (interface example)](/docs-assets/tutorials/08-function-demo.png)
+**Do**: drag in a function-definition block (`procedures_defreturn`), give it a parameter (for example `x: int` or `msg: message`), and connect the chain to its return socket.
 
-_Figure 4: The function demo shows a typed `int` parameter, a return block, and an `SM4_Sbox` call._
+**Observe**: the function block shows a parameter row and a return socket; the generated code contains the corresponding function implementation.
 
-### Step 7: Generate and inspect the function code
+**If it looks wrong**: the parameter type must match the first block's input type; when unsure, use the same type as your data block.
 
-- **Action**: Click **Generate** and inspect the function code panel.
-- **Interface state**: The panel shows generated `sm4_sbox` code and `sm4_sbox_lookup` calling it; the screenshot's Blockly canvas shows the definition block, not a call block.
-- **✅ Expected**: Generated code contains the function implementation and its helper call, consistent with the workspace definition.
-- **⚠️ Troubleshooting**: To place a call block in the main flow, follow the [Blockly guide](./BLOCKLY-GUIDE.en.md); this image does not document the call-block canvas state.
+![Function definition block with a parameter and return socket](/docs-assets/tutorials/08-function-demo.png)
 
-![Function demo after Python generation (interface example)](/docs-assets/tutorials/09-function-generated.png)
+![Python code generated from the function chain](/docs-assets/tutorials/09-function-generated.png)
 
-_Figure 5: Generated Python for the function definition, including its helper call._
+_Figure 5: wrapping a chain into a function and reusing it in generated code._
 
-📚 [Blockly guide](./BLOCKLY-GUIDE.en.md) · [User guide: data types and block connections](./USER-GUIDE.en.md) · [Demo guide](./DEMO.en.md)
+## 6. Keep three things apart: block chain, test evidence, backend assessment
 
-## 4. View platform-side backend assessment
+Assembling a chain only shows that **code can be generated**. It does not prove the algorithm is correct, and certainly not that it passes a standard or certification. Judge at these levels separately:
 
-> The backend assessment page must be captured from an authenticated `metacrypt_server` task-detail page. This repository does not embed a login page, a 401 error page, or a fabricated report screenshot; use the [GM/T 0005 assessment boundary](../standards/gmt0005-randomness/03-Backend-Evaluation.en.md) for report fields and decision boundaries.
+| Level | What to look at | Where |
+|---|---|---|
+| Blocks and connections | Is the structure right, do the types match | Editor workspace |
+| Executability | Does the generated JS/Python run | Code panel / local run |
+| Standards conformance | Standard interfaces, parameter sets, official vectors | Coverage matrix and per-block evidence under `docs/standards/` |
+| Backend assessment | Statistical test verdict on samples | Metacrypto platform tasks and reports |
 
-### Step 8: Submit an assessment task
+## 7. View the platform's backend randomness assessment
 
-- **Action**: In the Metacrypto platform, open **Tasks → Randomness Test**, select or submit the Blockly algorithm, and enter assessment parameters.
-- **Interface state**: The form reads the algorithm type from project preflight (read-only). Review sample length, sequence count, seed, and GPU option before submission.
-- **✅ Expected**: The task has a traceable ID and queued, running, or completed status.
-- **⚠️ Troubleshooting**: The frontend does not generate samples for platform assessment or execute server-supplied code in the browser; sample generation and statistical testing run in the backend workflow.
+**Do**: on the Metacrypto platform open "Tasks → Randomness test", choose or submit the algorithm and fill in assessment parameters, then open the task detail from the task list.
 
-### Step 9: Read the assessment report
+**Observe**: the form reads the project precheck result (algorithm type is read-only); submitting returns a task id. The task detail shows the summary, detection details, and parameter fields returned by the backend.
 
-- **Action**: In `metacrypt_server` task list `/tasks/index`, open the task detail at `/tasks/detail/<jobId>` and inspect sample metadata, tests, parameters, and failure reasons.
-- **Interface state**: The task detail shows the backend summary and test rows; check which rule and detector-version fields are actually present.
-- **✅ Expected**: The displayed summary and detail rows match the returned task result. Do not claim traceability to rule/version fields that are absent.
-- **⚠️ Troubleshooting**: Passing statistical tests is not the same as algorithm certification.
+**Note**: the frontend neither generates assessment samples nor executes server-side code in the browser, and passing a statistical test is not cryptography certification. Whether the report carries detector/rule version fields depends on what the backend actually returns — do not describe missing fields as "traced". Field semantics and verdict boundaries: [GM/T 0005 assessment boundary](../standards/gmt0005-randomness/03-Backend-Evaluation.en.md).
 
-📚 [User guide](./USER-GUIDE.en.md) · [GM/T 0005 assessment boundary](../standards/gmt0005-randomness/03-Backend-Evaluation.en.md)
+## Appendix A: taking the demo shortcut
+
+Demos and procedure templates save repeated dragging and are handy for seeing a complete chain at a glance; they are **not required**, and they do not change the fact that the capability itself is "buildable from blocks".
+
+- **Import a workspace**: `More → Import workspace`, pick a JSON under `demos/` (for example `demos/AES-Atomic-Round.json`).
+- **Drag a template**: drag a procedure template block into the workspace; it pre-fills a structure (for example the 28-statement ML-KEM encapsulation chain). Parameters left empty by the template must be filled in by you.
+- **Template boundary**: a pre-filled template is not a complete algorithm and not a test pass; per-object coverage is listed in the [conformance inventory](../standards/CONFORMANCE-INVENTORY.md).
+
+![Import entry under the "More" menu](/docs-assets/tutorials/03-import-menu.png)
+
+_Figure 6: the import entry, used only for the shortcut path; the main tutorial does not need it._
+
+📚 Continue with: [Blockly guide](./BLOCKLY-GUIDE.en.md) · [User guide: data types and connections](./USER-GUIDE.en.md) · [Capability map](./CAPABILITY-MAP.en.md) · [Demo index](../../demos/README.en.md)

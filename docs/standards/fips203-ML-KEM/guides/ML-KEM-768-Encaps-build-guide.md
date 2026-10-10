@@ -67,7 +67,7 @@ Before dragging any logic, create every variable. This prevents Blockly from aut
 
 ## Step 1: Initialize ek and m
 
-FIPS 203 Algorithm 10 line 1. Empty text placeholders — real values injected at runtime.
+FIPS 203 Algorithm 17 line 1. Empty text placeholders — real values injected at runtime.
 
 ### 1a — set ek to
 
@@ -93,7 +93,7 @@ Block order: `set ek to ""` → `set m to ""`.
 
 ## Step 2: h = SHA3-256(ek)
 
-FIPS 203 Algorithm 10 line 1. H = SHA3-256. rate=1088, c=512, suffix=0x06, output=32 bytes.
+FIPS 203 Algorithm 17 line 1. H = SHA3-256. rate=1088, c=512, suffix=0x06, output=32 bytes.
 
 ### 2.1 — Outer shell
 
@@ -155,7 +155,7 @@ set h = Squeeze(rate=1088, outLen=32,
 
 ## Step 3: G(m ‖ h) = SHA3-512 → g_out, then split into K̂, r
 
-FIPS 203 Algorithm 10 line 1. G = SHA3-512. rate=576, c=1024, suffix=0x06, output=64 bytes.
+FIPS 203 Algorithm 17 line 1. G = SHA3-512. rate=576, c=1024, suffix=0x06, output=64 bytes.
 
 Compute SHA3-512 once into `g_out`, then slice twice.
 

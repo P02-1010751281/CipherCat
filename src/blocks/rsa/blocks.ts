@@ -1,13 +1,12 @@
 /**
- * RSA 原子块定义（FIPS 186-4 密钥生成 + PKCS#1 v1.5 加解密/签名，RFC 8017）
+ * RSA 教学块：项目自定义密钥生成与 RFC 8017 对应方案的教学实现。
  *
  * - rsa_keygen:  RSA-KeyGen(bits) → Bytes
  *   key = n(k)‖e(4)‖d(k)‖p(k/2)‖q(k/2)（定长大端，k = bits/8）
- *   FIPS 186-4 风格：Miller-Rabin + 小素数筛随机素数 p/q，e = 65537，d = e⁻¹ mod λ(n)。
+ *   rsa_keygen 不实现或声称符合 FIPS 186-5 的 RSA 签名密钥生成要求。
  * - rsa_encrypt / rsa_decrypt: PKCS#1 v1.5（EM = 0x00‖0x02‖PS(≥8 随机非零)‖0x00‖M）
  * - rsa_sign / rsa_verify: PKCS#1 v1.5 + SHA-256（DigestInfo = SEQUENCE{sha256, hash}）
- *   验证：无 RFC 数值向量 → cryptography 49 交叉验证全 PASS（加解密/签名/验签双向
- *   + keygen 输出被 cryptography 接受，1024 位）。
+ *   互操作测试不等于标准符合性测试或正式认证。
  */
 import * as Blockly from 'blockly/core';
 import { TYPE_BYTES, TYPE_BOOLEAN } from '@/constants/block-types';
@@ -27,9 +26,9 @@ Blockly.Blocks['rsa_keygen'] = {
       .appendField('RSA-KeyGen(')
       .appendField(
         new Blockly.FieldDropdown([
-          ['512 (教学)', '512'],
-          ['1024', '1024'],
-          ['2048', '2048'],
+          ['512 (仅教学)', '512'],
+          ['1024 (仅教学)', '1024'],
+          ['2048 (仅教学)', '2048'],
         ]),
         'BITS',
       )
@@ -37,11 +36,11 @@ Blockly.Blocks['rsa_keygen'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip(
-      'RSA 密钥生成 (FIPS 186-4)：随机 p/q（Miller-Rabin + 小素数筛），e=65537，d=e⁻¹ mod λ(n)。' +
-        '输出 Bytes key = n‖e‖d‖p‖q（定长大端：n/d 各 k 字节、e 4 字节、p/q 各 k/2 字节，k=bits/8）。' +
-        '512 位教学可跑（勿用于真实安全）；1024/2048 位生成较慢但支持。keygen 输出已通过 cryptography 1024 位接受性验证。',
+      'RSA 教学用密钥生成：项目自定义算法，不是 RFC 8017 定义的密钥生成，也不是经验证的 FIPS 186-5 实现。' +
+        '演示参数为 512/1024/2048 位；FIPS 186-5 的 RSA 签名模数至少为 2048 位，但 2048 位选项本身不代表满足其密钥生成要求。' +
+        '输出 Bytes 为 n‖e‖d‖p‖q 定长大端编码，其中包含私钥材料；勿用于真实密钥或生产场景。',
     );
-    this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf');
+    this.setHelpUrl('https://csrc.nist.gov/pubs/fips/186-5/final');
   },
 };
 
@@ -56,9 +55,9 @@ Blockly.Blocks['rsa_encrypt'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip(
-      'RSA 公钥加密 (RFC 8017 §7.2, PKCS#1 v1.5)：EM = 0x00‖0x02‖PS(≥8 随机非零)‖0x00‖M，C = m^e mod n。' +
+      'RSA 教学实现，参照 RFC 8017 §7.2 的 PKCS#1 v1.5 加密方案；不构成标准符合性或认证声明。EM = 0x00‖0x02‖PS(≥8 随机非零)‖0x00‖M，C = m^e mod n。' +
         'KEY 取 n‖e‖d‖p‖q 前缀的 n 与 e；明文长度 ≤ k-11（k = bits/8）。' +
-        'cryptography 交叉验证通过（自实现 encrypt → cryptography decrypt）。',
+        '互操作测试只说明已测输入下的结果一致，不代表通过标准符合性评估。',
     );
     this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc8017');
   },
@@ -75,9 +74,9 @@ Blockly.Blocks['rsa_decrypt'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip(
-      'RSA 私钥解密 (RFC 8017 §7.2, PKCS#1 v1.5)：m = C^d mod n，校验 0x00‖0x02‖PS‖0x00 后返回明文 Bytes。' +
+      'RSA 教学实现，参照 RFC 8017 §7.2 的 PKCS#1 v1.5 解密方案；不构成标准符合性或认证声明。m = C^d mod n，校验 0x00‖0x02‖PS‖0x00 后返回明文 Bytes。' +
         'KEY 取 n‖e‖d‖p‖q 前缀的 n 与 d；填充错误抛异常。' +
-        'cryptography 交叉验证通过（cryptography encrypt → 自实现 decrypt）。',
+        '互操作测试只说明已测输入下的结果一致，不代表通过标准符合性评估。',
     );
     this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc8017');
   },
@@ -94,9 +93,10 @@ Blockly.Blocks['rsa_sign'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip(
-      'RSA 签名 (RFC 8017 §8.2, PKCS#1 v1.5 + SHA-256)：DigestInfo 前缀 + SHA-256(msg)，' +
+      'RSA 教学实现，参照 RFC 8017 §8.2 的 PKCS#1 v1.5 + SHA-256 签名方案；FIPS 186-5 对签名密钥及实现另有要求，本块不声明符合。' +
+        'DigestInfo 前缀 + SHA-256(msg)，' +
         'EM = 0x00‖0x01‖FF(len)‖0x00‖DigestInfo，S = m^d mod n → 签名 k 字节。' +
-        '512 位密钥下 FF ≥ 8 满足规范；签名确定性（无随机数），cryptography 交叉验证通过。',
+        '签名确定性（无随机数）；互操作测试不代表标准符合性评估。',
     );
     this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc8017');
   },
@@ -114,9 +114,10 @@ Blockly.Blocks['rsa_verify'] = {
     this.setOutput(true, TYPE_BOOLEAN);
     this.setColour(190);
     this.setTooltip(
-      'RSA 验签 (RFC 8017 §8.2, PKCS#1 v1.5 + SHA-256)：m = S^e mod n，校验 0x00‖0x01‖FF‖0x00‖DigestInfo。' +
+      'RSA 教学实现，参照 RFC 8017 §8.2 的 PKCS#1 v1.5 + SHA-256 验签方案；FIPS 186-5 对签名验证另有要求，本块不声明符合。' +
+        'm = S^e mod n，校验 0x00‖0x01‖FF‖0x00‖DigestInfo。' +
         'KEY 取 n‖e‖d‖p‖q 前缀的 n 与 e。签名/长度/结构非法均返回 False。' +
-        'cryptography 交叉验证通过（cryptography sign → 自实现 verify）。',
+        '互操作测试不代表标准符合性评估。',
     );
     this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc8017');
   },

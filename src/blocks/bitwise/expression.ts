@@ -1,6 +1,6 @@
 import * as Blockly from 'blockly/core';
 
-import { TYPE_NUMBER } from '@/constants/block-types';
+import { TYPE_BOOLEAN, TYPE_NUMBER } from '@/constants/block-types';
 
 export const EXPRESSION_BLOCK_TYPES = [
   'bit_expr_infix'
@@ -16,6 +16,10 @@ Blockly.Blocks['bit_expr_infix'] = {
       [Blockly.Msg.CRYPTO_LOGIC_OR || 'OR', 'OR'],
       ['=', 'EQ']
     ]);
+    dropdown.setValidator((operation) => {
+      this.setOutput(true, operation === 'EQ' ? TYPE_BOOLEAN : TYPE_NUMBER);
+      return operation;
+    });
     this.appendValueInput('A')
       .setCheck(TYPE_NUMBER);
     this.appendDummyInput()

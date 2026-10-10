@@ -35,15 +35,15 @@ npm run dev -- --host 127.0.0.1 --port 3001
 1. 首页可以打开，语言切换可以使用。
 2. 打开“文档”，确认用户文档和开发文档分组显示。
 3. 打开“编辑器”，新建项目并拖出一个数据块。
-4. 导入 `demos/AES-Atomic-Round.json`，确认四个顶层 AES 原语和共享状态；画布中没有值接口连线。
+4. 导入 `demos/AES-Atomic-Round.json`，确认四个顶层 AES 原语和共享状态；四个原语互不相连，各自通过变量读写同一状态变量。
 5. 选择 Python，点击“生成”，确认代码面板出现带语法颜色的代码。
 6. 刷新页面，确认项目仍存在；项目数据应保存在浏览器 IndexedDB 中。
 
-![文档中心的用户文档与开发文档分组（实际页面截图）](/docs-assets/tutorials/06-docs-center-current.png)
+![文档中心的用户文档与开发文档分组](/docs-assets/tutorials/06-docs-center-current.png)
 
 _图：本地页面中，用户文档、演示教程、原语参考和开发文档分别列出。_
 
-![Python 代码生成后的开发模式验收页面（实际页面截图）](/docs-assets/tutorials/05-generated-python.png)
+![Python 代码生成后的开发模式验收页面](/docs-assets/tutorials/05-generated-python.png)
 
 _图：本截图展示工具箱、工作区和生成后的 Python 代码；导入后的空代码面板见用户教程。_
 

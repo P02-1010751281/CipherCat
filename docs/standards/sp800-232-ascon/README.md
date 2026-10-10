@@ -30,10 +30,9 @@
 
 ## 实现状态
 
-`ascon_encrypt` 已实现并通过官方向量（ascon-c 仓 `LWC_AEAD_KAT_128_128.txt` 1089 例 +
-pyascon 交叉）；`ascon_decrypt`、`ascon_hash256`、`ascon_xof128`、`ascon_cxof128` 已接入，
-并由 `demos/procedures/ASCON-Extended.json` 做双语言输出和错误标签拒绝核验。当前扩展 Demo
-不是完整官方 Hash/XOF KAT 套件，也不覆盖标准定义的流式 API。
+`ascon_encrypt`、`ascon_decrypt`、`ascon_hash256`、`ascon_xof128`、`ascon_cxof128` 已接入。
+当前 Demo 只核验少量固定输出、空消息解密和错误标签/参数拒绝；未运行完整的 1,089 项 AEAD KAT
+或完整 Hash/XOF KAT 套件，也不覆盖标准定义的流式 API。生成代码回归不代表正式验证或认证。
 
 ## 函数/原语索引
 

@@ -1,6 +1,6 @@
 # ML-KEM-768 Encaps — 高级复合块搭建指南
 
-> FIPS 203 算法 10 + 13 + 20，k=3，η₁=2，η₂=2，d_u=10，d_v=4，q=3329
+> FIPS 203 算法 20 + 17 + 14，k=3，η₁=2，η₂=2，d_u=10，d_v=4，q=3329
 > **5 个复合块。** 工作区可见 ~45 块，约 10 分钟搭建。
 > 输入：`ek`（1184 字节），`m`（32 字节）。输出：`c`（1088 字节），`K_hat`（32 字节）。
 
@@ -67,7 +67,7 @@ flowchart TD
 
 ## 步骤 1：初始化 ek 和 m
 
-FIPS 203 算法 10 第 1 行。空文本占位符——运行时注入真实字节值。
+FIPS 203 算法 17 第 1 行。空文本占位符——运行时注入真实字节值。
 
 ### 1a — set ek to
 
@@ -93,7 +93,7 @@ FIPS 203 算法 10 第 1 行。空文本占位符——运行时注入真实字�
 
 ## 步骤 2：h = SHA3-256(ek)
 
-FIPS 203 算法 10 第 1 行。H = SHA3-256。rate=1088，c=512，suffix=0x06，输出=32 字节。
+FIPS 203 算法 17 第 1 行。H = SHA3-256。rate=1088，c=512，suffix=0x06，输出=32 字节。
 
 ### 2.1 — 外层
 
@@ -155,7 +155,7 @@ set h = Squeeze(rate=1088, outLen=32,
 
 ## 步骤 3：G(m ‖ h) = SHA3-512 → g_out，再拆分为 K̂、r
 
-FIPS 203 算法 10 第 1 行。G = SHA3-512。rate=576，c=1024，suffix=0x06，输出=64 字节。
+FIPS 203 算法 17 第 1 行。G = SHA3-512。rate=576，c=1024，suffix=0x06，输出=64 字节。
 
 先算 SHA3-512 存入 `g_out`，再切两次。避免重复构建海绵链。
 
@@ -204,7 +204,7 @@ set g_out = Squeeze(rate=576, outLen=64,
 
 ## 步骤 4：解析 ek
 
-FIPS 203 算法 13 第 2–3 行。FIPS 203 算法 10：`ByteDecode_d` 输入 = `32·d` 字节。d=12 → 每多项式 384 字节。k=3 → |t̂| = 1152 字节，|ρ| = 32 字节，|ek| = 1184 字节。
+FIPS 203 算法 14 第 2–3 行。FIPS 203 算法 6：`ByteDecode_d` 输入 = `32·d` 字节。d=12 → 每多项式 384 字节。k=3 → |t̂| = 1152 字节，|ρ| = 32 字节，|ek| = 1184 字节。
 
 |ek| = |ByteEncode₁₂(t̂)| + |ρ| = 384×3 + 32 = 1184。
 
@@ -232,7 +232,7 @@ FIPS 203 算法 13 第 2–3 行。FIPS 203 算法 10：`ByteDecode_d` 输入 = 
 
 ## 步骤 5：解码 t̂ → BuildVec₃
 
-FIPS 203 算法 13 第 2 行。ByteDecode₁₂ 每 384 字节切片。`t_bytes` 编码的是 `t̂`（已在 NTT 域），解码后无需 NTT。
+FIPS 203 算法 14 第 2 行。ByteDecode₁₂ 每 384 字节切片。`t_bytes` 编码的是 `t̂`（已在 NTT 域），解码后无需 NTT。
 
 ### 5a — t0_ntt
 
@@ -279,7 +279,7 @@ set t0_ntt = ByteDecode(d=12, BytesSlice(t_bytes, 0, 384))
 
 ### 步骤 6 — SampleNTTMat → A
 
-FIPS 203 算法 13 第 4–8 行。从种子 ρ 生成 k×k SampleNTT 矩阵。
+FIPS 203 算法 14 第 4–8 行。从种子 ρ 生成 k×k SampleNTT 矩阵。
 
 | # | 操作 |
 |---|------|
@@ -290,7 +290,7 @@ FIPS 203 算法 13 第 4–8 行。从种子 ρ 生成 k×k SampleNTT 矩阵。
 
 ### 步骤 7 — CBDNTTVec → r_hat
 
-FIPS 203 算法 13 第 9–12 行。生成 k 个 CBD 采样并 NTT 变换的多项式。Nonce 0,1,2。
+FIPS 203 算法 14 第 9–12 行。生成 k 个 CBD 采样并 NTT 变换的多项式。Nonce 0,1,2。
 
 | # | 操作 |
 |---|------|
@@ -301,7 +301,7 @@ FIPS 203 算法 13 第 9–12 行。生成 k 个 CBD 采样并 NTT 变换的多�
 
 ### 步骤 8 — ML-KEM-EncapsU → u
 
-FIPS 203 算法 13 第 13–19 行。计算 u = INTT(Âᵀ∘r̂) + e₁。Nonce k..2k-1（3,4,5）。
+FIPS 203 算法 14 第 13–19 行。计算 u = INTT(Âᵀ∘r̂) + e₁。Nonce k..2k-1（3,4,5）。
 
 | # | 操作 |
 |---|------|
@@ -312,7 +312,7 @@ FIPS 203 算法 13 第 13–19 行。计算 u = INTT(Âᵀ∘r̂) + e₁。Nonce
 
 ### 步骤 9 — Decompress → mu
 
-FIPS 203 §4.2.1，算法 13 第 20 行。Decompress₁(m)：每个比特缩放回 Z_q。
+FIPS 203 §4.2.1，算法 14 第 20 行。Decompress₁(m)：每个比特缩放回 Z_q。
 
 | # | 操作 |
 |---|------|
@@ -322,7 +322,7 @@ FIPS 203 §4.2.1，算法 13 第 20 行。Decompress₁(m)：每个比特缩放�
 
 ### 步骤 10 — ML-KEM-EncapsV → v
 
-FIPS 203 算法 13 第 21 行。计算 v = INTT(t̂ᵀ∘r̂) + e₂ + μ。Nonce 2k（6）。
+FIPS 203 算法 14 第 21 行。计算 v = INTT(t̂ᵀ∘r̂) + e₂ + μ。Nonce 2k（6）。
 
 | # | 操作 |
 |---|------|
@@ -337,7 +337,7 @@ FIPS 203 算法 13 第 21 行。计算 v = INTT(t̂ᵀ∘r̂) + e₂ + μ。Nonc
 
 ## 步骤 11–13：压缩编码并拼接
 
-FIPS 203 算法 13 第 22–24 行。
+FIPS 203 算法 14 第 22–24 行。
 
 ### 步骤 11 — VecCompressEncode(d=10) → c1
 
@@ -407,7 +407,7 @@ v 是单个多项式——用单元素列表包装后再喂给 VecCompressEncode
 | 1 | 20 个变量已创建 |
 | 2 | SHA3-256 链嵌套 4 层 |
 | 3 | SHA3-512 链（x2）各嵌套 5 层，除 BytesSlice 偏移外完全相同 |
-| 4 | t_bytes = ek[0:1152]，每个 t_i 切片 384 字节（FIPS 203 算法 10：32d） |
+| 4 | t_bytes = ek[0:1152]，每个 t_i 切片 384 字节（FIPS 203 算法 6：32d） |
 | 5 | rho = ek[1152:1184] |
 | 6 | 5 个复合块的下拉设置正确（k=3，eta=2，d=10/4，q=3329） |
 | 7 | v 以单元素列表包装后喂给 VecCompressEncode |
@@ -430,16 +430,16 @@ v 是单个多项式——用单元素列表包装后再喂给 VecCompressEncode
 |------|----------|------|
 | 2 |  第 1 行 | SHA3-256（FIPS 202 §6） |
 | 3 |  第 1 行 | SHA3-512（FIPS 202 §6）→ (K̂, r) |
-| 4 | 算法 13 第 2–3 行 | 解析 ek → t̂_bytes、ρ |
-| 5 | 算法 13 第 2 行、算法 6、算法 9 | ByteDecode₁₂ + NTT t̂ |
-| 6 | 算法 13 第 4–8 行、算法 7 | SampleNTTMat → Â |
-| 7 | 算法 13 第 9–12 行、算法 8 | CBDNTTVec → r̂（η₁=2，nonce 0,1,2） |
-| 8 | 算法 13 第 13–19 行、算法 10、算法 11 | ML-KEM-EncapsU → u（nonce 3,4,5） |
-| 9 | §4.2.1、算法 13 第 20 行 | Decompress₁(m) → μ |
-| 10 | 算法 13 第 21 行 | ML-KEM-EncapsV → v（nonce 6） |
-| 11 | 算法 13 第 22 行 | Compress₁₀ + ByteEncode₁₀ → c₁ |
-| 12 | 算法 13 第 23 行 | Compress₄ + ByteEncode₄ → c₂ |
-| 13 | 算法 13 第 24 行 | c = c₁ ‖ c₂ |
+| 4 | 算法 14 第 2–3 行 | 解析 ek → t̂_bytes、ρ |
+| 5 | 算法 14 第 2 行、算法 6、算法 9 | ByteDecode₁₂ + NTT t̂ |
+| 6 | 算法 14 第 4–8 行、算法 7 | SampleNTTMat → Â |
+| 7 | 算法 14 第 9–12 行、算法 8 | CBDNTTVec → r̂（η₁=2，nonce 0,1,2） |
+| 8 | 算法 14 第 13–19 行、算法 10、算法 11 | ML-KEM-EncapsU → u（nonce 3,4,5） |
+| 9 | §4.2.1、算法 14 第 20 行 | Decompress₁(m) → μ |
+| 10 | 算法 14 第 21 行 | ML-KEM-EncapsV → v（nonce 6） |
+| 11 | 算法 14 第 22 行 | Compress₁₀ + ByteEncode₁₀ → c₁ |
+| 12 | 算法 14 第 23 行 | Compress₄ + ByteEncode₄ → c₂ |
+| 13 | 算法 14 第 24 行 | c = c₁ ‖ c₂ |
 
 ---
 
@@ -477,8 +477,8 @@ v 是单个多项式——用单元素列表包装后再喂给 VecCompressEncode
 
 ## 附录：字节偏移修正
 
-更早版本使用 `BytesSlice(ek, 0, 384)` 和 `BytesSlice(t_bytes, 0, 128)`。**这些值与 FIPS 203 算法 10 不符。**
+更早版本使用 `BytesSlice(ek, 0, 384)` 和 `BytesSlice(t_bytes, 0, 128)`。**这些值与 FIPS 203 算法 6 不符。**
 
-FIPS 203 算法 10：`ByteDecode_d` 输入 = `32·d` 字节。d=12 → 每多项式 384 字节。k=3 → 总计 1152 字节。
+FIPS 203 算法 6：`ByteDecode_d` 输入 = `32·d` 字节。d=12 → 每多项式 384 字节。k=3 → 总计 1152 字节。
 
 **本指南使用**：t_bytes = ek[0:1152]，各项 t_i 切片按 384 字节边界（0:384、384:768、768:1152），rho = ek[1152:1184]。

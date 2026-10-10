@@ -1,10 +1,11 @@
 /**
  * 通用 S-box 块预设表（16×16 = 256 字节）
  *
- * 数据源（均已通过官方向量验证）：
- * - aes: FIPS 197（与 generators/javascript/symmetric/aes 的 AES_SBOX 一致）
- * - sm4: GM/T 0002（与 generators/javascript/symmetric/sm4 的 SM4_SBOX 一致）
- * - zuc_s0 / zuc_s1: GB/T 33133 附录 A（与 generators/javascript/zuc 的 ZUC_S0/S1 一致）
+ * 内置表逐项来源核对见 sbox-block-contract.test.ts 和 zuc-primitives.test.ts。
+ * AES/SM4 算法生成器另有独立查找表；此处的预置表测试不替代其完整算法测试。
+ * - aes: FIPS 197
+ * - sm4: GB/T 32907-2016
+ * - zuc_s0 / zuc_s1: GB/T 33133.1-2016 附录 A
  */
 export const SBOX_PRESETS: Record<string, string[]> = {
   aes: [
@@ -84,7 +85,7 @@ export const SBOX_PRESETS: Record<string, string[]> = {
 /** 预设键 → 展示名（用于 FieldDropdown 选项） */
 export const SBOX_PRESET_LABELS: Record<string, { zh: string; en: string }> = {
   aes: { zh: 'AES S-box (FIPS 197)', en: 'AES S-box (FIPS 197)' },
-  sm4: { zh: 'SM4 S-box (GM/T 0002)', en: 'SM4 S-box (GM/T 0002)' },
+  sm4: { zh: 'SM4 S-box (GB/T 32907-2016)', en: 'SM4 S-box (GB/T 32907-2016)' },
   zuc_s0: { zh: 'ZUC S0 (GB/T 33133)', en: 'ZUC S0 (GB/T 33133)' },
   zuc_s1: { zh: 'ZUC S1 (GB/T 33133)', en: 'ZUC S1 (GB/T 33133)' },
 };

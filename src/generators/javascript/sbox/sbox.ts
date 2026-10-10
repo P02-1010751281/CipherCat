@@ -51,10 +51,20 @@ if (Array.isArray(_sboxRef) && _sboxRef.length > 0 && Array.isArray(_sboxRef[0])
   _sboxRef = _sboxRef.flat();
 }
 if (!Array.isArray(_sboxRef) || _sboxRef.length < 256) {
-  throw new Error("Global variable '${sboxVar}' must be an array containing at least 256 elements.");
+  throw new TypeError("S-box must contain at least 256 entries");
 }
 
 var _input_val = ${inputVar};
+if (_input_val === null || _input_val === undefined) _input_val = 0;
+if (!Number.isSafeInteger(_input_val) || _input_val < 0 || _input_val > 0xffffffff) {
+  throw new RangeError("S-box input must be an unsigned 32-bit word");
+}
+for (var _sboxIndex = 0; _sboxIndex < 256; _sboxIndex++) {
+  var _sboxEntry = _sboxRef[_sboxIndex];
+  if (!Number.isInteger(_sboxEntry) || _sboxEntry < 0 || _sboxEntry > 255) {
+    throw new RangeError("S-box entries must be bytes");
+  }
+}
 var _b0 = (_input_val >>> 24) & 0xFF;
 var _b1 = (_input_val >>> 16) & 0xFF;
 var _b2 = (_input_val >>> 8) & 0xFF;

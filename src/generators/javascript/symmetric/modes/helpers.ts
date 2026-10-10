@@ -216,15 +216,16 @@ function registerAesDecryptBlock(): string {
   ]);
 }
 
-/** 注册 AES-ECB 块解密函数（与加密对称，输出含零填充长度）。 */
+/** 注册 AES-ECB 解密函数：只处理完整分组，不移除填充。 */
 export function registerAesEcbDecrypt(): string {
   registerAesDecryptBlock();
   return javascriptGenerator.provideFunction_('aesEcbDecrypt', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data, key) {',
     '  if (key.length !== 16) throw new Error("AES-128 key must be 16 bytes");',
+    '  if (data.length % 16 !== 0) throw new Error("AES-ECB ciphertext length must be a multiple of 16 bytes");',
     '  var out = [];',
     '  for (var i = 0; i < data.length; i += 16) {',
-    '    out = out.concat(aesDecryptBlock(data.slice(i, i + 16), key));',
+    '    out = out.concat(Array.from(aesDecryptBlock(data.slice(i, i + 16), key)));',
     '  }',
     '  return out;',
     '}',

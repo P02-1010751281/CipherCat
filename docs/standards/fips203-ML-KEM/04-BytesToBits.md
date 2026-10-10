@@ -7,7 +7,7 @@
 | 类型 | 原语 / 函数 |
 | 标准定位 | §4.2.1 编码与压缩 |
 | 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
-| 原文位置 | [提取稿](./00-Standard-Source.md#L1248)；PDF 物理页需结合同目录 PDF 核对 |
+| 原文位置 | [Algorithm 4 提取稿](./00-Standard-Source.md#L1248-L1259)；[little-endian 解释](./00-Standard-Source.md#L1267-L1271)；PDF [物理第 29 页](./NIST.FIPS.203.pdf#page=29)（标准页 20）及[解释所在物理第 30 页](./NIST.FIPS.203.pdf#page=30)（标准页 21） |
 | 项目状态 | 已实现（详见本文现有实现/缺项说明） |
 
 ## 原文定位与引用
@@ -61,7 +61,7 @@ Output: bit array 𝑏 ∈ {0, 1}8⋅ℓ .
 
 ## 项目映射
 
-本页是标准结构化参考条目；项目是否有同名 Blockly 块、源码入口或 demo，按本目录 README 和覆盖矩阵核对。本页不把文档条目等同于已实现。
+项目块 `pq_bytes_to_bits` 位于 `src/blocks/post-quantum/basic/encoding.ts`；生成器分别位于 `src/generators/javascript/postquantum/basic/encoding.ts` 和 `src/generators/python/postquantum/basic/encoding.ts`。实现拒绝非字节取值，并按每字节最低有效位优先展开；回归见 `tests/unit/pq-bit-encoding.test.ts`。该原语测试不等同于 ML-KEM 完整符合性或认证。
 
 ## 核验与缺项
 

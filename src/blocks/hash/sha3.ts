@@ -1,11 +1,12 @@
 /**
- * SHA-3 (Keccak) 积木块定义
+ * Keccak / FIPS 202 相关积木块定义
  *
- * 基于 FIPS 202 标准实现，涵盖海绵构造的完整流程：
+ * 包含项目实现的 SHA3/SHAKE 相关组件：
  *   1. pad10*1 填充 — 按比特率 r 对齐消息，附加域分离后缀 d
- *   2. Keccak-f[b] 置换 — 24 轮迭代 (θ→ρ→π→χ→ι)
+ *   2. Keccak-f[b] 置换 — 支持 200/400/800/1600 位及其规范轮数
  *   3. 吸收 (Absorb) — State ^= Pi, 然后 State = Keccak-f(State)
  *   4. 挤压 (Squeeze) — 从状态中读取 r 位输出
+ * SHA-3/SHAKE 标准实例固定使用 Keccak-f[1600]；较小宽度是独立置换原语。
  *
  * 标准实例参数 (FIPS 202 Table 3):
  *   SHA3-256: r=1088, c=512, suffix=0x06
@@ -104,7 +105,7 @@ Blockly.Blocks['sponge_pad'] = {
   },
 };
 
-// Keccak-f[b] permutation — 24 rounds, 5×5 lane state, returns permuted state
+// Keccak-f[b] permutation — the round count and lane width depend on b.
 // Steps: θ (theta), ρ (rho), π (pi), χ (chi), ι (iota)
 Blockly.Blocks['keccak_f'] = {
   init: function () {
@@ -112,6 +113,9 @@ Blockly.Blocks['keccak_f'] = {
       .appendField('Keccak-f[')
       .appendField(
         new Blockly.FieldDropdown([
+          ['200', '200'],
+          ['400', '400'],
+          ['800', '800'],
           ['1600', '1600'],
         ]),
         'WIDTH',
@@ -123,7 +127,7 @@ Blockly.Blocks['keccak_f'] = {
     this.setColour(200);
     this.setTooltip(
       Blockly.Msg.CRYPTO_SHA3_KECCAK_F_TOOLTIP ||
-        'Keccak-f[b] permutation: 24 rounds (θ→ρ→π→χ→ι), state is 5×5 lanes (FIPS 202)',
+        'Keccak-f permutation: width 200/400/800/1600, with 18/20/22/24 rounds. SHA-3/SHAKE use only Keccak-f[1600]; smaller widths are permutation primitives, not SHA-3/SHAKE implementations.',
     );
     this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
   },
@@ -199,7 +203,7 @@ Blockly.Blocks['keccak_state_init'] = {
     this.appendDummyInput().appendField('Keccak Init');
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(200);
-    this.setTooltip('Initialize Keccak-f[1600] state as 25 zero lanes.');
+    this.setTooltip('Initialize a Keccak-f state as 25 zero lanes.');
     this.setHelpUrl('https://csrc.nist.gov/pubs/fips/202/final');
   },
 };

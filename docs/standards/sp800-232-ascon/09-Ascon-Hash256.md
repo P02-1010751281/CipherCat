@@ -91,7 +91,7 @@ Output: Digest 𝐻 ∈ {0, 1}256
 
 ## 项目映射
 
-项目提供 `ascon_hash256` 块，输出固定为 32 字节。空消息结果已与 Botan 独立实现核对，
+项目提供 `ascon_hash256` 块，输出固定为 32 字节。空消息结果与仓库内登记的空消息固定值核对一致，
 并在 `ASCON-Extended.json` 中通过 Python/JavaScript 双语言生成验证。
 
 ## 核验与缺项

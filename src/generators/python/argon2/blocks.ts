@@ -3,7 +3,7 @@
  *
  * 内嵌完整 Argon2d/i/id：纯 Python BLAKE2b（RFC 7693，无 hashlib 依赖）、H' 变长哈希、
  * G 压缩函数（BLAKE2b 轮 + 2·trunc 乘法）、索引函数（Argon2i/id 数据无关段 =
- * H0 派生预计算伪随机地址）。官方向量 RFC 9106 §5.1-5.3 全 PASS。
+ * H0 派生预计算伪随机地址）。Demo 回归执行 RFC 9106 §5.1-5.3 最终 Tag 样例。
  */
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
@@ -173,23 +173,38 @@ function registerArgon2(): string {
     '            cur = lane * lane_length + j',
     '            old = memory[cur] if with_xor else None',
     '            memory[cur] = fill_block(prev, ref, old)',
-    '    if isinstance(pwd, str):',
-    '        pwd = pwd.encode("utf-8")',
-    '    if isinstance(salt, str):',
-    '        salt = salt.encode("utf-8")',
-    '    if isinstance(secret, str):',
-    '        secret = secret.encode("utf-8")',
-    '    if isinstance(ad, str):',
-    '        ad = ad.encode("utf-8")',
-    '    pwd = bytes(pwd or [])',
-    '    salt = bytes(salt or [])',
-    '    secret = bytes(secret or [])',
-    '    ad = bytes(ad or [])',
-    '    m_cost = int(m_cost)',
-    '    t_cost = int(t_cost)',
-    '    lanes = int(lanes)',
-    '    tag_len = int(tag_len)',
-    '    y = int(variant)',
+    '    def input_bytes(name, value):',
+    '        if value is None: return b""',
+    '        if isinstance(value, str):',
+    '            if str.__len__(value) > 0x100000: raise ValueError("Argon2 " + name + " exceeds the 1 MiB project input limit")',
+    '            value = str.encode(value, "utf-8")',
+    '        if isinstance(value, bytes): size, item = bytes.__len__(value), bytes.__getitem__',
+    '        elif isinstance(value, bytearray): size, item = bytearray.__len__(value), bytearray.__getitem__',
+    '        elif isinstance(value, list): size, item = list.__len__(value), list.__getitem__',
+    '        elif isinstance(value, tuple): size, item = tuple.__len__(value), tuple.__getitem__',
+    '        else: raise TypeError("Argon2 " + name + " must be bytes, text, or a byte sequence")',
+    '        if size > 0x100000: raise ValueError("Argon2 " + name + " exceeds the 1 MiB project input limit")',
+    '        result = []',
+    '        for index in range(size):',
+    '            byte = item(value, index)',
+    '            if isinstance(byte, bool) or not isinstance(byte, int) or byte < 0 or byte > 255: raise ValueError("Argon2 " + name + " must contain byte values")',
+    '            result.append(byte)',
+    '        return bytes(result)',
+    '    pwd = input_bytes("password", pwd)',
+    '    salt = input_bytes("salt", salt)',
+    '    secret = input_bytes("secret", secret)',
+    '    ad = input_bytes("associated data", ad)',
+    '    def checked_int(name, value, minimum, maximum):',
+    '        if isinstance(value, bool) or not isinstance(value, (int, float)) or (isinstance(value, float) and not value.is_integer()) or value < minimum or value > maximum:',
+    '            raise ValueError("Argon2 " + name + " is out of range")',
+    '        return int(value)',
+    '    m_cost = checked_int("mCost", m_cost, 1, 65536)',
+    '    t_cost = checked_int("tCost", t_cost, 1, 10)',
+    '    lanes = checked_int("lanes", lanes, 1, 16)',
+    '    tag_len = checked_int("tagLen", tag_len, 4, 1024)',
+    '    y = checked_int("variant", variant, 0, 2)',
+    '    if m_cost < 8 * lanes: raise ValueError("Argon2 mCost must be at least 8 * lanes")',
+    '    if m_cost * t_cost > 65536: raise ValueError("Argon2 memory/time budget exceeded")',
     '    version = 19',
     '    block_count = 4 * lanes * (m_cost // (4 * lanes))',
     '    lane_length = block_count // lanes',
@@ -223,7 +238,7 @@ pythonGenerator.forBlock['argon2_hash'] = function (block: Block): [string, numb
   const variant = block.getFieldValue('VARIANT') || '2';
   const fn = registerArgon2();
   return [
-    fn + '(' + pwd + ', ' + salt + ', ' + secret + ', ' + ad + ', ' + mCost + ', ' + tCost + ', ' + lanes + ', ' + tagLen + ', ' + variant + ')',
+    'bytes(' + fn + '(' + pwd + ', ' + salt + ', ' + secret + ', ' + ad + ', ' + mCost + ', ' + tCost + ', ' + lanes + ', ' + tagLen + ', ' + variant + '))',
     Order.ATOMIC,
   ];
 };

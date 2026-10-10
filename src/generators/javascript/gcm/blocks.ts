@@ -3,7 +3,7 @@
  * NIST SP 800-38D
  *
  * GHASH（GF(2^128) 多项式乘法：右移 V + 进位从 byte15 LSB + 0xE1 异或进 byte0）
- * + GCTR。AES-128 复用 modes/helpers 的 aesEncryptBlock。官方向量 TC2/TC3/TC16。
+ * + GCTR。AES-128 复用 modes/helpers 的 aesEncryptBlock。已核对向量：GCM 规范 Test Case 2/13 + NIST ACVP AES-GCM 官方用例（tagLen=128）。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
@@ -94,5 +94,5 @@ javascriptGenerator.forBlock['gcm_encrypt'] = function (block: Block): [string, 
   const msg = javascriptGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   registerAesEcb();
   const fn = registerGcmEncrypt();
-  return [fn + '(' + key + ', ' + iv + ', ' + aad + ', ' + msg + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + key + ', ' + iv + ', ' + aad + ', ' + msg + '))', Order.ATOMIC];
 };

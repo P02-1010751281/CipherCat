@@ -4,17 +4,28 @@
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
 
+import { registerSafeIntegers } from '@/generators/python/safe-int';
+
 function registerPolyMul(): string {
+  const require_safe = registerSafeIntegers();
   return pythonGenerator.provideFunction_('pq_poly_mul', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, b, q):',
-    '    out = [0] * (len(a) + len(b) - 1)',
+    '    if type(a) is not list or type(b) is not list: raise TypeError("polynomial coefficients must be lists")',
+    '    if q not in (0, 3329, 8380417, 12289): raise ValueError("unsupported coefficient modulus")',
+    '    q = int(q)',
+    `    ${require_safe}("coefficients must be safe integers", a, b)`,
+    '    a = [int(value) for value in a]; b = [int(value) for value in b]',
+    '    out = [0] * max(0, len(a) + len(b) - 1)',
     '    for i, ai in enumerate(a):',
-    '        if ai:',
-    '            for j, bj in enumerate(b):',
-    '                if bj:',
-    '                    out[i + j] += ai * bj',
-    '    if q:',
-    '        out = [v % q for v in out]',
+    '        ai = ai % q if q else ai',
+    '        for j, bj in enumerate(b):',
+    '            bj = bj % q if q else bj',
+    '            value = out[i + j] + ai * bj',
+    '            if q:',
+    '                out[i + j] = value % q',
+    '            else:',
+    '                if abs(value) > 9007199254740991: raise OverflowError("convolution coefficient exceeds the safe-integer range")',
+    '                out[i + j] = value',
     '    return out',
     '',
   ]);

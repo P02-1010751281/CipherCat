@@ -1,6 +1,6 @@
 # 用户指南：从积木到算法与验证
 
-CipherCat 是基于 Blockly 的密码算法结构与代码生成前端，支持展示原语、拼装算法阶段、生成 Python/JavaScript 代码，并提供演示工作区与标准参考。若将代码提交到集成的 Metacrypto 平台做随机性测评，样本生成、统计检测和报告由平台后端负责。代码生成、演示验证和后端测评属于不同证据层级，不能相互替代。本文截图用于说明 CipherCat 界面，不证明当前部署版本的页面状态。
+CipherCat 是基于 Blockly 的密码算法结构与代码生成前端，支持展示原语、拼装算法阶段、生成 Python/JavaScript 代码，并提供演示工作区与标准参考。若将代码提交到集成的 Metacrypto 平台做随机性测评，样本生成、统计检测和报告由平台后端负责。代码生成、演示验证和后端测评属于不同证据层级，不能相互替代。
 
 ## 1. 文档路径
 
@@ -18,7 +18,7 @@ CipherCat 是基于 Blockly 的密码算法结构与代码生成前端，支持�
 
 CipherCat 首页可进入项目列表、文档中心并切换语言。选择“新建项目”会创建本地 Blockly 工作区；项目和工作区保存在浏览器 IndexedDB，编辑器路由为 `/editor/<项目编号>`。
 
-此项目列表入口仅适用于 CipherCat；Metacrypto 使用首页的“打开 Composer”进入编辑器，并通过资源页管理平台项目。两者的首页和项目截图不可互换。
+此项目列表入口仅适用于 CipherCat：Metacrypto 通过首页的“打开 Composer”进入编辑器，并在资源页管理项目。两个平台的项目列表不通用。
 
 ### 2.2 导入工作区
 
@@ -33,7 +33,7 @@ CipherCat 首页可进入项目列表、文档中心并切换语言。选择“�
 | 格基原语 | `demos/ML-KEM-Atomic.json` | 采样、NTT、多项式/向量运算和编码 |
 | 标准向量链 | `demos/procedures/ML-KEM-Encaps.json` | FIPS 203 ML-KEM-512 Encaps |
 
-![“更多”菜单中的导入工作区入口（界面示例）](/docs-assets/tutorials/03-import-menu.png)
+![“更多”菜单中的导入工作区入口](/docs-assets/tutorials/03-import-menu.png)
 
 _图：导入入口位于编辑器的“更多”菜单。_
 
@@ -48,7 +48,7 @@ _图：导入入口位于编辑器的“更多”菜单。_
 
 当前前端生成器支持 Python 和 JavaScript。生成代码可复制到对应运行环境或测试脚本中执行；前端不把任意生成代码直接转换为平台后端测评结论。
 
-![生成 Python 代码后的编辑器（界面示例）](/docs-assets/tutorials/05-generated-python.png)
+![生成 Python 代码后的编辑器](/docs-assets/tutorials/05-generated-python.png)
 
 _图：代码面板显示生成结果；代码显示不等于后端测评结论。_
 
@@ -66,7 +66,7 @@ _图：代码面板显示生成结果；代码显示不等于后端测评结论�
 | 层级 | 名称 | 示例 | 作用 |
 |---|---|---|---|
 | L1 | 原子原语 | `pq_ntt`、`hash_sm3_compress`、`aes_sub_bytes`、`gf2_poly_mul` | 对照标准公式和伪代码表达单个步骤 |
-| L2 | 组合操作 | `mode_cbc_encrypt`、`gcm_encrypt`、`pq_mat_vec_mul` | 表达可复用的算法阶段 |
+| L2 | 组合操作 | `mode_cbc_encrypt`、`gcm_encrypt` | 表达可复用的算法阶段 |
 | L3 | 函数/模板 | `procedures_defreturn`、`proc_*` | 添加参数、返回值和函数调用接口 |
 
 块的层级不表示认证级别。原子块、组合块和模板均须结合标准条目和演示工作区判断覆盖范围。
@@ -139,7 +139,9 @@ _图：代码面板显示生成结果；代码显示不等于后端测评结论�
 |---|---|---|
 | SM3 摘要 | `hash_sm3_pad` → `hash_sm3_compress` → `crypto_return` | `demos/procedures/SM3-Hash.json` |
 | AES 单轮 | `SubBytes` → `ShiftRows` → `MixColumns` → `AddRoundKey` | 显式连接：`demos/procedures/AES-Round.json`；共享状态顺序调用：`demos/AES-Atomic-Round.json` |
-| ML-KEM Encaps | `pq_xof`/seed → `pq_sample_ntt`、`pq_sample_poly_cbd` → `pq_ntt`/`pq_intt`/`pq_ntt_mul` → `pq_poly_add`/`pq_mat_vec_mul` → `pq_byte_encode`/`pq_compress` | `demos/ML-KEM-Atomic.json`、`demos/procedures/ML-KEM-Encaps.json` |
+| ML-KEM Encaps | `pq_xof`/seed → `pq_sample_ntt`、`pq_sample_poly_cbd` → `pq_ntt`/`pq_intt`/`pq_ntt_mul` → `pq_poly_add` → `pq_byte_encode`/`pq_compress` | `demos/procedures/ML-KEM-Encaps.json` |
+
+`demos/ML-KEM-Atomic.json` 是若干相互独立的原语示例，不是 Encaps 流程；其中 `pq_mat_vec_mul` 只执行普通标量矩阵乘向量，不属于 FIPS 203 的多项式环运算，也不计入 ML-KEM 覆盖。
 
 固定输入复现通过后，再替换为函数参数，最后增加循环、分支、拒绝路径和多参数支持。
 
@@ -149,25 +151,16 @@ _图：代码面板显示生成结果；代码显示不等于后端测评结论�
 
 | 层级 | 执行方 | 验证内容 | 主要证据 |
 |---|---|---|---|
-| 工作区/生成器 | CipherCat | JSON/XML 加载、块连接、Python/JavaScript 代码生成 | 编辑器、构建、模板验证工具 |
-| 向量/交叉验证 | CipherCat 演示验证工具 | 登记输入与标准向量或独立实现的一致性 | `demos/tests.json`、`npm run verify:all` |
+| 工作区/生成器 | CipherCat | JSON/XML 加载、块连接、Python/JavaScript 代码生成 | 编辑器与代码面板 |
+| 演示与向量 | CipherCat 的演示工作区 | 登记输入与标准向量（或独立实现）是否一致 | 演示清单与覆盖矩阵 |
 | 用户代码试验 | 用户的 Python/JavaScript 环境 | 修改后代码在指定输入下的行为 | 代码、测试脚本、输入输出 |
-| 平台后端随机性测评 | `metacrypt_server` 后端生成样本并执行检测；其平台前端展示报告 | 样本生成、隔离执行、统计检测、规则判定和报告 | 任务结果含代码/样本指纹，对比接口另给参数指纹；检测器/规则版本及报告完整性仍有缺项 |
+| 平台后端随机性测评 | 平台后端生成样本并执行检测，平台前端展示报告 | 样本生成、隔离执行、统计检测、规则判定和报告 | 任务详情中的报告、参数和检测明细 |
 
 没有登记演示工作区的块不得仅因能够生成代码而标记为“已验证”。演示通过也不等同于认证通过。
 
-### 5.1 本地工程门禁
+### 5.1 想在本机复核？
 
-```bash
-npm run verify:all
-npm run docs:check-links
-npm run test:unit
-npm run build
-```
-
-`verify:all` 包含标准元数据、结构化拆分、公式、标准原文回链、模板、演示工作区和验证构建；`docs:check-links` 检查 Markdown 相对链接；`test:unit` 和 `build` 分别检查单元测试与前端生产构建。
-
-单独验证工作区时，先构建验证工具，再按 [demos/README.md](../../demos/README.md) 和 `scripts/verify-demo.ts` 的说明执行。
+演示清单见 [demos/README.md](../../demos/README.md)；开发者侧的完整命令见[开发指南](./DEVELOPMENT.md)。
 
 ### 5.2 平台后端随机性测评边界
 
@@ -176,14 +169,10 @@ npm run build
 ```text
 CipherCat：积木构建、代码生成、用户代码试验
         ↓
-metacrypt_server：隔离生成样本并执行统计检测；在自身平台前端展示任务报告
+平台后端：隔离生成样本并执行统计检测；在平台前端展示任务报告
 ```
 
-样本生成、统计检测、隔离环境和最终判定由 `metacrypt_server` 后端链路执行；Metacrypto 平台前端提供任务列表和报告详情。CipherCat 编辑器提供 Blockly 编辑、代码生成和用户代码试验；集成平台的任务/报告是独立功能，不由编辑器本身作出测评结论。后端测评不证明生成器诚实、熵源合格或算法获得认证。详细说明见 [GM/T 0005 后端测评边界](../standards/gmt0005-randomness/03-Backend-Evaluation.md)。
-
-报告和对比接口中的指纹仅用于区分其明确的输入范围：`projectCodeHash` 对应提交源码，`sampleHash` 对应按序送检的样本字节，数据库字段 `input_hash` 在对比接口中以 `inputHash1/2` 表示规范化参数。匹配只表示对应范围的指纹相同，不证明样本来源、算法正确性或任务可复现。完整字段定义见[后端测评边界](../standards/gmt0005-randomness/03-Backend-Evaluation.md)。
-
-本指南不嵌入后端测评报告截图。截图应来自已登录的 `metacrypt_server` 任务详情页，图注只描述任务编号和页面实际显示的字段。若研究记录需要版本或原始结果，应另附可核对的任务日志/结果文件；页面未展示的规则或检测器版本不得仅凭截图宣称。登录页、401 页面或人工拼接的报告不能作为插图。
+样本生成、统计检测、隔离环境和最终判定由平台后端执行；CipherCat 负责积木编辑、代码生成和用户代码试验，平台的任务列表和报告是独立功能，编辑器本身不给出测评结论。报告和对比结果会给出代码与样本的指纹，用于区分送检的输入范围；指纹相同只表示范围相同，不证明样本来源、算法正确性或结果可复现。统计检测通过不证明生成器诚实、熵源合格或算法获得认证。字段与判定边界见 [GM/T 0005 后端测评边界](../standards/gmt0005-randomness/03-Backend-Evaluation.md)。
 
 ## 6. 结果状态
 
@@ -195,11 +184,12 @@ metacrypt_server：隔离生成样本并执行统计检测；在自身平台前�
 - **教学子集**：仅覆盖核心阶段、固定参数或简化输入；
 - **后端测评**：后端已返回随机性检测报告；完整性与版本可追溯性按报告实际字段核验。
 
-除非存在独立证据，文档不得使用“完整算法已认证”“随机性已通过”或“所有参数集均支持”等表述。
+结论按上述状态表述：没有对应状态时，不使用“完整算法已认证”“随机性已通过”或“所有参数集均支持”这类说法。
 
 ## 7. 文档导航
 
 - [能力地图](./CAPABILITY-MAP.md)：算法分类、原语范围和证据边界；
+- [分步拼装指南](../build/INDEX.md)：按算法家族说明每个功能块的拖放、连线与期望结果；
 - [Blockly 使用指南](./BLOCKLY-GUIDE.md)：编辑器细节、类型系统和模板；
 - [演示指南](./DEMO.md)：AES、SM4、散列、SM2 和后量子案例；
 - [积木块索引](../blocks/INDEX.md)：自定义块和标准依据；

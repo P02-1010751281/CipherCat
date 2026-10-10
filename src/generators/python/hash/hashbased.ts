@@ -1,7 +1,7 @@
 /**
  * 哈希基后量子结构件 Python 代码生成器
  *
- * 哈希函数 = SHAKE-256（FIPS 205 的 H），32 字节输出（标准库 hashlib）。
+ * 项目教学哈希辅助函数以 SHAKE-256 输出 32 字节；不是 FIPS 205 的带地址/种子 H/F/PRF 封装。
  */
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
@@ -50,10 +50,15 @@ function registerHashBased(): string {
     '        return (int.from_bytes(m, "big") >> (12 - 4 * i)) & 0xF',
     '    def slh_addr(layer, tree, leaf, typ):',
     '        a = bytearray(32)',
-    '        a[0] = layer & 0xFF',
-    '        a[1:13] = tree.to_bytes(12, "big")',
-    '        a[13:17] = typ.to_bytes(4, "big")',
-    '        a[17:21] = leaf.to_bytes(4, "big")',
+    '        limit = 2**53 - 1',
+    '        def write(offset, width, value):',
+    '            if isinstance(value, bool) or not isinstance(value, int) or value < 0 or value > limit or value >= 1 << (8 * width):',
+    '                raise ValueError("ADRS fields must be non-negative safe integers within their encoded width")',
+    '            a[offset:offset + width] = value.to_bytes(width, "big")',
+    '        write(0, 4, layer)',
+    '        write(4, 12, tree)',
+    '        write(16, 4, typ)',
+    '        write(20, 4, leaf)',
     '        return bytes(a)',
     '    def fors_root(roots, adrs):',
     '        return h32(adrs, roots)',

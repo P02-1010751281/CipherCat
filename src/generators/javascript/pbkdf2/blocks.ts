@@ -69,6 +69,8 @@ function registerSm3Hmac(): string {
 function registerPbkdf2(): string {
   return javascriptGenerator.provideFunction_('pbkdf2', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(pw, salt, iter, dklen, prf) {',
+    '  if (!Number.isSafeInteger(iter) || iter < 1) throw new Error("PBKDF2 iteration count must be a positive integer");',
+    '  if (!Number.isSafeInteger(dklen) || dklen < 1 || dklen > 137438953440) throw new Error("PBKDF2 derived-key length must be a positive integer within the RFC limit");',
     '  var out = [], block = 1;',
     '  while (out.length < dklen) {',
     '    var u = prf(pw, Array.from(salt).concat([Math.floor(block / 16777216) & 0xFF, (block >>> 16) & 0xFF, (block >>> 8) & 0xFF, block & 0xFF]));',
@@ -94,8 +96,8 @@ javascriptGenerator.forBlock['pbkdf2'] = function (block: Block): [string, numbe
   const fn = registerPbkdf2();
   if (hash === 'sm3') {
     const hmac = registerSm3Hmac();
-    return [fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + keylen + ', ' + hmac + ')', Order.ATOMIC];
+    return ['Uint8Array.from(' + fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + keylen + ', ' + hmac + '))', Order.ATOMIC];
   }
   registerHmacSha256();
-  return [fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + keylen + ', hmacSha256)', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + keylen + ', hmacSha256))', Order.ATOMIC];
 };

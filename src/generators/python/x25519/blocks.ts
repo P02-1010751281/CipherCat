@@ -16,6 +16,8 @@ function registerX25519(): string {
     '    A24 = 121665',
     '    if len(scalar) != 32 or len(u) != 32:',
     '        raise ValueError("X25519 inputs must be 32 bytes")',
+    '    if any((type(byte) is not int and (type(byte) is not float or not byte.is_integer())) or byte < 0 or byte > 255 for byte in scalar) or any((type(byte) is not int and (type(byte) is not float or not byte.is_integer())) or byte < 0 or byte > 255 for byte in u):',
+    '        raise ValueError("X25519 input bytes must be integers from 0 through 255")',
     '    # clamp 标量（RFC 7748 §5）',
     '    k = list(scalar)',
     '    k[0] &= 248',
@@ -57,5 +59,5 @@ pythonGenerator.forBlock['x25519'] = function (block: Block): [string, number] {
   const scalar = pythonGenerator.valueToCode(block, 'SCALAR', Order.ATOMIC) || '[]';
   const u = pythonGenerator.valueToCode(block, 'U', Order.ATOMIC) || '[]';
   const fn = registerX25519();
-  return [fn + '(' + scalar + ', ' + u + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + scalar + ', ' + u + '))', Order.ATOMIC];
 };

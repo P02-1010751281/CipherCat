@@ -2,7 +2,7 @@
  * SM9 数字签名原子块定义 (GB/T 38635.2-2020 / GM/T 0044.2-2016)
  *
  * - sm9_master_key: KGC 签名主公钥 Ppub = [ks]P2（G2 点，128 字节 = x0‖x1‖y0‖y1，u²=-2）
- * - sm9_user_key:   用户签名私钥 ds = [ks·(H1(ID‖hid)+ks)⁻¹]P1（G1 点，64 字节 = x‖y）
+ * - sm9_user_key:   用户签名私钥 ds = [ks·(H1(ID‖0x01)+ks)⁻¹]P1（G1 点，64 字节 = x‖y）
  * - sm9_sign:       签名 (h, S) = (H2(M‖w), [l]ds)，w = e(P1, Ppub)^r，输出 h(32)‖S(65, 04 前缀)
  * - sm9_verify:     验签 Q = [H1(ID‖hid)]P2 + Ppub，w' = e(S, Q)·g^h，h' = H2(M‖w') == h?
  *
@@ -20,12 +20,9 @@ export const SM9_BLOCK_TYPES = [
 ] as const;
 export type Sm9BlockType = (typeof SM9_BLOCK_TYPES)[number];
 
-/** 签名私钥生成函数标识符下拉（GB/T 41389-2022：0x01 签名 / 0x03 加密） */
+/** 签名专用 HID；加密用途需要由独立加密块实现。 */
 function hidDropdown(): Blockly.FieldDropdown {
-  const d = new Blockly.FieldDropdown([
-    ['01 签名', '1'],
-    ['03 加密', '3'],
-  ]);
+  const d = new Blockly.FieldDropdown([['01 签名', '1']]);
   d.setValue('1');
   return d;
 }
@@ -41,7 +38,7 @@ Blockly.Blocks['sm9_master_key'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip(
-      'SM9 签名主公钥生成 (GB/T 38635.2-2020)：Ppub = [ks]P2 ∈ G2，输出 128 字节（x0‖x1‖y0‖y1，Fp2 塔域 u²=-2）。官方向量验证通过。',
+      'SM9 签名主公钥生成 (GB/T 38635.2-2020)：Ppub = [ks]P2 ∈ G2，输出 128 字节（x0‖x1‖y0‖y1，Fp2 塔域 u²=-2）。已核对附录 A 向量；不是完整标准测试集。',
     );
     this.setHelpUrl('https://openstd.samr.gov.cn/');
   },
@@ -59,7 +56,7 @@ Blockly.Blocks['sm9_user_key'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip(
-      'SM9 用户签名私钥生成 (GB/T 38635.2-2020)：ds = [ks·(H1(ID‖hid)+ks)⁻¹]P1 ∈ G1，输出 64 字节（x‖y）。官方向量验证通过。',
+      'SM9 用户签名私钥生成 (GB/T 38635.2-2020)：签名用途 hid 固定为 0x01；ds = [ks·(H1(ID‖0x01)+ks)⁻¹]P1 ∈ G1，输出 64 字节（x‖y）。已核对附录 A 向量；不是完整标准测试集。',
     );
     this.setHelpUrl('https://openstd.samr.gov.cn/');
   },
@@ -78,7 +75,7 @@ Blockly.Blocks['sm9_sign'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip(
-      'SM9 数字签名 (GB/T 38635.2-2020)：g = e(P1,Ppub)，w = g^r，h = H2(M‖w)，l = (r-h) mod N，S = [l]ds。输出 h(32)‖S(65, 0x04‖x‖y)。r 传 32 字节固定随机数，空数组则自动随机。官方向量验证通过。',
+      'SM9 数字签名 (GB/T 38635.2-2020)：g = e(P1,Ppub)，w = g^r，h = H2(M‖w)，l = (r-h) mod N，S = [l]ds。输出 h(32)‖S(65, 0x04‖x‖y)。r 插槽留空时使用安全随机数；连接输入时须提供 32 字节且满足 1 ≤ r < N。已核对附录 A 向量；不是完整标准测试集。',
     );
     this.setHelpUrl('https://openstd.samr.gov.cn/');
   },
@@ -99,7 +96,7 @@ Blockly.Blocks['sm9_verify'] = {
     this.setOutput(true, TYPE_BOOLEAN);
     this.setColour(190);
     this.setTooltip(
-      'SM9 验签 (GB/T 38635.2-2020)：Q = [H1(ID‖hid)]P2 + Ppub，w\' = e(S,Q)·g^h，h\' = H2(M‖w\') 与 h 比对。官方向量验证通过。',
+      'SM9 验签 (GB/T 38635.2-2020)：签名用途 hid 固定为 0x01；Q = [H1(ID‖0x01)]P2 + Ppub，w\' = e(S,Q)·g^h，h\' = H2(M‖w\') 与 h 比对。已核对附录 A 向量；不是完整标准测试集。',
     );
     this.setHelpUrl('https://openstd.samr.gov.cn/');
   },

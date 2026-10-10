@@ -69,10 +69,15 @@ javascriptGenerator.forBlock['cipher_key_from_seed'] = function (
   _block: Block,
 ): [string, Order] {
   void _block;
-  return [
-    'if (data.length < 16) throw new Error(\'Seed too short\');\n[(data[0]<<24)|(data[1]<<16)|(data[2]<<8)|data[3], (data[4]<<24)|(data[5]<<16)|(data[6]<<8)|data[7], (data[8]<<24)|(data[9]<<16)|(data[10]<<8)|data[11], (data[12]<<24)|(data[13]<<16)|(data[14]<<8)|data[15]]',
-    Order.ATOMIC,
-  ];
+  const helper = javascriptGenerator.provideFunction_('cryptoCipherKeyFromSeed', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed) {',
+    '  if (!(seed instanceof Uint8Array) && !(seed instanceof ArrayBuffer)) throw new TypeError("seed must be bytes");',
+    '  var bytes = seed instanceof Uint8Array ? seed : new Uint8Array(seed);',
+    '  if (bytes.length < 16) throw new RangeError("seed must contain at least 16 bytes");',
+    '  return [0, 4, 8, 12].map(function(i) { return ((bytes[i] << 24) | (bytes[i + 1] << 16) | (bytes[i + 2] << 8) | bytes[i + 3]) >>> 0; });',
+    '}',
+  ]);
+  return [helper + '(data)', Order.ATOMIC];
 };
 
 const migrationMap = getMigrationMap();

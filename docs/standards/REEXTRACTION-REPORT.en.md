@@ -22,20 +22,20 @@ pdftoppm -f <page> -l <page> -png -r 150 <source.pdf> <page.png>
 
 ## Results
 
-| Item | Count/status |
-|---|---|
+| Item | Count/status | Source |
+|---|---|---|
 | Standards directories | 38; all have README and manifest entries. GB/T 32915 is currently a status entry only; obtaining and splitting its source remains pending. |
 | Local PDFs | 37 (35 algorithm/reference directories + 2 under `standards/papers/`); directory PDFs are checked by the manifest and research material by its README |
-| PDFs with a text layer | 35; quality grading covers the 25 normative-source directories (10 grade A, 8 grade B, 7 grade C); 7 Chinese standards still have severe font-mapping distortion, so a text layer does not necessarily mean readable source text |
+| PDFs with a text layer | 35; quality grading covers the 25 normative-source directories (8 grade A, 10 grade B, 7 grade C); 7 Chinese standards still have severe font-mapping distortion, so a text layer does not necessarily mean readable source text |
 | Scanned PDFs | 2: GB/T 36624-2018 and the 1978 McEliece paper have no reliable text layer |
 | Broken Markdown links | 0 in the current `npm run docs:check-links` result |
 | Source and research evidence | 25 standards have `00-Standard-Source.md` extracts; McEliece and the papers directory each have a `00-Research-Source.md` research index, not a full normative-standard extract. RFC `.txt` files and two historical `part1.txt` files remain raw evidence |
-| Text-layer quality | Among the 25 source-backed standard directories: 10 grade A, 8 grade B, 7 grade C; GB/T 36624 is a grade-D gap | [SOURCE-QUALITY-AUDIT.en.md](./SOURCE-QUALITY-AUDIT.en.md) |
-| Structured-entry fields | The canonical inventory counts 227 entries; 4 also have structured English counterparts. The formula checker covers all 231 Chinese/English pages, all with a `Formula or Pseudocode` field and 207 with a Markdown code block; 22 explicitly state that there is no independent formula/pseudocode unit or currently verifiable source artifact. The canonical entries include 220 normative-source anchors (185 line and 35 exact PDF-page anchors), 2 RFC full-text evidence items, and 2 bibliography-only links; one official-record-only entry, one scanned-source gap, and one non-normative project note are separately classified. Bibliography links do not count as normative-source anchors. | [SOURCE-SPLIT-COVERAGE.en.md](./SOURCE-SPLIT-COVERAGE.en.md), [STRUCTURED-ENTRY-SCHEMA.en.md](./STRUCTURED-ENTRY-SCHEMA.en.md) |
+| Text-layer quality | Among the 25 source-backed standard directories: 8 grade A, 10 grade B, 7 grade C; GB/T 36624 is a grade-D gap | [SOURCE-QUALITY-AUDIT.en.md](./SOURCE-QUALITY-AUDIT.en.md) |
+| Structured-entry fields | The inventory counts 229 structured entries: 222 have normative-source anchors (187 line and 35 exact PDF-page anchors), plus 7 with other evidence statuses (2 RFC full-text evidence items, 2 bibliography-only links, 1 official-record-only item, 1 scanned-source gap, and 1 non-normative project note). Six entries also have structured English counterparts. The formula checker covers all 235 Chinese/English pages, all with a `Formula or Pseudocode` field and 211 with a Markdown code block; 22 explicitly state that there is no independent formula/pseudocode unit or currently verifiable source artifact. Bibliography links do not count as normative-source anchors. | [SOURCE-SPLIT-COVERAGE.en.md](./SOURCE-SPLIT-COVERAGE.en.md), [STRUCTURED-ENTRY-SCHEMA.en.md](./STRUCTURED-ENTRY-SCHEMA.en.md) |
 
 ## Fixed anomaly classes
 
-- Removed or rewrote reversed labels, pseudo-tables, garbled tokens, truncated headings, and broken pseudocode from user-facing structured reference pages; `00-Standard-Source.md` keeps the extraction as-is and is used according to its quality grade.
+- Removed or rewrote reversed labels, pseudo-tables, garbled tokens, truncated headings, and broken pseudocode from user-facing structured reference pages; `00-Standard-Source.md` preserves the extraction evidence and records formula normalization based on visual source checks.
 - Replaced the primary Markdown pages for AES, SM3, SM2, ZUC, SM4, SHA-2, ECDSA, HMAC, PBKDF2, CMAC, CCM, GCM, XTS, DRBG, Ascon, GM/T 0005, GM/T 0103, and ML-DSA Algorithm 48 with structured references, while restoring `00-*.md` source-extraction layers for the corresponding PDFs.
 - Separated source artifacts, historical drafts, project subsets, demo vectors, and certification boundaries so that “has a demo” cannot be read as “full standards coverage.”
 - Corrected the GM/T 0005 test list, the project’s SP 800-90A implementation label, and the SP 800-232 final-vs-IPD status.
@@ -58,3 +58,8 @@ pdftoppm -f <page> -l <page> -png -r 150 <source.pdf> <page.png>
 - Full page-by-page OCR or manual transcription for grade-B/C sources is still open; the PDF visual source, structured entries, and source-line locations currently form the verifiable reference together.
 
 See [DOCUMENT-STATUS.en.md](./DOCUMENT-STATUS.en.md) for the complete gap and implementation-boundary list.
+
+## 2026-09-30 Supplemental Review
+
+- Compared and rechecked FIPS 186-5 PDF physical pages 27, 44–51, 65–68, and 76; corrected RSA exponent bounds, prime lower bounds, `p−q`/`d` powers, Miller–Rabin powers, the B.9 prime bound, and Table B.1 error-probability superscripts in the extracted source. Structured entries separate RSA key generation from the B.3.1 test and state implementation gaps. This pass covers only the listed RSA sections; it does not claim a page-by-page manual transcription audit of the entire PDF.
+- Added Chinese and English RSA entries and updated the coverage matrix and generated source inventory. Internal metadata, formula-field, link, and inventory checks pass; these checks are not formal conformance or certification results.

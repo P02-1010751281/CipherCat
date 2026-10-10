@@ -4,7 +4,8 @@
  * - pbkdf2: PBKDF2(password, salt, iter, keyLen, HASH) → Bytes
  *   U1 = PRF(P, S‖INT(i))，Uc = PRF(P, U_{c-1})，T_i = U_c，DK = T1‖T2‖…截断。
  *   HASH 下拉 SHA-256（RFC 8018 向量）/ SM3（国密 GM/T 0091 PBKDF 同构）。
- *   官方向量：RFC 6070（SHA-1）+ hashlib 交叉（SHA-256）。
+ *   期望值来源：项目 SHA-256 变体由 tests/unit/demo-vector-crosscheck.test.ts 用 Python
+ *   hashlib.pbkdf2_hmac 独立复算；RFC 6070 只给 HMAC-SHA1 附录值，不适用于 SHA-256 变体。
  */
 import * as Blockly from 'blockly/core';
 import { TYPE_BYTES, TYPE_INT_LIST, TYPE_NUMBER } from '@/constants/block-types';
@@ -33,7 +34,7 @@ Blockly.Blocks['pbkdf2'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip(
-      'PBKDF2 口令密钥派生 (RFC 8018 / SP 800-132)：U1 = PRF(P, S‖INT(i))，Uc = PRF(P, U_{c-1})，串联截断。HASH 下拉 SHA-256 / SM3（SM3 路径与国密 GM/T 0091 PBKDF 同构）。官方向量（RFC 6070 / SHA-256 交叉）验证通过。',
+      'PBKDF2 口令密钥派生 (RFC 8018 / SP 800-132)：U1 = PRF(P, S‖INT(i))，Uc = PRF(P, U_{c-1})，串联截断。HASH 下拉 SHA-256 / SM3（SM3 路径与国密 GM/T 0091 PBKDF 同构）。已核对：SHA-256 变体期望值经 Python hashlib 独立复算一致；RFC 6070 仅提供 HMAC-SHA1 附录值，本实现未使用该变体。',
     );
     this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc8018');
   },

@@ -6,7 +6,7 @@
 | 标准定位 | RFC 8017 §7.2、§8.2 |
 | 原文证据 | [本地 RFC 8017 原文](./rfc8017.txt)、[RFC Editor 在线原文](https://www.rfc-editor.org/rfc/rfc8017.txt) |
 | 原文位置 | [RFC 原文 §7.2.1–§7.2.2，行 1548–1712](./rfc8017.txt#L1548-L1712)；[§8.2.1–§8.2.2，行 2004–2128](./rfc8017.txt#L2004-L2128) |
-| 项目状态 | 已实现（PKCS#1 v1.5 加解密/签名交叉） |
+| 项目状态 | 教学实现（按所列 RFC 方案做互操作测试；不构成标准符合性或认证声明） |
 
 ## 原文定位与引用
 
@@ -20,19 +20,9 @@
 
 > RFC `.txt` 证据层条目：下面是用户参照摘要，不是逐字算法摘录；完整规范单元和错误语义以原文链接为准。
 
-### 密钥生成（FIPS 186-4 风格）
+### 项目密钥生成边界（不属于 RFC 8017）
 
-输入比特长度 `bits`（字节 k = bits/8）。流程：
-
-1. 生成两个独立随机素数 p、q（各 bits/2 位）：
-   - 小素数筛（3..1000 试除）排除合数
-   - Miller-Rabin 素性检测（若干轮，错误率 < 2^-128）
-   - 附加条件：|p − q| 足够大（FIPS 186-4 B.3 要求 |p−q| > 2^(nlen/2−100)）
-2. `n = p·q`；`e = 65537`（固定）
-3. `λ(n) = lcm(p−1, q−1)`；`d = e⁻¹ mod λ(n)`（扩展欧几里得）
-4. 输出定长大端拼接：`key = n(k) ‖ e(4) ‖ d(k) ‖ p(k/2) ‖ q(k/2)`
-
-CipherCat 块：`rsa_keygen(bits)` → 上述拼接的 Bytes。
+RFC 8017 不规定项目中使用的 `rsa_keygen` 算法。该块仅用于教学，以项目自定义的 `n‖e‖d‖p‖q` 定长大端格式输出密钥材料；它不是 RFC 8017 的规范条目，也未声明符合 FIPS 186-5。FIPS 186-5 针对 RSA 数字签名密钥的条件和完整概率素数流程见[独立结构化参照](../fips186-5-ecdsa/05-RSA-Key-Generation.md)。
 
 ### PKCS#1 v1.5 加密（RFC 8017 §7.2）
 
@@ -55,4 +45,4 @@ EM = 0x00 ‖ 0x01 ‖ FF…FF(≥8) ‖ 0x00 ‖ DigestInfo(SHA-256)
 - `s = EM^d mod n`；验签 `EM' = s^e mod n` 与重组 EM 比对
 
 CipherCat 块：`rsa_sign(priv, m)` / `rsa_verify(pub, m, sig)`。
-验证：cryptography 库交叉（JS/Python 双语言），见 `RSA-Sign.json`。
+验证：项目固定回归（签名与验签正/负例，JS/Python 双语言），见 `RSA-Sign.json`；仓库内无第三方实现交叉复算。

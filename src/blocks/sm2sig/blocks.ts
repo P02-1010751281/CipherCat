@@ -51,7 +51,7 @@ Blockly.Blocks['sm2_verify'] = {
     this.setColour(190);
     this.setTooltip(
       'SM2 验签 (GB/T 32918.2-2016)。pax/pay = 公钥 PA 坐标 hex(32B)，ida = 用户标识字符串，msg = 消息字节，r/s = 签名 hex(32B)。' +
-        '内部：t = (r+s) mod n，(x0\',y0\') = [s]G + [t]PA，R = (e + x0\') mod n，R == r 则通过。官方向量验证通过。',
+        '内部：t = (r+s) mod n，(x0\',y0\') = [s]G + [t]PA，R = (e + x0\') mod n，R == r 则通过。已核对 GB/T 32918.2-2016 附录 A 示例 1；不是完整标准测试集。',
     );
     this.setHelpUrl('https://std.samr.gov.cn/gb/search/gbDetailed?id=71F772D8055ED3A7E05397BE0A0AB82A');
   },

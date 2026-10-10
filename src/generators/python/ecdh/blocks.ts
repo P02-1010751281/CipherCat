@@ -5,7 +5,8 @@
  * 内嵌（原生 int + pow(x, -1, m) 模逆，provideFunction_ 按名去重）：
  *   ecdh_point_add / ecdh_point_mul —— Weierstrass 点加/倍点（仿射）
  *   ecdh_shared_secret —— S = [d]Q 的 x 坐标 32 字节大端 hex（64 字符）
- * 官方向量：RFC 5903 §8.1 + cryptography 确定性派生 2 组，与 python3 cryptography ECDH 逐字节一致。
+ * 向量来源：RFC 5903 §8.1 两方向；由 tests/unit/demo-vector-crosscheck.test.ts 用 python3 cryptography
+ * 的 ECDH 独立复算，与 Demo 期望值逐字节一致。
  */
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';

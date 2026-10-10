@@ -1,14 +1,17 @@
 // @vitest-environment jsdom
 import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 import * as Blockly from 'blockly/core';
+import 'blockly/blocks';
 import { setLocale } from 'blockly/core';
 import { javascriptGenerator, Order as JavaScriptOrder } from 'blockly/javascript';
 import { pythonGenerator, Order as PythonOrder } from 'blockly/python';
 import { describe, expect, it } from 'vitest';
 
 import '@/blocks/procedure/blocks';
+import '@/blocks/data/number';
 import '@/blocks/symmetric/sm4/blocks';
 import '@/generators/python/procedure/blocks';
 import '@/generators/javascript/procedure/blocks';
@@ -21,6 +24,28 @@ const require = createRequire(resolve(process.cwd(), 'package.json'));
 setLocale(require('blockly/msg/en'));
 
 describe('procedure code generators', () => {
+  it('executes a crypto_return statement inside a generated procedure in both languages', () => {
+    const workspace = new Blockly.Workspace();
+    try {
+      const procedure = workspace.newBlock('procedures_defnoreturn');
+      procedure.setFieldValue('returning', 'NAME');
+      const returnBlock = workspace.newBlock('crypto_return');
+      const value = workspace.newBlock('math_number');
+      value.setFieldValue('42', 'NUM');
+      returnBlock.getInput('VALUE')!.connection!.connect(value.outputConnection!);
+      procedure.getInput('STACK')!.connection!.connect(returnBlock.previousConnection!);
+
+      const python = pythonGenerator.workspaceToCode(workspace);
+      const javascript = javascriptGenerator.workspaceToCode(workspace);
+      expect(new Function(`${javascript}\nreturn returning();`)()).toBe(42);
+      expect(Number(execFileSync(process.platform === 'win32' ? 'python' : 'python3', [
+        '-c', `${python}\nprint(returning())`,
+      ], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim())).toBe(42);
+    } finally {
+      workspace.dispose();
+    }
+  });
+
   it('preserves an explicitly connected typed return', () => {
     const demo = JSON.parse(readFileSync(resolve(process.cwd(), 'demos/procedures/SM4-Sbox.json'), 'utf8'));
     const workspace = new Blockly.Workspace();

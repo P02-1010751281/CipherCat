@@ -1,11 +1,11 @@
 /**
  * SM4 原子块 Python 代码生成器
- * GM/T 0002-2012
+ * GB/T 32907-2016
  */
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
 
-/** SM4 S-box (GM/T 0002-2012) */
+/** SM4 S-box (GB/T 32907-2016) */
 const SM4_SBOX = [
   0xd6,0x90,0xe9,0xfe,0xcc,0xe1,0x3d,0xb7,0x16,0xb6,0x14,0xc2,0x28,0xfb,0x2c,0x05,
   0x2b,0x67,0x9a,0x76,0x2a,0xbe,0x04,0xc3,0xaa,0x44,0x13,0x26,0x49,0x86,0x06,0x99,
@@ -35,8 +35,10 @@ function registerSm4Sbox(): string {
 function registerSm4SboxLookup(): string {
   return pythonGenerator.provideFunction_('sm4_sbox_lookup', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(x):',
+    '    if isinstance(x, bool) or not isinstance(x, (int, float)) or x < 0 or x > 255 or int(x) != x:',
+    '        raise ValueError("SM4 S-box input must be a byte")',
     '    sbox = ' + registerSm4Sbox() + '()',
-    '    return sbox[x & 0xFF]',
+    '    return sbox[int(x)]',
   ]);
 }
 

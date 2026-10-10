@@ -48,11 +48,7 @@ javascriptGenerator.forBlock['pq_ntt_mul'] = function (
   return [`${nttMulFn}(${a}, ${b}, ${modulus})`, Order.ATOMIC];
 };
 
-/**
- * Cooley-Tukey or Gentleman-Sande butterfly.
- * Forward direction uses CT: (a + zeta*b, a - zeta*b)
- * Inverse direction uses GS: ((a+b)/2, zeta*(b-a)/2)
- */
+/** One Cooley-Tukey or Gentleman-Sande butterfly over canonical residues. */
 javascriptGenerator.forBlock['pq_ntt_butterfly'] = function (
   block: Block,
 ): [string, number] {
@@ -63,28 +59,23 @@ javascriptGenerator.forBlock['pq_ntt_butterfly'] = function (
   const modulus = block.getFieldValue('MODULUS') || '3329';
   const type = block.getFieldValue('TYPE') || 'ct';
 
-  const ctButterflyFn = javascriptGenerator.provideFunction_('ctButterfly', [
+  const butterflyFn = javascriptGenerator.provideFunction_('nttButterfly', [
     'function ' +
       javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
-      '(a, b, zeta, q) {',
-    '  q = q || 3329;',
-    '  let t = (zeta * b) % q;',
-    '  return [(a + t) % q, (a - t + q) % q];',
+      '(a, b, zeta, q, direction) {',
+    '  if (![a, b, zeta, q].every(Number.isSafeInteger) || q <= 2 || q % 2 === 0 || a < 0 || a >= q || b < 0 || b >= q || zeta < 0 || zeta >= q) {',
+    '    throw new RangeError("expected canonical integer residues and an odd modulus");',
+    '  }',
+    '  if (direction === "gs") {',
+    '    const inv2 = (q + 1) / 2;',
+    '    const sum = (a + b) % q;',
+    '    const difference = (b - a + q) % q;',
+    '    return [(sum * inv2) % q, (zeta * difference % q * inv2) % q];',
+    '  }',
+    '  const product = (zeta * b) % q;',
+    '  return [(a + product) % q, (a - product + q) % q];',
     '}',
   ]);
 
-  const gsButterflyFn = javascriptGenerator.provideFunction_('gsButterfly', [
-    'function ' +
-      javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
-      '(a, b, zeta, q) {',
-    '  q = q || 3329;',
-    '  let inv2 = (q + 1) >> 1;',
-    '  let s = (a + b) % q;',
-    '  let d = (b - a + q) % q;',
-    '  return [(s * inv2) % q, (zeta * d % q * inv2) % q];',
-    '}',
-  ]);
-
-  const funcName = type === 'ct' ? ctButterflyFn : gsButterflyFn;
-  return [`${funcName}(${a}, ${b}, ${zeta}, ${modulus})`, Order.ATOMIC];
+  return [`${butterflyFn}(${a}, ${b}, ${zeta}, ${modulus}, "${type}")`, Order.ATOMIC];
 };

@@ -5,8 +5,8 @@
  * 内嵌全套（一次 provideFunction_ 注册去重）：ref_sm9.py 类结构转写，
  * 全部符号加 sm9/SM9 前缀防与其它生成器冲突。SM3 走 hashlib + 纯 Python 兜底。
  * 入口 sm9_master_key/sm9_user_key/sm9_sign/sm9_verify（模块作用域，driver 可直接调用）。
- * 官方向量（GB/T 38635.2-2020 附录 A.2：ks=0130E784…/IDA=Alice/hid=01/
- * M="Chinese IBS standard"/r=033c8616…）H/S/verify 全 PASS；与 Go gmsm 输出一致。
+ * GB/T 38635.2-2020 附录 A.2 向量（ks=0130E784…/IDA=Alice/hid=01/
+ * M="Chinese IBS standard"/r=033c8616…）在 JS/Python 生成代码回归中通过。
  */
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
@@ -352,6 +352,16 @@ function registerSm9(): string {
     '',
     'SM9_P1_G = SM9_G1(*SM9_P1)',
     '',
+    'def sm9_g1_mul_raw(point, scalar: int):',
+    '    result = SM9_G1(0, 1, 0)',
+    '    addend = SM9_G1(point.x, point.y, point.z)',
+    '    while scalar > 0:',
+    '        if scalar & 1:',
+    '            result = result.add(addend)',
+    '        addend = addend.double()',
+    '        scalar >>= 1',
+    '    return result',
+    '',
     '# ---------- G2 (twist y²=x³+5 over Fp2, projective with t=z²) ----------',
     'class SM9_G2:',
     '    __slots__ = (\'x\', \'y\', \'z\', \'t\')',
@@ -361,6 +371,9 @@ function registerSm9(): string {
     '        self.z = z if z is not None else SM9_F2.one()',
     '        self.t = t if t is not None else SM9_F2.one()',
     '    def is_inf(self): return self.z.is_zero()',
+    '    def is_on_curve(self):',
+    '        if self.is_inf(): return True',
+    '        return self.y.sqr().mul(self.z) == self.x.sqr().mul(self.x) + SM9_F2(5, 0).mul(self.z.sqr().mul(self.z))',
     '    def add(self, o):',
     '        # Renes 2015 Alg 7 (b\' = 5)',
     '        t0 = self.x.mul(o.x); t1 = self.y.mul(o.y); t2 = self.z.mul(o.z)',
@@ -431,6 +444,16 @@ function registerSm9(): string {
     '        return self.x == o2.x and self.y == o2.y',
     '',
     'SM9_P2_G = SM9_G2(SM9_F2(SM9_P2[0][0], SM9_P2[0][1]), SM9_F2(SM9_P2[1][0], SM9_P2[1][1]))',
+    'def sm9_g2_mul_raw(point, scalar):',
+    '    result = SM9_G2(SM9_F2(), SM9_F2.one(), SM9_F2(), SM9_F2())',
+    '    addend = SM9_G2(point.x, point.y, point.z, point.t)',
+    '    while scalar > 0:',
+    '        if scalar & 1: result = result.add(addend)',
+    '        addend = addend.double()',
+    '        scalar >>= 1',
+    '    return result',
+    'def sm9_g2_is_valid(point):',
+    '    return not point.is_inf() and point.is_on_curve() and sm9_g2_mul_raw(point, SM9N).is_inf()',
     '# SM9_F2(x, y) = x·u + y; standard P2 x = 85ae..·u + 3722.. → SM9_F2(85ae.., 3722..)',
     '',
     '# ---------- line functions (bn_pair.go) ----------',
@@ -548,11 +571,13 @@ function registerSm9(): string {
     '    g = sm9_pairing(ppub, SM9_P1_G)  # e(P1, Ppub)',
     '    return ds, ppub, g',
     '',
-    'def sm9_sign_impl(msg: bytes, ds: SM9_G1, ppub: SM9_G2, r: int) -> tuple:',
+    'def sm9_sign_impl(msg: bytes, ds: SM9_G1, ppub: SM9_G2, r: int):',
     '    g = sm9_pairing(ppub, SM9_P1_G)',
     '    w = g.pow(r)',
     '    h = sm9_H2(msg + sm9_gt_marshal(w))',
     '    l = (r - h) % SM9N',
+    '    if l == 0:',
+    '        return None',
     '    S = ds.mul(l)',
     '    return h, S',
     '',
@@ -560,6 +585,8 @@ function registerSm9(): string {
     '    if h <= 0 or h >= SM9N:',
     '        return False',
     '    if not S.is_on_curve() or S.is_inf():',
+    '        return False',
+    '    if not sm9_g1_mul_raw(S, SM9N).is_inf():',
     '        return False',
     '    t1 = sm9_H1(uid + bytes([hid]))',
     '    Q = SM9_P2_G.mul(t1).add(ppub)',
@@ -588,52 +615,100 @@ function registerSm9(): string {
     '    return SM9_G2(SM9_F2(c[0], c[1]), SM9_F2(c[2], c[3]), SM9_F2.one(), SM9_F2.one())',
     '',
     '# ---------- block entry points (BYTES in/out, list of ints) ----------',
-    'def sm9_master_key(ks):',
-    '    ks_bytes = bytes(ks)',
+    'def sm9_require_bytes(value, name):',
+    '    if not isinstance(value, (bytes, bytearray, list, tuple)):',
+    '        raise ValueError(f\'SM9 {name} must be a byte array\')',
+    '    if any(type(byte) is not int or not 0 <= byte <= 255 for byte in value):',
+    '        raise ValueError(f\'SM9 {name} must contain only bytes\')',
+    '    return bytes(value)',
+    '',
+    'def sm9_master_scalar(ks):',
+    '    ks_bytes = sm9_require_bytes(ks, \'master key\')',
     '    if len(ks_bytes) != 32:',
     '        raise ValueError(\'SM9 master key must be 32 bytes\')',
     '    k = int.from_bytes(ks_bytes, \'big\')',
+    '    if not 1 <= k < SM9N:',
+    '        raise ValueError(\'SM9 master key must satisfy 1 <= ks < n\')',
+    '    return k',
+    '',
+    'def sm9_master_key(ks):',
+    '    k = sm9_master_scalar(ks)',
     '    ppub = SM9_P2_G.mul(k)',
     '    return list(ppub.marshal_raw())',
     '',
     'def sm9_user_key(ks, uid, hid):',
-    '    ks_bytes = bytes(ks)',
-    '    if len(ks_bytes) != 32:',
-    '        raise ValueError(\'SM9 master key must be 32 bytes\')',
-    '    k = int.from_bytes(ks_bytes, \'big\')',
-    '    ds, ppub, g = sm9_keygen(k, bytes(uid), int(hid))',
+    '    k = sm9_master_scalar(ks)',
+    '    uid = sm9_require_bytes(uid, \'ID\')',
+    '    if type(hid) is not int or hid != 1:',
+    '        raise ValueError(\'SM9 signing key requires HID 0x01\')',
+    '    ds, ppub, g = sm9_keygen(k, bytes(uid), hid)',
     '    return list(ds.marshal_raw())',
     '',
-    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg, ds, ppub, r):',
-    '    ds_b = bytes(ds)',
-    '    ppub_b = bytes(ppub)',
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg, ds, ppub, r, random_r):',
+    '    msg_b = sm9_require_bytes(msg, \'MSG\')',
+    '    ds_b = sm9_require_bytes(ds, \'DS\')',
+    '    ppub_b = sm9_require_bytes(ppub, \'Ppub\')',
     '    if len(ds_b) != 64:',
     '        raise ValueError(\'SM9 ds must be 64 bytes\')',
     '    if len(ppub_b) != 128:',
     '        raise ValueError(\'SM9 Ppub must be 128 bytes\')',
-    '    if not r:',
-    '        import os',
-    '        r = list(os.urandom(32))',
-    '    if len(r) != 32:',
-    '        raise ValueError(\'SM9 r must be 32 bytes or empty\')',
-    '    r_int = int.from_bytes(bytes(r), \'big\')',
-    '    h, S = sm9_sign_impl(bytes(msg), sm9_g1_parse_raw(ds_b), sm9_g2_parse_raw(ppub_b), r_int)',
-    '    return list(h.to_bytes(32, \'big\')) + list(S.marshal())',
+    '    if any(int.from_bytes(ppub_b[offset:offset + 32], \'big\') >= SM9P for offset in range(0, 128, 32)):',
+    '        raise ValueError(\'SM9 Ppub coordinates must be less than q\')',
+    '    ppub_point = sm9_g2_parse_raw(ppub_b)',
+    '    if not sm9_g2_is_valid(ppub_point):',
+    '        raise ValueError(\'SM9 Ppub must be a valid nonzero G2 point\')',
+    '    if any(int.from_bytes(ds_b[offset:offset + 32], \'big\') >= SM9P for offset in (0, 32)):',
+    '        raise ValueError(\'SM9 DS coordinates must be less than q\')',
+    '    ds_point = sm9_g1_parse_raw(ds_b)',
+    '    if ds_point.is_inf() or not ds_point.is_on_curve() or not sm9_g1_mul_raw(ds_point, SM9N).is_inf():',
+    '        raise ValueError(\'SM9 DS must be a valid nonzero G1 point\')',
+    '    if random_r:',
+    '        import secrets',
+    '    else:',
+    '        r = sm9_require_bytes(r, \'r\')',
+    '        if len(r) != 32:',
+    '            raise ValueError(\'SM9 r must be 32 bytes\')',
+    '        if any(type(value) is not int or not 0 <= value <= 255 for value in r):',
+    '            raise ValueError(\'SM9 r must contain only bytes\')',
+    '        r_int = int.from_bytes(bytes(r), \'big\')',
+    '        if not 0 < r_int < SM9N:',
+    '            raise ValueError(\'SM9 r must satisfy 1 <= r < n\')',
+    '    while True:',
+    '        if random_r:',
+    '            r_int = secrets.randbelow(SM9N - 1) + 1',
+    '        result = sm9_sign_impl(msg_b, ds_point, ppub_point, r_int)',
+    '        if result is None:',
+    '            if random_r:',
+    '                continue',
+    '            raise ValueError(\'SM9 r produced l = 0; provide another scalar\')',
+    '        h, S = result',
+    '        return list(h.to_bytes(32, \'big\')) + list(S.marshal())',
     '',
     'def sm9_verify(msg, uid, h, s, ppub, hid):',
-    '    h_b = bytes(h)',
-    '    s_b = bytes(s)',
-    '    ppub_b = bytes(ppub)',
+    '    try:',
+    '        msg_b = sm9_require_bytes(msg, \'MSG\')',
+    '        uid_b = sm9_require_bytes(uid, \'ID\')',
+    '        h_b = sm9_require_bytes(h, \'h\')',
+    '        s_b = sm9_require_bytes(s, \'S\')',
+    '        ppub_b = sm9_require_bytes(ppub, \'Ppub\')',
+    '    except ValueError:',
+    '        return False',
     '    if len(h_b) != 32:',
     '        return False',
     '    if len(s_b) != 65 or s_b[0] != 4:',
     '        return False',
     '    if len(ppub_b) != 128:',
     '        return False',
+    '    if any(int.from_bytes(s_b[offset:offset + 32], \'big\') >= SM9P for offset in (1, 33)):',
+    '        return False',
+    '    if any(int.from_bytes(ppub_b[offset:offset + 32], \'big\') >= SM9P for offset in range(0, 128, 32)):',
+    '        return False',
     '    h_int = int.from_bytes(h_b, \'big\')',
     '    S_g1 = sm9_g1_parse_raw(s_b[1:])',
     '    ppub_g2 = sm9_g2_parse_raw(ppub_b)',
-    '    return sm9_verify_impl(bytes(msg), bytes(uid), int(hid), ppub_g2, h_int, S_g1)',
+    '    if not sm9_g2_is_valid(ppub_g2):',
+    '        return False',
+    '    return sm9_verify_impl(msg_b, uid_b, int(hid), ppub_g2, h_int, S_g1)',
     '',
   ]);
 }
@@ -641,24 +716,24 @@ function registerSm9(): string {
 pythonGenerator.forBlock['sm9_master_key'] = function (block: Block): [string, number] {
   const ks = pythonGenerator.valueToCode(block, 'KS', Order.ATOMIC) || '[]';
   registerSm9();
-  return ['sm9_master_key(' + ks + ')', Order.ATOMIC];
+  return ['bytes(sm9_master_key(' + ks + '))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['sm9_user_key'] = function (block: Block): [string, number] {
   const ks = pythonGenerator.valueToCode(block, 'KS', Order.ATOMIC) || '[]';
   const id = pythonGenerator.valueToCode(block, 'ID', Order.ATOMIC) || '[]';
-  const hid = block.getFieldValue('HID') || '1';
   registerSm9();
-  return ['sm9_user_key(' + ks + ', ' + id + ', ' + hid + ')', Order.ATOMIC];
+  return ['bytes(sm9_user_key(' + ks + ', ' + id + ', 1))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['sm9_sign'] = function (block: Block): [string, number] {
   const msg = pythonGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   const ds = pythonGenerator.valueToCode(block, 'DS', Order.ATOMIC) || '[]';
   const ppub = pythonGenerator.valueToCode(block, 'PPUB', Order.ATOMIC) || '[]';
+  const randomR = block.getInputTargetBlock('R') === null ? 'True' : 'False';
   const r = pythonGenerator.valueToCode(block, 'R', Order.ATOMIC) || '[]';
   registerSm9();
-  return ['sm9_sign(' + msg + ', ' + ds + ', ' + ppub + ', ' + r + ')', Order.ATOMIC];
+  return ['bytes(sm9_sign(' + msg + ', ' + ds + ', ' + ppub + ', ' + r + ', ' + randomR + '))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['sm9_verify'] = function (block: Block): [string, number] {
@@ -667,8 +742,6 @@ pythonGenerator.forBlock['sm9_verify'] = function (block: Block): [string, numbe
   const h = pythonGenerator.valueToCode(block, 'H', Order.ATOMIC) || '[]';
   const s = pythonGenerator.valueToCode(block, 'S', Order.ATOMIC) || '[]';
   const ppub = pythonGenerator.valueToCode(block, 'PPUB', Order.ATOMIC) || '[]';
-  const hid = block.getFieldValue('HID') || '1';
   registerSm9();
-  return ['sm9_verify(' + msg + ', ' + id + ', ' + h + ', ' + s + ', ' + ppub + ', ' + hid + ')', Order.ATOMIC];
+  return ['sm9_verify(' + msg + ', ' + id + ', ' + h + ', ' + s + ', ' + ppub + ', 1)', Order.ATOMIC];
 };
-

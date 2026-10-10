@@ -1,10 +1,8 @@
 /**
- * FORS 完整签名 JavaScript 代码生成器（FIPS 205 §8）
+ * FORS-inspired teaching-variant JavaScript generator; not FIPS 205-compatible.
  *
- * 内嵌完整 FORS（forsCore 闭包）：SHAKE-256 作 PRF/H（复用 registerKeccakF1600 +
- * 与 hashbased.ts 同 key 同内容的 shakeXOF，provideFunction_ 幂等去重）；
- * ADRS 布局沿用项目 slh_addr 约定。教学参数 n=32 / k=4 / a=4（每树 16 叶）。
- * 验证用性质向量：确定性、签名-验证往返、篡改检测。
+ * Uses project-specific SHAKE concatenation, not the FIPS 205 PRF/F/T_k functions.
+ * Fixed parameters are n=32, k=4, a=4; tests establish only internal consistency.
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
@@ -54,12 +52,28 @@ function registerShakeXOF(): string {
   ]);
 }
 
-/** FORS 完整实现（闭包，返回 {forsSign, forsVerify, forsPk}） */
+/** Project teaching variant (closure returning sign, verify, and public-key helpers). */
 function registerForsCore(): string {
   const shakeName = registerShakeXOF();
   return javascriptGenerator.provideFunction_('forsCore', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '() {',
-    '  function toBytes(x) { if (typeof x === "string") return new TextEncoder().encode(x); if (Array.isArray(x)) return Uint8Array.from(x); return x; }',
+    '  function toBytes(x) {',
+    '    if (typeof x === "string") return new TextEncoder().encode(x);',
+    '    if (Array.isArray(x)) {',
+    '      for (let i = 0; i < x.length; i++) {',
+    '        const b = x[i];',
+    '        if (!Number.isInteger(b) || b < 0 || b > 255) throw new TypeError("FORS byte arrays must contain integers from 0 to 255");',
+    '      }',
+    '      return Uint8Array.from(x);',
+    '    }',
+    '    if (x instanceof Uint8Array) return x;',
+    '    throw new TypeError("FORS inputs must be strings, byte arrays, or Uint8Array values");',
+    '  }',
+    '  function seedBytes(x) {',
+    '    let seed = toBytes(x);',
+    '    if (seed.length !== 32) throw new Error("FORS teaching seed must be 32 bytes");',
+    '    return seed;',
+    '  }',
     '  function h32(...parts) {',
     '    let len = 0; for (let p of parts) len += toBytes(p).length;',
     '    let data = new Uint8Array(len); let o = 0;',
@@ -68,15 +82,17 @@ function registerForsCore(): string {
     '  }',
     '  function adrs(kp, typ, height, idx) {',
     '    let a = new Uint8Array(32);',
-    '    a[13] = (typ >> 24) & 0xFF; a[14] = (typ >> 16) & 0xFF; a[15] = (typ >> 8) & 0xFF; a[16] = typ & 0xFF;',
-    '    for (let i = 0; i < 4; i++) a[20 - i] = Math.floor(kp / Math.pow(256, i)) & 0xFF;',
+    '    a[16] = (typ >> 24) & 0xFF; a[17] = (typ >> 16) & 0xFF; a[18] = (typ >> 8) & 0xFF; a[19] = typ & 0xFF;',
+    '    for (let i = 0; i < 4; i++) a[23 - i] = Math.floor(kp / Math.pow(256, i)) & 0xFF;',
     '    if (typ === 3) {',
-    '      for (let i = 0; i < 4; i++) a[24 - i] = Math.floor(height / Math.pow(256, i)) & 0xFF;',
-    '      for (let i = 0; i < 4; i++) a[28 - i] = Math.floor(idx / Math.pow(256, i)) & 0xFF;',
+    '      for (let i = 0; i < 4; i++) a[27 - i] = Math.floor(height / Math.pow(256, i)) & 0xFF;',
+    '      for (let i = 0; i < 4; i++) a[31 - i] = Math.floor(idx / Math.pow(256, i)) & 0xFF;',
+    '    } else if (typ === 6) {',
+    '      for (let i = 0; i < 4; i++) a[31 - i] = Math.floor(idx / Math.pow(256, i)) & 0xFF;',
     '    }',
     '    return a;',
     '  }',
-    '  function forsSk(skSeed, treeI, leafJ) { return h32(skSeed, adrs(treeI, 3, 0, leafJ)); }',
+    '  function forsSk(skSeed, treeI, leafJ) { return h32(skSeed, adrs(treeI, 6, 0, leafJ)); }',
     '  function forsTree(skSeed, treeI, idx) {',
     '    let level = []; for (let j = 0; j < 16; j++) level.push(forsSk(skSeed, treeI, j));',
     '    let auth = []; let h = 1;',
@@ -89,6 +105,7 @@ function registerForsCore(): string {
     '    return [level[0], auth];',
     '  }',
     '  function forsSign(skSeed, m) {',
+    '    skSeed = seedBytes(skSeed);',
     '    m = toBytes(m);',
     '    if (m.length !== 2) throw new Error("FORS M must be 2 bytes (k*a = 16 bits)");',
     '    let mv = (m[0] << 8) | m[1];',
@@ -105,6 +122,7 @@ function registerForsCore(): string {
     '    return sig;',
     '  }',
     '  function forsPk(skSeed) {',
+    '    skSeed = seedBytes(skSeed);',
     '    let roots = []; for (let i = 0; i < 4; i++) roots.push(forsTree(skSeed, i, 0)[0]);',
     '    let total = 0; for (let r of roots) total += r.length;',
     '    let data = new Uint8Array(total); let o = 0;',
@@ -112,7 +130,10 @@ function registerForsCore(): string {
     '    return h32(adrs(0, 4, 0, 0), data);',
     '  }',
     '  function forsVerify(pk, m, sig) {',
-    '    m = toBytes(m); sig = toBytes(sig);',
+    '    pk = toBytes(pk); m = toBytes(m); sig = toBytes(sig);',
+    '    if (pk.length !== 32) throw new Error("FORS teaching public key must be 32 bytes");',
+    '    if (m.length !== 2) throw new Error("FORS M must be 2 bytes (k*a = 16 bits)");',
+    '    if (sig.length !== 640) throw new Error("FORS teaching signature must be 640 bytes");',
     '    let mv = (m[0] << 8) | m[1];',
     '    let idxs = []; for (let i = 0; i < 4; i++) idxs.push((mv >> (12 - 4 * i)) & 0xF);',
     '    let roots = []; let off = 0;',

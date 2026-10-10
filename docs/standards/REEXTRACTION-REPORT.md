@@ -22,20 +22,20 @@ pdftoppm -f <page> -l <page> -png -r 150 <source.pdf> <page.png>
 
 ## 结果
 
-| 项目 | 数量/状态 |
-|---|---|
+| 项目 | 数量/状态 | 出处 |
+|---|---|---|
 | 标准目录 | 38，全部有 README 和 manifest 条目；GB/T 32915 当前仅登记状态，原件与结构化拆分待办未完成 |
 | 本地 PDF | 37（35 个算法/参考目录 + `standards/papers/` 2）；目录内 PDF 由 manifest 校验，研究材料由 README 校验 |
-| 有文本层的 PDF | 35；源质量分级覆盖 25 个标准原文目录，其中 10 个 A 级、8 个 B 级、7 个 C 级；另有 7 份国标存在严重字体映射失真，不能把有文本层都称为“可读原文” |
+| 有文本层的 PDF | 35；源质量分级覆盖 25 个标准原文目录，其中 8 个 A 级、10 个 B 级、7 个 C 级；另有 7 份国标存在严重字体映射失真，不能把有文本层都称为“可读原文” |
 | 扫描 PDF | 2：GB/T 36624-2018 和 McEliece 1978 论文均无可靠文本层 |
 | Markdown 断链 | `npm run docs:check-links` 当前检查结果为 0 处 |
 | 原文与研究证据层 | 25 个标准目录保存 `00-Standard-Source.md` 原文提取；McEliece 和论文目录各有 `00-Research-Source.md` 研究索引，不计作标准全文提取。RFC `.txt` 和两个历史 `part1.txt` 继续作为原始证据 |
-| 文本层质量 | 25 个有 source 的标准目录中 10 个 A 级、8 个 B 级、7 个 C 级；GB/T 36624 为 D 级缺项 | [SOURCE-QUALITY-AUDIT.md](./SOURCE-QUALITY-AUDIT.md) |
-| 结构化条目字段 | 规范清单统计 227 个条目，4 个另有结构化英文对应稿；公式检查覆盖 231 个中英文页面，均有 `公式或伪代码` 字段，207 个含 Markdown 代码块，22 个明确说明无独立公式/伪代码单元或当前无可核验原件。规范条目有 220 个标准原文锚点（185 行号、35 个精确 PDF 页码）、2 个 RFC 全文证据项、2 个研究书目回链；另有官方记录、扫描件缺项及非规范性项目说明各 1 项。书目回链不计作标准原文锚点 | [STRUCTURED-ENTRY-SCHEMA.md](./STRUCTURED-ENTRY-SCHEMA.md) |
+| 文本层质量 | 25 个有 source 的标准目录中 8 个 A 级、10 个 B 级、7 个 C 级；GB/T 36624 为 D 级缺项 | [SOURCE-QUALITY-AUDIT.md](./SOURCE-QUALITY-AUDIT.md) |
+| 结构化条目字段 | 清单统计 229 个结构化条目：222 个有标准原文锚点（187 行号、35 个精确 PDF 页码），另有 7 个其他证据状态（2 个 RFC 全文证据项、2 个研究书目回链、1 个官方记录项、1 个扫描件缺项、1 个非规范性项目说明）；6 个条目另有结构化英文对应稿。公式检查覆盖 235 个中英文页面，均有 `公式或伪代码` 字段，211 个含 Markdown 代码块，22 个明确说明无独立公式/伪代码单元或当前无可核验原件。书目回链不计作标准原文锚点 | [STRUCTURED-ENTRY-SCHEMA.md](./STRUCTURED-ENTRY-SCHEMA.md) |
 
 ## 已修复的异常类型
 
-- 从面向用户的结构化主参考页中删除/改写 PDF 直转造成的反向字样、伪表格、乱码 token、断裂标题和缺失伪代码；`00-Standard-Source.md` 仍保留提取原貌，并按质量等级使用。
+- 从面向用户的结构化主参考页中删除/改写 PDF 直转造成的反向字样、伪表格、乱码 token、断裂标题和缺失伪代码；`00-Standard-Source.md` 保留提取证据，并记录逐页核验后对失真公式所做的规范化修正。
 - 将 AES、SM3、SM2、ZUC、SM4、SHA-2、ECDSA、HMAC、PBKDF2、CMAC、CCM、GCM、XTS、DRBG、Ascon、GM/T 0005、GM/T 0103 以及 ML-DSA Algorithm 48 改成结构化参考，并恢复对应 PDF 的 `00-*.md` 原文提取层。
 - 把标准原件、历史草案、项目实现子集、demo 向量和认证边界分开写，避免“有 demo”被误读为“完整标准覆盖”。
 - 修正 GM/T 0005 的检测项列表，修正 SP 800-90A 项目实现误标为 CTR-DRBG，确认 SP 800-232 使用最终版而不是 2024 IPD 草案。
@@ -58,3 +58,8 @@ pdftoppm -f <page> -l <page> -png -r 150 <source.pdf> <page.png>
 - B/C 级原文的完整逐页 OCR 或人工转录仍未完成；当前 PDF 视觉版、结构化条目和提取稿定位共同构成可核验参照。
 
 完整缺项及实现边界见 [DOCUMENT-STATUS.md](./DOCUMENT-STATUS.md)。
+
+## 2026-09-30 补充核验
+
+- 对照 FIPS 186-5 PDF 物理页 27、44–51、65–68、76，修正并复核 RSA 指数范围、素数下界、`p−q`/`d` 幂次、Miller–Rabin 幂次、B.9 素数界限和表 B.1 错误概率上标；结构化页现分别呈现 RSA 密钥生成与 B.3.1 测试，并列出当前实现缺项。此轮只覆盖所列 RSA 章节，不表示全份 PDF 已逐页人工转录验收。
+- 新增中文/英文 RSA 条目并更新覆盖矩阵和生成式 source 清单。内部标准元数据、公式字段、链接和 inventory 检查通过；这些检查不是正式符合性或认证结论。

@@ -54,7 +54,13 @@ SHA2-PAD(M, blockBits, lengthBits):
 原始字节、UTF-8 文本和十六进制输入分别进入 `hash_sha256_pad`、`hash_sha256_pad_text`、
 `hash_sha256_pad_hex`；SHA-512 路径使用 `hash_sha512_pad`。本原语不负责消息扩展、压缩或摘要截断。
 
+项目输入契约：字节输入仅接受字节串或取值为 `0..255` 的整数序列；文本按严格 UTF-8 编码，
+JavaScript 与 Python 均拒绝孤立 UTF-16 代理项；Hex 输入必须是偶数长度、连续的 ASCII 十六进制字符，
+不接受空白或其他分隔符。这些是 Blockly 端口契约，不是 FIPS 180-4 对消息编码的额外规定。
+
 ## 核验与缺项
 
-核验空消息、恰好跨越长度字段的消息和标准摘要向量的分组边界。SHA-512/224 与 SHA-512/256
-的专用 IV 尚未接入；填充正确不等于完整变体已实现。
+[`sha256-padding-contract.test.ts`](../../../tests/unit/sha256-padding-contract.test.ts) 从实际 Blockly 块生成并执行
+JavaScript/Python，核验 0、1、55、56、63、64、119、120 字节边界、`abc` 固定填充块、严格 UTF-8/Hex
+输入及非法字节拒绝。这是项目回归测试，不是完整 NIST 测试向量集或正式算法验证。SHA-512/224 与
+SHA-512/256 的专用 IV 尚未接入；填充正确不等于完整变体已实现。

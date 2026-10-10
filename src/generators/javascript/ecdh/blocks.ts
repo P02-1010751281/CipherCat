@@ -7,7 +7,8 @@
  *   ecdhToBig  —— hex 字符串 / bigint / 字节数组 → BigInt
  *   ecdhPointAdd / ecdhPointMul —— Weierstrass 点加/倍点（仿射，模逆除法）
  *   ecdhSharedSecret —— S = [d]Q 的 x 坐标 32 字节大端 hex（64 字符）
- * 官方向量：RFC 5903 §8.1 + cryptography 确定性派生 2 组，与 python3 cryptography ECDH 逐字节一致。
+ * 向量来源：RFC 5903 §8.1 两方向；由 tests/unit/demo-vector-crosscheck.test.ts 用 python3 cryptography
+ * 的 ECDH 独立复算，与 Demo 期望值逐字节一致。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';

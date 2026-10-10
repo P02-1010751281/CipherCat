@@ -17,7 +17,7 @@
 
 ## 实现状态
 
-✅ 已实现：`xts_encrypt`，IEEE 1619-2007 经典向量（key=0/tweak=0/data=0 → 917cf69e...）+ cryptography 交叉。Demo：`demos/procedures/XTS-Encrypt.json`。
+✅ 已实现：`xts_encrypt` 支持整块与末尾部分块 ciphertext stealing；拒绝相同 K1/K2，数据单元限制为 16 字节至 16 MiB。Demo 核对 16、17、31、47 字节输入，属项目固定回归；IEEE 1619-2007 为付费文档且未随仓库分发，仓库内无第三方实现交叉复算。XTS 子密钥相同需在使用前拒绝，依据 [NIST FIPS 140-3 Implementation Guidance C.I](https://csrc.nist.gov/csrc/media/Projects/cryptographic-module-validation-program/documents/fips%20140-3/Archived/FIPS%20140-3%20IG%20%5B2024-12-20%5D.pdf)。Demo：`demos/procedures/XTS-Encrypt.json`。该回归不是 NIST 认证测试。
 
 ## 函数/原语索引
 

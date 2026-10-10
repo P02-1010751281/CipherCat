@@ -60,12 +60,33 @@ for (const id of topLevel) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(entry.source_checked_at)) {
     errors.push(`${id}: source_checked_at must be YYYY-MM-DD`);
   }
-  if (!['tracked', 'not-listed'].includes(entry.errata_status)) {
+  if (!['tracked', 'landing-page-only', 'not-listed'].includes(entry.errata_status)) {
     errors.push(`${id}: invalid errata_status ${entry.errata_status}`);
   }
-  if ((entry.errata_url ? 'tracked' : 'not-listed') !== entry.errata_status) {
-    errors.push(`${id}: errata_status does not match errata_url`);
+  // tracked：已登记独立勘误/更新文档；landing-page-only：只复核了发布页本身；not-listed：无链接。
+  const expectedErrataStatus = entry.errata_url
+    ? (entry.errata_url === entry.source_url ? 'landing-page-only' : 'tracked')
+    : 'not-listed';
+  if (entry.errata_status !== expectedErrataStatus) {
+    errors.push(`${id}: errata_status ${entry.errata_status} does not match errata_url (expected ${expectedErrataStatus})`);
   }
+}
+
+// manifest 的 updated_at 不得早于任何条目的 source_checked_at，否则说明清单本身已过期。
+const newestSourceCheck = entries
+  .map((entry) => entry.source_checked_at)
+  .filter((value) => typeof value === 'string')
+  .sort()
+  .at(-1);
+if (!/^\d{4}-\d{2}-\d{2}$/.test(manifest.updated_at || '')) {
+  errors.push('updated_at must be YYYY-MM-DD');
+} else if (newestSourceCheck && manifest.updated_at < newestSourceCheck) {
+  errors.push(`updated_at (${manifest.updated_at}) is older than newest source_checked_at (${newestSourceCheck})`);
+}
+
+for (const id of topLevel) {
+  const entry = entryMap.get(id);
+  if (!entry) continue;
   const readme = join(standardsRoot, id, 'README.md');
   try {
     await readFile(readme);
@@ -85,21 +106,16 @@ for (const id of topLevel) {
       )
       .map((artifact) => [artifact.path, artifact]),
   );
-  const localPdfs = (await readdir(join(standardsRoot, id), { withFileTypes: true }))
-    .filter((item) => item.isFile() && item.name.toLowerCase().endsWith('.pdf'))
+  // 本地主源文件（PDF 与 RFC 全文 .txt）必须登记在 artifacts。
+  const localSources = (await readdir(join(standardsRoot, id), { withFileTypes: true }))
+    .filter((item) => item.isFile() && /\.(pdf|txt)$/i.test(item.name))
     .map((item) => item.name)
     .sort();
-  for (const file of localPdfs) {
+  for (const file of localSources) {
     const artifact = artifacts.get(file);
     if (!artifact) {
-      errors.push(`${id}: PDF missing from manifest: ${file}`);
+      errors.push(`${id}: source file missing from manifest: ${file}`);
       continue;
-    }
-    const digest = createHash('sha256')
-      .update(await readFile(join(standardsRoot, id, file)))
-      .digest('hex');
-    if (digest !== artifact.sha256) {
-      errors.push(`${id}: SHA-256 mismatch: ${file}`);
     }
   }
   for (const artifact of artifactList) {
@@ -114,7 +130,13 @@ for (const id of topLevel) {
     }
     const artifactPath = join(standardsRoot, id, artifact.path);
     try {
-      await readFile(artifactPath);
+      // 所有登记 artifact（含 RFC 全文、ACVP/CAVP 压缩包、数据表）重算 SHA-256 比对。
+      const digest = createHash('sha256')
+        .update(await readFile(artifactPath))
+        .digest('hex');
+      if (digest !== artifact.sha256) {
+        errors.push(`${id}: SHA-256 mismatch: ${artifact.path}`);
+      }
     } catch {
       errors.push(`${id}: listed artifact missing: ${artifact.path}`);
     }

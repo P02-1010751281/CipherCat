@@ -1,6 +1,6 @@
 # ML-KEM-768 Encaps — 纯基础块搭建指南
 
-> FIPS 203 算法 10 + 13 + 20，k=3，η₁=2，η₂=2，d_u=10，d_v=4，q=3329
+> FIPS 203 算法 20 + 17 + 14，k=3，η₁=2，η₂=2，d_u=10，d_v=4，q=3329
 > **零复合块。** 每个 XOF/PRF/NTT/PolyAdd/Compress 均手动拖块接线。
 > 输入：`ek`（1184 字节），`m`（32 字节）。输出：`c`（1088 字节），`K_hat`（32 字节）。
 
@@ -83,7 +83,7 @@ Blockly 的 **Math**（数学）分类包含 `math_arithmetic`——一个支持
 
 ## 步骤 1：初始化 ek 和 m
 
-FIPS 203 算法 10 第 1 行。空文本占位符——运行时注入真实字节值。
+FIPS 203 算法 17 第 1 行。空文本占位符——运行时注入真实字节值。
 
 ### 1a — set ek to
 
@@ -112,7 +112,7 @@ FIPS 203 算法 10 第 1 行。空文本占位符——运行时注入真实字�
 
 ## 步骤 2：h = SHA3-256(ek)
 
-FIPS 203 算法 10 第 1 行。H = SHA3-256。rate=1088，c=512，suffix=0x06，输出=32 字节。
+FIPS 203 算法 17 第 1 行。H = SHA3-256。rate=1088，c=512，suffix=0x06，输出=32 字节。
 
 ### 2.1 — 外层
 
@@ -181,7 +181,7 @@ set h = Squeeze(rate=1088, outLen=32,
 
 ## 步骤 3：G(m ‖ h) = SHA3-512 → g_out，再拆分为 K̂、r
 
-FIPS 203 算法 10 第 1 行。G = SHA3-512。rate=576，c=1024，suffix=0x06，输出=64 字节。
+FIPS 203 算法 17 第 1 行。G = SHA3-512。rate=576，c=1024，suffix=0x06，输出=64 字节。
 
 先算 SHA3-512 存入 `g_out`，再切两次。避免重复构建海绵链。
 
@@ -240,7 +240,7 @@ set g_out = Squeeze(rate=576, outLen=64,
 
 ## 步骤 4：解析 ek
 
-FIPS 203 算法 13 第 2–3 行。ek = ByteEncode₁₂(t̂) ‖ ρ。k=3、d=12 时：|t̂| = 384×3 = 1152 字节，|ρ| = 32 字节，|ek| = 1184 字节。
+FIPS 203 算法 14 第 2–3 行。ek = ByteEncode₁₂(t̂) ‖ ρ。k=3、d=12 时：|t̂| = 384×3 = 1152 字节，|ρ| = 32 字节，|ek| = 1184 字节。
 
 ### 4a — t_bytes
 
@@ -271,7 +271,7 @@ FIPS 203 算法 13 第 2–3 行。ek = ByteEncode₁₂(t̂) ‖ ρ。k=3、d=1
 
 ## 步骤 5：解码 t̂ → 写入 t_hat 数组（循环方式）
 
-FIPS 203 算法 13 第 2 行。ek 中的 t 已经是 NTT 域编码（KeyGen 时已做 `ByteEncode₁₂(NTT(s))`），ByteDecode₁₂ 解码后**直接**就是 t̂，不需要再 NTT。
+FIPS 203 算法 14 第 2 行。ek 中的 t 已经是 NTT 域编码（KeyGen 时已做 `ByteEncode₁₂(NTT(s))`），ByteDecode₁₂ 解码后**直接**就是 t̂，不需要再 NTT。
 
 用 `ctrl_iterate` 循环 + `math_arithmetic` 计算偏移量，避免三次手动重复。循环变量 `i` 自动创建。
 
@@ -325,7 +325,7 @@ ctrl_iterate i=0..2:
 
 ## 步骤 6：生成矩阵 Â（双层嵌套循环）
 
-FIPS 203 算法 13 第 4–8 行。Â[i][j] = SampleNTT(ρ ‖ j ‖ i)。种子顺序是先 j 后 i，与 FIPS 203 一致。
+FIPS 203 算法 14 第 4–8 行。Â[i][j] = SampleNTT(ρ ‖ j ‖ i)。种子顺序是先 j 后 i，与 FIPS 203 一致。
 
 注：SampleNTT 使用 SHAKE128 流式挤压输出，系数本身就是 NTT 域表示，无需再调用 NTT()。代码生成器已自动处理。
 
@@ -400,7 +400,7 @@ FIPS 203 算法 13 第 4–8 行。Â[i][j] = SampleNTT(ρ ‖ j ‖ i)。种子
 
 ## 步骤 7：生成 r̂ 向量（循环方式）
 
-FIPS 203 算法 13 第 9–12 行。r̂[i] = NTT(SamplePolyCBD₂(r_seed ‖ i))。nonce = i，无需算术运算，循环最简。
+FIPS 203 算法 14 第 9–12 行。r̂[i] = NTT(SamplePolyCBD₂(r_seed ‖ i))。nonce = i，无需算术运算，循环最简。
 
 ### 7a — 初始化 r_hat 占位数组
 
@@ -446,7 +446,7 @@ ctrl_iterate i=0..2:
 
 ## 步骤 8：u = INTT(Âᵀ·r̂) + e₁ — 循环方式
 
-FIPS 203 算法 13 第 13–19 行。k=3，nonce 偏移用 `math_arithmetic` 计算 3 + i。外层 i（u 下标），内层 j（求和下标）。
+FIPS 203 算法 14 第 13–19 行。k=3，nonce 偏移用 `math_arithmetic` 计算 3 + i。外层 i（u 下标），内层 j（求和下标）。
 
 ### 8a — 初始化 u 占位数组
 
@@ -465,7 +465,7 @@ FIPS 203 算法 13 第 13–19 行。k=3，nonce 偏移用 `math_arithmetic` 计
 
 ### 8c — 内层循环 j=0..2：acc += Aⱼᵢ ∘ r̂ⱼ（在 8b 的 DO 区域内）
 
-> **注意**：`lists_getIndex(lists_getIndex(A, j), i)` = `A[j][i]`，即外层 INDEX=`i`、内层 INDEX=`j`。这是 `Aᵀ` 的转置乘法，符合 FIPS 203 算法 10 第 14 行的 `A[j][i]`。
+> **注意**：`lists_getIndex(lists_getIndex(A, j), i)` = `A[j][i]`，即外层 INDEX=`i`、内层 INDEX=`j`。这是 `Aᵀ` 的转置乘法，对应 FIPS 203 算法 14 第 19 行的 `u ← NTT⁻¹(Â∘ŷ)`。
 
 | # | 操作 |
 |---|------|
@@ -527,7 +527,7 @@ ctrl_iterate i=0..2:
 
 ## 步骤 9：μ = Decompress₁(ByteDecode₁(m))
 
-FIPS 203 §4.2.1，算法 13 第 20 行。先 ByteDecode₁ 将 32 字节展开为 256 系数，再 Decompress₁ 映射到 {0, 1665}。
+FIPS 203 §4.2.1，算法 14 第 20 行。先 ByteDecode₁ 将 32 字节展开为 256 系数，再 Decompress₁ 映射到 {0, 1665}。
 
 | # | 操作 |
 |---|------|
@@ -547,7 +547,7 @@ FIPS 203 §4.2.1，算法 13 第 20 行。先 ByteDecode₁ 将 32 字节展开�
 
 ## 步骤 10：v = INTT(t̂ᵀ·r̂) + e₂ + μ
 
-FIPS 203 算法 13 第 21 行。e₂ nonce = 2k = 6（常量，无需加法→循环 OK）。
+FIPS 203 算法 14 第 21 行。e₂ nonce = 2k = 6（常量，无需加法→循环 OK）。
 
 ### 10a — 累加 t̂ᵀ·r̂
 
@@ -595,7 +595,7 @@ FIPS 203 算法 13 第 21 行。e₂ nonce = 2k = 6（常量，无需加法→�
 
 ## 步骤 11–13：压缩编码并拼接
 
-FIPS 203 算法 13 第 22–24 行。逐个多项式 Compress + ByteEncode，BytesConcat 累加拼接。
+FIPS 203 算法 14 第 22–24 行。逐个多项式 Compress + ByteEncode，BytesConcat 累加拼接。
 
 ### 11a — 初始化 c1 占位
 
@@ -698,9 +698,9 @@ FIPS 203 算法 13 第 22–24 行。逐个多项式 Compress + ByteEncode，Byt
 | 9 | c₁ 通过循环累加 BytesConcat(c1, ByteEncode(Compress(u[i], d=10), d=10)) |
 | 10 | SHA3-256 链：4 层深 |
 | 11 | SHA3-512 链（×2）：各 5 层深 |
-| 12 | t_bytes = ek[0:1152]，每个 t_i 切片 384 字节（FIPS 203 算法 10：32·d） |
+| 12 | t_bytes = ek[0:1152]，每个 t_i 切片 384 字节（FIPS 203 算法 6：32·d） |
 | 13 | rho = ek[1152:1184] |
-| 14 | 生成代码 → 执行 → 验证：|c₁|=960，|c₂|=128，|c|=1088，|K̂|=32 |
+| 14 | 生成代码 → 执行 → 验证：\|c₁\|=960，\|c₂\|=128，\|c\|=1088，\|K̂\|=32 |
 
 ### 预期输出大小（ML-KEM-768）
 
@@ -719,14 +719,14 @@ FIPS 203 算法 13 第 22–24 行。逐个多项式 Compress + ByteEncode，Byt
 |------|----------|------|
 | 2 |  第 1 行 | SHA3-256（FIPS 202 §6） |
 | 3 |  第 1 行 | SHA3-512（FIPS 202 §6） |
-| 4 | 算法 13 第 2–3 行 | BytesSlice |
-| 5 | 算法 13 第 2 行、算法 6、算法 9 | ByteDecode₁₂ + NTT |
-| 6 | 算法 13 第 4–8 行、算法 7 | SampleNTT 通过 SeedWithNonce |
-| 7 | 算法 13 第 9–12 行、算法 8 | SamplePolyCBD 通过 SeedWithNonce + NTT |
-| 8 | 算法 13 第 13–19 行、算法 10、算法 11 | NTTMul + PolyAdd + INTT + SamplePolyCBD |
-| 9 | §4.2.1、算法 13 第 20 行 | Decompress₁ |
-| 10 | 算法 13 第 21 行 | NTTMul + PolyAdd + INTT + SamplePolyCBD |
-| 11–13 | 算法 13 第 22–24 行 | Compress + ByteEncode + BytesConcat |
+| 4 | 算法 14 第 2–3 行 | BytesSlice |
+| 5 | 算法 14 第 2 行、算法 6、算法 9 | ByteDecode₁₂ + NTT |
+| 6 | 算法 14 第 4–8 行、算法 7 | SampleNTT 通过 SeedWithNonce |
+| 7 | 算法 14 第 9–12 行、算法 8 | SamplePolyCBD 通过 SeedWithNonce + NTT |
+| 8 | 算法 14 第 13–19 行、算法 10、算法 11 | NTTMul + PolyAdd + INTT + SamplePolyCBD |
+| 9 | §4.2.1、算法 14 第 20 行 | Decompress₁ |
+| 10 | 算法 14 第 21 行 | NTTMul + PolyAdd + INTT + SamplePolyCBD |
+| 11–13 | 算法 14 第 22–24 行 | Compress + ByteEncode + BytesConcat |
 
 ---
 
@@ -762,6 +762,6 @@ FIPS 203 算法 13 第 22–24 行。逐个多项式 Compress + ByteEncode，Byt
 
 ## 附录：字节偏移修正
 
-更早版本使用 `BytesSlice(ek, 0, 384)` 和 `BytesSlice(t_bytes, 0, 128)`。这些值与 FIPS 203 算法 10 不符：`ByteDecode_d` 输入 = `32·d` 字节。d=12 → 每多项式 384 字节。k=3 → 总计 1152 字节。
+更早版本使用 `BytesSlice(ek, 0, 384)` 和 `BytesSlice(t_bytes, 0, 128)`。这些值与 FIPS 203 算法 6 不符：`ByteDecode_d` 输入 = `32·d` 字节。d=12 → 每多项式 384 字节。k=3 → 总计 1152 字节。
 
 本指南使用：t_bytes = ek[0:1152]，各项 t_i 切片按 384 字节边界（0:384、384:768、768:1152），rho = ek[1152:1184]。

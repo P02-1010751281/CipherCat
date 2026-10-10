@@ -1,18 +1,19 @@
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
+import { registerHexToBytes } from '../data/helpers';
 
-pythonGenerator.forBlock['hash_sha256_pad'] = function (
-  block: Block,
-): [string, number] {
-  const input =
-    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "b''";
-  const fn = pythonGenerator.provideFunction_('sha256_pad', [
+function registerSha256Pad(): string {
+  return pythonGenerator.provideFunction_('sha256_pad', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg):',
     '    if isinstance(msg, str):',
     '        msg = msg.encode("utf-8")',
-    '    elif isinstance(msg, list):',
+    '    elif isinstance(msg, (bytes, bytearray)):',
     '        msg = bytes(msg)',
-    '    msg = bytes(msg)',
+    '    elif isinstance(msg, (list, tuple)):',
+    '        if any(isinstance(value, bool) or not isinstance(value, (int, float)) or not 0 <= value <= 255 or int(value) != value for value in msg): raise ValueError("SHA-256 input must contain byte integers from 0 to 255")',
+    '        msg = bytes(int(value) for value in msg)',
+    '    else:',
+    '        raise TypeError("SHA-256 input must be UTF-8 text or bytes")',
     '    mlen = len(msg) * 8',
     '    msg += b"\\x80"',
     '    while (len(msg) * 8) % 512 != 448:',
@@ -20,7 +21,23 @@ pythonGenerator.forBlock['hash_sha256_pad'] = function (
     '    msg += mlen.to_bytes(8, "big")',
     '    return msg',
   ]);
-  return [fn + '(' + input + ')', Order.ATOMIC];
+}
+
+function registerSha256PadText(): string {
+  const pad = registerSha256Pad();
+  return pythonGenerator.provideFunction_('sha256_pad_text', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(text):',
+    '    if not isinstance(text, str): raise TypeError("expected UTF-8 text")',
+    '    return ' + pad + '(text)',
+  ]);
+}
+
+pythonGenerator.forBlock['hash_sha256_pad'] = function (
+  block: Block,
+): [string, number] {
+  const input =
+    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "b''";
+  return [registerSha256Pad() + '(' + input + ')', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['hash_sha256_pad_hex'] = function (
@@ -28,31 +45,16 @@ pythonGenerator.forBlock['hash_sha256_pad_hex'] = function (
 ): [string, number] {
   const input =
     pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
-  // Hex strings must be decoded via bytes.fromhex, not UTF-8 encoded,
-  // otherwise "616263" is treated as 6 ASCII bytes instead of 3 binary bytes.
-  const fn = pythonGenerator.provideFunction_('sha256_pad_hex', [
-    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg):',
-    '    if isinstance(msg, bytes):',
-    '        data = msg',
-    '    elif isinstance(msg, str):',
-    '        data = bytes.fromhex(msg)',
-    '    elif isinstance(msg, int):',
-    '        bl = (msg.bit_length() + 7) // 8',
-    '        data = msg.to_bytes(bl, "big")',
-    '    else:',
-    '        data = bytes(msg)',
-    '    mlen = len(data) * 8',
-    '    data += b"\\x80"',
-    '    while (len(data) * 8) % 512 != 448:',
-    '        data += b"\\x00"',
-    '    data += mlen.to_bytes(8, "big")',
-    '    return data',
-  ]);
-  return [fn + '(' + input + ')', Order.ATOMIC];
+  const hexToBytes = registerHexToBytes();
+  return [registerSha256Pad() + '(' + hexToBytes + '(' + input + '))', Order.ATOMIC];
 };
 
-pythonGenerator.forBlock['hash_sha256_pad_text'] =
-  pythonGenerator.forBlock['hash_sha256_pad'];
+pythonGenerator.forBlock['hash_sha256_pad_text'] = function (
+  block: Block,
+): [string, number] {
+  const input = pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
+  return [registerSha256PadText() + '(' + input + ')', Order.ATOMIC];
+};
 
 pythonGenerator.forBlock['hash_sha256_compress'] = function (
   block: Block,
@@ -64,6 +66,10 @@ pythonGenerator.forBlock['hash_sha256_compress'] = function (
     '    # W 输入为填充后的 512-bit 块（与 sm3_compress/JS 语义对齐），消息调度在内部扩展',
     '    if isinstance(block, (bytes, bytearray)):',
     '        block = list(block)',
+    '    if not isinstance(block, (list, tuple)) or len(block) != 64 or any(isinstance(x, bool) or not isinstance(x, (int, float)) or not 0 <= x <= 255 or int(x) != x for x in block): raise ValueError("SHA-256 block must contain 64 integer bytes from 0 to 255")',
+    '    if not isinstance(v, (list, tuple)) or len(v) != 8 or any(isinstance(x, bool) or not isinstance(x, (int, float)) or not 0 <= x <= 0xFFFFFFFF or int(x) != x for x in v): raise ValueError("SHA-256 state must contain 8 unsigned 32-bit integer words")',
+    '    block = [int(x) for x in block]',
+    '    v = [int(x) for x in v]',
     '    W = [0] * 64',
     '    for j in range(16):',
     '        W[j] = ((block[4*j] << 24) | (block[4*j+1] << 16) | (block[4*j+2] << 8) | block[4*j+3]) & 0xFFFFFFFF',
@@ -99,25 +105,15 @@ pythonGenerator.forBlock['hash_sha224_hash'] = function (
 ): [string, number] {
   const msg =
     pythonGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || "b''";
-  const padFn = pythonGenerator.provideFunction_('sha256_pad', [
-    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg):',
-    '    if isinstance(msg, str):',
-    '        msg = msg.encode("utf-8")',
-    '    elif isinstance(msg, list):',
-    '        msg = bytes(msg)',
-    '    msg = bytes(msg)',
-    '    mlen = len(msg) * 8',
-    '    msg += b"\\x80"',
-    '    while (len(msg) * 8) % 512 != 448:',
-    '        msg += b"\\x00"',
-    '    msg += mlen.to_bytes(8, "big")',
-    '    return msg',
-  ]);
+  const padFn = registerSha256Pad();
   const compressFn = pythonGenerator.provideFunction_('sha256_compress', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(v, block):',
     '    # W 输入为填充后的 512-bit 块（与 sm3_compress/JS 语义对齐），消息调度在内部扩展',
-    '    if isinstance(block, (bytes, bytearray)):',
-    '        block = list(block)',
+    '    if isinstance(block, (bytes, bytearray)): block = list(block)',
+    '    if not isinstance(block, (list, tuple)) or len(block) != 64 or any(isinstance(x, bool) or not isinstance(x, (int, float)) or not 0 <= x <= 255 or int(x) != x for x in block): raise ValueError("SHA-256 block must contain 64 integer bytes from 0 to 255")',
+    '    if not isinstance(v, (list, tuple)) or len(v) != 8 or any(isinstance(x, bool) or not isinstance(x, (int, float)) or not 0 <= x <= 0xFFFFFFFF or int(x) != x for x in v): raise ValueError("SHA-256 state must contain 8 unsigned 32-bit integer words")',
+    '    block = [int(x) for x in block]',
+    '    v = [int(x) for x in v]',
     '    W = [0] * 64',
     '    for j in range(16):',
     '        W[j] = ((block[4*j] << 24) | (block[4*j+1] << 16) | (block[4*j+2] << 8) | block[4*j+3]) & 0xFFFFFFFF',

@@ -36,7 +36,7 @@ Output: state array A′
 
 ### 块实现
 
-内嵌于 `keccak_f1600`
+由 Blockly 块 `keccak_f` 按 lane 位宽掩码执行。
 ## 原文摘录
 > 以下为 source 中 Algorithm 4 的完整原文算法块；仅移除了 PDF 分页标记和页眉页码。
 

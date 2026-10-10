@@ -12,6 +12,9 @@ import type { Block } from 'blockly/core';
 function registerHkdf(): string {
   return pythonGenerator.provideFunction_('hkdf', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(salt, ikm, info, key_len):',
+    '    if isinstance(key_len, bool) or not isinstance(key_len, (int, float)) or (isinstance(key_len, float) and not key_len.is_integer()): raise ValueError("HKDF output length must be an integer from 0 to 8160 bytes")',
+    '    key_len = int(key_len)',
+    '    if not 0 <= key_len <= 8160: raise ValueError("HKDF output length must be an integer from 0 to 8160 bytes")',
     '    import hmac, hashlib',
     '    s = bytes(salt or [0] * 32)',
     '    prk = hmac.new(s, bytes(ikm), hashlib.sha256).digest()',
@@ -32,5 +35,5 @@ pythonGenerator.forBlock['hkdf'] = function (block: Block): [string, number] {
   const info = pythonGenerator.valueToCode(block, 'INFO', Order.ATOMIC) || '[]';
   const len = pythonGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '32';
   const fn = registerHkdf();
-  return [fn + '(' + salt + ', ' + ikm + ', ' + info + ', ' + len + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + salt + ', ' + ikm + ', ' + info + ', ' + len + '))', Order.ATOMIC];
 };

@@ -9,8 +9,8 @@
  *   - Dilithium 结构：NTT 多项式环 Rq (q = 2^23 - 2^13 + 1)、模掩码 y ← γ1 域、
  *     rejection sampling、hint 打包（ω = 80）
  *   - SHAKE128/256（rate 168/136，自实现 Keccak-f1600，BigInt 64 位字）
- *   - 官方向量：NIST ACVP sigGen ML-DSA-44 deterministic 30/30 双语言 PASS
- *     （mldsa_prompt.json / mldsa_expectedResults.json，external+internal 接口）
+ *   - 回归范围：仓库登记 1 组 ML-DSA-44 确定性固定样例；该样例的 ACVP 向量文件与 case ID 未随仓库登记，
+ *     因此不声明其为官方 ACVP 证据，也不包含完整 ACVP 套件
  */
 import * as Blockly from 'blockly/core';
 import { TYPE_BOOLEAN, TYPE_BYTES } from '@/constants/block-types';
@@ -31,7 +31,7 @@ Blockly.Blocks['mldsa_sign'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(290);
     this.setTooltip(
-      'ML-DSA-44 签名 (FIPS 204)：2560 字节私钥 + 消息 → 2420 字节签名（确定性，rnd=0，空上下文）。官方向量（NIST ACVP sigGen 30/30）验证通过。',
+      'ML-DSA-44 签名 (FIPS 204)：2560 字节私钥 + 消息 → 2420 字节签名（确定性，rnd=0，空上下文）。项目回归含 1 组 ML-DSA-44 确定性固定样例（来源 ID 未登记，不作为官方 ACVP 证据）；非完整验证或认证。',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf');
   },
@@ -53,7 +53,7 @@ Blockly.Blocks['mldsa_verify'] = {
     this.setOutput(true, TYPE_BOOLEAN);
     this.setColour(290);
     this.setTooltip(
-      'ML-DSA-44 验签 (FIPS 204)：1312 字节公钥 + 消息 + 2420 字节签名 → 布尔。官方向量（NIST ACVP sigGen 30/30）验证通过。',
+      'ML-DSA-44 验签 (FIPS 204)：1312 字节公钥 + 消息 + 2420 字节签名 → 布尔。项目回归含 1 组 ML-DSA-44 确定性固定样例（来源 ID 未登记，不作为官方 ACVP 证据）；非完整验证或认证。',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf');
   },

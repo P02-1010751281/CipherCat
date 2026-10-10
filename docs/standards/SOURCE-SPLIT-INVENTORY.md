@@ -1,14 +1,14 @@
 # 标准原文到结构化条目清单
 
-核对日期：2026-09-27
+核对日期：2026-10-08
 
 > 本清单由所有结构化条目的元数据块生成，是证据索引，不代表每一份标准的全部条款都已逐字转录。
 
 ## 汇总
 
-- 目录：**38** 个；含标准原文提取层：**25** 个；仅含研究/参考索引：**1** 个。
-- 结构化条目：**227** 个；有标准原文锚点：**220** 个；RFC 文本证据：**2** 个；仅回链研究书目：**2** 个；仅有官方记录：**1** 个；扫描 PDF 提取缺项：**1** 个；非规范性项目说明：**1** 个；无来源回链：**0** 个。
-- 标准原文行号锚点：**185** 个；精确 PDF 页码锚点：**35** 个；仅章节级定位：**0** 个。
+- 目录：**40** 个；含标准原文提取层：**25** 个；仅含研究/参考索引：**1** 个。
+- 结构化条目：**229** 个；有标准原文锚点：**222** 个；RFC 文本证据：**2** 个；仅回链研究书目：**2** 个；仅有官方记录：**1** 个；扫描 PDF 提取缺项：**1** 个；非规范性项目说明：**1** 个；无来源回链：**0** 个。
+- 标准原文行号锚点：**181** 个；精确 PDF 页码锚点：**41** 个；仅章节级定位：**0** 个。
 
 ## 状态含义
 
@@ -43,8 +43,10 @@
 |---|---|---|---|
 | [fips186-5-ecdsa/01-ECDSA.md](./fips186-5-ecdsa/01-ECDSA.md) | NIST FIPS 186-5 — ECDSA 参考 | [提取稿 §6.1–§6.4，行 1174–1384](./fips186-5-ecdsa/00-Standard-Source.md#L1174-L1384)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips186-5-ecdsa/02-Curve-Operations.md](./fips186-5-ecdsa/02-Curve-Operations.md) | FIPS 186-5 §6；项目使用 NIST P-256 参数 | PDF 物理第 20–22 页（标准页 20–22）；[提取稿 §6.1 第 1174 行](./fips186-5-ecdsa/00-Standard-Source.md#L1174) | `source PDF page anchor` |
-| [fips186-5-ecdsa/03-Sign.md](./fips186-5-ecdsa/03-Sign.md) | FIPS 186-5 §6.4.1 | PDF 物理第 24 页（标准页 24）；[提取稿 §6.4.1 第 1341 行](./fips186-5-ecdsa/00-Standard-Source.md#L1341) | `source PDF page anchor` |
-| [fips186-5-ecdsa/04-Verify.md](./fips186-5-ecdsa/04-Verify.md) | FIPS 186-5 §6.4.2 | PDF 物理第 25 页（标准页 25）；[提取稿 §6.4.2 第 1384 行](./fips186-5-ecdsa/00-Standard-Source.md#L1384) | `source PDF page anchor` |
+| [fips186-5-ecdsa/03-Sign.md](./fips186-5-ecdsa/03-Sign.md) | FIPS 186-5 §6.4.1 | PDF 物理第 33 页（标准印刷页 24）；[提取稿 §6.4.1 第 1341 行](./fips186-5-ecdsa/00-Standard-Source.md#L1341) | `source PDF page anchor` |
+| [fips186-5-ecdsa/04-Verify.md](./fips186-5-ecdsa/04-Verify.md) | FIPS 186-5 §6.4.2 | PDF 物理第 34 页（标准印刷页 25）；[提取稿 §6.4.2 第 1391–1393 行](./fips186-5-ecdsa/00-Standard-Source.md#L1391-L1393) | `source PDF page anchor` |
+| [fips186-5-ecdsa/05-RSA-Key-Generation.md](./fips186-5-ecdsa/05-RSA-Key-Generation.md) | FIPS 186-5 §5.1、§5.4(a)、附录 A.1.1、A.1.3、B.3 与表 B.1 | §5.1：[提取稿第 973 行起](./fips186-5-ecdsa/00-Standard-Source.md#L973)，A.1.1：[第 1800 行起](./fips186-5-ecdsa/00-Standard-Source.md#L1800)，A.1.3：[第 1900 行起](./fips186-5-ecdsa/00-Standard-Source.md#L1900)，B.3/表 B.1：[第 2724 行起](./fips186-5-ecdsa/00-Standard-Source.md#L2724)；相关 PDF 物理页 25–27、43–51、65–68（印刷页 16–18、34–42、56–59）。本轮人工视觉核对范围仅为物理页 27、44–51、65–68、76 | `source line anchor` |
+| [fips186-5-ecdsa/06-RSA-Primality-Testing.md](./fips186-5-ecdsa/06-RSA-Primality-Testing.md) | FIPS 186-5 附录 B.3、B.3.1；轮数见表 B.1 和附录 C.1 | B.3：[提取稿第 2724 行起](./fips186-5-ecdsa/00-Standard-Source.md#L2724)；B.3.1：[第 2779 行起](./fips186-5-ecdsa/00-Standard-Source.md#L2779)，PDF 物理页 66–67（印刷页 57–58） | `source line anchor` |
 
 ### `fips197-AES` — 有标准原文提取层
 
@@ -94,10 +96,10 @@
 |---|---|---|---|
 | [fips203-ML-KEM/01-ForExample.md](./fips203-ML-KEM/01-ForExample.md) | §2.4 伪代码符号约定 | [提取稿定位](./fips203-ML-KEM/00-Standard-Source.md#L629)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips203-ML-KEM/02-SHAKE128example.md](./fips203-ML-KEM/02-SHAKE128example.md) | §2.4 伪代码符号约定 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1201)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [fips203-ML-KEM/03-BitsToBytes.md](./fips203-ML-KEM/03-BitsToBytes.md) | §4.2.1 编码与压缩 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1237)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [fips203-ML-KEM/04-BytesToBits.md](./fips203-ML-KEM/04-BytesToBits.md) | §4.2.1 编码与压缩 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1248)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [fips203-ML-KEM/05-ByteEncode.md](./fips203-ML-KEM/05-ByteEncode.md) | §4.2.1 编码与压缩 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1316)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [fips203-ML-KEM/06-ByteDecode.md](./fips203-ML-KEM/06-ByteDecode.md) | §4.2.1 编码与压缩 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1332)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [fips203-ML-KEM/03-BitsToBytes.md](./fips203-ML-KEM/03-BitsToBytes.md) | §4.2.1 编码与压缩 | [Algorithm 3 提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1237-L1245)；[little-endian 解释](./fips203-ML-KEM/00-Standard-Source.md#L1267-L1271)；PDF [物理第 29 页](./fips203-ML-KEM/NIST.FIPS.203.pdf#page=29)（标准页 20）及[解释所在物理第 30 页](./fips203-ML-KEM/NIST.FIPS.203.pdf#page=30)（标准页 21） | `source PDF page anchor` |
+| [fips203-ML-KEM/04-BytesToBits.md](./fips203-ML-KEM/04-BytesToBits.md) | §4.2.1 编码与压缩 | [Algorithm 4 提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1248-L1259)；[little-endian 解释](./fips203-ML-KEM/00-Standard-Source.md#L1267-L1271)；PDF [物理第 29 页](./fips203-ML-KEM/NIST.FIPS.203.pdf#page=29)（标准页 20）及[解释所在物理第 30 页](./fips203-ML-KEM/NIST.FIPS.203.pdf#page=30)（标准页 21） | `source PDF page anchor` |
+| [fips203-ML-KEM/05-ByteEncode.md](./fips203-ML-KEM/05-ByteEncode.md) | §4.2.1 编码与压缩 | [Algorithm 5 提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1316-L1329)；PDF [物理第 31 页](./fips203-ML-KEM/NIST.FIPS.203.pdf#page=31)（标准页 22） | `source PDF page anchor` |
+| [fips203-ML-KEM/06-ByteDecode.md](./fips203-ML-KEM/06-ByteDecode.md) | §4.2.1 编码与压缩 | [Algorithm 6 提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1332-L1342)；PDF [物理第 31 页](./fips203-ML-KEM/NIST.FIPS.203.pdf#page=31)（标准页 22） | `source PDF page anchor` |
 | [fips203-ML-KEM/07-SampleNTT.md](./fips203-ML-KEM/07-SampleNTT.md) | §4.2.2 采样 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1367)；[PDF 物理第 32 页（标准页 23）](./fips203-ML-KEM/NIST.FIPS.203.pdf#page=32) | `source PDF page anchor` |
 | [fips203-ML-KEM/08-SamplePolyCBD.md](./fips203-ML-KEM/08-SamplePolyCBD.md) | §4.2.2 采样 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1404)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips203-ML-KEM/09-NTT.md](./fips203-ML-KEM/09-NTT.md) | §4.3 NTT 变换 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1505)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
@@ -106,14 +108,14 @@
 | [fips203-ML-KEM/12-BaseCaseMultiply.md](./fips203-ML-KEM/12-BaseCaseMultiply.md) | §4.3 NTT 变换 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1603)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips203-ML-KEM/13-K-PKE-KeyGen.md](./fips203-ML-KEM/13-K-PKE-KeyGen.md) | §5.1 K-PKE | [提取稿 Algorithm 13](./fips203-ML-KEM/00-Standard-Source.md#L1664)；PDF 物理第 38 页（标准页 29） | `source PDF page anchor` |
 | [fips203-ML-KEM/14-K-PKE-Encrypt.md](./fips203-ML-KEM/14-K-PKE-Encrypt.md) | §5.2 K-PKE | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1727)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [fips203-ML-KEM/15-K-PKE-Decrypt.md](./fips203-ML-KEM/15-K-PKE-Decrypt.md) | §5.3 K-PKE | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1823)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [fips203-ML-KEM/15-K-PKE-Decrypt.md](./fips203-ML-KEM/15-K-PKE-Decrypt.md) | §5.3 K-PKE | [Algorithm 15 提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1823-L1839)；PDF [物理第 40 页](./fips203-ML-KEM/NIST.FIPS.203.pdf#page=40)（标准页 31） | `source PDF page anchor` |
 | [fips203-ML-KEM/16-ML-KEM-KeyGen-internal.md](./fips203-ML-KEM/16-ML-KEM-KeyGen-internal.md) | §6.1 ML-KEM 内部 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1875)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips203-ML-KEM/17-ML-KEM-Encaps-internal.md](./fips203-ML-KEM/17-ML-KEM-Encaps-internal.md) | §6.2 ML-KEM 内部 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1896)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips203-ML-KEM/18-ML-KEM-Decaps-internal.md](./fips203-ML-KEM/18-ML-KEM-Decaps-internal.md) | §6.3 ML-KEM 内部 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1944)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips203-ML-KEM/19-ML-KEM-KeyGen.md](./fips203-ML-KEM/19-ML-KEM-KeyGen.md) | §7.1 ML-KEM 公开接口 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1997)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips203-ML-KEM/20-ML-KEM-Encaps.md](./fips203-ML-KEM/20-ML-KEM-Encaps.md) | §7.2 ML-KEM 公开接口 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L2068)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips203-ML-KEM/21-ML-KEM-Decaps.md](./fips203-ML-KEM/21-ML-KEM-Decaps.md) | §7.3 ML-KEM 公开接口 | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L2113)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [fips203-ML-KEM/Compress.md](./fips203-ML-KEM/Compress.md) | Compress / Decompress (§4.2.1) | [提取稿](./fips203-ML-KEM/00-Standard-Source.md#L1232)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [fips203-ML-KEM/Compress.md](./fips203-ML-KEM/Compress.md) | Compress / Decompress (§4.2.1) | [提取稿 §4.2.1](./fips203-ML-KEM/00-Standard-Source.md#L1273-L1287)；PDF [物理第 30 页](./fips203-ML-KEM/NIST.FIPS.203.pdf#page=30)（标准页 21） | `source PDF page anchor` |
 
 ### `fips204-ML-DSA` — 有标准原文提取层
 
@@ -207,7 +209,7 @@
 
 | 条目 | 标准定位 | 原文位置 | 证据状态 |
 |---|---|---|---|
-| [gbt15852-mac/01-MAC-Mapping.md](./gbt15852-mac/01-MAC-Mapping.md) | GB/T 15852.1—2020、GB/T 15852.2—2024、GB/T 15852.3—2019 | 官方记录；具体条款待取得原件后定位 | `official source record only` |
+| [gbt15852-mac/01-MAC-Mapping.md](./gbt15852-mac/01-MAC-Mapping.md) | GB/T 15852.1—2020、GB/T 15852.2—2024、GB/T 15852.3—2019 | 官方目录记录；因采标版权，官方页面说明不提供文本阅读服务；具体条款待合法取得原件后定位 | `official source record only` |
 
 ### `gbt17964-modes` — 有标准原文提取层
 
@@ -223,7 +225,7 @@
 | 条目 | 标准定位 | 原文位置 | 证据状态 |
 |---|---|---|---|
 | [gbt32905-SM3/01-SM3.md](./gbt32905-SM3/01-SM3.md) | GB/T 32905-2016 — SM3 算法参考 | [PDF 物理第 5–7 页](./gbt32905-SM3/GBT-32905-2016-SM3.pdf#page=5)（印刷第 2–4 页）；[提取稿 §5，行 265–389](./gbt32905-SM3/00-Standard-Source.md#L265-L389) | `source PDF page anchor` |
-| [gbt32905-SM3/02-Padding.md](./gbt32905-SM3/02-Padding.md) | SM3 — 消息填充原语 | [提取稿 §5.1，行 274–294](./gbt32905-SM3/00-Standard-Source.md#L274-L294)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [gbt32905-SM3/02-Padding.md](./gbt32905-SM3/02-Padding.md) | SM3 — 消息填充原语 | [提取稿 §5.2，行 274–294](./gbt32905-SM3/00-Standard-Source.md#L274-L294)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [gbt32905-SM3/03-Expansion-Compression.md](./gbt32905-SM3/03-Expansion-Compression.md) | SM3 — 消息扩展与压缩原语 | [提取稿 §§5.2–5.3，行 317–389](./gbt32905-SM3/00-Standard-Source.md#L317-L389)；PDF 第 3 页 | `source line anchor` |
 | [gbt32905-SM3/04-Hash-HMAC.md](./gbt32905-SM3/04-Hash-HMAC.md) | SM3 — 完整哈希与 HMAC 复用 | [提取稿 §5.1–§5.3，行 265–389](./gbt32905-SM3/00-Standard-Source.md#L265-L389)；HMAC 复用为项目组合说明，PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 
@@ -233,7 +235,7 @@
 |---|---|---|---|
 | [gbt32907-SM4/01-Overview.md](./gbt32907-SM4/01-Overview.md) | GB/T 32907-2016 §4–§5 | PDF 物理第 5 页（标准页 2）；[提取稿 §4](./gbt32907-SM4/00-Standard-Source.md#L154) | `source PDF page anchor` |
 | [gbt32907-SM4/01-SM4.md](./gbt32907-SM4/01-SM4.md) | GB/T 32907-2016 — SM4 算法参考 | [提取稿 §4–§7，行 194–423](./gbt32907-SM4/00-Standard-Source.md#L194-L423)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [gbt32907-SM4/02-RoundFunction.md](./gbt32907-SM4/02-RoundFunction.md) | SM4 — 6 轮函数 F | [PDF 物理第 5–6 页](./gbt32907-SM4/GBT-32907-2016-SM4.pdf#page=5)（印刷第 2–3 页）；[提取稿 §6，行 235–344](./gbt32907-SM4/00-Standard-Source.md#L235-L344) | `source PDF page anchor` |
+| [gbt32907-SM4/02-RoundFunction.md](./gbt32907-SM4/02-RoundFunction.md) | SM4 — 6 轮函数 F | [PDF 物理第 5–6 页](./gbt32907-SM4/GBT-32907-2016-SM4.pdf#page=5)（印刷第 2–3 页）；[提取稿 §6，行 235–358（含线性变换式（3））](./gbt32907-SM4/00-Standard-Source.md#L235-L358) | `source PDF page anchor` |
 | [gbt32907-SM4/03-Algorithm.md](./gbt32907-SM4/03-Algorithm.md) | GB/T 32907-2016 §7，Eq. (4)–(8) | PDF 物理第 6–7 页（标准页 3–4）；[提取稿 §7](./gbt32907-SM4/00-Standard-Source.md#L171) | `source PDF page anchor` |
 | [gbt32907-SM4/04-Appendix.md](./gbt32907-SM4/04-Appendix.md) | GB/T 32907-2016 附录 A（资料性） | PDF 物理第 8–9 页（标准页 5–6）；[提取稿附录 A](./gbt32907-SM4/00-Standard-Source.md#L506) | `source PDF page anchor` |
 
@@ -247,7 +249,7 @@
 |---|---|---|---|
 | [gbt32918-SM2/01-SM2.md](./gbt32918-SM2/01-SM2.md) | GB/T 32918 — SM2 算法参考 | [提取稿第 2 部分签名章节，行 6532–6713](./gbt32918-SM2/00-Standard-Source.md#L6532-L6713)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [gbt32918-SM2/02-Curve-Operations.md](./gbt32918-SM2/02-Curve-Operations.md) | GB/T 32918.1-2016 §5；GB/T 32918.5-2017 参数 | GB/T 32918.1-2016 §5.1–§5.2；[提取稿第 1376 行](./gbt32918-SM2/00-Standard-Source.md#L1376) 起 | `source line anchor` |
-| [gbt32918-SM2/03-Signature.md](./gbt32918-SM2/03-Signature.md) | GB/T 32918.2-2016 §6–§7 | GB/T 32918.2-2016 §6.1、§7.1；[签名算法](./gbt32918-SM2/00-Standard-Source.md#L6651)、[验签算法](./gbt32918-SM2/00-Standard-Source.md#L6713) | `source line anchor` |
+| [gbt32918-SM2/03-Signature.md](./gbt32918-SM2/03-Signature.md) | GB/T 32918.2-2016 §6–§7 | GB/T 32918.1-2016 §6.2.1、GB/T 32918.2-2016 §6.1、§7.1；[公钥验证](./gbt32918-SM2/00-Standard-Source.md#L1536)、[签名算法](./gbt32918-SM2/00-Standard-Source.md#L6651)、[验签算法](./gbt32918-SM2/00-Standard-Source.md#L6713) | `source line anchor` |
 | [gbt32918-SM2/04-Encryption.md](./gbt32918-SM2/04-Encryption.md) | SM2 — 公钥加密原语 | [提取稿 §6.1，行 8621–8657](./gbt32918-SM2/00-Standard-Source.md#L8621-L8657)；流程图行 8660–8674；PDF 第 3 页 | `source line anchor` |
 | [gbt32918-SM2/05-Key-Exchange.md](./gbt32918-SM2/05-Key-Exchange.md) | SM2 — 密钥交换原语 | [提取稿 §6.1，行 7455–7581](./gbt32918-SM2/00-Standard-Source.md#L7455-L7581)；流程图行 7584–7591；PDF 第 4–5 页 | `source line anchor` |
 
@@ -272,8 +274,8 @@
 | 条目 | 标准定位 | 原文位置 | 证据状态 |
 |---|---|---|---|
 | [gbt38635-SM9/01-SM9.md](./gbt38635-SM9/01-SM9.md) | SM9 — 标识密码算法（签名部分） | [提取稿第 2 部分 §6，行 2032–2090](./gbt38635-SM9/00-Standard-Source.md#L2032-L2090)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [gbt38635-SM9/02-H1-H2-and-Parameters.md](./gbt38635-SM9/02-H1-H2-and-Parameters.md) | SM9 — 参数与 H1/H2 原语 | [提取稿第 2 部分 §5.2–§5.3.2.3，行 1948–2012](./gbt38635-SM9/00-Standard-Source.md#L1948-L2012)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [gbt38635-SM9/03-Signature.md](./gbt38635-SM9/03-Signature.md) | SM9 — 签名与验签原语 | [提取稿第 2 部分 §6，行 2032–2090](./gbt38635-SM9/00-Standard-Source.md#L2032-L2090)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [gbt38635-SM9/02-H1-H2-and-Parameters.md](./gbt38635-SM9/02-H1-H2-and-Parameters.md) | GB/T 38635.2-2020 §5.2–§5.3.2.3 — 参数与 H1/H2 原语 | [提取稿第 2 部分 §5.2–§5.3.2.3，行 1948–2012](./gbt38635-SM9/00-Standard-Source.md#L1948-L2012)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [gbt38635-SM9/03-Signature.md](./gbt38635-SM9/03-Signature.md) | GB/T 38635.1-2020 §5.5、§7.2.7、§7.2.9；GB/T 38635.2-2020 §6.2、§6.4（流程图：§6.3、§6.5） | [第 1 部分 §5.5](./gbt38635-SM9/00-Standard-Source.md#L313)、[§7.2.7](./gbt38635-SM9/00-Standard-Source.md#L457)、[§7.2.9](./gbt38635-SM9/00-Standard-Source.md#L509)；[第 2 部分 §6.2](./gbt38635-SM9/00-Standard-Source.md#L2040)、[§6.4](./gbt38635-SM9/00-Standard-Source.md#L2062) | `source line anchor` |
 | [gbt38635-SM9/04-Protocol-Gaps.md](./gbt38635-SM9/04-Protocol-Gaps.md) | SM9 — 未覆盖协议与验证缺项 | [提取稿第 2 部分 §7–§9，行 2091–2290](./gbt38635-SM9/00-Standard-Source.md#L2091-L2290)；本页仍是项目缺项边界说明，PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 
 ### `gmt0005-randomness` — 有标准原文提取层
@@ -300,8 +302,8 @@
 | 条目 | 标准定位 | 原文位置 | 证据状态 |
 |---|---|---|---|
 | [gmt0103-rng/01-rng.md](./gmt0103-rng/01-rng.md) | GM/T 0103-2021 — 随机数发生器总体框架参考 | [提取稿 §4，行 128–186](./gmt0103-rng/00-Standard-Source.md#L128-L186)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [gmt0103-rng/02-Entropy-and-Health.md](./gmt0103-rng/02-Entropy-and-Health.md) | GM/T 0103 — 熵源、检测与故障处理 | [提取稿 §4.2–§4.5，行 151–186](./gmt0103-rng/00-Standard-Source.md#L151-L186)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [gmt0103-rng/03-Deterministic-Generation.md](./gmt0103-rng/03-Deterministic-Generation.md) | GM/T 0103 — 确定性生成原语 | [提取稿 §4.4，行 173–180](./gmt0103-rng/00-Standard-Source.md#L173-L180)；确定性生成的项目映射为组合说明，PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [gmt0103-rng/02-Entropy-and-Health.md](./gmt0103-rng/02-Entropy-and-Health.md) | GM/T 0103-2021 §4.2–§4.5 熵源、熵评估、后处理与检测要求 | [提取稿 §4.2–§4.5，行 151–186](./gmt0103-rng/00-Standard-Source.md#L151-L186)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [gmt0103-rng/03-Deterministic-Generation.md](./gmt0103-rng/03-Deterministic-Generation.md) | GM/T 0103-2021 §4.1(c)、§4.4 后处理框架（关系说明；非算法依据） | [提取稿 §4.1(c)，行 147](./gmt0103-rng/00-Standard-Source.md#L147)；[§4.4，行 173–180](./gmt0103-rng/00-Standard-Source.md#L173-L180)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 
 ### `mceliece-goppa` — 仅有研究/参考索引
 
@@ -309,6 +311,10 @@
 |---|---|---|---|
 | [mceliece-goppa/01-Goppa-Codes.md](./mceliece-goppa/01-Goppa-Codes.md) | Goppa 码定义、生成多项式与 syndrome | Goppa 1970 §2–3；ISO/IEC 18033-2:2006/Amd 2:2026 Clause 13；完整 ISO 文本未本地保存 | `research bibliography link` |
 | [mceliece-goppa/02-Patterson.md](./mceliece-goppa/02-Patterson.md) | Patterson 代数译码、错误定位多项式与 Chien 搜索 | Patterson 1975 pp. 203–207；ISO/IEC 18033-2:2006/Amd 2:2026 Clause 13；完整 ISO 文本未本地保存 | `research bibliography link` |
+
+### `randomness-certification-sources` — source 例外或缺项
+
+没有结构化条目页。
 
 ### `rfc2315-pkcs7` — source 例外或缺项
 
@@ -327,6 +333,10 @@
 | 条目 | 标准定位 | 原文位置 | 证据状态 |
 |---|---|---|---|
 | [rfc5903-ecdh/01-ECDH.md](./rfc5903-ecdh/01-ECDH.md) | RFC 5903 §3.1、§8.1 | [RFC 原文 §3.1，行 195–229](./rfc5903-ecdh/rfc5903.txt#L195-L229)；[§8.1，行 465–523](./rfc5903-ecdh/rfc5903.txt#L465-L523) | `RFC .txt evidence` |
+
+### `rfc6979-ecdsa` — source 例外或缺项
+
+没有结构化条目页。
 
 ### `rfc7748-x25519` — source 例外或缺项
 

@@ -3,40 +3,41 @@
 
 > [← Back to index](../guides/DEMO.en.md) · [demo file index](../../demos/README.en.md)
 >
-> Scenario 4 (ML-KEM primitives) + Scenario 9 (ML-KEM.Encaps), per the `docs/DEMO.md` index.
+> Post-quantum primitives, scalar math, and ML-KEM Encaps, per the [Demo guide](../guides/DEMO.en.md).
 
 ---
 
-## Scenario 4: ML-KEM Primitives (10 min)
+> Step-by-step block chains live in the [assembly guide](../build/INDEX.en.md); this page covers the scenario, inputs/outputs, and boundaries.
+
+## Scenario 4: Post-Quantum Primitives and Scalar Math (10 min)
 
 ### Goal
-Understand ML-KEM keygen core steps with atomic blocks: CBD sampling → NTT → matrix generation → matrix×vector.
+Inspect several ML-KEM-related primitives separately, alongside a generic scalar matrix-vector teaching block. This workspace is not an ML-KEM key-generation flow, and the scalar matrix-vector block is not ML-KEM's polynomial-ring operation.
 
 ### Steps
 
 1. **Load demo**: import `demos/ML-KEM-Atomic.json`
 2. **Inspect**:
-   - 32-byte seed (ρ/σ from SHAKE-256 output)
-   - `pq_sample_poly_cbd`: CBD(η₂) sampling → secret vectors ŝ/ê
-   - `pq_sample_ntt`: sample NTT matrix A ∈ Z_q^{K×K×256} from seed
-   - `pq_ntt`: NTT of a vector
-   - `pq_mat_vec_mul`: A × ŝ in the NTT domain
-3. **Generate**: click "▶", pick JavaScript
+   - `pq_sample_poly_cbd`: fixed-input CBD(η₂) sampling example
+   - `pq_sample_ntt`: SampleNTT example with a fixed seed
+   - `pq_ntt`: standalone 256-element NTT example
+   - `pq_mat_vec_mul`: scalar teaching example `[1,2,3,4] × [1,2] mod 3329 = [5,11]`; it is not connected to the other primitives
+3. **Generate**: click "▶", pick JavaScript. The blocks are independent input/output examples, not a complete KeyGen or conformance test.
 
 ### Atomic blocks
 | Block | Function | Standard |
 |----|------|------|
-| `pq_sample_poly_cbd` | CBD(η₂) sampling | FIPS 203 §4.2.2 |
-| `pq_sample_ntt` | pseudorandom NTT matrix A | FIPS 203 §4.2.2 |
-| `pq_ntt` | vector NTT transform | FIPS 203 §4.3 |
-| `pq_mat_vec_mul` | NTT-domain matrix×vector | FIPS 203 §4.3 |
+| `pq_sample_poly_cbd` | CBD(η₂) sampling example | FIPS 203 Algorithm 8 `SamplePolyCBD` (primitive example, not complete KeyGen) |
+| `pq_sample_ntt` | SampleNTT example | FIPS 203 Algorithm 7 `SampleNTT` (primitive example, not complete matrix generation) |
+| `pq_ntt` | NTT transform example | FIPS 203 Algorithm 9 `NTT` (primitive example) |
+| `pq_mat_vec_mul` | Scalar modular matrix-vector teaching helper | No standards mapping; excluded from ML-KEM/ML-DSA conformance evidence |
 
 ---
 
 ## Scenario 9: ML-KEM.Encaps (advanced, 20 min)
 
 ### Goal
-Build the full ML-KEM-512 Encaps chain (k=2) with post-quantum atomic blocks; verify the FIPS 203 official vector.
+Build the full ML-KEM-512 Encaps chain (k=2) with post-quantum atomic blocks; compare against the FIPS 203 reference cases registered with the repository for this parameter set.
 
 ### Steps
 
@@ -50,7 +51,7 @@ Build the full ML-KEM-512 Encaps chain (k=2) with post-quantum atomic blocks; ve
    - **u/v**: `pq_ntt_mul` pointwise + `pq_poly_add` accumulate → `pq_intt`; μ = Decompress(ByteDecode1(m))
    - **c1/c2**: `pq_compress`(d=10/4) → `pq_byte_encode` → concat
 3. **Generate**: click "▶", pick Python or JavaScript
-4. **Verify**: `node dist-verify/verify-demo.js demos/procedures/ML-KEM-Encaps.json --exec` → c (768B)‖K (32B) matches the FIPS 203 reference
+4. **Verify**: run the generated code locally and compare it with the fixed expected value registered for this page; the same implementation separately matches the NIST ACVP ML-KEM-512 encapsulation cases (tgId=1, tcId 1–3) shipped with the repository. They are a subset, not a complete ACVP validation session or certification
 
 ### Blocks
 | Block | Function |
@@ -81,35 +82,35 @@ Build the full ML-KEM-512 Encaps chain (k=2) with post-quantum atomic blocks; ve
 
 ---
 
-**Official-vector verification**: `node dist-verify/verify-demo.js demos/procedures/ML-KEM-Encaps.json --exec` → `=== ALL VECTORS PASS ===`
+This page is a project fixed regression; the same implementation separately matches the ML-KEM-512 ACVP cases shipped with the repository (tgId=1, tcId 1–3) byte for byte. That is an official-case subset, not complete ACVP validation or certification.
 
 ---
 
-## Scenario 10: FORS Few-Time Signatures (FIPS 205 §8, 20 min)
+## Scenario 10: FORS Teaching Variant (FIPS 205 §8 Reference, 20 min)
 
 ### Goal
-Understand the FORS (Forest of Random Subsets) part of SPHINCS+: k Merkle trees, 4-bit message chunks selecting leaves, authentication paths, forest root.
+Explore FORS structure concepts: Merkle trees, message chunks selecting leaves, authentication paths, and a forest root. This project workspace is a custom teaching variant, not an SLH-DSA implementation compatible with FIPS 205.
 
 ### Steps
 
 1. **Load the demo**: import `demos/procedures/FORS-Sign.json`
 2. **Structure** (`procedures_defreturn` wrapping three black-box blocks):
-   - `FORS_Sign(sk_seed, m)`: sk_seed 32B + message digest m 2B (16 bits, 4-bit chunks, chunk 0 most significant) → **640B signature** (4 trees × (32B leaf secret + 4×32B auth path))
-   - `FORS_PkFromSk(sk_seed)`: 4 FORS tree roots → `pk = H(ADRS(FORS_ROOTS) ‖ roots)` (message-independent)
-   - `FORS_Verify(pk, m, sig)`: rebuild tree roots from sk + auth → compare public key
+   - `FORS_Sign(sk_seed, m)`: project-fixed `n=32,k=4,a=4`; 32-byte seed and 2-byte message → 640-byte project signature
+   - `FORS_PkFromSk(sk_seed)`: derives a 32-byte value using project-specific SHAKE concatenation
+   - `FORS_Verify(pk, m, sig)`: rebuilds and compares using the same project rules; this is an internal-consistency check
 3. **Leaf-selection math**: `fors_leaf_index(m, i)` atomic block — the i-th 4-bit chunk value is the in-tree leaf index (`demos/procedures/Tree-Index.json` asserts chunking: `0x3C A5` → [3, 12, 10, 5])
-4. **Merkle proof**: `merkle_auth_path` outputs the sibling at each level → leaf + auth rebuilt via `merkle_node` chain == `merkle_root` full-tree root (Tree-Index property vectors)
-5. **Verify**: `node dist-verify/verify-demo.js demos/procedures/FORS-Sign.json --exec` → roundtrip / determinism / tamper detection PASS
+4. **Merkle structure**: `merkle_auth_path` and `merkle_root` demonstrate generic tree path/root reconstruction, not the XMSS/FORS node algorithms in SLH-DSA
+5. **Verify**: run the generated code and check signature roundtrip, determinism, and tamper detection. This is an internal self-consistency check; FORS here is a teaching variant, not a FIPS 205 implementation
 
 ### Blocks
 | Block | Role |
 |----|------|
-| `fors_sign` / `fors_verify` / `fors_pk_from_sk` | FORS black-box trio (FIPS 205 Alg 12-14) |
+| `fors_sign` / `fors_verify` / `fors_pk_from_sk` | Custom project FORS teaching variant; not a FIPS 205 implementation |
 | `fors_leaf_index` | 4-bit message chunk → leaf index |
 | `merkle_auth_path` / `merkle_root` / `merkle_node` | Merkle proof (auth path + rebuild) |
-| `slh_addr` / `slh_adrs_full` | ADRS addressing (SHAKE domain separation) |
+| `slh_addr` / `slh_adrs_full` | ADRS prefix/partial-field teaching encoders; not complete standard address semantics |
 
-> Teaching point: FORS is a *few-time* scheme — each key signs few messages; SPHINCS+ aggregates many WOTS+/FORS keys under Merkle trees. FORS has no standalone official vectors (FIPS 205 KATs are full SLH-DSA); property vectors cover it.
+> Test boundary: the registered cases check only project-internal determinism, sign/verify round-trip, and tamper rejection. They are not official vectors and do not establish FIPS 205 compatibility; the standard implementation remains incomplete.
 >
 > **Related standard**: [standards/fips205-SLH-DSA/](../standards/fips205-SLH-DSA/) (FIPS 205 full algorithm index + ADRS/WOTS+/FORS breakdown).
 
@@ -128,7 +129,7 @@ This demo shows mathematical components used by code-based public-key cryptograp
    - `GOPPA_INV(a, g)`: `gf2m_poly_xgcd` + `arr_slice` parse → (z−α)⁻¹ mod g (inverse check `u·(z−177) ≡ 1`)
    - `GOPPA_SYN(a, b, g)`: syndrome atomic chain = Σ (z−αᵢ)⁻¹ mod g — **the teaching entry to Patterson**
 3. **Decoding** (black box): `GOPPA_DEC(y, g, L)` → full Patterson: syndrome → sqrt(z+S⁻¹) (16×16 Frobenius) → extended Euclid → σ root-finding → bit flips
-4. **Verify**: `node dist-verify/verify-demo.js demos/procedures/Goppa-Decode.json --exec` → no/1/2-error roundtrips + tampered-G uncorrectable PASS
+4. **Verify**: run the generated code and check no/1/2-error roundtrips plus uncorrectable tampered G. This is a self-consistency check of a code-based teaching component, not a complete McEliece cryptosystem
 
 ### Blocks
 | Block | Role |

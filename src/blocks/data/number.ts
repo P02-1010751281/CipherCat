@@ -55,7 +55,7 @@ Blockly.Blocks['cipher_key_from_seed'] = {
     this.appendDummyInput().appendField('密钥 (from seed)');
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(230);
-    this.setTooltip('从 seed 派生 4 个 32-bit 字，输出 Python 列表表达式');
+    this.setTooltip('取 seed 前 16 字节，按大端顺序输出 4 个无符号 32-bit 字；这只是拆分，不是安全 KDF');
     this.setHelpUrl('');
   },
 };

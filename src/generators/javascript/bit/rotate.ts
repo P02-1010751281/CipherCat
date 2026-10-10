@@ -1,10 +1,11 @@
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
+import { requireVariableName } from '@/generators/assignment-target';
 
 javascriptGenerator.forBlock['bit_rotate_left'] = function(block: Block): string {
   const input = javascriptGenerator.valueToCode(block, 'Input', Order.ATOMIC) || '0';
   const bits = block.getFieldValue('bit') || '0';
-  const output = javascriptGenerator.valueToCode(block, 'Output', Order.ATOMIC) || 'result';
+  const output = requireVariableName(javascriptGenerator.valueToCode(block, 'Output', Order.ATOMIC), 'javascript', block.type, 'Output');
 
   return `${output} = ((${input} << ${bits}) | (${input} >>> (32 - ${bits}))) >>> 0;\n`;
 };
@@ -12,7 +13,7 @@ javascriptGenerator.forBlock['bit_rotate_left'] = function(block: Block): string
 javascriptGenerator.forBlock['bit_rotate_right'] = function(block: Block): string {
   const input = javascriptGenerator.valueToCode(block, 'Input', Order.ATOMIC) || '0';
   const bits = block.getFieldValue('bit') || '0';
-  const output = javascriptGenerator.valueToCode(block, 'Output', Order.ATOMIC) || 'result';
+  const output = requireVariableName(javascriptGenerator.valueToCode(block, 'Output', Order.ATOMIC), 'javascript', block.type, 'Output');
 
   return `${output} = ((${input} >>> ${bits}) | (${input} << (32 - ${bits}))) >>> 0;\n`;
 };
@@ -21,7 +22,7 @@ javascriptGenerator.forBlock['bit_rotate_left_op'] = function(block: Block): str
   const input = javascriptGenerator.valueToCode(block, 'Input', Order.ATOMIC) || '0';
   const option = block.getFieldValue('option') || 'ROL32_XOR';
   const bits = block.getFieldValue('bit') || '0';
-  const output = javascriptGenerator.valueToCode(block, 'Output', Order.ATOMIC) || 'result';
+  const output = requireVariableName(javascriptGenerator.valueToCode(block, 'Output', Order.ATOMIC), 'javascript', block.type, 'Output');
 
   const operations: Record<string, string> = {
     'ROL32_XOR': '^',
@@ -38,7 +39,7 @@ javascriptGenerator.forBlock['bit_rotate_right_op'] = function(block: Block): st
   const input = javascriptGenerator.valueToCode(block, 'Input', Order.ATOMIC) || '0';
   const option = block.getFieldValue('option') || 'ROR32_XOR';
   const bits = block.getFieldValue('bit') || '0';
-  const output = javascriptGenerator.valueToCode(block, 'Output', Order.ATOMIC) || 'result';
+  const output = requireVariableName(javascriptGenerator.valueToCode(block, 'Output', Order.ATOMIC), 'javascript', block.type, 'Output');
 
   const operations: Record<string, string> = {
     'ROR32_XOR': '^',

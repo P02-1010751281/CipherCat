@@ -5,6 +5,18 @@ import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
 import { registerKeccakF1600 } from './helpers';
 
+function registerShakeInputBytes(): string {
+  return javascriptGenerator.provideFunction_('shakeInputBytes', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(value) {',
+    '  if (typeof value === "string") return new TextEncoder().encode(value);',
+    '  if (value instanceof Uint8Array) return value;',
+    '  if (!Array.isArray(value)) throw new TypeError("SHAKE input must be UTF-8 text or a byte array of integers from 0 to 255");',
+    '  for (let i = 0; i < value.length; i++) { const byte = value[i]; if (typeof byte !== "number" || !Number.isInteger(byte) || byte < 0 || byte > 255) throw new TypeError("SHAKE input must be UTF-8 text or a byte array of integers from 0 to 255"); }',
+    '  return Uint8Array.from(value);',
+    '}',
+  ]);
+}
+
 // XOF: Extendable Output Function (SHAKE128/SHAKE256)
 javascriptGenerator.forBlock['pq_xof'] = function (
   block: Block,
@@ -16,17 +28,18 @@ javascriptGenerator.forBlock['pq_xof'] = function (
   const algo = block.getFieldValue('ALGO') || 'SHAKE128';
   const rate = algo === 'SHAKE128' ? 168 : 136;
 
+  const inputBytesName = registerShakeInputBytes();
   const keccakFName = registerKeccakF1600();
 
   const shakeName = javascriptGenerator.provideFunction_('shakeXOF', [
     'function ' +
       javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
       '(inp, outBytes, rate) {',
-    '  if (typeof inp === "string") inp = new TextEncoder().encode(inp);',
-    '  else if (Array.isArray(inp)) inp = Uint8Array.from(inp);',
+    '  if (!Number.isSafeInteger(outBytes) || outBytes < 0) throw new RangeError("SHAKE output length must be a non-negative safe integer number of bytes");',
+    '  inp = ' + inputBytesName + '(inp);',
     '  let state = new Array(25).fill(0n);',
+    // Suffix and final padding bit share one byte at the rate-minus-one boundary.
     '  let padLen = rate - (inp.length % rate);',
-    '  if (padLen === 1) padLen += rate;',
     '  let padded = new Uint8Array(inp.length + padLen);',
     '  padded.set(inp);',
     '  padded[inp.length] = 0x1F;',
@@ -74,20 +87,22 @@ javascriptGenerator.forBlock['pq_prf'] = function (
   const algo = block.getFieldValue('ALGO') || 'SHAKE256';
   const rate = algo === 'SHAKE128' ? 168 : 136;
 
+  const inputBytesName = registerShakeInputBytes();
   const keccakFName = registerKeccakF1600();
 
   const funcName = javascriptGenerator.provideFunction_('prf_shake', [
     'function ' +
       javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
       '(seed, nonce, outLen, rate) {',
-    '  if (typeof seed === "string") seed = new TextEncoder().encode(seed);',
-    '  else if (Array.isArray(seed)) seed = Uint8Array.from(seed);',
+    '  if (!Number.isSafeInteger(nonce) || nonce < 0 || nonce > 255) throw new RangeError("SHAKE PRF nonce must be an integer byte");',
+    '  if (!Number.isSafeInteger(outLen) || outLen < 0) throw new RangeError("SHAKE output length must be a non-negative safe integer number of bytes");',
+    '  seed = ' + inputBytesName + '(seed);',
     '  let data = new Uint8Array(seed.length + 1);',
     '  data.set(seed);',
     '  data[seed.length] = nonce & 0xFF;',
     '  let state = new Array(25).fill(0n);',
+    // Suffix and final padding bit share one byte at the rate-minus-one boundary.
     '  let padLen = rate - (data.length % rate);',
-    '  if (padLen === 1) padLen += rate;',
     '  let padded = new Uint8Array(data.length + padLen);',
     '  padded.set(data);',
     '  padded[data.length] = 0x1F;',

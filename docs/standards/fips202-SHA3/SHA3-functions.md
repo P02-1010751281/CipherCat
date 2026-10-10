@@ -7,7 +7,7 @@
 | 标准定位 | # SHA-3 Hash Functions (§6.1) |
 | 原文证据 | [source：fips202-SHA3](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
 | 原文位置 | [提取稿定位](./00-Standard-Source.md#L1149)；PDF 物理页需结合同目录 PDF 核对 |
-| 项目状态 | 已实现（详见本文现有实现/缺项说明） |
+| 项目状态 | 工程实现覆盖 SHA3-224/256/384/512；目前为有限回归证据，不是完整官方测试集 |
 
 ## 原文定位与引用
 
@@ -35,7 +35,7 @@ KECCAK[c](N, d) = SPONGE[KECCAK-p[1600,24], pad10*1, 1600-c](N, d)
 
 ## 输入与输出
 
-输入是任意 bit length 的消息 `M`；输出长度分别为 224、256、384 或 512 bit。`r+c=1600`，各变体的 `r`、`c` 和字节率见下表。
+FIPS 202 的输入是任意 bit length 的消息 `M`；输出长度分别为 224、256、384 或 512 bit。当前 `sha3_hash` Blockly 端口为 `TYPE_BYTES`，只覆盖字节对齐输入子集，不实现任意位长消息。`r+c=1600`，各变体的 `r`、`c` 和字节率见下表。
 
 给定消息 M, 四个 SHA-3 哈希函数通过追加 2-bit 后缀并指定输出长度定义:
 
@@ -61,17 +61,22 @@ SHA3-512(M) = KECCAK[1024](M ‖ 01, 512)
 
 ### 块实现
 
-`hash_sha3_pad` + `hash_sha3_absorb` + `hash_sha3_squeeze`
+高层端点为 `sha3_hash`；底层相关块为 `hash_sha3_pad_text`、`hash_sha3_pad_hex`、`sponge_pad`、`sponge_absorb`、`sponge_squeeze` 和固定实现 `keccak_f`（1600/24）。
 
-下拉框预设 rate 1088 (SHA3-256) 和 576 (SHA3-512)。Suffix = `0x06` 对应 SHA-3 域分离后缀 `01` 的比特模式 (pad10*1 中后缀比特在首字节低位, LSB 编码)。
+各块参数并不相同，不能互相套用：
+
+- `sha3_hash` 可选 SHA3-224/256/384/512；输入端口为字节数据，所以实际范围仅含字节对齐消息。
+- `hash_sha3_pad_text` 和 `hash_sha3_pad_hex` 固定使用 SHA3-256 参数：rate 1088 bit（136 byte）、suffix `0x06`。
+- `sponge_pad` 的 rate 下拉项为 1088、576、1152、832、1344 bit，suffix 下拉项为 `0x06`（SHA-3）和 `0x1F`（SHAKE）。FIPS 202 中的标准组合为 SHA3-224 `(1152, 0x06)`、SHA3-256 `(1088, 0x06)`、SHA3-384 `(832, 0x06)`、SHA3-512 `(576, 0x06)`、SHAKE128 `(1344, 0x1F)`、SHAKE256 `(1088, 0x1F)`；两个下拉框可独立选择，其他组合不据此声称是标准 SHA-3/XOF。
+- `sponge_absorb` 只接受完整 rate 字节块，不对短尾块进行隐式零填充；调用方需先使用相应填充规则。
 
 ## 项目映射
 
-`hash_sha3_pad`、`hash_sha3_absorb` 和 `hash_sha3_squeeze` 是项目实现入口；本页记录标准函数族，不把其中任一块等同于 FIPS 认证。
+[`sha3-block-contract.test.ts`](../../../tests/unit/sha3-block-contract.test.ts) 从真实 `sha3_hash` Blockly 块生成并执行 JavaScript/Python，核对四个输出尺寸在字节对齐的 `abc` 和各自 `rate−1` 字节输入上的固定结果，并用 Node 原生 SHA-3 实现交叉核验。`sponge_absorb` 对完整/部分 rate 块的契约由 [`sponge-absorb-contract.test.ts`](../../../tests/unit/sponge-absorb-contract.test.ts) 覆盖。上述均为有限的项目回归，不代表任意位长输入支持、完整官方向量集或 FIPS 算法验证。
 
 ## 核验与缺项
 
-应核对四个输出长度、空消息、多块消息、suffix/padding 编码和 FIPS 202 向量；逐字标准上下文见下方 source 摘录。
+剩余测试缺口包括空消息、跨多个 rate 块的输入、更多输出/错误边界及完整 NIST 官方测试数据。项目内固定结果不能据此声称通过完整 FIPS 202 算法验证或取得产品认证；逐字标准上下文见下方 source 摘录。
 ## 原文摘录
 
 > 以下为 00-Standard-Source.md 的说明性定位引文；仅规范化了空白和分页换行，完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L1149)。

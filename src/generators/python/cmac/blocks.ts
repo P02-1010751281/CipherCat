@@ -39,6 +39,7 @@ function registerCmacSubkeys(): string {
 function registerCmacCbc(): string {
   return pythonGenerator.provideFunction_('cmac_cbc', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg, key, enc_block, double_fn):',
+    '    if len(key) != 16: raise ValueError("CMAC key must be 16 bytes")',
     '    K1, K2 = ' + registerCmacSubkeys() + '(key, enc_block, double_fn)',
     '    blocks = [msg[i:i + 16] for i in range(0, len(msg), 16)]',
     '    if not blocks:',
@@ -133,8 +134,8 @@ pythonGenerator.forBlock['cmac_mac'] = function (block: Block): [string, number]
   if (cipher === 'aes') {
     // 复用 modes/helpers 的 registerAesEcb（内部注册 aes_encrypt_block）
     registerAesEcb();
-    return [cbc + '(' + msg + ', ' + key + ', aes_encrypt_block, ' + doubleFn + ')', Order.ATOMIC];
+    return ['bytes(' + cbc + '(' + msg + ', ' + key + ', aes_encrypt_block, ' + doubleFn + '))', Order.ATOMIC];
   }
   const sm4 = registerSm4Encrypt();
-  return [cbc + '(' + msg + ', ' + key + ', ' + sm4 + ', ' + doubleFn + ')', Order.ATOMIC];
+  return ['bytes(' + cbc + '(' + msg + ', ' + key + ', ' + sm4 + ', ' + doubleFn + '))', Order.ATOMIC];
 };

@@ -1,16 +1,17 @@
 /**
- * FIPS 205 完整 ADRS 地址块定义（SPHINCS+/SLH-DSA 域分隔）
+ * SLH-DSA ADRS 教学地址块（部分字段映射）
  *
  * slh_adrs_full(layer, tree, type, keypair, height, index) → 32 字节地址
  *
- * 布局（与项目 slh_addr 约定一致，补齐 type 相关字段）：
- *   a[0] layer | a[1:13] tree | a[13:17] type | a[17:21] keypair
- *   type = WOTS_HASH(0)：  a[21:25] chain, a[25:29] hash
- *   type = TREE(2)/FORS_TREE(3)：a[21:25] tree_height, a[25:29] tree_index
- *   其余 type：a[21:29] 置零
+ * 字段映射：
+ *   a[0:4] layer | a[4:16] tree | a[16:20] type | a[20:24] keypair
+ *   type = WOTS_HASH(0)/WOTS_PRF(5)：a[24:28] chain, a[28:32] hash/zero
+ *   type = TREE(2)/FORS_TREE(3)：a[24:28] tree_height, a[28:32] tree_index
+ *   type = FORS_PRF(6)：a[24:28] zero, a[28:32] tree_index
+ *   其他 type：a[24:32] 置零
  *
- * 教学点：SHAKE 域分隔——同一 (layer, tree, keypair) 下不同 type 产生不相交的哈希输入域。
- * 性质向量：32 字节、确定性、type 字段位置、不同 type 输出不同。
+ * 该块只接受非负安全整数，无法精确表达所有 96-bit tree address；不能视作完整 FIPS 205 实现。
+ * 性质向量：固定输入下的字节位置和双语言一致性。
  */
 import * as Blockly from 'blockly/core';
 import { TYPE_BYTES } from '@/constants/block-types';
@@ -38,8 +39,8 @@ Blockly.Blocks['slh_adrs_full'] = {
           ['TREE', '2'],
           ['FORS_TREE', '3'],
           ['FORS_ROOTS', '4'],
-          ['FORS_PK', '5'],
-          ['WOTS_PRF', '6'],
+          ['WOTS_PRF', '5'],
+          ['FORS_PRF', '6'],
         ]),
         'TYPE',
       );
@@ -48,18 +49,17 @@ Blockly.Blocks['slh_adrs_full'] = {
       .appendField(' kp:');
     this.appendValueInput('HEIGHT')
       .setCheck(null)
-      .appendField(' h:');
+      .appendField(' word5:');
     this.appendValueInput('INDEX')
       .setCheck(null)
-      .appendField(' idx:');
+      .appendField(' word6:');
     this.appendDummyInput().appendField(')');
     this.setInputsInline(true);
     this.setOutput(true, TYPE_BYTES);
     this.setColour(ADRS_COLOUR);
     this.setTooltip(
-      'FIPS 205 ADRS 32 字节地址：layer/tree/type/keypair 公共前缀 + type 相关字段' +
-        '（WOTS_HASH 用 chain/hash，TREE/FORS_TREE 用 height/index）。' +
-        'SHAKE 域分隔：不同 type 的哈希输入互不相交。',
+      'SLH-DSA ADRS 教学编码。word5/word6 随类型表示 chain/hash、tree height/index 或 FORS_PRF 地址字段；TREE 类型将 kp 字置零。' +
+        '输入限非负安全整数，Number 精度不足以覆盖完整 96-bit tree address；不是完整 FIPS 205 实现。',
     );
     this.setHelpUrl(FIPS205_URL);
   },

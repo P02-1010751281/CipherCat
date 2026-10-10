@@ -5,7 +5,7 @@
 | 类型 | 原语 / 函数 |
 | 标准定位 | SM3 — 消息填充原语 |
 | 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
-| 原文位置 | [提取稿 §5.1，行 274–294](./00-Standard-Source.md#L274-L294)；PDF 物理页需结合同目录 PDF 核对 |
+| 原文位置 | [提取稿 §5.2，行 274–294](./00-Standard-Source.md#L274-L294)；PDF 物理页需结合同目录 PDF 核对 |
 | 项目状态 | 仅参考（详见本文现有实现/缺项说明） |
 
 ## 原文定位与引用
@@ -34,8 +34,8 @@ M' = M || 1 || 0^k || [len(M)]_64
 
 ## CipherCat 映射
 
-`hash_sm3_pad`、`hash_sm3_pad_text`、`hash_sm3_pad_hex` 分别覆盖字节、UTF-8 文本和十六进制输入路径。它们只返回填充结果；扩展和压缩由后续原语或高层哈希路径完成。
+`hash_sm3_pad`、`hash_sm3_pad_text`、`hash_sm3_pad_hex` 分别提供字节、UTF-8 文本和十六进制输入路径。字节值必须在 `0..255`；文本以严格 UTF-8 编码，JS/Python 均拒绝孤立代理项；Hex 只接受偶数长度、无空白的 ASCII 十六进制字符。这些是 Blockly 输入契约，不是 GB/T 32905-2016 的附加要求。SM3 长度字段按原始消息的 bit 数编码为 64-bit 大端值。它们只返回填充结果；扩展和压缩由后续原语或高层哈希路径完成。
 
 ## 边界
 
-当前页覆盖标准主流程的填充阶段，不等于实现了所有输入编码、流式接口或产品检测要求。
+[`sha256-padding-contract.test.ts`](../../../tests/unit/sha256-padding-contract.test.ts) 从真实 Blockly 块生成并执行双语言代码，核对短消息填充、SM3 与 HMAC-SM3 的 `2^32` bit 长度字段边界（通过独立 helper 测试，无需分配 512 MiB 消息）、严格 UTF-8/Hex、非法字节和多 workspace helper 注册。此为项目回归，不是完整官方测试集或正式验证。当前页覆盖标准主流程的填充阶段，不等于实现了流式接口或满足产品检测要求。

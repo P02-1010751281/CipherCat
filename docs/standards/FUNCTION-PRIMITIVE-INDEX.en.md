@@ -1,5 +1,11 @@
 # Function and Primitive Split Index
 
+> This English page is a summary. The Chinese page
+> ([FUNCTION-PRIMITIVE-INDEX.md](./FUNCTION-PRIMITIVE-INDEX.md)) carries the
+> full tables: covered directories, directories intentionally left as gaps,
+> structured-entry review entry points, and the GB/T 17964 / GM/T 0091 page
+> anchors.
+
 The standards directory is organized as a complete source layer followed by a
 structured reference layer:
 
@@ -23,9 +29,11 @@ The seven source directories with independently numbered algorithms have
 passed the mechanical split check: 123/123 algorithm entries. Ascon `pC/pS/pL`
 and GCM `inc32` are also separate primitive pages.
 
+FIPS 186-5 RSA references: [signature-key generation](./fips186-5-ecdsa/05-RSA-Key-Generation.en.md) and [Miller–Rabin primality testing](./fips186-5-ecdsa/06-RSA-Primality-Testing.en.md). Both document the standard boundary and the current educational implementation; neither is a conformance claim.
+
 This is not a claim that every standard clause has been transcribed verbatim.
-All 38 directories and 227 structured entries now have a unified audit
-inventory. There are 220 normative-source anchors (185 source-line and 35 exact
+All 40 directories and 229 structured entries now have a unified audit
+inventory. There are 222 normative-source anchors (187 source-line and 35 exact
 PDF-page anchors), plus 2 RFC full-text evidence items, 2 bibliography-only
 links, and 2 entries without an original source. Bibliography links do not
 count as normative-source anchors. See

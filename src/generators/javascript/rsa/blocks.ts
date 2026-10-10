@@ -1,8 +1,8 @@
 /**
- * RSA 原子块 JavaScript 代码生成器
- * FIPS 186-4 / RFC 8017（PKCS#1 v1.5）
+ * RSA 教学块 JavaScript 代码生成器。
+ * Key generation is project-specific; this is not a validated FIPS 186-5 implementation.
  *
- * 内嵌（与 /tmp/vectors/rsa_ref.js 同构，cryptography 交叉验证全 PASS）：
+ * Generated helpers:
  * - rsaKeygen：crypto.getRandomValues + BigInt Miller-Rabin（小素数筛 + 20 轮随机基底）
  * - rsaEncrypt/rsaDecrypt：PKCS#1 v1.5（随机非零 PS，crypto.getRandomValues）
  * - rsaSign/rsaVerify：PKCS#1 v1.5 + SHA-256（sha256Hash 复用 hash/hmac-sha256 共享模块）
@@ -57,19 +57,22 @@ function registerRsaGcd(): string {
 function registerRsaRandBelow(): string {
   return javascriptGenerator.provideFunction_('rsaRandBelow', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(limit) {',
-    '  var nb = Math.ceil(limit.toString(16).length / 2) + 1;',
+    '  var bits = limit.toString(2).length;',
+    '  var nb = Math.ceil(bits / 8);',
+    '  var excess = nb * 8 - bits;',
     '  while (true) {',
     '    var buf = new Uint8Array(nb);',
     '    crypto.getRandomValues(buf);',
     '    var v = 0n;',
     '    for (var i = 0; i < nb; i++) v = (v << 8n) | BigInt(buf[i]);',
+    '    v >>= BigInt(excess);',
     '    if (v < limit) return v;',
     '  }',
     '}',
   ]);
 }
 
-/** 随机 bits 位整数：顶两位 + 最低位置 1（FIPS 186-4 素数候选） */
+/** 教学用随机 bits 位整数候选：置最高两位和最低位 */
 function registerRsaRandBits(): string {
   return javascriptGenerator.provideFunction_('rsaRandBits', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(bits) {',
@@ -298,7 +301,7 @@ javascriptGenerator.forBlock['rsa_keygen'] = function (block: Block): [string, n
   const bits = block.getFieldValue('BITS') || '512';
   registerKeygenHelpers();
   const fn = registerRsaKeygen();
-  return [fn + '(' + bits + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + bits + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['rsa_encrypt'] = function (block: Block): [string, number] {
@@ -306,7 +309,7 @@ javascriptGenerator.forBlock['rsa_encrypt'] = function (block: Block): [string, 
   const msg = javascriptGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '""';
   registerCryptoHelpers();
   const fn = registerRsaEncrypt();
-  return [fn + '(' + key + ', ' + msg + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + key + ', ' + msg + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['rsa_decrypt'] = function (block: Block): [string, number] {
@@ -314,7 +317,7 @@ javascriptGenerator.forBlock['rsa_decrypt'] = function (block: Block): [string, 
   const ct = javascriptGenerator.valueToCode(block, 'CT', Order.ATOMIC) || '[]';
   registerCryptoHelpers();
   const fn = registerRsaDecrypt();
-  return [fn + '(' + key + ', ' + ct + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + key + ', ' + ct + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['rsa_sign'] = function (block: Block): [string, number] {
@@ -323,7 +326,7 @@ javascriptGenerator.forBlock['rsa_sign'] = function (block: Block): [string, num
   registerSha256Hash();
   registerCryptoHelpers();
   const fn = registerRsaSign();
-  return [fn + '(' + key + ', ' + msg + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + key + ', ' + msg + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['rsa_verify'] = function (block: Block): [string, number] {

@@ -2,8 +2,8 @@
  * ZUC 原子块 Python 代码生成器
  * GB/T 33133-2016
  *
- * S0/S1 S-box 数据与算法结构对照 luminousmen/ZUC 参考实现
- * （S0 与本仓库 docs/standards/gbt33133-ZUC/01-ZUC.md 附录 A.1 交叉验证一致）。
+ * S0/S1 S-box 数据取自本仓库 docs/standards/gbt33133-ZUC/00-Standard-Source.md 的
+ * GB/T 33133.1 附录表 A.1/A.2 提取原文，并由 zuc-primitives.test.ts 逐项核对。
  */
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
@@ -67,14 +67,16 @@ function registerZucS1(): string {
 function registerZucS0Lookup(): string {
   return pythonGenerator.provideFunction_('zuc_s0_lookup', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(x):',
-    '    return ' + registerZucS0() + '()[x & 0xFF]',
+    '    if type(x) not in (int, float) or (type(x) is float and not x.is_integer()) or not 0 <= x <= 0xFF: raise ValueError("ZUC S0 input must be an integer byte")',
+    '    return ' + registerZucS0() + '()[int(x)]',
   ]);
 }
 
 function registerZucS1Lookup(): string {
   return pythonGenerator.provideFunction_('zuc_s1_lookup', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(x):',
-    '    return ' + registerZucS1() + '()[x & 0xFF]',
+    '    if type(x) not in (int, float) or (type(x) is float and not x.is_integer()) or not 0 <= x <= 0xFF: raise ValueError("ZUC S1 input must be an integer byte")',
+    '    return ' + registerZucS1() + '()[int(x)]',
   ]);
 }
 
@@ -107,19 +109,26 @@ pythonGenerator.forBlock['zuc_s1'] = function (block: Block): [string, number] {
   return [registerZucS1Lookup() + '(' + input + ')', Order.ATOMIC];
 };
 
-function zucLinear(block: Block, shifts: number[]): [string, number] {
+function zucLinear(block: Block, name: string, shifts: number[]): [string, number] {
   const expr = pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '0';
   const rotl = registerZucRotl();
-  const terms = [expr].concat(shifts.map((k) => rotl + '(' + expr + ', ' + k + ')'));
-  return ['((' + terms.join(' ^ ') + ') & 0xFFFFFFFF)', Order.ATOMIC];
+  const terms = ['x'].concat(shifts.map((k) => rotl + '(x, ' + k + ')'));
+  const functionName = 'zuc_' + name.toLowerCase();
+  const fn = pythonGenerator.provideFunction_(functionName, [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(x):',
+    '    if type(x) not in (int, float) or (type(x) is float and not x.is_integer()) or not 0 <= x <= 0xFFFFFFFF: raise ValueError("ZUC ' + name + ' input must be a 32-bit unsigned integer")',
+    '    x = int(x)',
+    '    return (' + terms.join(' ^ ') + ') & 0xFFFFFFFF',
+  ]);
+  return [fn + '(' + expr + ')', Order.ATOMIC];
 }
 
 pythonGenerator.forBlock['zuc_l1'] = function (block: Block): [string, number] {
-  return zucLinear(block, [2, 10, 18, 24]);
+  return zucLinear(block, 'L1', [2, 10, 18, 24]);
 };
 
 pythonGenerator.forBlock['zuc_l2'] = function (block: Block): [string, number] {
-  return zucLinear(block, [8, 14, 22, 30]);
+  return zucLinear(block, 'L2', [8, 14, 22, 30]);
 };
 
 /**
@@ -135,6 +144,9 @@ pythonGenerator.forBlock['zuc_f'] = function (block: Block): [string, number] {
 
   const fn = pythonGenerator.provideFunction_('zuc_f', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(X0, X1, X2, R1, R2):',
+    '    values = (X0, X1, X2, R1, R2)',
+    '    if any(type(x) not in (int, float) or (type(x) is float and not x.is_integer()) or not 0 <= x <= 0xFFFFFFFF for x in values): raise ValueError("ZUC F inputs must be 32-bit unsigned integers")',
+    '    X0, X1, X2, R1, R2 = (int(x) for x in values)',
     '    rotl = ' + registerZucRotl(),
     '    s32 = ' + registerZucS32(),
     '    def L1(x):',
@@ -171,6 +183,13 @@ function registerZucKeystream(): string {
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, iv, length):',
     '    if type(length) not in (int, float) or (type(length) is float and not length.is_integer()) or not 0 <= length <= ' + MAX_ZUC_OUTPUT_WORDS + ': raise ValueError("ZUC output length must be an integer from 0 to ' + MAX_ZUC_OUTPUT_WORDS + ' words")',
     '    length = int(length)',
+    '    byte_sequences = (bytes, bytearray, list, tuple)',
+    '    if not isinstance(key, byte_sequences) or not isinstance(iv, byte_sequences): raise TypeError("ZUC key and IV must be byte sequences")',
+    '    key, iv = list(key), list(iv)',
+    '    def valid_bytes(data):',
+    '        return len(data) == 16 and all(type(byte) in (int, float) and 0 <= byte <= 255 and int(byte) == byte for byte in data)',
+    '    if not valid_bytes(key) or not valid_bytes(iv): raise ValueError("ZUC key and IV must each contain exactly 16 bytes")',
+    '    key, iv = bytes(int(byte) for byte in key), bytes(int(byte) for byte in iv)',
     '    M = 0x7FFFFFFF',
     '    def addm(a, b):',
     '        c = (a & 0xFFFFFFFF) + (b & 0xFFFFFFFF)',

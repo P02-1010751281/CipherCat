@@ -7,7 +7,7 @@
 | 类型 | 原语 / 函数 |
 | 标准定位 | §4.2.1 编码与压缩 |
 | 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
-| 原文位置 | [提取稿](./00-Standard-Source.md#L1316)；PDF 物理页需结合同目录 PDF 核对 |
+| 原文位置 | [Algorithm 5 提取稿](./00-Standard-Source.md#L1316-L1329)；PDF [物理第 31 页](./NIST.FIPS.203.pdf#page=31)（标准页 22） |
 | 项目状态 | 已实现（详见本文现有实现/缺项说明） |
 
 ## 原文定位与引用
@@ -18,15 +18,15 @@
 > 以下为 source 中 Algorithm 5 的完整原文算法块；仅移除了 PDF 分页标记和页眉页码。
 
 ```text
-Algorithm 5 ByteEncode𝑑 (𝐹 )
+Algorithm 5 ByteEncode_{𝑑}(𝐹)
 Encodes an array of 𝑑-bit integers into a byte array for 1 ≤ 𝑑 ≤ 12.
-Input: integer array 𝐹 ∈ ℤ256                𝑑
-                              𝑚 , where 𝑚 = 2 if 𝑑 < 12, and 𝑚 = 𝑞 if 𝑑 = 12.
-Output: byte array 𝐵 ∈ 𝔹32𝑑 .
+Input: integer array 𝐹 ∈ ℤ_{𝑚}^{256}, where 𝑚 = 2^𝑑 if 𝑑 < 12, and
+       𝑚 = 𝑞 if 𝑑 = 12.
+Output: byte array 𝐵 ∈ 𝔹^{32𝑑}.
   1: for (𝑖 ← 0; 𝑖 < 256; 𝑖 ++)
-  2:     𝑎 ← 𝐹 [𝑖]                                                                      ▷ 𝑎 ∈ ℤ𝑚
+  2:     𝑎 ← 𝐹 [𝑖]                                                                      ▷ 𝑎 ∈ ℤ_{𝑚}
   3:     for (𝑗 ← 0; 𝑗 < 𝑑; 𝑗 ++)
-  4:         𝑏[𝑖 ⋅ 𝑑 + 𝑗] ← 𝑎 mod 2                                            ▷ 𝑏 ∈ {0, 1}256⋅𝑑
+  4:         𝑏[𝑖 ⋅ 𝑑 + 𝑗] ← 𝑎 mod 2                                            ▷ 𝑏 ∈ {0, 1}^{256⋅𝑑}
   5:         𝑎 ← (𝑎 − 𝑏[𝑖 ⋅ 𝑑 + 𝑗])/2                      ▷ note 𝑎 − 𝑏[𝑖 ⋅ 𝑑 + 𝑗] is always even
   6:     end for
   7: end for
@@ -43,15 +43,15 @@ Output: byte array 𝐵 ∈ 𝔹32𝑑 .
 > 以下完整保留本条目的标准算法块；只移除了 PDF 页眉、页脚、页码和分页标记。
 
 ```text
-Algorithm 5 ByteEncode𝑑 (𝐹 )
+Algorithm 5 ByteEncode_{𝑑}(𝐹)
 Encodes an array of 𝑑-bit integers into a byte array for 1 ≤ 𝑑 ≤ 12.
-Input: integer array 𝐹 ∈ ℤ256                𝑑
-                              𝑚 , where 𝑚 = 2 if 𝑑 < 12, and 𝑚 = 𝑞 if 𝑑 = 12.
-Output: byte array 𝐵 ∈ 𝔹32𝑑 .
+Input: integer array 𝐹 ∈ ℤ_{𝑚}^{256}, where 𝑚 = 2^𝑑 if 𝑑 < 12, and
+       𝑚 = 𝑞 if 𝑑 = 12.
+Output: byte array 𝐵 ∈ 𝔹^{32𝑑}.
   1: for (𝑖 ← 0; 𝑖 < 256; 𝑖 ++)
-  2:     𝑎 ← 𝐹 [𝑖]                                                                      ▷ 𝑎 ∈ ℤ𝑚
+  2:     𝑎 ← 𝐹 [𝑖]                                                                      ▷ 𝑎 ∈ ℤ_{𝑚}
   3:     for (𝑗 ← 0; 𝑗 < 𝑑; 𝑗 ++)
-  4:         𝑏[𝑖 ⋅ 𝑑 + 𝑗] ← 𝑎 mod 2                                            ▷ 𝑏 ∈ {0, 1}256⋅𝑑
+  4:         𝑏[𝑖 ⋅ 𝑑 + 𝑗] ← 𝑎 mod 2                                            ▷ 𝑏 ∈ {0, 1}^{256⋅𝑑}
   5:         𝑎 ← (𝑎 − 𝑏[𝑖 ⋅ 𝑑 + 𝑗])/2                      ▷ note 𝑎 − 𝑏[𝑖 ⋅ 𝑑 + 𝑗] is always even
   6:     end for
   7: end for
@@ -65,7 +65,7 @@ Output: byte array 𝐵 ∈ 𝔹32𝑑 .
 
 ## 项目映射
 
-本页是标准结构化参考条目；项目是否有同名 Blockly 块、源码入口或 demo，按本目录 README 和覆盖矩阵核对。本页不把文档条目等同于已实现。
+项目通过 `pq_byte_encode` 实现该算法： [积木定义](../../../src/blocks/post-quantum/basic/encoding.ts)、[JavaScript 生成器](../../../src/generators/javascript/postquantum/basic/encoding.ts)、[Python 生成器](../../../src/generators/python/postquantum/basic/encoding.ts)。积木下拉框提供项目使用的 `d = 1, 4, 5, 10, 11, 12`，不是 FIPS 203 抽象算法 `1 ≤ d ≤ 12` 的全部取值；生成代码要求输入为 256 项且每项属于对应取值域。双语言回归见 [`pq-bit-encoding.test.ts`](../../../tests/unit/pq-bit-encoding.test.ts)。实现映射不表示完整 ML-KEM 符合性或认证。
 
 ## 核验与缺项
 

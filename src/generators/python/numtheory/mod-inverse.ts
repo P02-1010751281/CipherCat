@@ -16,11 +16,17 @@ def extended_gcd(a, b):
         return g, x - (b // a) * y, y
 
 def mod_inverse(a, m):
+    values = (a, m)
+    if any(isinstance(value, bool) or not isinstance(value, (int, float)) or not -9007199254740991 <= value <= 9007199254740991 or int(value) != value for value in values):
+        raise ValueError('modular inverse inputs must be safe integers')
+    a, m = (int(value) for value in values)
+    if m <= 0:
+        raise ValueError('modulus must be positive')
+    a %= m
     g, x, y = extended_gcd(a, m)
     if g != 1:
         raise Exception('modular inverse does not exist')
-    else:
-        return (x % m + m) % m
+    return x % m
 
 ${d} = mod_inverse(${e}, ${phi})
 `;

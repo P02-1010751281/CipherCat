@@ -61,19 +61,19 @@ MakeHint/UseHint let the verifier recover w1′.
 | MakeHint | `pq_make_hint` | Z, R (IntList) → IntList(0/1) | no dropdown; γ₂=95232 fixed | Alg 39 | signer h ← MakeHint(−c·t0, …) |
 | UseHint | `pq_use_hint` | H, R (IntList) → IntList | no dropdown; γ₂=95232 fixed | Alg 40 | verifier w1′ ← UseHint(h, w′Approx) |
 | SampleInBall | `pq_sample_in_ball` | SEED (Bytes) → IntList | no dropdown; **τ=39 fixed** | Alg 29 | challenge c ← SampleInBall(c̃) (both sides) |
-| ML-DSA-44 Sign (black box) | `mldsa_sign` | sk, msg (Bytes) → Bytes | ML-DSA-44 fixed | Alg 2+7 | full signing reference (ACVP 30/30) |
+| ML-DSA-44 Sign (black box) | `mldsa_sign` | sk, msg (Bytes) → Bytes | ML-DSA-44 fixed | Alg 2+7 | full signing implementation; one ML-DSA-44 deterministic fixed sample in the regression set (source ID not recorded, not official ACVP evidence) |
 | ML-DSA-44 Verify (black box) | `mldsa_verify` | pk, msg, sig (Bytes) → Boolean | ML-DSA-44 fixed | Alg 3+8 | full verification reference |
-| ModPow | `nt_mod_pow` | A, B (Number) → Number | `MODULUS`: 3329 / **8380417** / 12289 / 65537 / 1000000007 | — (§2.5) | modular exponent: q primality (Fermat), z coefficient reduction |
-| PolyMul | `pq_poly_mul` | A, B (IntList) → IntList | `MODULUS`: none / 3329 / **8380417** / 12289 | — (§2.4) | R_q ring multiplication teaching (plain convolution mod q) |
+| ModPow | `nt_mod_pow` | A, B (Number) → Number | `MODULUS`: 3329 / **8380417** / 12289 / 65537 / 1000000007 | — (§2.5) | modular exponentiation; this guide checks one Fermat congruence only and does not prove q is prime; also used for z coefficient reduction |
+| PolyMul | `pq_poly_mul` | A, B (IntList) → IntList | `MODULUS`: none / 3329 / 8380417 / 12289 | Not a FIPS operation | Safe-integer coefficient convolution; coefficient-wise reduction only, no `X^256+1` quotient |
 | XOF | `pq_xof` | SEED, OUTLEN → Bytes | `ALGO`: SHAKE128 / **SHAKE256** | H of Alg 29/34 | hashing for μ, ρ″, c̃ (SHAKE256) |
 | PRF | `pq_prf` | SEED, NONCE, OUTLEN → Bytes | `ALGO`: SHAKE256 / SHAKE128 | Alg 34 | pseudorandom source for ExpandMask(y) (seed ‖ nonce) |
-| NTT / INTT | `pq_ntt` / `pq_intt` | IntList → IntList | `MODULUS`: 3329 / **8380417** / 12289; `DEGREE`: 256/128 | Alg 41/42 | ring op w ← NTT⁻¹(Â∘NTT(y)) (q=8380417 branch: ζ=1753, BitRev8, 8 layers) |
-| NTT Mul | `pq_ntt_mul` | A, B → IntList | `MODULUS`: 3329 / **8380417** | Alg 45 | NTT-domain pointwise multiply (q=8380417 pointwise; q=3329 half-NTT base mul) |
+| NTT / INTT | `pq_ntt` / `pq_intt` | IntList → IntList | `MODULUS`: 3329 / **8380417** / 12289; `DEGREE`: 256 (fixed) | Alg 41/42 | ring op w ← NTT⁻¹(Â∘NTT(y)) (q=8380417 branch: ζ=1753, BitRev8, 8 layers) |
+| NTT Mul | `pq_ntt_mul` | A, B → IntList | `MODULUS`: 3329 / **8380417** | Alg 45 | Each input requires 256 safe integer coefficients; integer-valued floats normalize, booleans/fractions/unsafe integers are rejected, and inputs are reduced modulo q; q=8380417 pointwise, q=3329 half-NTT base multiplication |
 | PolyAdd | `pq_poly_add` | A, B → IntList | `MODULUS`: 3329 / **8380417** | Alg 44 | vector/poly addition |
 | SampleNTT | `pq_sample_ntt` | SEED → IntList | `MODULUS`: 3329 / **8380417** | Alg 30 | NTT-domain sampling of matrix A (q=8380417: SHAKE128 3 bytes → 23-bit < q) |
 
 > ⚠ **Block facts**: the signature primitives (first 5) hard-code ML-DSA-44 parameters
-> (d=13, γ₂=95232, τ=39) with q=8380417 embedded; `nt_mod_pow` / `pq_poly_mul` include 8380417 in their dropdowns.
+> (d=13, γ₂=95232, τ=39) with q=8380417 embedded; `nt_mod_pow` / `pq_poly_mul` include 8380417 in their dropdowns. For `pq_poly_mul`, this option only selects coefficient-wise reduction; it does not make the block a FIPS 204 ring multiplication.
 > The NTT-domain ring-op blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_poly_add`/`pq_sample_ntt`)
 > all support **q=8380417 (ML-DSA)** — the NTT branch follows FIPS 204 Alg 41/42 (ζ=1753, BitRev8, INTT × 256⁻¹),
 > see Step 8c for the full assembly and `demos/procedures/ML-DSA-NTT.json` for property vectors.
@@ -87,11 +87,11 @@ The two build lines of this guide map to two committed demos (`demos/procedures/
 | demo | content | verification |
 |------|------|------|
 | `ML-DSA-Primitives.json` | 7 signature primitive procedures (P2R_High / P2R_Low / Dec_High / Dec_Low / Make_Hint / Use_Hint / In_Ball) | property vectors (P2R reversible, UseHint(MakeHint) theorem, InBall exactly 39 ±1) |
-| `ML-DSA-Sign.json` | black-box MLDSA_Sign / MLDSA_Verify (embedded sk 2560B / pk 1312B / msg 2934B) | FIPS 204 ACVP official vector (sig 2420B, first byte `dd36ebcc…`) |
+| `ML-DSA-Sign.json` | black-box MLDSA_Sign / MLDSA_Verify (embedded sk 2560B / pk 1312B / msg 2934B) | One ML-DSA-44 deterministic fixed sample (sig 2420B, first byte `dd36ebcc…`); the vector's source and case ID are **not recorded**, so it is not claimed as official ACVP evidence |
 
 The primitive procedures use **typed-parameter `procedures_defreturn`** (Functions category, supports
-int_list / bytes params); the driver injects r, z, seed arguments and asserts properties — the established
-"scenario 9 full atomic chain + official vector" convention.
+int_list / bytes params); the driver injects r, z, seed arguments and asserts properties. The signature demo
+runs one registered fixed sample, not the complete ACVP suite or a certification test.
 
 ## How to Read Each Step
 
@@ -240,10 +240,10 @@ procedures_defreturn In_Ball(seed: bytes)
 ## Step 8: Lattice-Ring Helpers — modular arithmetic at q=8380417
 
 FIPS 204 §2.4–2.5: ring R_q = Z_q[X]/(X²⁵⁶+1), q = 2²³−2¹³+1 = 8380417.
-Full primitive-chain assembly uses the NTT-domain ring ops (see Step 8c); this step first uses the two blocks
-that support 8380417 to verify q's algebraic properties.
+Full primitive-chain assembly uses the NTT-domain ring ops (see Step 8c); this step demonstrates one Fermat congruence
+and coefficient convolution. The standard defines q as a parameter; the single congruence check here is not a primality proof.
 
-### 8a — Fermat's little theorem: q is prime
+### 8a — Fermat congruence check (not a primality proof)
 
 | # | Operation |
 |---|------|
@@ -252,21 +252,21 @@ that support 8380417 to verify q's algebraic properties.
 | 3 | `MODULUS` dropdown: `8380417 (ML-DSA)`. |
 | 4 | Execute (driver assert): result is `1`. |
 
-> `2^(q−1) ≡ 1 mod 8380417` (Fermat) verifies q is prime — the algebraic prerequisite for the NTT.
+> The assertion `2^(q−1) ≡ 1 mod 8380417` checks one Fermat congruence only. A composite can pass a single-base Fermat check, so this assertion does not prove q is prime. FIPS 204 §2.5 specifies q=8380417; this example does not prove its primality.
 > `nt_mod_pow` lives in the generic block set (`remaining.ts`); it is not mounted in a main toolbox
 > category but is directly referenceable in programmatic demo workspace JSON.
 
-### 8b — R_q ring multiplication: pq_poly_mul
+### 8b — Optional generic polynomial convolution: pq_poly_mul (not FIPS 204 ring multiplication)
+
+This example demonstrates coefficient convolution only; it is not part of the ML-DSA signing path. `pq_poly_mul` does not constrain polynomial degree or reduce by `X^256+1`, so it cannot implement or verify FIPS 204 multiplication in `R_q`.
 
 | # | Operation |
 |---|------|
 | 1 | **Number Theory** → `PolyMul`. A ← `[1, 2, 3]` (or IntList variable). B ← `[4, 5]`. |
-| 2 | `MODULUS` dropdown: `8380417 (ML-DSA)`. |
+| 2 | `MODULUS` dropdown: `8380417` (this example only reduces coefficients modulo q; it is not ML-DSA ring multiplication). |
 | 3 | Driver assert: `PolyMul(a,b) == [4, 13, 22, 15]` (plain convolution [1·4, 1·5+2·4, 2·5+3·4, 3·5], coefficient-wise mod q). |
 
-> Teaching contrast with `pq_ntt_mul` (NTT-domain pointwise multiply): plain convolution vs pointwise.
-> Associativity/commutativity/distributivity can be asserted as property vectors
-> (see the convolution property group in `demos/procedures/PQC-Gaps.json`).
+> These blocks use different representations: `pq_poly_mul` convolves coefficients, while `pq_ntt_mul` multiplies NTT-domain elements pointwise. Their outputs must not be compared for the same raw arrays, and neither block substitutes for the other. Associativity, commutativity and distributivity can be tested as generic convolution properties (see `demos/procedures/PQC-Gaps.json`), but these are not FIPS 204 algorithm tests.
 
 **Blocks**: 1× `nt_mod_pow`, 2× `pq_poly_mul`, ~4× number blocks
 
@@ -280,7 +280,7 @@ The core ring op of the FIPS 204 signing chain (Alg 7 step 7-8) is now fully ass
 | 2 | Forward transform of y | `NTT(y)` | `MODULUS`: **8380417**, `DEGREE`: 256 |
 | 3 | NTT-domain pointwise multiply | `NTT Mul(Â, NTT(y))` | `MODULUS`: **8380417** |
 | 4 | Inverse transform | `INTT(·)` | `MODULUS`: **8380417**, `DEGREE`: 256 |
-| 5 | (contrast) pointwise vs plain convolution | `NTT Mul` vs `PolyMul` | both accept 8380417 |
+| 5 | (optional concept note; outputs are not directly comparable) | `NTT Mul` operates in the NTT domain; `PolyMul` is ordinary coefficient convolution with no ring reduction | representation distinction only; not an algorithm step |
 
 **Algorithm convention (FIPS 204 §6.3.2-6.3.4)**: NTT = Cooley-Tukey 8 layers (len 128→1),
 twiddle `zetas[m] = 1753^BitRev8(m) mod q` (ζ=1753 = 2³² mod q, a 512th primitive root);
@@ -300,7 +300,7 @@ This differs from Kyber (q=3329, ζ=17, half-NTT 7 layers + base multiply) — t
 
 ## Step 9: Black-Box Reference — MLDSA_Sign / MLDSA_Verify
 
-Run the complete sign/verify through the black-box blocks as the **correctness baseline** (ACVP official vector).
+Run the complete sign/verify through the black-box blocks with one fixed sample as an end-to-end regression; the sample's source ID is not recorded in-repo, so this is not official ACVP vector evidence, the full ACVP suite, or certification.
 
 ### 9a — MLDSA_Sign
 
@@ -364,7 +364,7 @@ procedures_defreturn MLDSA_Verify()
 | 4 | `In_Ball` seed parameter type is bytes |
 | 5 | `nt_mod_pow` MODULUS dropdown = `8380417 (ML-DSA)` |
 | 6 | black-box reference lengths: sk 2560B / pk 1312B / msg 2934B / sig 2420B |
-| 7 | generated code executes: 3 property-vector groups + ACVP sig first byte dd36ebcc |
+| 7 | generated code executes: 3 property-vector groups + fixed-sample sig first byte dd36ebcc |
 
 ### Verification Commands
 
@@ -386,14 +386,16 @@ MLDSA_PRIMS_OK
 #  ② UseHint(MakeHint): Use_Hint(Make_Hint(z,r), (r+z) mod q) == Dec_High((r+z) mod q)
 #  ③ InBall: length 256, exactly 39 nonzero, coefficients ∈ {−1, 0, 1}
 
-# ML-DSA-Sign.json (ACVP official vector)
+# ML-DSA-Sign.json (fixed regression sample)
 dd36ebcc94cd8834e17132b10458e43557357c09a5b855592ecb412bc27480f21…（2420 bytes = 4840 hex）
 True
 ```
 
-The `mldsa_sign` / `mldsa_verify` block implementations themselves pass **NIST ACVP sigGen
-ML-DSA-44 deterministic 30/30** (external + internal interfaces, dual-language PASS); this demo embeds
-one of those vectors for end-to-end regression.
+The repository regression for `mldsa_sign` / `mldsa_verify` contains **one ML-DSA-44 deterministic
+fixed sample**; this demo embeds that case for end-to-end regression. The sample's ACVP vector file
+and case ID are **not recorded in the repository**, and no OpenSSL or third-party cross-verification
+script exists here, so it is not claimed as official ACVP evidence. The repository does not include
+the complete ACVP vector set.
 
 ---
 
@@ -406,8 +408,8 @@ one of those vectors for end-to-end regression.
 | 5 | Algorithm 39 (§3.4) | MakeHint(z, r): HighBits(r) ≠ HighBits(r+z) → 1 |
 | 6 | Algorithm 40 (§3.4) | UseHint(h, r): ±1 fix of r1 via hint bits (mod m=44) |
 | 7 | Algorithm 29 (§3.3) | SampleInBall(ρ): SHAKE256 sampling, τ=39 ±1 |
-| 8a | §2.5 | q = 2²³−2¹³+1 primality (Fermat) |
-| 8b | §2.4 | R_q = Z_q[X]/(X²⁵⁶+1) ring multiplication (plain convolution mod q) |
+| 8a | §2.5 | One Fermat-congruence regression for q = 2²³−2¹³+1; primality comes from the standard parameter definition, not this check |
+| 8b | — | Optional generic coefficient convolution; no `X^256+1` reduction and not a FIPS 204 algorithm step |
 | 9a | Algorithm 7 + Algorithm 2 | ML-DSA.Sign_internal (black-box reference) |
 | 9b | Algorithm 8 + Algorithm 3 | ML-DSA.Verify_internal (black-box reference) |
 
@@ -450,18 +452,21 @@ stores nonzero positions + running Index).
 
 ---
 
-## Appendix: Lattice-Ring Op q Support Status
+## Appendix: q Code Paths for Lattice-Related Blocks
 
-| Block | Dropdown options | ML-DSA (q=8380417) |
+The table indicates only that a `q=8380417` code path exists. It does not mean that a block or the full workflow has passed complete FIPS 204 conformance testing.
+
+| Block | Dropdown options | q=8380417 code path |
 |----|----------|:---:|
 | `pq_ntt` / `pq_intt` | 3329, **8380417**, 12289 | ✅ (ζ=1753, BitRev8, 8-layer CT/GS, INTT × 256⁻¹) |
 | `pq_ntt_mul` | 3329, **8380417** | ✅ (pointwise; q=3329 half-NTT base mul) |
 | `pq_poly_add` | 3329, **8380417** | ✅ (coefficient-wise mod q) |
 | `pq_sample_ntt` | 3329, **8380417** | ✅ (SHAKE128 3 bytes → 23-bit < q) |
 | `nt_mod_pow` | 3329, **8380417**, 12289, 65537, 1000000007 | ✅ |
-| `pq_poly_mul` | none, 3329, **8380417**, 12289 | ✅ |
 
-**Closed 2026-08-05**: the four NTT-domain blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_poly_add`/`pq_sample_ntt`)
+`pq_poly_mul` is not listed above: even with `8380417` selected, it performs ordinary coefficient convolution without reduction modulo `X^256+1`. It is not ML-DSA ring multiplication and does not indicate support for that standard operation.
+
+**Closed 2026-08-05**: the NTT/ML-DSA-related blocks (`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_poly_add`/`pq_sample_ntt`)
 now offer q=8380417, with the generators dispatching on the `MODULUS` field to the FIPS 204 convention
 (distinct from the Kyber half-NTT branch). The full atomic chain for "w ← NTT⁻¹(Â∘NTT(y))" is in **Step 8c**;
 property vectors live in `demos/procedures/ML-DSA-NTT.json` (roundtrip + negacyclic homomorphism, Python/JS PASS).
@@ -472,5 +477,5 @@ property vectors live in `demos/procedures/ML-DSA-NTT.json` (roundtrip + negacyc
 
 - Standard chapters: `docs/standards/fips204-ML-DSA/` (README parameter tables + algorithm 2/3/7/8/20/26/29/35/36/39/40 chapter files)
 - Demos: `demos/procedures/ML-DSA-Primitives.json`, `demos/procedures/ML-DSA-Sign.json`
-- Official vectors: NIST ACVP sigGen ML-DSA-44 deterministic (30/30)
+- Regression vector: one ML-DSA-44 deterministic fixed case (source ID not recorded); not the complete suite
 - Block implementation: `src/blocks/mldsa/` (primitives.ts + blocks.ts), `src/generators/{javascript,python}/mldsa/`

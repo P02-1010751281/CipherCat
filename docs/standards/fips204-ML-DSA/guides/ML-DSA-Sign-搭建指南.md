@@ -58,14 +58,14 @@ ML-DSA.Verify_internal(pk, M′, σ)
 | MakeHint | `pq_make_hint` | Z, R（IntList）→ IntList(0/1) | 无下拉；γ₂=95232 固定 | 算法 39 | 签名端 h ← MakeHint(−c·t0, …) |
 | UseHint | `pq_use_hint` | H, R（IntList）→ IntList | 无下拉；γ₂=95232 固定 | 算法 40 | 验证端 w1′ ← UseHint(h, w′Approx) |
 | SampleInBall | `pq_sample_in_ball` | SEED（Bytes）→ IntList | 无下拉；**τ=39 固定** | 算法 29 | 挑战多项式 c ← SampleInBall(c̃)（两端一致） |
-| ML-DSA-44 Sign（黑盒） | `mldsa_sign` | sk, msg（Bytes）→ Bytes | ML-DSA-44 固定 | 算法 2+7 | 完整签名对照（ACVP 30/30） |
+| ML-DSA-44 Sign（黑盒） | `mldsa_sign` | sk, msg（Bytes）→ Bytes | ML-DSA-44 固定 | 算法 2+7 | 完整签名实现；回归登记 1 组确定性固定样例（来源 ID 未登记） |
 | ML-DSA-44 Verify（黑盒） | `mldsa_verify` | pk, msg, sig（Bytes）→ Boolean | ML-DSA-44 固定 | 算法 3+8 | 完整验签对照 |
-| ModPow | `nt_mod_pow` | A, B（Number）→ Number | `MODULUS`: 3329 / **8380417** / 12289 / 65537 / 1000000007 | —（§2.5） | 模幂：验证 q 素数（费马小定理）、z 系数约减 |
-| PolyMul | `pq_poly_mul` | A, B（IntList）→ IntList | `MODULUS`: none / 3329 / **8380417** / 12289 | —（§2.4） | R_q 环乘法教学（普通卷积 mod q） |
+| ModPow | `nt_mod_pow` | A, B（Number）→ Number | `MODULUS`: 3329 / **8380417** / 12289 / 65537 / 1000000007 | —（§2.5） | 模幂；本指南仅检查一次费马同余，不证明 q 为素数；另有 z 系数约减 |
+| PolyMul | `pq_poly_mul` | A, B（IntList）→ IntList | `MODULUS`: none / 3329 / 8380417 / 12289 | 非 FIPS 运算 | 安全整数系数卷积；逐系数模约简，不作 `X^256+1` 环约简 |
 | XOF | `pq_xof` | SEED, OUTLEN → Bytes | `ALGO`: SHAKE128 / **SHAKE256** | 算法 29/34 的 H | μ、ρ″、c̃ 的哈希（SHAKE256） |
 | PRF | `pq_prf` | SEED, NONCE, OUTLEN → Bytes | `ALGO`: SHAKE256 / SHAKE128 | 算法 34 | ExpandMask(y) 的伪随机源（seed ‖ nonce） |
-| NTT / INTT | `pq_ntt` / `pq_intt` | IntList → IntList | `MODULUS`: 3329 / **8380417** / 12289；`DEGREE`: 256/128 | 算法 41/42 | 环运算 w ← NTT⁻¹(Â∘NTT(y))（q=8380417 分支：ζ=1753, BitRev8, 8 层） |
-| NTT Mul | `pq_ntt_mul` | A, B → IntList | `MODULUS`: 3329 / **8380417** | 算法 45 | NTT 域点乘（q=8380417 为逐点乘；q=3329 为 half-NTT 基乘） |
+| NTT / INTT | `pq_ntt` / `pq_intt` | IntList → IntList | `MODULUS`: 3329 / **8380417** / 12289；`DEGREE`: 256（固定） | 算法 41/42 | 环运算 w ← NTT⁻¹(Â∘NTT(y))（q=8380417 分支：ζ=1753, BitRev8, 8 层） |
+| NTT Mul | `pq_ntt_mul` | A, B → IntList | `MODULUS`: 3329 / **8380417** | 算法 45 | 两侧各需 256 个安全整数系数；整数值浮点会归一，布尔/分数/超安全整数拒绝，入口按 q 归一；q=8380417 逐点乘、q=3329 half-NTT 基乘 |
 | PolyAdd | `pq_poly_add` | A, B → IntList | `MODULUS`: 3329 / **8380417** | 算法 44 | 向量/多项式加法 |
 | SampleNTT | `pq_sample_ntt` | SEED → IntList | `MODULUS`: 3329 / **8380417** | 算法 30 | 矩阵 A 的 NTT 域采样（q=8380417：SHAKE128 3 字节 → 23-bit < q） |
 
@@ -83,10 +83,10 @@ ML-DSA.Verify_internal(pk, M′, σ)
 | demo | 内容 | 验证 |
 |------|------|------|
 | `ML-DSA-Primitives.json` | 7 个签名原语 procedure（P2R_High / P2R_Low / Dec_High / Dec_Low / Make_Hint / Use_Hint / In_Ball） | 性质向量（P2R 可逆、UseHint(MakeHint) 定理、InBall 恰 39 个 ±1） |
-| `ML-DSA-Sign.json` | 黑盒 MLDSA_Sign / MLDSA_Verify（内嵌 sk 2560B / pk 1312B / msg 2934B） | FIPS 204 ACVP 官方向量（sig 2420B，首字节 `dd36ebcc…`） |
+| `ML-DSA-Sign.json` | 黑盒 MLDSA_Sign / MLDSA_Verify（内嵌 sk 2560B / pk 1312B / msg 2934B） | ML-DSA-44 确定性固定样例 1 组（sig 2420B，首字节 `dd36ebcc…`；来源 ID 未登记） |
 
 原语 procedure 使用**带类型参数的 `procedures_defreturn`**（函数类目，支持 int_list / bytes 参数），
-driver 侧注入 r、z、seed 等实参做性质断言——这是「场景 9 完整原子链 + 官方向量」的既有惯例。
+driver 侧注入 r、z、seed 等实参做性质断言；签名 Demo 只运行登记的单组固定样例（来源 ID 未随仓库登记，不作为官方 ACVP 证据），不代表完整 ACVP 验证或认证。
 
 ## 如何阅读每个步骤
 
@@ -235,30 +235,31 @@ procedures_defreturn In_Ball(seed: bytes)
 ## 步骤 8：格基环辅助 — q=8380417 的模运算
 
 FIPS 204 §2.4–2.5：环 R_q = Z_q[X]/(X²⁵⁶+1)，q = 2²³−2¹³+1 = 8380417。
-原语链的完整拼装需要 NTT 域环运算（见附录缺口），本节先用两个「支持 8380417」的块验证 q 的代数性质。
+原语链的完整拼装需要 NTT 域环运算（见步骤 8c）；本节演示一次费马同余和系数卷积。q 的素性来自规范参数定义，本节的单次同余检查不是素性证明。
 
-### 8a — 费马小定理：q 是素数
+### 8a — 费马同余检查（不是素性证明）
 
 | # | 操作 |
 |---|------|
-| 1 | **demo 工作区 JSON** → `ModPow`（`nt_mod_pow`）。 | 
+| 1 | **demo 工作区 JSON** → `ModPow`（`nt_mod_pow`）。 |
 | 2 | A ← 数字 `2`。B ← 数字 `8380416`（q−1）。 |
 | 3 | `MODULUS` 下拉：`8380417 (ML-DSA)`。 |
 | 4 | 执行（driver 断言）：结果为 `1`。 |
 
-> `2^(q−1) ≡ 1 mod 8380417`（费马小定理）验证 q 为素数——NTT 存在的代数前提。
+> 断言 `2^(q−1) ≡ 1 mod 8380417` 仅检查一个费马同余；合数也可能通过单一底数的费马检查，因此该断言不能证明 q 为素数。q=8380417 是 FIPS 204 §2.5 给定的参数，本示例不负责证明其素性。
 > `nt_mod_pow` 收录于通用块（`remaining.ts`），工具箱主类目未挂载，程序化 demo 工作区 JSON 可直接引用。
 
-### 8b — R_q 环乘法：pq_poly_mul
+### 8b — 可选通用多项式卷积：pq_poly_mul（非 FIPS 204 环乘法）
+
+本示例只演示系数卷积，不属于 ML-DSA 签名主链。`pq_poly_mul` 不限制多项式次数，也不按 `X^256+1` 约简；不能用它实现或验证 FIPS 204 的 `R_q` 乘法。
 
 | # | 操作 |
 |---|------|
 | 1 | **数论** → `PolyMul`。A ← `[1, 2, 3]`（或 IntList 变量）。B ← `[4, 5]`。 |
-| 2 | `MODULUS` 下拉：`8380417 (ML-DSA)`。 |
+| 2 | `MODULUS` 下拉：`8380417`（本例只示范系数模约简，不代表 ML-DSA 环乘法）。 |
 | 3 | driver 断言：`PolyMul(a,b) == [4, 13, 22, 15]`（普通卷积 [1·4, 1·5+2·4, 2·5+3·4, 3·5] 逐系数 mod q）。 |
 
-> 与 `pq_ntt_mul`（NTT 域点乘）对比教学：普通卷积 vs 逐点乘。结合律/交换律/分配律可作性质向量
-> （见 `demos/procedures/PQC-Gaps.json` 的卷积性质组）。
+> 本块与 `pq_ntt_mul` 的输入表示不同：前者对系数执行普通卷积，后者对 NTT 域元素逐点相乘，不能直接比较同一数组输入/输出，也不能互相替代。结合律/交换律/分配律可作通用卷积性质向量（见 `demos/procedures/PQC-Gaps.json`），但不构成 FIPS 204 算法验证。
 
 **块数**：1× `nt_mod_pow`、2× `pq_poly_mul`、~4× 数字块
 
@@ -272,7 +273,7 @@ FIPS 204 签名主链（Alg 7 step 7-8）的核心环运算，现在可全部用
 | 2 | y 正向变换 | `NTT(y)` | `MODULUS`: **8380417**, `DEGREE`: 256 |
 | 3 | NTT 域点乘 | `NTT Mul(Â, NTT(y))` | `MODULUS`: **8380417** |
 | 4 | 逆变换回系数域 | `INTT(·)` | `MODULUS`: **8380417**, `DEGREE`: 256 |
-| 5 | （对照）逐点乘 vs 普通卷积 | `NTT Mul` vs `PolyMul` | 均可选 8380417 |
+| 5 | （可选概念说明；不可直接比较输出） | `NTT Mul` 工作于 NTT 域；`PolyMul` 是普通系数卷积且不作环约简 | 仅说明表示差异，不是算法步骤 |
 
 **算法约定（FIPS 204 §6.3.2-6.3.4）**：NTT 为 Cooley-Tukey 8 层（len 128→1），
 旋转因子 `zetas[m] = 1753^BitRev8(m) mod q`（ζ=1753 = 2³² mod q，512 次本原根）；
@@ -292,7 +293,7 @@ INTT 为 Gentleman-Sande 8 层（-zetas[m]），末乘 256⁻¹ = 8347681；NTT 
 
 ## 步骤 9：黑盒对照 — MLDSA_Sign / MLDSA_Verify
 
-用黑盒块跑通完整签名/验签，作为原语链的**正确性基准**（ACVP 官方向量）。
+用黑盒块跑通完整签名/验签，并用一组 ML-DSA-44 确定性固定样例作端到端回归（来源 ID 未随仓库登记，不作为官方 ACVP 证据）；这不是完整 ACVP 验证或认证。
 
 ### 9a — MLDSA_Sign
 
@@ -356,7 +357,7 @@ procedures_defreturn MLDSA_Verify()
 | 4 | `In_Ball` 的 seed 参数类型为 bytes |
 | 5 | `nt_mod_pow` 的 MODULUS 下拉 = `8380417 (ML-DSA)` |
 | 6 | 黑盒对照：sk 2560B / pk 1312B / msg 2934B / sig 2420B 长度正确 |
-| 7 | 生成代码 执行 验证：性质向量 3 组 + ACVP sig 首字节 dd36ebcc |
+| 7 | 生成代码 执行 验证：性质向量 3 组 + 固定样例 sig 首字节 dd36ebcc |
 
 ### 验证命令
 
@@ -378,13 +379,17 @@ MLDSA_PRIMS_OK
 #  ② UseHint(MakeHint)：Use_Hint(Make_Hint(z,r), (r+z) mod q) == Dec_High((r+z) mod q)
 #  ③ InBall：长度 256、恰 39 个非零、系数 ∈ {−1, 0, 1}
 
-# ML-DSA-Sign.json（ACVP 官方向量）
+# ML-DSA-Sign.json（项目固定回归样例）
 dd36ebcc94cd8834e17132b10458e43557357c09a5b855592ecb412bc27480f21…（2420 字节 = 4840 hex）
 True
 ```
 
-`mldsa_sign` / `mldsa_verify` 块实现本身已通过 **NIST ACVP sigGen ML-DSA-44 deterministic 30/30**
-（external + internal 接口，双语言 PASS）；本 demo 内嵌其中一组向量做端到端回归。
+`mldsa_sign` / `mldsa_verify` 的仓库回归登记 **ML-DSA-44 确定性固定样例 1 组**；本 demo 内嵌该组
+输入/输出做端到端回归。该样例的来源标识（ACVP 向量文件与用例 ID）**未随仓库登记**，因此这里
+不声明其为官方 ACVP 证据；仓库内也没有 OpenSSL 或其它第三方实现的交叉验签脚本。
+
+若后续要把它作为 ACVP 证据使用，必须补齐向量来源、case ID 与完整签名/验签断言（见
+`docs/standards/CONFORMANCE-INVENTORY.md` 的 Demo 证据台账章节）。
 
 ---
 
@@ -397,8 +402,8 @@ True
 | 5 | 算法 39（§3.4） | MakeHint(z, r)：HighBits(r) ≠ HighBits(r+z) → 1 |
 | 6 | 算法 40（§3.4） | UseHint(h, r)：按 hint 位 ±1 修正 r1（模 m=44） |
 | 7 | 算法 29（§3.3） | SampleInBall(ρ)：SHAKE256 采样 τ=39 个 ±1 |
-| 8a | §2.5 | q = 2²³−2¹³+1 素数性（费马小定理） |
-| 8b | §2.4 | R_q = Z_q[X]/(X²⁵⁶+1) 环乘法（普通卷积 mod q） |
+| 8a | §2.5 | 对 q = 2²³−2¹³+1 的单一费马同余回归；素性依据为规范参数定义，不由该用例证明 |
+| 8b | — | 可选通用系数卷积示例；不作 `X^256+1` 约简，不属于 FIPS 204 算法步骤 |
 | 9a | 算法 7 + 算法 2 | ML-DSA.Sign_internal（黑盒对照） |
 | 9b | 算法 8 + 算法 3 | ML-DSA.Verify_internal（黑盒对照） |
 
@@ -440,18 +445,21 @@ z 每系数 18 位（bitlen(2γ₁)=18，BitPack(z, γ₁−1, γ₁)）；h 为
 
 ---
 
-## 附录：格基环运算 q 支持现状
+## 附录：格运算相关块的 q 代码路径
 
-| 块 | 下拉选项 | ML-DSA (q=8380417) |
+下表只表示相应 `q=8380417` 代码路径存在，不代表该单块或完整流程已通过 FIPS 204 的全部符合性验证。
+
+| 块 | 下拉选项 | q=8380417 代码路径 |
 |----|----------|:---:|
 | `pq_ntt` / `pq_intt` | 3329, **8380417**, 12289 | ✅（ζ=1753, BitRev8, 8 层 CT/GS, INTT 乘 256⁻¹） |
 | `pq_ntt_mul` | 3329, **8380417** | ✅（逐点乘；q=3329 为 half-NTT 基乘） |
 | `pq_poly_add` | 3329, **8380417** | ✅（逐系数 mod q） |
 | `pq_sample_ntt` | 3329, **8380417** | ✅（SHAKE128 3 字节 → 23-bit < q） |
 | `nt_mod_pow` | 3329, **8380417**, 12289, 65537, 1000000007 | ✅ |
-| `pq_poly_mul` | none, 3329, **8380417**, 12289 | ✅ |
 
-**2026-08-05 补齐**：NTT 域四块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_poly_add`/`pq_sample_ntt`）新增
+`pq_poly_mul` 不属于上表：即使下拉选择 `8380417`，它仍执行普通系数卷积，不按 `X^256+1` 约简，因此不是 ML-DSA 的环乘法，也不表示支持该标准操作。
+
+**2026-08-05 补齐**：NTT/ML-DSA 相关块（`pq_ntt`/`pq_intt`/`pq_ntt_mul`/`pq_poly_add`/`pq_sample_ntt`）新增
 q=8380417 下拉，生成器按 `MODULUS` 字段分发到 FIPS 204 约定（与 Kyber half-NTT 不同分支）。
 「w ← NTT⁻¹(Â∘NTT(y))」完整原子链拼装见**步骤 8c**，性质向量见 `demos/procedures/ML-DSA-NTT.json`
 （往返 + 负缠绕同态，Python/JS 双语言 PASS）。
@@ -462,5 +470,5 @@ q=8380417 下拉，生成器按 `MODULUS` 字段分发到 FIPS 204 约定（与 
 
 - 标准章节：`docs/standards/fips204-ML-DSA/`（README 参数表 + 算法 2/3/7/8/20/26/29/35/36/39/40 章节目录）
 - demo：`demos/procedures/ML-DSA-Primitives.json`、`demos/procedures/ML-DSA-Sign.json`
-- 官方向量：NIST ACVP sigGen ML-DSA-44 deterministic（30/30）
+- 回归向量：ML-DSA-44 deterministic 固定样例（登记 1 组；来源 ID 未随仓库登记，不作为官方 ACVP 证据；非完整套件）
 - 块实现：`src/blocks/mldsa/`（primitives.ts + blocks.ts）、`src/generators/{javascript,python}/mldsa/`

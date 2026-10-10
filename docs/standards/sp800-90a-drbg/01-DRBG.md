@@ -58,7 +58,7 @@ Generate 反复执行 `V = HMAC(K, V)` 产生请求字节数，生成后再次�
 ## CipherCat 覆盖边界
 
 - `drbg_generate(entropy, nonce, perso, bits)`：一次性 HMAC-SHA-256 生成路径。
-- Demo：`demos/procedures/DRBG.json`；现有验证使用 NIST CAVP HMAC-DRBG 向量子集。
+- Demo：`demos/procedures/DRBG.json`；现有登记用例为少量固定回归，并非完整 NIST CAVP HMAC-DRBG 向量集。
 - 当前未对外提供 `reseed`、`additional_input`、`prediction_resistance` 或 Hash/CTR 两类 DRBG。
 - 代码使用教学级 JavaScript/Python 生成器，不宣称符合 CMVP/FIPS 140-3 或具备生产级侧信道防护。
 

@@ -38,7 +38,8 @@ DK = PBKDF2(PRF, Password, Salt, c, dkLen)
 ### 计算过程（SP 800-132 §5.2 / RFC 8018 §5.2 同构）
 
 ```
-DK = T_1 ‖ T_2 ‖ … ‖ T_dkLen/hLen  （截断到 dkLen 字节）
+ℓ = ceil(dkLen / hLen)               （输出块数，向上取整）
+DK = (T_1 ‖ T_2 ‖ … ‖ T_ℓ)[0:dkLen]  （截取前 dkLen 字节）
 
 T_i = F(Password, Salt, c, i)
 F(P, S, c, i) = U_1 ⊕ U_2 ⊕ … ⊕ U_c
@@ -50,9 +51,10 @@ U_c = PRF(P, U_{c−1})
 
 ## 与 SP 800-132 的关系
 
-GM/T 0091（SM3 实例）与 NIST SP 800-132 PBKDF2 结构完全一致，仅 PRF 换为
-SM3-HMAC（国密同构）。官方向量（RFC 8018 附录 B.2.1 SHA-1/PBKDF2-HMAC-SHA-256
-向量经 SM3 同构替换）见 [sp800-132-pbkdf2/](../sp800-132-pbkdf2/)。
+GM/T 0091（SM3 实例）与 PBKDF2 结构对应，PRF 使用 SM3-HMAC。RFC 7914 §11
+发布的是 PBKDF2-HMAC-SHA-256 测试向量；它只用于项目 SHA-256 路径，不能通过替换 PRF
+当作 SM3 官方标准向量。项目另以 OpenSSL 3 的独立实现对照一组固定 PBKDF2-HMAC-SM3 输入/输出，作为交叉实现回归，不标记为 GM/T 官方测试向量（见 [`kdf-parameter-contract.test.ts`](../../../tests/unit/kdf-parameter-contract.test.ts)）。RFC 8018 附录 B.2.1 实际定义 DES-CBC-Pad，不是 PBKDF2 向量。
+当前 SM3 路径见 [`PBKDF2-SM3.json`](../../../demos/procedures/PBKDF2-SM3.json) Demo；该有限对照不代表完整标准验证或认证。
 
 ## CipherCat 块实现
 

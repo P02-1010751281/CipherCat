@@ -63,7 +63,7 @@ Output: array 𝑓 ∈ ℤ256𝑞 .                           ▷ the coefficien
 
 ## 项目映射
 
-本页是标准结构化参考条目；项目是否有同名 Blockly 块、源码入口或 demo，按本目录 README 和覆盖矩阵核对。本页不把文档条目等同于已实现。
+`pq_prf` 对应 Algorithm 8 前置的 FIPS 203 §4.1 式 (4.3) `PRFη(s,b)=SHAKE256(s‖b,8·64·η)`，其中 `b` 是单字节 nonce；项目块的输出长度字段用字节计。双语言块测试覆盖两种 SHAKE 速率的 rate−1 拼接边界和 nonce/输出长度契约，但不是官方完整测试集。`pq_prf` 的 SHAKE128 可选项不是 FIPS 203 `PRFη`。本页不把文档条目或块级回归等同于算法验证或认证。
 
 ## 核验与缺项
 

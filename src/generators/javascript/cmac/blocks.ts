@@ -77,14 +77,14 @@ javascriptGenerator.forBlock['cmac_mac'] = function (block: Block): [string, num
       '  return X;',
       '}',
     ]);
-    return [fn + '(' + key + ', ' + msg + ')', Order.ATOMIC];
+    return ['Uint8Array.from(' + fn + '(' + key + ', ' + msg + '))', Order.ATOMIC];
   }
 
   // SM4（GB/T 15852 同类结构）——内嵌完整 SM4-CMAC
   const fnSm4 = javascriptGenerator.provideFunction_('cmacSm4Mac', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, msg) {',
     '  if (key.length !== 16) throw new Error("CMAC-SM4 key must be 16 bytes");',
-    '  // SM4 S-box（GM/T 0002）',
+    '  // SM4 S-box（GB/T 32907-2016）',
     '  var sb = [' +
       '0xd6,0x90,0xe9,0xfe,0xcc,0xe1,0x3d,0xb7,0x16,0xb6,0x14,0xc2,0x28,0xfb,0x2c,0x05,' +
       '0x2b,0x67,0x9a,0x76,0x2a,0xbe,0x04,0xc3,0xaa,0x44,0x13,0x26,0x49,0x86,0x06,0x99,' +
@@ -174,5 +174,5 @@ javascriptGenerator.forBlock['cmac_mac'] = function (block: Block): [string, num
     '  return X;',
     '}',
   ]);
-  return [fnSm4 + '(' + key + ', ' + msg + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fnSm4 + '(' + key + ', ' + msg + '))', Order.ATOMIC];
 };

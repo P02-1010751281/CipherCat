@@ -55,7 +55,7 @@ L2(X) = X xor rotl32(X, 8) xor rotl32(X, 14)
 
 ## ZUC-128 密钥流算法
 
-输入为 128-bit 密钥 `k`、128-bit 初始向量 `iv` 和正整数 `L`；输出 `L` 个 32-bit 密钥流字 `Z`。
+输入为 128-bit 密钥 `k`、128-bit 初始向量 `iv` 和非负整数 `L`；输出 `L` 个 32-bit 密钥流字 `Z`。项目允许 `L=0` 返回空数组，并为单次调用设置资源上限；这两项是项目 API/资源策略，不改变标准算法。
 
 ```text
 ZUC(k, iv, L):
@@ -83,4 +83,4 @@ ZUC(k, iv, L):
 
 ## 项目映射
 
-`zuc_keystream` 负责完整密钥流过程；`proc_zuc_keystream` 将同一过程拆为可视化步骤。验证应覆盖初始化轮数、丢弃工作轮、`Z = W xor X3` 和多字输出顺序。
+`zuc_keystream` 负责完整密钥流过程；`proc_zuc_keystream` 是封装该完整块的 procedure 模板，不会把逐轮运算展开为原子块步骤。JS/Python 生成器校验 key 与 IV 均为恰好 16 个字节，并覆盖初始化轮数、丢弃工作轮、`Z = W xor X3`、多字输出顺序及附录 C C1–C3 向量回归，见 `tests/unit/zuc-primitives.test.ts`。C1 输入/输出见 [PDF 物理第 13 页（印刷第 9 页）](./GBT-33133.1-2016.pdf#page=13)，C1 状态表续于 [物理第 14 页（印刷第 10 页）](./GBT-33133.1-2016.pdf#page=14)；C2 在物理第 14 页，C3 在 [物理第 15 页（印刷第 11 页）](./GBT-33133.1-2016.pdf#page=15)。这些自建回归不等同于正式认证。

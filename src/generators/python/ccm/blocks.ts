@@ -67,5 +67,5 @@ pythonGenerator.forBlock['ccm_encrypt'] = function (block: Block): [string, numb
   const tagLen = Number(block.getFieldValue('TAGLEN')) || 16;
   registerAesEcb();
   const fn = registerCcmEncrypt();
-  return [fn + '(' + key + ', ' + nonce + ', ' + aad + ', ' + msg + ', ' + tagLen + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + key + ', ' + nonce + ', ' + aad + ', ' + msg + ', ' + tagLen + '))', Order.ATOMIC];
 };

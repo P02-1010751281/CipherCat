@@ -19,9 +19,9 @@ flowchart LR
 - **Workspace**: central canvas. Zoom with Ctrl+scroll, pan by dragging.
 - **Generate**: toolbar button that translates the workspace into JavaScript or Python.
 
-![Editor after importing a workspace (interface example)](/docs-assets/tutorials/04-editor-imported.png)
+![Editor interface: toolbox, workspace, and code panel](/docs-assets/tutorials/04-editor-imported.png)
 
-_Figure: The actual page shows the toolbox, connected workspace chain, and code area together; the screenshot documents control locations and does not replace generator tests._
+_Figure: the toolbox, connected workspace chain, and code area side by side._
 
 ## 2. Basic operations
 
@@ -75,7 +75,7 @@ The "Crypto Templates / Function Manager" area provides **29 visual templates an
 
 Toolbar "Function Manager": ＋new function, 📥 import (.json), 📤 export, and add/remove templates from the toolbox (＋📦).
 
-![Function-definition Demo (interface example)](/docs-assets/tutorials/08-function-demo.png)
+![Function-definition Demo: parameter, function body, and return socket](/docs-assets/tutorials/08-function-demo.png)
 
 _Figure: The function Demo shows the parameter, function body, and return-value state._
 
@@ -83,7 +83,7 @@ _Figure: The function Demo shows the parameter, function body, and return-value 
 
 Choose **▶ Generate** and select Python or JavaScript. Generated code includes the required helpers. Example — an SM3 hash workspace generates:
 
-![Generated Python code panel (interface example)](/docs-assets/tutorials/05-generated-python.png)
+![Generated code in the code panel](/docs-assets/tutorials/05-generated-python.png)
 
 _Figure: The code panel is the viewing and copying entry point for generated code._
 
@@ -95,7 +95,7 @@ def sm3_compress(v, block):  # ...
 result = sm3_compress(IV, hash_sm3_pad(b"abc"))
 ```
 
-Official-vector verification: the 4 demos in `demos/procedures/` (SM4-Sbox / SM3-Hash / SM2-PointMul / ML-KEM-Encaps) generate output matching official test vectors in both languages (see `scripts/verify-demo.ts`).
+Generated code is the starting point for the next step: copy it into a local Python or JavaScript environment and check the output against inputs and vectors from the standard documents. Registered demo workspaces and their verification scope are listed in the [demo file index](../../demos/README.en.md); a demo that passes covers only its registered inputs, not full standards conformance or certification.
 
 ## 6. Import and export
 
@@ -113,7 +113,7 @@ To avoid stack overflow in Blockly's recursive serialization, workspace import a
 ### 7.1 SM4 S-box lookup
 
 ```text
-sm4_sbox( 0x01 )  →  0x90   (GM/T 0002 official vector)
+sm4_sbox( 0x01 )  →  0x90   (GB/T 32907-2016 Appendix A)
 ```
 
 ### 7.2 SM3 hash
@@ -150,4 +150,4 @@ flowchart TD
 | Plug turns red, won't connect | type mismatch (check Bytes/IntList/Number) |
 | Template chain incomplete after drag | template inputs (key/iv/nonce) are open; fill with data blocks |
 | Generated code errors | check the template is on the main workspace (flyout preview doesn't generate) |
-| Result verification | open `demos/procedures/*.json` and choose ▶ Generate against official vectors |
+| Result verification | open the matching workspace under `demos/`, choose Generate, and compare the output with the vectors or examples in the standard document |

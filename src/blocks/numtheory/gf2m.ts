@@ -1,9 +1,8 @@
 /**
- * GF(2^m) 通用乘法块 — 支持任意二进制扩域的乘法
+ * GF(2^m) 乘法块 — 支持当前实现并核验过的 AES 与 GCM 域
  *
  * AES:  m=8,  irreducible = x⁸+x⁴+x³+x+1 (0x11B)
  * GCM:  m=128, irreducible = x¹²⁸+x⁷+x²+x+1
- * Custom: 用户指定 irreducible polynomial
  */
 import * as Blockly from 'blockly/core';
 import { TYPE_INT_LIST } from '@/constants/block-types';
@@ -19,7 +18,6 @@ Blockly.Blocks['gf2m_mul'] = {
         new Blockly.FieldDropdown([
           ['8 (AES)', 'aes'],
           ['128 (GCM)', 'gcm'],
-          ['custom', 'custom'],
         ]),
         'FIELD',
       )
@@ -30,7 +28,7 @@ Blockly.Blocks['gf2m_mul'] = {
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(20);
     this.setTooltip(
-      'GF(2^m) 多项式乘法，模不可约多项式\n' +
+      'GF(2^m) 多项式乘法；AES 返回单元素列表，GCM 返回 4 个低位 word 在前的无符号 32 位 limb，按 NIST SP 800-38D 位序运算。\n' +
       'AES: x⁸+x⁴+x³+x+1  |  GCM: x¹²⁸+x⁷+x²+x+1',
     );
     this.setHelpUrl('');
@@ -56,7 +54,7 @@ Blockly.Blocks['gf2m_add'] = {
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(250);
     this.setTooltip(
-      'GF(2^m) 域加法 = 按位异或（特征 2）。AES 域单元素 / GCM 域 4×32 limb。',
+      'GF(2^m) 域加法 = 按位异或（特征 2）。AES 输入和输出为单元素列表；GCM 为 4 个低位在前的无符号 32 位 limb。',
     );
     this.setHelpUrl('');
   },

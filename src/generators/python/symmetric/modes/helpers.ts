@@ -213,6 +213,7 @@ export function registerAesEcbDecrypt(): string {
   return pythonGenerator.provideFunction_('aes_ecb_decrypt', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data, key):',
     '    if len(key) != 16: raise ValueError("AES-128 key must be 16 bytes")',
+    '    if len(data) % 16 != 0: raise ValueError("AES-ECB ciphertext length must be a multiple of 16 bytes")',
     '    out = []',
     '    for i in range(0, len(data), 16):',
     '        out += aes_decrypt_block(data[i:i+16], key)',

@@ -6,8 +6,8 @@
 |---|---|
 | 类型 | 标准映射 / 缺项清单 |
 | 标准定位 | GB/T 15852.1—2020、GB/T 15852.2—2024、GB/T 15852.3—2019 |
-| 原文证据 | [国家标准全文公开系统记录](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=2C2CF7FD11D1AA8C666C0E49A2186CBE)、[.2 记录](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=2CE2B006D80BF9D3EE2BAC4CB80C03FB)、[.3 通知记录](https://openstd.samr.gov.cn/bzgk/std/nd?no=781)；本目录暂无可追溯 PDF |
-| 原文位置 | 官方记录；具体条款待取得原件后定位 |
+| 原文证据 | [GB/T 15852.1-2020 官方记录](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=2C2CF7FD11D1AA8C666C0E49A2186CBE)、[.2-2024 官方记录](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=2CE2B006D80BF9D3EE2BAC4CB80C03FB)、[.3-2019 官方记录](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=FFA0FFF9CF75B3F88FFA437D75334745)；本目录暂无可追溯 PDF |
+| 原文位置 | 官方目录记录；因采标版权，官方页面说明不提供文本阅读服务；具体条款待合法取得原件后定位 |
 | 项目状态 | 部分实现（映射不等于整套标准覆盖） |
 
 ## 原文定位与引用
@@ -16,7 +16,7 @@
 
 ## 原文摘录
 
-> 当前可引用的原文证据是国家标准全文公开系统的分部记录；本地未取得标准正文，因此不伪造条款摘录。
+> 当前可引用的证据是国家标准全文公开系统的分部记录。三份记录均将标准标为现行，并说明因版权保护不提供文本阅读服务；本地未取得标准正文，因此不伪造条款摘录。
 
 当前目录没有本地标准 PDF；本页不是条款转录，而是依据项目实现和国家标准全文公开系统记录整理的映射。标准版本和具体条款应以官方记录为准。
 
@@ -24,9 +24,9 @@
 
 | 分部 | 官方记录 | 本地证据状态 |
 |---|---|---|
-| GB/T 15852.1-2020 | [国家标准全文公开系统](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=2C2CF7FD11D1AA8C666C0E49A2186CBE) | 已确认记录；缺本地原件 |
-| GB/T 15852.2-2024 | [国家标准全文公开系统](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=2CE2B006D80BF9D3EE2BAC4CB80C03FB) | 已确认现行记录；缺本地原件 |
-| GB/T 15852.3-2019 | [官方通知记录](https://openstd.samr.gov.cn/bzgk/std/nd?no=781) | 已发现记录；现行/废止状态和原件待核验 |
+| GB/T 15852.1-2020 | [国家标准全文公开系统](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=2C2CF7FD11D1AA8C666C0E49A2186CBE) | 现行；2020-12-14 发布、2021-07-01 实施；官方不提供采标文本阅读；缺合法取得的本地原件 |
+| GB/T 15852.2-2024 | [国家标准全文公开系统](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=2CE2B006D80BF9D3EE2BAC4CB80C03FB) | 现行；2024-09-29 发布、2025-04-01 实施；官方不提供采标文本阅读；缺合法取得的本地原件 |
+| GB/T 15852.3-2019 | [国家标准全文公开系统](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=FFA0FFF9CF75B3F88FFA437D75334745) | 现行；2019-08-30 发布、2020-03-01 实施；官方不提供采标文本阅读；缺合法取得的本地原件 |
 
 ## 当前映射
 
@@ -42,7 +42,7 @@
 
 ## 缺项
 
-- 缺少 GB/T 15852.1-2020、.2-2024、.3-2019 的本地可追溯原件和分部分条款矩阵；
+- 缺少通过授权/许可取得的 GB/T 15852.1-2020、.2-2024、.3-2019 原件和分部分条款矩阵；国家标准全文公开系统因采标版权不提供文本阅读；
 - UMAC、Badger、Poly1305、GMAC 等机制没有对应完整路径；
 - 没有独立标准向量、截断/验证失败和互操作矩阵。
 

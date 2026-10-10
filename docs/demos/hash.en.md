@@ -3,9 +3,11 @@
 
 > [← Back to index](../guides/DEMO.en.md) · [demo file index](../../demos/README.en.md)
 >
-> Scenario 3 (SHA-256) + Scenario 7 (SM3), per the `docs/DEMO.md` index.
+> SHA-256 and SM3 examples, per the [Demo guide](../guides/DEMO.en.md).
 
 ---
+
+> Step-by-step block chains live in the [assembly guide](../build/INDEX.en.md); this page covers the scenario, inputs/outputs, and boundaries.
 
 ## Scenario 3: SHA-256 Hash (5 min)
 
@@ -16,7 +18,7 @@ Compute a SHA-256 hash of text; understand the padding and compression steps.
 
 1. **Load demo**: import `demos/SHA256-Atomic-Hash.json`
 2. **Inspect**:
-   - `data_value`: "abc" (the classic SHA-256 test vector)
+   - `data_value`: `[0x61,0x62,0x63]` (the bytes of `"abc"`, the classic SHA-256 test vector)
    - `hash_sha256_pad`: padding (append 1+0*+64-bit length), outputs 512-bit block list
    - `hash_sha256_compress`: 64-round compression (σ0 σ1 Σ0 Σ1 Ch Maj bit ops)
 3. **Generate**: click "▶", pick JavaScript
@@ -25,7 +27,7 @@ Compute a SHA-256 hash of text; understand the padding and compression steps.
 ### Atomic blocks
 | Block | Function | Standard |
 |----|------|------|
-| `data_text` | UTF-8 text input | — |
+| `data_value` | pass-through expression (byte array or text literal) | — |
 | `hash_sha256_pad` | SHA-256 message padding | FIPS 180-4 §5.1 |
 | `hash_sha256_compress` | 64-round compression | FIPS 180-4 §6.2 |
 
@@ -67,14 +69,14 @@ Build SM3 padding + compression with atomic blocks, wrap as `SM3_Hash(msg)`, ver
 1. **Drag**: toolbox "Hash" → drag `hash_sm3_pad` (message padding 1‖0*‖64-bit length)
 2. **Message**: drag `data_value` with the message (e.g. text `"abc"`) into pad input
 3. **Compress**: drag `hash_sm3_compress`; connect pad output to its input; fill IV input with `data_value` — SM3 initial values (`0x7380166F` `0x4914B2B9` `0x172442D7` `0xDA8A0600` `0xA96F30BC` `0x163138AA` `0xE38DEE4D` `0xB0FB0E4E`)
-4. **Generate**: ▶ Generate → `sm3_compress(IV, hash_sm3_pad(msg))`
+4. **Generate**: ▶ Generate → Python emits `sm3_compress(IV, sm3_pad(msg))` and JavaScript emits `sm3Compress(IV, sm3Pad(msg))`
 5. **Verify**: `SM3("abc") = 66c7f0f462eeedd9d1f2d46bdc10e4e24167c4875cf2f7a2297da02b8f4ba8e0` (GB/T 32905 A.1 official vector)
 
 > Note: single-block messages (≤55 bytes) use the direct chain; multi-block needs a `ctrl_iterate` loop compressing block by block (left as an extension in the demo).
 
 ---
 
-**Official-vector verification**: `node dist-verify/verify-demo.js demos/procedures/SM3-Hash.json --exec` → `=== ALL VECTORS PASS ===`
+This page uses a fixed input provided with the repository; the output matches the SM3("abc") example value in GB/T 32905 Annex A.1. That is a fixed-sample check, not full algorithm validation.
 
 ---
 

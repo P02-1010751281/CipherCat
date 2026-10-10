@@ -86,7 +86,7 @@ Sizes (bytes):
 | 45 | `45-MultiplyNTT.md` | MultiplyNTT(𝑎,̂ 𝑏)̂ | NTT 运算 | — |
 | 46 | `46-AddVectorNTT.md` | AddVectorNTT(𝐯,̂ 𝐰) | NTT 运算 | — |
 | 47 | `47-ScalarVectorNTT.md` | ScalarVectorNTT(𝑐,̂ 𝐯)̂ | NTT 运算 | — |
-| 48 | `48-MatrixVectorNTT.md` | MatrixVectorNTT(𝐌, | NTT 运算 | — |
+| 48 | `48-MatrixVectorNTT.md` | MatrixVectorNTT(𝐌̂, 𝐯̂) | NTT 运算 | — |
 | 49 | `49-MontgomeryReduce.md` | MontgomeryReduce(𝑎) | Montgomery 约简 | — |
 
-平台已实现 ML-DSA-44 完整签名/验签（`mldsa_sign` / `mldsa_verify`，NIST ACVP sigGen 30/30 通过）及 5 个签名原语原子块（`pq_power2round` / `pq_decompose` / `pq_make_hint` / `pq_use_hint` / `pq_sample_in_ball`，参数固定 ML-DSA-44：d=13、γ₂=95232、τ=39）。搭建教程见上表指南；demo 见 `demos/procedures/ML-DSA-Primitives.json` 与 `demos/procedures/ML-DSA-Sign.json`。其余算法章节为参考规范。
+平台已实现 ML-DSA-44 签名/验签（`mldsa_sign` / `mldsa_verify`），并提供 5 个签名原语原子块（`pq_power2round` / `pq_decompose` / `pq_make_hint` / `pq_use_hint` / `pq_sample_in_ball`，参数固定 ML-DSA-44：d=13、γ₂=95232、τ=39）。当前回归取 NIST ACVP `ML-DSA-sigGen-FIPS204` 内部投影里 ML-DSA-44 的确定性用例（hashAlg=none、空 context，tgId=1 的 tcId 5、8，共 2 例），用官方 sk/message 驱动块生成的双语言实现，与官方 signature 逐字节一致；其余参数集、拒绝路径和完整用例集未覆盖，也不是 ACVP 验证会话或认证。NIST 当前发布的 ML-DSA ACVP JSON 规范仍是 Internet-Draft（2026-10-02 版）：测试数随注册能力组合变化，sigGen AFT 每种组合至少 15 项，内部确定性接口还须覆盖签名拒绝路径与多次拒绝情形；因此不能用固定“30 项”描述完整套件。实现范围和缺项见[逐块符合性清单](../CONFORMANCE-INVENTORY.md)。搭建教程见上表指南；Demo 见 `demos/procedures/ML-DSA-Primitives.json` 与 `demos/procedures/ML-DSA-Sign.json`。其余算法章节为参考规范。

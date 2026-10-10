@@ -5,7 +5,7 @@
  * 内嵌完整 ML-DSA-44（单 ml_dsa_core() 闭包，内部所有辅助函数逐行取自已验证算法
  * mldsa_py_algo.py；常量在闭包顶部声明一次；SHAKE 用标准库 hashlib.shake_128/256）。
  * - ml_dsa_sign 确定性：rnd 缺省 = 0^32，ctx 缺省 = []（空上下文外部接口）
- * 官方向量：NIST ACVP sigGen ML-DSA-44 deterministic 30/30 PASS（external+internal）。
+ * 回归范围：仓库登记 1 组 ML-DSA-44 确定性固定样例（ACVP 向量文件与 case ID 未登记，不作为官方 ACVP 证据）；未包含完整 ACVP 套件。
  */
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
@@ -496,7 +496,7 @@ pythonGenerator.forBlock['mldsa_sign'] = function (block: Block): [string, numbe
   const sk = pythonGenerator.valueToCode(block, 'SECRET_KEY', Order.ATOMIC) || '[]';
   const msg = pythonGenerator.valueToCode(block, 'MESSAGE', Order.ATOMIC) || '[]';
   const fn = registerMlDsaSign();
-  return [fn + '(' + sk + ', ' + msg + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + sk + ', ' + msg + '))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['mldsa_verify'] = function (block: Block): [string, number] {

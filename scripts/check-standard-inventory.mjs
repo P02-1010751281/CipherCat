@@ -1,6 +1,6 @@
 import process from 'node:process';
 import { readFile, readdir, writeFile } from 'node:fs/promises';
-import { basename, dirname, join, relative } from 'node:path';
+import { basename, dirname, join, relative, resolve } from 'node:path';
 
 const root = process.cwd();
 const standardsRoot = join(root, 'docs', 'standards');
@@ -60,6 +60,23 @@ function sourceKind(content, hasSource) {
   return 'missing source link';
 }
 
+async function sourceLineAnchorErrors(content, entryFile) {
+  const errors = [];
+  for (const match of content.matchAll(/\]\(([^)\s]+)#L(\d+)(?:-L(\d+))?\)/g)) {
+    const [, target, firstText, lastText = firstText] = match;
+    if (!/00-(?:Standard|Research)-Source\.md$/.test(target)) continue;
+    const linkedSource = resolve(dirname(entryFile), target);
+    const sourceText = await readFile(linkedSource, 'utf8');
+    const sourceLines = sourceText.split(/\r?\n/).length - (/(?:\r?\n)$/.test(sourceText) ? 1 : 0);
+    const first = Number(firstText);
+    const last = Number(lastText);
+    if (first < 1 || last < first || last > sourceLines) {
+      errors.push(`${relative(root, entryFile)}: source line anchor L${first}-L${last} exceeds ${sourceLines} lines in ${relative(root, linkedSource)}`);
+    }
+  }
+  return errors;
+}
+
 const directories = (await readdir(standardsRoot, { withFileTypes: true }))
   .filter((item) => item.isDirectory() && item.name !== 'papers')
   .map((item) => item.name)
@@ -86,23 +103,38 @@ for (const directory of directories) {
     const evidence = field(content, '原文证据');
     const location = field(content, '原文位置');
     const kind = sourceKind(content, Boolean(sourcePath));
+    errors.push(...await sourceLineAnchorErrors(documentContent, filePath));
     if (!standardPosition || !evidence || !location) {
       errors.push(`${relative(root, filePath)}: structured citation field is incomplete`);
     }
     if (sourcePath && kind === 'missing source link') {
       errors.push(`${relative(root, filePath)}: source-backed entry has no source link`);
     }
-    entries.push({
+    const entry = {
       file: relative(standardsRoot, filePath),
       position: standardPosition.replace(/^# /, ''),
       location,
       kind,
-    });
+    };
     const englishPath = filePath.replace(/\.md$/, '.en.md');
     if (englishPath !== filePath && files.includes(englishPath)) {
       const englishContent = await readFile(englishPath, 'utf8');
-      if (/^## Entry Metadata$/m.test(englishContent)) englishStructuredEntries += 1;
+      const englishDocumentContent = englishContent.replace(/```[\s\S]*?```/g, '');
+      if (/^## Entry Metadata$/m.test(englishDocumentContent)) {
+        errors.push(...await sourceLineAnchorErrors(englishDocumentContent, englishPath));
+        const englishPosition = field(englishContent, 'Standard position');
+        const englishLocation = field(englishContent, 'Source location');
+        if (!englishPosition || !englishLocation) {
+          errors.push(`${relative(root, englishPath)}: English inventory metadata requires Standard position and Source location`);
+        } else {
+          englishStructuredEntries += 1;
+          entry.englishFile = relative(standardsRoot, englishPath);
+          entry.englishPosition = englishPosition;
+          entry.englishLocation = englishLocation;
+        }
+      }
     }
+    entries.push(entry);
   }
   inventory.push({ directory, hasSource: Boolean(sourcePath), hasStandardSource, hasResearchSource, entries });
 }
@@ -132,7 +164,7 @@ function render(language, checkedAt = new Date().toLocaleDateString('sv-SE')) {
       : '> 本清单由所有结构化条目的元数据块生成，是证据索引，不代表每一份标准的全部条款都已逐字转录。',
     '',
     ...(english
-      ? ['> The ' + entries.length + ' canonical entries are listed once; ' + englishStructuredEntries + ' currently have structured English counterparts. Labels are translated, while entry titles and source-location details remain in the canonical entry language where no translation exists. This is not a fully localized entry-by-entry index.', '']
+      ? ['> The ' + entries.length + ' canonical entries are listed once; ' + englishStructuredEntries + ' have structured English counterparts. Translated rows use English entry links, standard positions, and source locations; entries without a translation retain their canonical-language metadata.', '']
       : []),
     english ? '## Summary' : '## 汇总',
     '',
@@ -169,12 +201,15 @@ function render(language, checkedAt = new Date().toLocaleDateString('sv-SE')) {
     lines.push(english ? '| Entry | Standard position | Source location | Evidence status |' : '| 条目 | 标准定位 | 原文位置 | 证据状态 |');
     lines.push('|---|---|---|---|');
     for (const entry of item.entries) {
-      const link = `./${entry.file}`;
-      lines.push(`| [${escapeCell(entry.file)}](${link}) | ${escapeCell(entry.position)} | ${escapeCell(rewriteEntryLinks(entry.location, entry.file))} | \`${entry.kind}\` |`);
+      const displayFile = english ? (entry.englishFile || entry.file) : entry.file;
+      const position = english ? (entry.englishPosition || entry.position) : entry.position;
+      const location = english ? (entry.englishLocation || entry.location) : entry.location;
+      const link = `./${displayFile}`;
+      lines.push(`| [${escapeCell(displayFile)}](${link}) | ${escapeCell(position)} | ${escapeCell(rewriteEntryLinks(location, displayFile))} | \`${entry.kind}\` |`);
     }
     lines.push('');
   }
-  return `${lines.join('\n')}\n`;
+  return `${lines.join('\n').trimEnd()}\n`;
 }
 
 if (errors.length) {

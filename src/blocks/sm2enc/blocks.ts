@@ -59,13 +59,13 @@ Blockly.Blocks['sm2_decrypt'] = {
   },
 };
 
-// SM2 密钥交换（GB/T 32918.3-2016 §6.2，响应方 B 侧全流程）
+// SM2 密钥交换（GB/T 32918.3-2016 §6.1，响应方 B 侧 B1-B7 共享密钥派生）
 // 输入：dB = B 私钥 hex(32B)，rB = B 临时随机数 hex(32B)，
 //   PAX/PAY = A 公钥坐标 hex，RA = A 临时点 hex(65B 04‖x1‖y1)，RB = B 临时点 hex(65B)，
 //   ZA/ZB = 杂凑值 hex，WLEN = 共享密钥位数。
 // 内部：RB = [rB]G；tB = (dB + x̄2·rB) mod n；V = [h·tB](PA + [x̄1]RA)；
-//   K = KDF(xV‖yV‖ZA‖ZB, klen)；S1 = SM3(0x02‖yV‖SM3(xV‖ZA‖ZB‖x1‖y1‖x2‖y2))。
-// 输出：共享密钥 K hex（klen/8 字节）。官方向量（附录 A 示例 1）K_B/SB 全 PASS。
+//   K = KDF(xV‖yV‖ZA‖ZB, klen)。验证标量范围、曲线点、RB/rB 一致性、ZA/ZB 长度及 KDF 长度。
+// 输出：共享密钥 K hex；不实现可选密钥确认 B8/B9，也不实现发起方 A 侧。
 Blockly.Blocks['sm2_key_exchange'] = {
   init: function () {
     this.appendValueInput('DB')
@@ -84,11 +84,10 @@ Blockly.Blocks['sm2_key_exchange'] = {
     this.setOutput(true, TYPE_STRING);
     this.setColour(190);
     this.setTooltip(
-      'SM2 密钥交换 (GB/T 32918.3-2016 §6.2，B 侧)。dB = B 私钥 hex，rB = B 临时随机数 hex，' +
-        'pax/pay = A 公钥坐标 hex，RA = A 临时点 hex(04‖x1‖y1)，RB = B 临时点 hex，ZA/ZB = 杂凑值 hex，' +
-        'wlen = 共享密钥位数。内部：RB=[rB]G，tB=(dB+x̄2·rB) mod n，V=[h·tB](PA+[x̄1]RA)，' +
-        'K=KDF(xV‖yV‖ZA‖ZB,klen)，S1=SM3(0x02‖yV‖SM3(xV‖ZA‖ZB‖x1‖y1‖x2‖y2))。' +
-        '输出共享密钥 K hex。官方向量（附录 A 示例 1）全 PASS。',
+      'SM2 密钥交换 (GB/T 32918.3-2016 §6.1，响应方 B 侧 B1-B7)。dB/rB 为 32 字节 hex 标量且须在 [1,n−1]；' +
+        'pax/pay 是 A 的曲线公钥坐标；RA/RB 是 04 前缀的 65 字节未压缩点，RB 必须等于 [rB]G；ZA/ZB 为 32 字节 hex；' +
+        'wlen 为小于 (2^32−1)×256 的正安全整数位数。输出 K=KDF(xV‖yV‖ZA‖ZB,wlen)。不实现可选密钥确认 B8/B9 或发起方 A 侧。' +
+        'GB/T 32918.3-2016 附录 A.2 示例 1 的 B 侧共享密钥向量通过；不表示完整密钥交换符合性。',
     );
     this.setHelpUrl('https://std.samr.gov.cn/gb/search/gbDetailed?id=71F772D8055ED3A7E05397BE0A0AB82A');
   },

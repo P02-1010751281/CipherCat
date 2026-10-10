@@ -9,6 +9,7 @@ javascriptGenerator.forBlock['pad_pkcs7'] = function (block: Block): [string, nu
   const blockSize = javascriptGenerator.valueToCode(block, 'BLOCK_SIZE', Order.ATOMIC) || '16';
   const fn = javascriptGenerator.provideFunction_('padPkcs7', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data, blockSize) {',
+    '  if (!Number.isInteger(blockSize) || blockSize < 1 || blockSize > 255) throw new RangeError("PKCS#7 block size must be an integer from 1 to 255");',
     '  var padLen = blockSize - (data.length % blockSize);',
     '  var result = new Uint8Array(data.length + padLen);',
     '  result.set(data);',
@@ -24,6 +25,7 @@ javascriptGenerator.forBlock['pad_zero'] = function (block: Block): [string, num
   const blockSize = javascriptGenerator.valueToCode(block, 'BLOCK_SIZE', Order.ATOMIC) || '16';
   const fn = javascriptGenerator.provideFunction_('padZero', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(data, blockSize) {',
+    '  if (!Number.isInteger(blockSize) || blockSize < 1) throw new RangeError("Zero-padding block size must be a positive integer");',
     '  var padLen = blockSize - (data.length % blockSize);',
     '  var result = new Uint8Array(data.length + padLen);',
     '  result.set(data);',

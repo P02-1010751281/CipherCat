@@ -4,7 +4,7 @@
  *
  * 320 位状态（5×64 位字），rate 128 位（每块 x0‖x1），初始化/终结 12 轮、数据 8 轮；
  * 字节序 little-endian。64 位字运算用 BigInt（>>> 移位回绕坑见 X25519 教训）。
- * 官方向量：ascon-c 仓 LWC_AEAD_KAT_128_128.txt（1089 例全过）。
+ * 项目 Demo 登记少量固定回归样例；未运行完整官方 KAT 集。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
@@ -154,7 +154,7 @@ javascriptGenerator.forBlock['ascon_encrypt'] = function (block: Block): [string
   const ad = javascriptGenerator.valueToCode(block, 'AD', Order.ATOMIC) || '[]';
   const msg = javascriptGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   const fn = registerAsconEncrypt();
-  return [fn + '(' + key + ', ' + nonce + ', ' + ad + ', ' + msg + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + key + ', ' + nonce + ', ' + ad + ', ' + msg + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['ascon_decrypt'] = (block: Block): [string, number] => {
@@ -163,20 +163,20 @@ javascriptGenerator.forBlock['ascon_decrypt'] = (block: Block): [string, number]
   const ad = javascriptGenerator.valueToCode(block, 'AD', Order.ATOMIC) || '[]';
   const ct = javascriptGenerator.valueToCode(block, 'CT', Order.ATOMIC) || '[]';
   const fn = registerAsconDecrypt();
-  return [fn + '(' + key + ', ' + nonce + ', ' + ad + ', ' + ct + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + key + ', ' + nonce + ', ' + ad + ', ' + ct + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['ascon_hash256'] = (block: Block): [string, number] => {
   const msg = javascriptGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   const fn = registerAsconHashXof();
-  return [fn + '(' + msg + ', 32, null, 0x0000080100cc0002n)', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + msg + ', 32, null, 0x0000080100cc0002n))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['ascon_xof128'] = (block: Block): [string, number] => {
   const msg = javascriptGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   const len = javascriptGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '0';
   const fn = registerAsconHashXof();
-  return [fn + '(' + msg + ', ' + len + ', null, 0x0000080000cc0003n)', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + msg + ', ' + len + ', null, 0x0000080000cc0003n))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['ascon_cxof128'] = (block: Block): [string, number] => {
@@ -184,5 +184,5 @@ javascriptGenerator.forBlock['ascon_cxof128'] = (block: Block): [string, number]
   const custom = javascriptGenerator.valueToCode(block, 'CUSTOM', Order.ATOMIC) || '[]';
   const len = javascriptGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '0';
   const fn = registerAsconHashXof();
-  return [fn + '(' + msg + ', ' + len + ', ' + custom + ', 0x0000080000cc0004n)', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + msg + ', ' + len + ', ' + custom + ', 0x0000080000cc0004n))', Order.ATOMIC];
 };

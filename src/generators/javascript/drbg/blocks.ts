@@ -9,13 +9,13 @@
  *   - drbgReseed(st, entropy, additional)
  *   - drbgGenerate(st, nbits, additional) → 字节数组（可变状态）
  *   - drbgGenerateAll(entropy, nonce, perso, nbits) → 单次生成（块调用路径）
- * 官方向量：NIST CAVP drbgtestvectors（SHA-256 480 例全过）。
+ * 项目 Demo 仅含少量固定回归输出，未运行完整 NIST CAVP 向量集。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
 import { registerHmacSha256 } from '../hash/hmac-sha256';
 
-/** 完整状态化 HMAC-DRBG（HMAC-SHA-256，SP 800-90A §10.1.2） */
+/** 教学块与 Demo 共用的内部 HMAC-DRBG 状态 helper；不实现完整生命周期。 */
 function registerDrbg(): string {
   registerHmacSha256();
   javascriptGenerator.provideFunction_('drbgInstantiate', [
@@ -44,6 +44,7 @@ function registerDrbg(): string {
   ]);
   javascriptGenerator.provideFunction_('drbgGenerate', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(st, nbits, additional) {',
+    '  if (!Number.isSafeInteger(nbits) || nbits < 0 || nbits > 524288) throw new RangeError("requested_bits must be a safe integer from 0 to 524288");',
     '  if (additional !== null && additional !== undefined) drbgUpdate(st, additional);',
     '  var outlen = Math.ceil(nbits / 8), temp = [];',
     '  while (temp.length < outlen) {',
@@ -51,6 +52,8 @@ function registerDrbg(): string {
     '    for (var j = 0; j < st.V.length; j++) temp.push(st.V[j]);',
     '  }',
     '  var out = temp.slice(0, outlen);',
+    '  var unusedBits = (8 - (nbits % 8)) % 8;',
+    '  if (unusedBits && out.length) out[out.length - 1] &= (0xff << unusedBits) & 0xff;',
     '  drbgUpdate(st, additional);',
     '  return out;',
     '}',
@@ -68,5 +71,5 @@ javascriptGenerator.forBlock['drbg_generate'] = function (block: Block): [string
   const perso = javascriptGenerator.valueToCode(block, 'PERSO', Order.ATOMIC) || '[]';
   const bits = javascriptGenerator.valueToCode(block, 'BITS', Order.ATOMIC) || '256';
   const fn = registerDrbg();
-  return [fn + '(' + entropy + ', ' + nonce + ', ' + perso + ', ' + bits + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + entropy + ', ' + nonce + ', ' + perso + ', ' + bits + '))', Order.ATOMIC];
 };

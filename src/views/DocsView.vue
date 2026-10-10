@@ -129,6 +129,7 @@ import {
   getGuideCategory,
   getPlatformCategory,
   getStandardDocCategory,
+  getStandardsIndexCategory,
   parseOrder,
   type DocFile,
   type DocCategory,
@@ -222,7 +223,7 @@ function buildCategories(): DocCategory[] {
         path,
         category,
         filename: parts.slice(1).join('/') || filename,
-        title: getDocTitle(filename, locale),
+        title: getDocTitle(path, locale),
         order: parseOrder(filename),
       };
       if (!catMap.has(category)) catMap.set(category, []);
@@ -236,26 +237,9 @@ function buildCategories(): DocCategory[] {
 
       const file: DocFile = {
         path,
-        category: 'standards-index',
+        category: getStandardsIndexCategory(filename),
         filename,
-        title: getDocTitle(filename, locale),
-        order: parseOrder(filename),
-      };
-      if (!catMap.has('standards-index')) catMap.set('standards-index', []);
-      catMap.get('standards-index')!.push(file);
-      continue;
-    }
-
-    // guides/：核心文档平铺（guides/<file>），按 locale 过滤中英版本
-    if (top === 'guides' && parts.length === 2) {
-      const filename = parts[1];
-      if (!shouldIncludeLocalePath(path, locale)) continue;
-
-      const file: DocFile = {
-        path,
-        category: getGuideCategory(filename),
-        filename,
-        title: getDocTitle(filename, locale),
+        title: getDocTitle(path, locale),
         order: parseOrder(filename),
       };
       if (!catMap.has(file.category)) catMap.set(file.category, []);
@@ -263,16 +247,18 @@ function buildCategories(): DocCategory[] {
       continue;
     }
 
-    // demos/：搭建教程（demos/<file>），按 locale 过滤
-    if (top === 'demos' && parts.length === 2) {
+    // guides/、demos/、build/：核心文档平铺，按 locale 过滤中英版本
+    if ((top === 'guides' || top === 'demos' || top === 'build') && parts.length === 2) {
       const filename = parts[1];
       if (!shouldIncludeLocalePath(path, locale)) continue;
 
+      const category =
+        top === 'guides' ? getGuideCategory(filename) : top === 'demos' ? 'user-demos' : 'build-guides';
       const file: DocFile = {
         path,
-        category: 'user-demos',
+        category,
         filename,
-        title: getDocTitle(filename, locale),
+        title: getDocTitle(path, locale),
         order: parseOrder(filename),
       };
       if (!catMap.has(file.category)) catMap.set(file.category, []);
@@ -288,7 +274,7 @@ function buildCategories(): DocCategory[] {
       const file = {
         path,
         filename,
-        title: getDocTitle(filename, locale),
+        title: getDocTitle(path, locale),
         order: parseOrder(filename),
       };
       for (const category of getBlockDocCategories(filename)) {
@@ -309,7 +295,7 @@ function buildCategories(): DocCategory[] {
         path,
         category,
         filename,
-        title: getDocTitle(basename, locale),
+        title: getDocTitle(path, locale),
         order: parseOrder(basename),
       };
       if (!catMap.has(category)) catMap.set(category, []);
@@ -325,6 +311,7 @@ function buildCategories(): DocCategory[] {
   // Define display order: user docs first, then development/audit/reference docs, then standards.
   const pinned = [
     'user-guides',
+    'build-guides',
     'user-demos',
     'user-reference',
     'user-reference-foundations',
@@ -333,6 +320,7 @@ function buildCategories(): DocCategory[] {
     'platform',
     'research',
     'standards-index',
+    'standards-tooling',
     'rfc-references',
   ];
   const rest = [...catMap.keys()]

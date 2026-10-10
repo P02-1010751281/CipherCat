@@ -1,6 +1,6 @@
 # User guide: from blocks to algorithms and verification
 
-CipherCat is a Blockly frontend for cryptographic algorithm structure and code generation. It presents primitives, composes algorithm stages, generates Python/JavaScript code, and links demos to standards. When code is submitted to the integrated Metacrypto platform for randomness assessment, the backend handles sample generation, statistical testing, and reports. Code generation, demo verification, and backend assessment are separate evidence levels and must not be substituted for one another. Screenshots illustrate the CipherCat interface and do not prove the current deployment state.
+CipherCat is a Blockly frontend for cryptographic algorithm structure and code generation. It presents primitives, composes algorithm stages, generates Python/JavaScript code, and links demos to standards. When code is submitted to the integrated Metacrypto platform for randomness assessment, the backend handles sample generation, statistical testing, and reports. Code generation, demo verification, and backend assessment are separate evidence levels and must not be substituted for one another.
 
 ## 1. Documentation paths
 
@@ -18,7 +18,7 @@ CipherCat is a Blockly frontend for cryptographic algorithm structure and code g
 
 CipherCat's home page links to the project list and documentation center and provides a language selector. Click **New Project** to create a local Blockly workspace. Projects and workspaces are stored in browser IndexedDB; the editor route is `/editor/<project-id>`.
 
-This project-list entry applies only to CipherCat. Metacrypto opens the editor through **Open Composer** on its home page and manages platform projects under Resources; their home-page and project screenshots are not interchangeable.
+This project-list entry applies only to CipherCat: Metacrypto opens the editor through **Open Composer** on its home page and manages platform projects under Resources. The two project lists are not interchangeable.
 
 ### 2.2 Import a workspace
 
@@ -32,7 +32,7 @@ This project-list entry applies only to CipherCat. Metacrypto opens the editor t
 | Lattice primitives | `demos/ML-KEM-Atomic.json` | sampling, NTT, polynomial/vector arithmetic, and encoding |
 | Standard-vector flow | `demos/procedures/ML-KEM-Encaps.json` | FIPS 203 ML-KEM-512 Encaps |
 
-![Import-workspace entry in the More menu (interface example)](/docs-assets/tutorials/03-import-menu.png)
+![Import-workspace entry in the More menu](/docs-assets/tutorials/03-import-menu.png)
 
 _Figure: The import entry is located in the editor's More menu._
 
@@ -47,7 +47,7 @@ The left side of the editor is the Blockly workspace and the right side is the c
 
 The frontend generators support Python and JavaScript. Generated code can be copied into a runtime or test script; the frontend does not turn arbitrary generated code into a platform-side backend assessment result.
 
-![Editor after generating Python code (interface example)](/docs-assets/tutorials/05-generated-python.png)
+![Editor after generating Python code](/docs-assets/tutorials/05-generated-python.png)
 
 _Figure: The code panel shows generated output; showing code is not a backend assessment result._
 
@@ -65,7 +65,7 @@ Menu operations:
 | Layer | Name | Examples | Role |
 |---|---|---|---|
 | L1 | Atomic primitive | `pq_ntt`, `hash_sm3_compress`, `aes_sub_bytes`, `gf2_poly_mul` | Express one formula or pseudocode step |
-| L2 | Composite operation | `mode_cbc_encrypt`, `gcm_encrypt`, `pq_mat_vec_mul` | Express a reusable algorithm stage |
+| L2 | Composite operation | `mode_cbc_encrypt`, `gcm_encrypt` | Express a reusable algorithm stage |
 | L3 | Function/template | `procedures_defreturn`, `proc_*` | Add parameters, return values, and call interfaces |
 
 Block layers describe composition, not assurance. The standard entry and demo determine the actual coverage.
@@ -139,7 +139,9 @@ Repository workspaces include atomic primitives, algorithm stages, procedure-wra
 | SM3 digest | `hash_sm3_pad` → `hash_sm3_compress` → `crypto_return` | `demos/procedures/SM3-Hash.json` |
 | AES single-round primitive sequence | `demos/AES-Atomic-Round.json` | Four top-level calls mutate shared state in workspace order; no value-socket wiring |
 | AES explicitly connected round | `AddRoundKey(MixColumns(ShiftRows(SubBytes(state))), round_key)` | `demos/procedures/AES-Round.json` |
-| ML-KEM Encaps | `pq_xof`/seed → `pq_sample_ntt`, `pq_sample_poly_cbd` → `pq_ntt`, `pq_intt`, `pq_ntt_mul` → `pq_poly_add`, `pq_mat_vec_mul` → `pq_byte_encode`, `pq_compress` | `demos/ML-KEM-Atomic.json`, `demos/procedures/ML-KEM-Encaps.json` |
+| ML-KEM Encaps | `pq_xof`/seed → `pq_sample_ntt`, `pq_sample_poly_cbd` → `pq_ntt`, `pq_intt`, `pq_ntt_mul` → `pq_poly_add` → `pq_byte_encode`, `pq_compress` | `demos/procedures/ML-KEM-Encaps.json` |
+
+`demos/ML-KEM-Atomic.json` contains separate primitive examples, not an Encaps flow. Its `pq_mat_vec_mul` block performs ordinary scalar matrix-vector multiplication; it is not the polynomial-ring operation in FIPS 203 and is excluded from ML-KEM coverage.
 
 Reproduce the fixed-input demo first, replace fixed inputs with function parameters, and only then add loops, branches, rejection paths, and multi-parameter support.
 
@@ -149,25 +151,16 @@ The project uses four verification layers:
 
 | Layer | Executor | Verification | Main evidence |
 |---|---|---|---|
-| Workspace/generator | CipherCat | JSON/XML loading, block connections, Python/JavaScript generation | editor, build, template harness |
-| Vector/cross-check | CipherCat demo harness | registered inputs against standard vectors or independent implementations | `demos/tests.json`, `npm run verify:all` |
+| Workspace/generator | CipherCat | JSON/XML loading, block connections, Python/JavaScript generation | editor and code panel |
+| Demos and vectors | CipherCat demo workspaces | whether registered inputs match standard vectors (or an independent implementation) | demo index and coverage matrix |
 | User code trial | user’s Python/JavaScript runtime | behavior of modified code for specified inputs | code, test script, input/output |
-| Platform-side backend randomness assessment | `metacrypt_server` backend generates samples and runs tests; its platform frontend displays reports | sample generation, isolation, statistical tests, rule decisions, and reports | task results include code/sample fingerprints; the comparison API separately exposes a parameter fingerprint; detector/rule versions and report integrity still have gaps |
+| Platform-side backend randomness assessment | the platform backend generates samples and runs tests; the platform frontend displays reports | sample generation, isolation, statistical tests, rule decisions, and reports | the report, parameters, and detector details shown on the task page |
 
 A block without a registered demo must not be marked “verified” merely because it generates code. A demo pass is not a certification result.
 
-### 5.1 Local project gates
+### 5.1 Want to check things locally?
 
-```bash
-npm run verify:all
-npm run docs:check-links
-npm run test:unit
-npm run build
-```
-
-`verify:all` covers standard metadata, structured splits, formulas, source links, templates, demos, and the verification build. `docs:check-links` checks Markdown relative links. `test:unit` and `build` check unit tests and the production frontend build.
-
-For a single workspace, build the verify harness first and then follow [demos/README.en.md](../../demos/README.en.md) and `scripts/verify-demo.ts`.
+The demo index is [demos/README.en.md](../../demos/README.en.md); full commands and gates for developers are in the [development guide](./DEVELOPMENT.en.md).
 
 ### 5.2 Platform-side backend randomness-assessment boundary
 
@@ -176,14 +169,10 @@ The responsibility split between user trials and backend assessment is:
 ```text
 CipherCat: block construction, code generation, and user code trials
         ↓
-metacrypt_server: isolated sample generation and statistical assessment; its platform frontend displays task reports
+Platform backend: isolated sample generation and statistical assessment; the platform frontend displays task reports
 ```
 
-Sample generation, statistical testing, isolation, and the final decision run in the `metacrypt_server` backend pipeline; the Metacrypto platform frontend provides task lists and report details. The CipherCat editor provides Blockly editing, code generation, and user code trials; integrated platform tasks/reports are separate features and the editor itself does not issue assessment conclusions. Backend assessment does not prove generator honesty, entropy-source quality, or algorithm certification. See the [GM/T 0005 backend boundary](../standards/gmt0005-randomness/03-Backend-Evaluation.en.md).
-
-Fingerprints in task results and the comparison API have explicit scopes: `projectCodeHash` covers submitted source, `sampleHash` covers the ordered bytes sent to the detector, and database field `input_hash` appears as `inputHash1/2` in comparisons for normalized parameters. A match means only that the corresponding fingerprint scope is equal; it does not prove sample provenance, algorithm correctness, or reproducibility. See the [backend assessment boundary](../standards/gmt0005-randomness/03-Backend-Evaluation.en.md) for field definitions.
-
-This guide does not embed a backend assessment screenshot. Capture an authenticated `metacrypt_server` task-detail page and caption only the task ID and fields actually shown. If research records require versions or raw results, attach separately verifiable task logs/result files; a screenshot cannot establish detector or rule versions that the page does not display. A login page, 401 page, or manually assembled report is not evidence.
+Sample generation, statistical testing, isolation, and the final decision run in the platform backend; CipherCat handles block editing, code generation, and user code trials, while platform tasks and reports are a separate feature that the editor itself does not conclude on. Reports and comparisons expose code and sample fingerprints to delimit the submitted input scope; an equal fingerprint means only that the scope matched and does not prove sample provenance, algorithm correctness, or reproducibility. A passing statistical test does not prove generator honesty, entropy-source quality, or algorithm certification. See the [GM/T 0005 backend boundary](../standards/gmt0005-randomness/03-Backend-Evaluation.en.md).
 
 ## 6. Result states
 
@@ -195,11 +184,12 @@ Recommended labels for experiment records:
 - **Teaching subset**: only core stages, fixed parameters, or simplified inputs are covered;
 - **Backend assessed**: the backend returned a randomness-test report; verify its completeness and version traceability from the fields actually present.
 
-Claims such as “the full algorithm is certified”, “randomness passed”, or “all parameter sets are supported” require separate evidence.
+State results with the labels above: without the matching state, do not use claims such as “the full algorithm is certified”, “randomness passed”, or “all parameter sets are supported”.
 
 ## 7. Documentation navigation
 
 - [Capability map](./CAPABILITY-MAP.en.md): algorithm classes, primitive scope, and evidence boundaries;
+- [Step-by-step assembly guide](../build/INDEX.en.md): per-family instructions for what to drag, connect, and expect;
 - [Blockly guide](./BLOCKLY-GUIDE.en.md): editor details, types, and templates;
 - [Demo guide](./DEMO.en.md): AES, SM4, hash, SM2, and post-quantum cases;
 - [Block index](../blocks/INDEX.en.md): custom blocks and standard references;

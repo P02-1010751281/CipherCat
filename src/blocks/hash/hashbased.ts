@@ -1,14 +1,14 @@
 /**
- * 哈希基后量子结构件块定义（SLH-DSA/SPHINCS+、XMSS、LMS 通用结构）
+ * 哈希基密码教学结构件；不构成 SLH-DSA、XMSS 或 LMS 的标准算法实现。
  *
- * 教学研究用途：WOTS+ 哈希链、Merkle 树（叶子/节点/整树根）、FIPS 205 ADRS
- * 地址构造。哈希函数用 SHAKE-256（FIPS 205 的 H 函数），32 字节输出。
+ * 教学研究用途：简化哈希链、通用 Merkle 树和地址前缀构造。内部 SHAKE-256
+ * 拼接函数不含 FIPS 205 所需的 PK.seed、函数专用域分隔及完整地址语义。
  *
  * - hash_chain:    WOTS+ 链式哈希 c^i(x) = H(⋯H(x)⋯)（迭代 ITERATIONS 次）
  * - merkle_leaf:   叶子 = H(ADRS ‖ MSG)
  * - merkle_node:   节点 = H(ADRS ‖ LEFT ‖ RIGHT)
  * - merkle_root:   整树根（LEAVES 为按 LEAF_LEN 字节拼接的叶子，叶子数需 2 的幂）
- * - slh_addr:      FIPS 205 ADRS 32 字节构造（layer/tree/type/keypair 大端填充）
+ * - slh_addr:      ADRS 前缀教学编码（layer/tree/type/keypair；最后 8 字节置零）
  */
 import * as Blockly from 'blockly/core';
 import { TYPE_BYTES, TYPE_NUMBER } from '@/constants/block-types';
@@ -42,7 +42,7 @@ Blockly.Blocks['hash_chain'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(HASH_BASED_COLOUR);
     this.setTooltip(
-      'WOTS+ 哈希链 c^i(x)：迭代 SHAKE-256 共 i 次（32 字节输出）。一次性签名核心结构。FIPS 205 Algorithm 1',
+      '教学哈希链：重复调用项目 SHAKE-256 摘要。未使用 FIPS 205 chain 的 F(PK.seed, ADRS, ...) 与逐步地址更新。',
     );
     this.setHelpUrl(FIPS205_URL);
   },
@@ -62,7 +62,7 @@ Blockly.Blocks['merkle_leaf'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(HASH_BASED_COLOUR);
     this.setTooltip(
-      'Merkle 树叶子：leaf = SHAKE256(ADRS ‖ MSG, 32)。ADRS 做域分隔，区分不同树/叶子。FIPS 205 §4.2',
+      '通用教学叶子：SHAKE256(ADRS ‖ MSG, 32)。不是 FIPS 205 XMSS/FORS 的标准叶生成。',
     );
     this.setHelpUrl(FIPS205_URL);
   },
@@ -85,7 +85,7 @@ Blockly.Blocks['merkle_node'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(HASH_BASED_COLOUR);
     this.setTooltip(
-      'Merkle 树内部节点：node = SHAKE256(ADRS ‖ LEFT ‖ RIGHT, 32)。左右子节点哈希组合。FIPS 205 §4.2',
+      '通用教学节点：SHAKE256(ADRS ‖ LEFT ‖ RIGHT, 32)。不是 FIPS 205 XMSS/FORS 的标准节点函数。',
     );
     this.setHelpUrl(FIPS205_URL);
   },
@@ -108,13 +108,13 @@ Blockly.Blocks['merkle_root'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(HASH_BASED_COLOUR);
     this.setTooltip(
-      'Merkle 整树根：LEAVES 为按 LEAF_LEN 字节拼接的全部叶子（叶子数需为 2 的幂），自底向上 SHAKE256(ADRS‖L‖R, 32) 组合出根。FIPS 205 树结构',
+      '通用教学 Merkle 根：对完整叶序列自底向上应用项目 SHAKE256 节点组合；不是 FIPS 205 XMSS/FORS 树构造。',
     );
     this.setHelpUrl(FIPS205_URL);
   },
 };
 
-/** FIPS 205 ADRS：32 字节地址（layer/tree/type/keypair 大端） */
+/** FIPS 205 ADRS 前缀教学编码；不填 type 专用的 word5/word6。 */
 Blockly.Blocks['slh_addr'] = {
   init: function () {
     this.appendDummyInput().appendField('SLH_ADRS(');
@@ -146,7 +146,7 @@ Blockly.Blocks['slh_addr'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(HASH_BASED_COLOUR);
     this.setTooltip(
-      'FIPS 205 ADRS 地址（32 字节）：layer(1) ‖ tree(12) ‖ type(4) ‖ keypair(4)，大端填充，其余字节 0。SPHINCS+ 所有哈希的域分隔参数。FIPS 205 §4.2.5',
+      'ADRS 前缀教学编码：大端写入 layer/tree/type/keypair 四个标准字，末尾 8 字节置零；不含 type 专用地址字段。',
     );
     this.setHelpUrl(FIPS205_URL);
   },
@@ -164,7 +164,7 @@ Blockly.Blocks['fors_root'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(230);
     this.setTooltip(
-      'FORS 森林根：R = H(adrs ‖ root_0 ‖ ... ‖ root_{k-1})——k 棵 FORS 树根拼接后哈希。SPHINCS+ 少时签名（few-time signature）核心结构件（FIPS 205）',
+      '教学森林根：SHAKE256(ADRS ‖ roots, 32)。未实现 FIPS 205 的 T_k(PK.seed, ADRS, roots) 函数。',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.205.pdf');
   },
@@ -211,8 +211,7 @@ Blockly.Blocks['fors_leaf_index'] = {
     this.setOutput(true, TYPE_NUMBER);
     this.setColour(HASH_BASED_COLOUR);
     this.setTooltip(
-      'FORS 选叶索引：消息 M（2 字节）按 4-bit 分块（块 0 最高位），第 I 块值即树内叶子索引。' +
-        '与 fors_sign 黑盒选叶同约定（FIPS 205 FORS.SigGen）。',
+      '固定教学参数下的 FORS 选叶：2 字节输入按 4-bit 分块（块 0 最高位），返回第 I 块；不代表任意 FIPS 205 参数集。',
     );
     this.setHelpUrl(FIPS205_URL);
   },

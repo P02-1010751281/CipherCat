@@ -14,6 +14,7 @@ function registerHkdf(): string {
   registerHmacSha256();
   return javascriptGenerator.provideFunction_('hkdf', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(salt, ikm, info, len) {',
+    '  if (!Number.isSafeInteger(len) || len < 0 || len > 8160) throw new Error("HKDF output length must be an integer from 0 to 8160 bytes");',
     '  var s = Array.from(salt || []);',
     '  if (s.length === 0) { s = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]; }',
     '  var PRK = hmacSha256(s, ikm);',
@@ -35,5 +36,5 @@ javascriptGenerator.forBlock['hkdf'] = function (block: Block): [string, number]
   const len = javascriptGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '32';
   registerSha256Hash();
   const fn = registerHkdf();
-  return [fn + '(' + salt + ', ' + ikm + ', ' + info + ', ' + len + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + salt + ', ' + ikm + ', ' + info + ', ' + len + '))', Order.ATOMIC];
 };

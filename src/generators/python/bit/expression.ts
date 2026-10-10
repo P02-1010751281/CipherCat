@@ -1,5 +1,6 @@
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
+import { uint32Expression } from './uint32';
 
 pythonGenerator.forBlock['bit_expr_infix'] = function(block: Block): [string, number] {
   const value_a = pythonGenerator.valueToCode(block, 'A', Order.ATOMIC) || '0';
@@ -7,11 +8,11 @@ pythonGenerator.forBlock['bit_expr_infix'] = function(block: Block): [string, nu
   const op = block.getFieldValue('OP');
   let code = '';
   if(op === 'XOR') {
-    code = `(${value_a} ^ ${value_b}) & 0xFFFFFFFF`;
+    code = `${uint32Expression(value_a)} ^ ${uint32Expression(value_b)}`;
   } else if(op === 'AND') {
-    code = `(${value_a} & ${value_b}) & 0xFFFFFFFF`;
+    code = `${uint32Expression(value_a)} & ${uint32Expression(value_b)}`;
   } else if(op === 'OR') {
-    code = `(${value_a} | ${value_b}) & 0xFFFFFFFF`;
+    code = `${uint32Expression(value_a)} | ${uint32Expression(value_b)}`;
   } else if(op === 'EQ') {
     code = `(${value_a} == ${value_b})`;
   }

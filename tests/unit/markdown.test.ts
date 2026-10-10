@@ -35,6 +35,18 @@ describe('markdown document metadata helpers', () => {
   it('returns localized labels and preserves unknown ids', () => {
     expect(getCategoryLabel('fips203-ML-KEM', 'zh')).toContain('ML-KEM');
     expect(getCategoryLabel('gmt0005-randomness', 'zh')).toContain('GM/T 0005');
+    expect(getCategoryLabel('gbt32915-randomness', 'zh')).toBe(
+      'GB/T 32915 — 二元序列随机性检测方法',
+    );
+    expect(getCategoryLabel('gbt32915-randomness', 'en')).toBe(
+      'GB/T 32915 — randomness test methods for binary sequences',
+    );
+    expect(getCategoryLabel('randomness-certification-sources', 'zh')).toBe(
+      '随机源与密码模块验证：官方资料',
+    );
+    expect(getCategoryLabel('randomness-certification-sources', 'en')).toBe(
+      'Randomness sources and cryptographic module validation — official materials',
+    );
     expect(getCategoryLabel('fips205-SLH-DSA', 'en')).toContain('SLH-DSA');
     expect(getCategoryLabel('mceliece-goppa', 'en')).toContain('Goppa');
     expect(getCategoryLabel('rfc-references', 'zh')).toContain('RFC');

@@ -8,7 +8,7 @@
  * - SHAKE128/256（rate 168/136）自实现 Keccak-f1600（BigInt 64 位字）
  * - NTT/INTT（ζ = 1753, F = 8347681）、mask 采样 γ1=2^17、hint 打包 ω=80
  * - mlDsaSign 确定性：rnd 缺省 = 0^32，ctx 缺省 = []（空上下文外部接口）
- * 官方向量：NIST ACVP sigGen ML-DSA-44 deterministic 30/30 PASS（external+internal）。
+ * 回归范围：仓库登记 1 组 ML-DSA-44 确定性固定样例（ACVP 向量文件与 case ID 未登记，不作为官方 ACVP 证据）；未包含完整 ACVP 套件。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
@@ -653,7 +653,7 @@ javascriptGenerator.forBlock['mldsa_sign'] = function (block: Block): [string, n
   const sk = javascriptGenerator.valueToCode(block, 'SECRET_KEY', Order.ATOMIC) || '[]';
   const msg = javascriptGenerator.valueToCode(block, 'MESSAGE', Order.ATOMIC) || '[]';
   const fn = registerMlDsaSign();
-  return [fn + '(' + sk + ', ' + msg + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + sk + ', ' + msg + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['mldsa_verify'] = function (block: Block): [string, number] {

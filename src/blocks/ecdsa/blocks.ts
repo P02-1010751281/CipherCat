@@ -24,7 +24,7 @@ Blockly.Blocks['ecdsa_sign'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(230);
     this.setTooltip(
-      'ECDSA 确定性签名 (RFC 6979, P-256/SHA-256)：私钥 32 字节 + 消息（字符串或字节）→ 签名 r‖s 64 字节。k 由 RFC 6979 HMAC-DRBG 确定性生成（sample/test 与官方向量 A.2.5 完全一致）。',
+      'ECDSA 教学签名 (RFC 6979, P-256/SHA-256)：私钥标量须在 [1,n−1]；非生产、非认证实现。',
     );
     this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc6979');
   },
@@ -40,7 +40,7 @@ Blockly.Blocks['ecdsa_verify'] = {
     this.setOutput(true, TYPE_BOOLEAN);
     this.setColour(230);
     this.setTooltip(
-      'ECDSA 验签 (P-256/SHA-256)：消息 + 公钥 Ux‖Uy 64 字节 + 签名 r‖s 64 字节 → Boolean。官方向量（RFC 6979 A.2.5 sample/test）验证通过。',
+      'ECDSA 教学验签 (P-256/SHA-256)：检查签名和公钥边界；非生产、非认证实现。',
     );
     this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc6979');
   },

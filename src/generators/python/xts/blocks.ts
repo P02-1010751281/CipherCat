@@ -4,6 +4,7 @@
  *
  * XTS = T = E_K2(tweak)·α^i（tweak 逐块乘 α）+ C_i = E_K1(P_i ⊕ T) ⊕ T。
  * AES-128 块加密复用 symmetric/modes/helpers 的 aes_encrypt_block（registerAesEcb 注册，list→list）。
+ * 支持末尾部分块的 ciphertext stealing，且限制数据单元不超过 2^20 个 AES 块。
  * 注意：α 乘法是 GF(2^128) little-endian 进位（字节 15 进位、0x87 异或进字节 0），
  * 与 CMAC 的 K1/K2 加倍（big-endian）字节序相反，不能复用。
  */
@@ -32,20 +33,37 @@ function registerXtsEncrypt(): string {
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, tweak, data):',
     '    if len(key) != 32:',
     '        raise ValueError("XTS-AES-128 key must be 32 bytes (K1||K2)")',
+    '    if key[:16] == key[16:]:',
+    '        raise ValueError("XTS keys K1 and K2 must be distinct")',
     '    if len(tweak) != 16:',
     '        raise ValueError("XTS tweak must be 16 bytes")',
-    '    if not data or len(data) % 16:',
-    '        raise ValueError("XTS data must be non-empty multiple of 16")',
+    '    if len(data) < 16 or len(data) > (1 << 24):',
+    '        raise ValueError("XTS data unit must be 16 bytes to 16 MiB")',
     '    K1, K2 = key[:16], key[16:]',
     '    T = aes_encrypt_block(tweak, K2)',
     '    out = bytearray()',
-    '    for i in range(0, len(data), 16):',
-    '        blk = data[i:i + 16]',
+    '    full_blocks, tail_len = divmod(len(data), 16)',
+    '    normal_blocks = full_blocks if tail_len == 0 else full_blocks - 1',
+    '    for i in range(normal_blocks):',
+    '        blk = data[i * 16:(i + 1) * 16]',
     '        pp = bytes([(blk[j] ^ T[j]) & 0xFF for j in range(16)])',
     '        cc = aes_encrypt_block(pp, K1)',
     '        for j in range(16):',
     '            out.append((cc[j] ^ T[j]) & 0xFF)',
     '        T = ' + mul + '(T)',
+    '    if tail_len:',
+    '        start = full_blocks * 16',
+    '        blk = data[start - 16:start]',
+    '        pp = bytes([(blk[j] ^ T[j]) & 0xFF for j in range(16)])',
+    '        cc = aes_encrypt_block(pp, K1)',
+    '        stolen = [(cc[j] ^ T[j]) & 0xFF for j in range(16)]',
+    '        pp = data[start:] + stolen[tail_len:]',
+    '        T = ' + mul + '(T)',
+    '        pp = bytes([(pp[j] ^ T[j]) & 0xFF for j in range(16)])',
+    '        cc = aes_encrypt_block(pp, K1)',
+    '        for j in range(16):',
+    '            out.append((cc[j] ^ T[j]) & 0xFF)',
+    '        out.extend(stolen[:tail_len])',
     '    return list(out)',
   ]);
 }
@@ -56,5 +74,5 @@ pythonGenerator.forBlock['xts_encrypt'] = function (block: Block): [string, numb
   const msg = pythonGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   registerAesEcb();
   const fn = registerXtsEncrypt();
-  return [fn + '(' + key + ', ' + tweak + ', ' + msg + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + key + ', ' + tweak + ', ' + msg + '))', Order.ATOMIC];
 };

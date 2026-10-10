@@ -1,6 +1,6 @@
 # ML-KEM-768 Encaps — Pure Basic Blocks Build Guide
 
-> FIPS 203 Algorithm 10 + 13, k=3, η₁=2, η₂=2, d_u=10, d_v=4, q=3329
+> FIPS 203 Algorithms 20, 17, and 14; k=3, η₁=2, η₂=2, d_u=10, d_v=4, q=3329
 > **Zero composite blocks.** Every XOF/PRF/NTT/PolyAdd/Compress wired manually.
 > Input: `ek` (1184 bytes), `m` (32 bytes). Output: `c` (1088 bytes), `K_hat` (32 bytes).
 
@@ -89,7 +89,7 @@ Build from outside in. Drag the outermost block (usually `set VAR to`) first, th
 
 ## Step 1: Initialize ek and m
 
-FIPS 203 Algorithm 10 line 1. Empty text placeholders — real byte values injected at runtime.
+FIPS 203 Algorithm 17 line 1. Empty text placeholders — real byte values injected at runtime.
 
 ### 1a — set ek to
 
@@ -118,7 +118,7 @@ Block order: `set ek to ""` → `set m to ""`.
 
 ## Step 2: h = SHA3-256(ek)
 
-FIPS 203 Algorithm 10 line 1. H = SHA3-256. rate=1088, c=512, suffix=0x06, output=32 bytes.
+FIPS 203 Algorithm 17 line 1. H = SHA3-256. rate=1088, c=512, suffix=0x06, output=32 bytes.
 
 ### 2.1 — Outer shell
 
@@ -187,7 +187,7 @@ set h = Squeeze(rate=1088, outLen=32,
 
 ## Step 3: G(m ‖ h) = SHA3-512 → g_out, then split into K̂, r
 
-FIPS 203 Algorithm 10 line 1. G = SHA3-512. rate=576, c=1024, suffix=0x06, output=64 bytes.
+FIPS 203 Algorithm 17 line 1. G = SHA3-512. rate=576, c=1024, suffix=0x06, output=64 bytes.
 
 Compute SHA3-512 once into `g_out`, then slice twice. This avoids building the sponge chain twice.
 
@@ -246,7 +246,7 @@ set g_out = Squeeze(rate=576, outLen=64,
 
 ## Step 4: Parse ek
 
-FIPS 203 Algorithm 13 line 2–3. ek = ByteEncode₁₂(t̂) ‖ ρ. For k=3, d=12: |t̂| = 384×3 = 1152 bytes, |ρ| = 32 bytes, |ek| = 1184 bytes.
+FIPS 203 Algorithm 14 line 2–3. ek = ByteEncode₁₂(t̂) ‖ ρ. For k=3, d=12: |t̂| = 384×3 = 1152 bytes, |ρ| = 32 bytes, |ek| = 1184 bytes.
 
 ### 4a — t_bytes
 
@@ -277,7 +277,7 @@ FIPS 203 Algorithm 13 line 2–3. ek = ByteEncode₁₂(t̂) ‖ ρ. For k=3, d=
 
 ## Step 5: Decode t̂ → Write to t_hat Array (Loop Approach)
 
-FIPS 203 Algorithm 13 line 2. ByteDecode₁₂ each `32·d = 384` byte slice. `t_bytes` encodes `t̂` (already in NTT domain), so no NTT after decoding.
+FIPS 203 Algorithm 14 line 2. ByteDecode₁₂ each `32·d = 384` byte slice. `t_bytes` encodes `t̂` (already in NTT domain), so no NTT after decoding.
 
 Uses `ctrl_iterate` + `math_arithmetic` to compute offsets, avoiding three manual repetitions. Loop variable `i` auto-created.
 
@@ -329,7 +329,7 @@ ctrl_iterate i=0..2:
 
 ## Step 6: Generate Matrix Â (Nested Loop)
 
-FIPS 203 Algorithm 13 line 4–8. Â[i][j] = SampleNTT(ρ ‖ j ‖ i) = SeedWithNonce(SeedWithNonce(rho, j), i).
+FIPS 203 Algorithm 14 line 4–8. Â[i][j] = SampleNTT(ρ ‖ j ‖ i) = SeedWithNonce(SeedWithNonce(rho, j), i).
 
 Nested `ctrl_iterate` loops write directly to `A` array. No A00–A22 variables, no row0/row1/row2.
 
@@ -398,7 +398,7 @@ ctrl_iterate i=0..2:
 
 ## Step 7: Generate r̂ Vector (Loop)
 
-FIPS 203 Algorithm 13 line 9–12. r̂[i] = NTT(SamplePolyCBD₂(r_seed ‖ i)). Nonce = i — no arithmetic needed, simplest loop.
+FIPS 203 Algorithm 14 line 9–12. r̂[i] = NTT(SamplePolyCBD₂(r_seed ‖ i)). Nonce = i — no arithmetic needed, simplest loop.
 
 ### 7a — Initialize r_hat placeholder
 
@@ -444,7 +444,7 @@ ctrl_iterate i=0..2:
 
 ## Step 8: u = INTT(Âᵀ·r̂) + e₁ — Manual Unroll ×3
 
-FIPS 203 Algorithm 13 line 13–19. u[i] = INTT(∑ⱼ A[j][i] ∘ r̂[j]) + SamplePolyCBD₂(r_seed ‖ (k+i)). The e₁ nonce k+i requires addition → manual unroll.
+FIPS 203 Algorithm 14 line 13–19. u[i] = INTT(∑ⱼ A[j][i] ∘ r̂[j]) + SamplePolyCBD₂(r_seed ‖ (k+i)). The e₁ nonce k+i requires addition → manual unroll.
 
 ### 8-init — Initialize u placeholder
 
@@ -532,7 +532,7 @@ Same structure as 8a, with these changes:
 
 ## Step 9: μ = Decompress₁(m)
 
-FIPS 203 §4.2.1, Algorithm 13 line 20.
+FIPS 203 §4.2.1, Algorithm 14 line 20.
 
 | # | Action |
 |---|--------|
@@ -550,7 +550,7 @@ FIPS 203 §4.2.1, Algorithm 13 line 20.
 
 ## Step 10: v = INTT(t̂ᵀ·r̂) + e₂ + μ
 
-FIPS 203 Algorithm 13 line 21. e₂ nonce = 2k = 6 (constant, no addition → loop OK).
+FIPS 203 Algorithm 14 line 21. e₂ nonce = 2k = 6 (constant, no addition → loop OK).
 
 ### 10a — Accumulate t̂ᵀ·r̂
 
@@ -588,7 +588,7 @@ FIPS 203 Algorithm 13 line 21. e₂ nonce = 2k = 6 (constant, no addition → lo
 
 ## Step 11–13: Compress-Encode & Concat
 
-FIPS 203 Algorithm 13 line 22–24. No `VecCompressEncode` → individual Compress + ByteEncode per polynomial.
+FIPS 203 Algorithm 14 line 22–24. No `VecCompressEncode` → individual Compress + ByteEncode per polynomial.
 
 ### 11a — Compress-encode u[0], u[1], u[2] → c1
 
@@ -676,7 +676,7 @@ FIPS 203 Algorithm 13 line 22–24. No `VecCompressEncode` → individual Compre
 | 12 | SHA3-512 chains (×2): 5 levels deep each |
 | 13 | t_bytes = ek[0:1152], each t_i slice = 384 bytes (FIPS 203 Alg 6: 32·d) |
 | 14 | rho = ek[1152:1184] |
-| 15 | Generate code → execute → verify: |c₁|=960, |c₂|=128, |c|=1088, |K̂|=32 |
+| 15 | Generate code → execute → verify: \|c₁\|=960, \|c₂\|=128, \|c\|=1088, \|K̂\|=32 |
 
 ### Expected Output Sizes (ML-KEM-768)
 

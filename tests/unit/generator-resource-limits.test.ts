@@ -56,7 +56,7 @@ describe('generated playground resource limits', () => {
     },
   );
 
-  it.each(['1.5', '262145'])(
+  it.each(['-1', '1.5', '262145'])(
     'rejects ZUC keystream word count %s in JavaScript and Python',
     (length) => {
       const code = generateCall('zuc_keystream', {

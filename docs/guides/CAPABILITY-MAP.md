@@ -30,10 +30,27 @@
 | 消息认证 | 消息完整性与来源认证 | HMAC、CMAC、EIA3 | 生成或验证消息认证码；EIA3 是 ZUC 消息完整性算法 | [散列积木](../blocks/hash.md) · [对称密码积木](../blocks/symmetric.md) · [序列密码积木](../blocks/zuc.md) |
 | 密钥派生 | 密钥材料派生 | HKDF、PBKDF2 | 从已有密钥材料派生用途明确的密钥 | [覆盖矩阵](../standards/COVERAGE.md) |
 | 口令处理 | 口令散列 | Argon2 | 以可配置成本提高离线口令猜测难度 | [覆盖矩阵](../standards/COVERAGE.md) |
-| 随机数 | 确定性随机比特生成与平台测评 | HMAC-DRBG、SM3-HMAC-DRBG | 展示 DRBG 构造；随机性测评由后端执行 | [覆盖矩阵](../standards/COVERAGE.md) · [演示目录](../../demos/README.md) |
+| 随机数 | 确定性随机比特生成与平台测评 | SP 800-90A HMAC-DRBG；项目 `gm_rng`（受其状态更新启发的 SM3-HMAC 教学示例） | 展示标准 DRBG 与项目教学示例；随机性测评由后端执行 | [覆盖矩阵](../standards/COVERAGE.md) · [演示目录](../../demos/README.md) |
 | 数学与数据表示 | 可复用算法原语 | 有限域、多项式、矩阵、NTT、采样、编码、比特/字节转换 | 表达密码算法中的数学步骤与数据转换，不单独构成密码算法 | [数论积木](../blocks/numtheory.md) · [后量子密码积木](../blocks/post-quantum.md) |
 
 表中列出的是能力入口，不是认证清单。每项的参数、生成语言和已验证范围请沿“覆盖矩阵”或“演示目录”核对。
+
+### 2.1 接口是接口块，还是用积木拼出来的
+
+工具有两类密码算法块。**原语块**只做一步（填充、压缩、NTT、点乘等）；**接口块**把一整套标准算法封装成单块，例如 `rsa_encrypt`、`sm2_sign`、`mldsa_sign`、`gcm_encrypt`。接口块能直接用，但有接口块不等于能用更低层积木拼出同一接口——后者才是本平台的能力边界。
+
+当前已用原语拼出接口的工作区：
+
+| 接口 | 工作区 |
+|---|---|
+| ML-KEM Encaps | `demos/procedures/ML-KEM-Encaps.json` |
+| AES 单轮 | `demos/AES-Atomic-Round.json`、`demos/procedures/AES-Round.json` |
+| SM4 轮 | `demos/SM4-Atomic-Round.json`、`demos/procedures/SM4-Round.json` |
+| SHA-256、SM3 | `demos/procedures/SHA256-Hash.json`、`SM3-Hash.json` |
+| ECB / CBC / CTR 模式 | `demos/procedures/Mode-*.json` |
+| EIA3 | `demos/procedures/EIA3.json` |
+
+以下接口目前只有接口块，没有逐原语拼装的工作区或模板：RSA、SM2、SM9、ECDSA、EdDSA、X25519、ECDH、ML-DSA、SHA-224/384/512、SHA3-224/256/384/512、HMAC-SHA-256、GCM/CCM/XTS、Argon2、HKDF、PBKDF2、DRBG。要补齐这些，需要先补中间层原语（如 RSA 的 PKCS#1/OAEP 编码链、SM2 的 KDF 与派生链、ML-DSA 的拒绝采样与 hint 链）和对应模板。
 
 ## 3. 各类能力与适用边界
 
@@ -69,7 +86,9 @@ HKDF、PBKDF2 用于派生密钥；Argon2 用于口令散列。它们不是加�
 
 ### 3.6 随机数生成与平台测评
 
-HMAC-DRBG 和 SM3-HMAC-DRBG 是确定性随机比特生成构造。平台测评时，用户提交 Python 生成器与参数；后端在隔离 sandbox 中执行生成器，再由服务端测评流程对生成样本运行登记的统计检测并生成报告。前端用于编辑和用户侧试验，以及提交任务、查看报告；不会依据浏览器生成的样本给出平台测评结论。
+SP 800-90A 定义 HMAC-DRBG 确定性随机比特生成机制。Blockly 的 `gm_rng` 是受 HMAC_DRBG 状态更新启发的项目自定义 SM3-HMAC 教学示例，不是 SP 800-90A DRBG 实现。平台测评时，用户提交 Python 生成器与参数；后端在隔离环境中执行生成器，再对生成的样本运行登记的统计检测并生成报告。前端用于编辑和用户侧试验，以及提交任务、查看报告；不会依据浏览器生成的样本给出平台测评结论。
+
+Blockly 的 `gm_rng` 仅为可复现教学示例；它不采集或验证熵源，也不声明符合 GM/T 0103、GM/T 0105 或 SP 800-90A。
 
 统计检测针对给定样本和配置，不证明随机源的熵、抗攻击能力或密码模块合规性。测试项与判定边界见[随机数标准覆盖](../standards/COVERAGE.md)及项目的随机性测评说明。
 
@@ -83,7 +102,7 @@ HMAC-DRBG 和 SM3-HMAC-DRBG 是确定性随机比特生成构造。平台测评�
 2. **搭建流程。** 在 Blockly 中连接积木；跨算法构件复用时，按端口类型和标准数据表示进行转换。
 3. **生成并运行代码。** 选择 Python 或 JavaScript 生成代码，在用户侧运行环境中检查行为。代码生成供实验与学习使用，不会自动产生平台测评结论。
 4. **复现演示。** 导入[演示工作区](../../demos/README.md)，并按该项登记的标准向量、性质断言或交叉验证检查；不要把固定输入结果误读为标准向量。
-5. **提交随机性测评。** 如需平台统计报告，提交 Python 生成器和测评参数；后端在隔离 sandbox 中运行生成器并产生样本，再由服务端测评流程执行检测、记录参数与结果。该流程只针对随机性测评，不替代其他算法的验证。
+5. **提交随机性测评。** 如需平台统计报告，提交 Python 生成器和测评参数；后端在隔离环境中运行生成器并产生样本，再执行检测、记录参数与结果。该流程只针对随机性测评，不替代其他算法的验证。
 
 ## 5. 教学、科研与生产使用边界
 
@@ -91,7 +110,7 @@ HMAC-DRBG 和 SM3-HMAC-DRBG 是确定性随机比特生成构造。平台测评�
 |---|---|---|
 | 教学 | 用积木观察算法结构、生成代码、运行登记的演示与测试向量 | 明确区分原语、算法片段和完整算法；演示结果仅适用于其登记的输入和断言 |
 | 科研 | 将平台用于受控实验、算法教学研究或实现对比的起点 | 固定源码版本、标准/向量来源、参数、随机种子或样本、依赖与硬件环境；保留原始结果、日志和重复实验。现有记录尚未覆盖所有算法的统一复现清单 |
-| 生产 | 可用作设计参考或原型，不得直接把 Blockly 生成代码或平台统计报告当成生产安全结论 | 需要目标标准的完整测试、威胁模型、密钥与熵管理、侧信道/实现安全评估和独立验证。当前平台没有 NIST CAVP/ACVP 或 CMVP/FIPS 140-3 认证，也不对熵源作认证 |
+| 生产 | 可用作设计参考或原型，不得直接把 Blockly 生成代码或平台统计报告当成生产安全结论 | 需要目标标准的完整测试、威胁模型、密钥与熵管理、侧信道/实现安全评估和独立验证。目前没有 CipherCat 算法实现列入 [NIST CAVP 已验证结果](https://csrc.nist.gov/Projects/cryptographic-algorithm-validation-program)，也未取得 [CMVP/FIPS 140-3 密码模块验证证书](https://csrc.nist.gov/projects/cryptographic-module-validation-program)；平台不对熵源作认证 |
 
 后端随机性统计检测属于样本诊断层。NIST SP 800-22 不能替代 SP 800-90A/B/C 对 DRBG、熵源及完整随机比特生成器的适用评估；算法向量测试也不能替代密码模块验证。具体范围和路线见[标准覆盖矩阵](../standards/COVERAGE.md)及项目中的开发/评测说明。
 
@@ -99,11 +118,11 @@ HMAC-DRBG 和 SM3-HMAC-DRBG 是确定性随机比特生成构造。平台测评�
 
 - 积木可用、代码可生成、演示通过和标准原文齐全，是四种不同状态。
 - 演示只覆盖其登记的输入、参数、向量或性质；需要了解未覆盖项时查[标准覆盖矩阵](../standards/COVERAGE.md)。
-- 平台随机性统计报告不是 CAVP/ACVTS 算法验证结果或 CMVP/FIPS 140-3 密码模块验证/认证，也不是熵源质量证明。
+- 平台随机性统计报告不构成 CAVP 算法验证结果，也不证明 CMVP/FIPS 140-3 密码模块通过验证或熵源质量。
 - 本页所称后量子密码不包括量子密钥分发等量子通信技术。
 
 ## 7. 按目的继续阅读
 
-- **开始使用：**[用户指南](./USER-GUIDE.md) · [Blockly 使用指南](./BLOCKLY-GUIDE.md) · [演示指南](./DEMO.md) · [分步教程](./TUTORIALS.md)
+- **开始使用：**[用户指南](./USER-GUIDE.md) · [分步教程](./TUTORIALS.md) · [分步拼装指南](../build/INDEX.md)（每个函数怎么拼）· [Blockly 使用指南](./BLOCKLY-GUIDE.md) · [演示指南](./DEMO.md)
 - **查找积木：**[积木索引](../blocks/INDEX.md) · [对称密码](../blocks/symmetric.md) · [公钥与椭圆曲线](../blocks/ecc-sbox.md) · [散列](../blocks/hash.md) · [后量子密码](../blocks/post-quantum.md) · [数论与编码](../blocks/numtheory.md) · [序列密码](../blocks/zuc.md)
 - **核对依据与测试：**[标准覆盖矩阵](../standards/COVERAGE.md) · [标准文档状态](../standards/DOCUMENT-STATUS.md) · [演示工作区和验证清单](../../demos/README.md)

@@ -4,13 +4,13 @@ import { TYPE_BYTES, TYPE_INT_LIST, TYPE_NUMBER, TYPE_STRING } from '@/constants
 type B = Blockly.Block;
 
 // M3 数学
-const _math = (t: string, l: string, tip: string) => { Blockly.Blocks[t] = { init: function(this: B) {
+const _math = (t: string, l: string, tip: string, outputType = TYPE_NUMBER) => { Blockly.Blocks[t] = { init: function(this: B) {
   this.appendValueInput('A').setCheck(TYPE_NUMBER).appendField(l + '(');
   this.appendValueInput('B').setCheck(TYPE_NUMBER).appendField(',');
   this.appendDummyInput().appendField(')'); this.setInputsInline(true);
-  this.setOutput(true, TYPE_NUMBER); this.setColour(20); this.setTooltip(tip);
+  this.setOutput(true, outputType); this.setColour(20); this.setTooltip(tip);
 }};};
-_math('nt_mod','Mod','a mod n'); _math('nt_div_rem','DivRem','除余');
+_math('nt_mod','Mod','a mod n'); _math('nt_div_rem','DivRem','返回 [quotient, remainder]', TYPE_INT_LIST);
 
 // ModPow — 带模数下拉（生成器读取 MODULUS 字段，避免硬编码模数）
 Blockly.Blocks['nt_mod_pow'] = { init: function(this: B) {

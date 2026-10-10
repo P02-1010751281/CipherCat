@@ -5,9 +5,9 @@
 | Field | Value |
 |---|---|
 | Type | Project architecture note; not a normative clause |
-| Standard relation | GM/T 0005-2021 Section 6 defines decision rules; this page is project documentation |
-| Standard source | [source extraction](./00-Standard-Source.md) and the local PDF |
-| Related location | [Section 6, source lines 614–704](./00-Standard-Source.md#L614-L704) is context only, not the source of this architecture description |
+| Standard position | Project architecture note related to GM/T 0005-2021; it does not correspond to a normative clause |
+| Source evidence | Not applicable to this project-design note; the GM/T 0005 source is in the [source extraction](./00-Standard-Source.md) and local PDF |
+| Source location | No corresponding standard clause; [Section 6, source lines 614–704](./00-Standard-Source.md#L614-L704) is context only |
 | Project status | Partially implemented; see the current gaps below |
 
 ## Source Location and Citation

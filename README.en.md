@@ -14,7 +14,7 @@
 - 🧩 **Visual programming** — drag and drop blocks to write crypto code like building with LEGO
 - 🌐 **Multilingual** — Chinese/English UI, Blockly blocks switch in sync
 - 💻 **Code generation** — generate executable JavaScript / Python code in one click
-- ✅ **Vector regression** — 29 templates and 59 registered demos are checked by a headless JavaScript/Python harness
+- ✅ **Regression checks** — 29 templates receive structural/executability checks; 59 demos receive registered output regressions in JavaScript and Python
 - 📁 **Project management** — multi-project local management based on IndexedDB, with auto-save
 - 🖥️ **Desktop app** — Tauri wrapper, runs natively on Windows / Linux / macOS
 - 📱 **Responsive** — adapts to wide and narrow screens, panels resizable by dragging
@@ -41,6 +41,8 @@ npm run tauri:build  # package
 # Quality gates
 npm run test:unit
 npm run standards:check
+npm run standards:split-check
+npm run standards:formula-check
 npm run standards:inventory
 # Regenerate the entry-by-entry source inventory when source metadata changes:
 # npm run standards:inventory:write
@@ -49,6 +51,8 @@ npm run cycles:check
 # Regression gates
 npm run lint:check
 npm run type-check
+npm run docs:titles:check
+npm run build-guide:check
 npm run verify:all
 npm run docs:check-links
 ```
@@ -115,7 +119,7 @@ src/
 | Post-quantum cryptography | ML-KEM/ML-DSA lattice components and stages; SLH-DSA and code-based teaching components |
 | Functions and Blockly-native categories | 29 function-template registrations and native variables, math, arrays and logic |
 
-> The authoritative total is 194 custom block types after recursively expanding and deduplicating `ALL_BLOCK_TYPES` in `src/blocks/index.ts`. There are 29 function-template registrations: three base `crypto_*` blocks are already included in the 194, while 26 `proc_*` templates are additional types. The deduplicated union contains 220 types. The 17 toolbox categories include four Blockly-native categories. The table describes scope, not additive category counts. This educational surface is not a CAVP/ACVTS, CMVP/FIPS 140-3 or formal-verification claim.
+> The authoritative total is 194 active custom block types after recursively expanding and deduplicating `ALL_BLOCK_TYPES` in `src/blocks/index.ts`. There are 29 function-template registrations: three base `crypto_*` blocks are already included in the 194, while 26 `proc_*` templates are additional types. The deduplicated union contains 220 types. One further identity, `ctrl_assign`, is registered only so legacy workspaces still load: it is absent from the toolbox and excluded from both 194 and 220. The 17 toolbox categories include four Blockly-native categories. The table describes scope, not additive category counts. This educational surface is not a CAVP/ACVTS, CMVP/FIPS 140-3 or formal-verification claim.
 
 The browser is for Blockly editing, code generation and user trials. Trusted randomness assessment, statistical testing, isolated execution and final reports belong to the `metacrypt_server` backend.
 

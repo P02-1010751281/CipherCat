@@ -3,9 +3,11 @@
 
 > [← 返回索引](../guides/DEMO.md) · [demo 文件清单](../../demos/README.md)
 >
-> 场景 8（点乘），对应 `docs/DEMO.md` 索引。
+> 椭圆曲线点乘示例，对应 [Demo 指南](../guides/DEMO.md)。
 
 ---
+
+> 逐步块链以[分步拼装指南](../build/INDEX.md)为准；本页讲场景、输入输出与边界。
 
 ## 场景 8：SM2 点乘（10 分钟）
 
@@ -14,7 +16,7 @@
 
 ### 步骤
 
-1. **加载 demo**：导入 `demos/procedures/SM2-PointMul.json`
+1. **加载 Demo**：导入 `demos/procedures/SM2-PointMul.json`
 2. **观察结构**（`procedures_defreturn` 含 STACK 语句 + RETURN 值）：
    - STACK：`ecc_load_curve_params`（sm2p256v1 a/b/p）→ `ecc_load_point`（G 坐标）→ `ecc_multiply`（k·G → 变量 R）
    - RETURN：变量 R（点 `{x, y}`）
@@ -36,7 +38,7 @@
 
 ## 手动拼装：SM2 点乘 k·G（从零拖块）
 
-1. **曲线参数**：工具箱「ECC」→ 拖 `ecc_load_curve_params`，填 SM2 推荐曲线参数（p/a/b/G/n，见 `gbt32918-SM2/` 标准目录）
+1. **曲线参数**：工具箱「ECC」→ 拖 `ecc_load_curve_params`，填 SM2 推荐曲线参数（p/a/b/G/n，见 [GB/T 32918 SM2 标准目录](../standards/gbt32918-SM2/README.md)）
 2. **基点**：拖 `ecc_load_point` 填 G 的 x/y 坐标
 3. **标量乘**：拖 `ecc_multiply`，把曲线、基点、标量 k（`data_value`）依次连接
 4. **生成代码**：▶ Generate（JS 生成器已用 BigInt——256-bit 域算术不会溢出）
@@ -46,7 +48,7 @@
 
 ---
 
-**官方向量验证**：`node dist-verify/verify-demo.js demos/procedures/SM2-PointMul.json --exec` → `=== ALL VECTORS PASS ===`
+本页点乘示例使用仓库提供的固定输入，输出与 GB/T 32918.5 的 k·G 示例值一致。这是固定样例核对，不是完整算法验证。
 
 ---
 

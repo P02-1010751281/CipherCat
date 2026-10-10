@@ -3,10 +3,10 @@
  *
  * - drbg_generate: DRBG-Generate(entropy, nonce, perso, bits) → Bytes
  *   Instantiate：K = 0x00‖32、V = 0x01‖32，update(entropy‖nonce‖perso)；
- *   Generate：循环 V = HMAC(K, V)，串联截取 ceil(bits/8) 字节，随后 update()（无 additional_input）。
+ *   Generate：循环 V = HMAC(K, V)，按请求位数截取左端输出；字节数组末字节的低位补零是项目编码约定，随后 update()（无 additional_input）。
  *   相同输入 → 相同输出（确定性；真实 DRBG 需按 SP 800-90A 注入熵源）。
- *   官方向量：NIST CAVP drbgtestvectors（no_reseed + pr_false，SHA-256 480 例全过；
- *   内嵌 drbgGenerate/drbgReseed 状态函数支持 CAVS 双 generate 流程与 reseed 流程）。
+ *   项目回归：少量固定实例化/重播种输出；未运行完整 NIST CAVP 向量集。
+ *   内嵌 drbgGenerate/drbgReseed 状态函数支持连续 generate 与 reseed 流程。
  */
 import * as Blockly from 'blockly/core';
 import { TYPE_BYTES, TYPE_NUMBER } from '@/constants/block-types';
@@ -27,7 +27,7 @@ Blockly.Blocks['drbg_generate'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip(
-      'HMAC-DRBG 确定性随机位生成 (NIST SP 800-90A Rev1, HMAC-SHA-256)：K = 0x00×32、V = 0x01×32 后 update(entropy‖nonce‖perso)；Generate 循环 V = HMAC(K,V) 串联截取 ceil(bits/8) 字节。bits 建议 8 的倍数。相同输入产生相同输出。官方向量（NIST CAVP drbgtestvectors，SHA-256 480 例）验证通过。',
+      'HMAC-DRBG 确定性随机位生成 (NIST SP 800-90A Rev1, HMAC-SHA-256)：请求位数须为 0 至 2^19 的整数；Generate 按标准输出左端请求位。字节数组末字节未请求的低位清零是项目编码约定，不是标准规定的字节格式。相同输入产生相同输出。仓库含少量实例化/重播种固定回归，不是完整 CAVP 测试或认证。',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-90Ar1.pdf');
   },

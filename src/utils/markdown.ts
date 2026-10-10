@@ -1,6 +1,7 @@
 import { marked, Renderer, type Parser } from 'marked';
 import DOMPurify from 'dompurify';
 import hljs from 'highlight.js';
+import DOC_TITLES from '@/generated/doc-titles.json';
 
 // Configure marked with highlight.js
 marked.setOptions({
@@ -197,13 +198,15 @@ const CATEGORY_LABELS: Record<string, { zh: string; en: string }> = {
   platform: { zh: '项目入口', en: 'Project index' },
   research: { zh: '研究报告', en: 'Research Reports' },
   'standards-index': { zh: '标准索引', en: 'Standards Index' },
+  'standards-tooling': { zh: '开发文档 · 标准工具与证据', en: 'Development docs · standards tooling and evidence' },
   'user-guides': { zh: '用户文档', en: 'User documentation' },
+  'build-guides': { zh: '用户文档 · 分步拼装', en: 'User docs · step-by-step assembly' },
   'development-guides': { zh: '开发文档', en: 'Development documentation' },
   'audit-reports': { zh: '审计报告', en: 'Audit reports' },
   'user-demos': { zh: '用户文档 · 演示教程', en: 'User docs · demos' },
   'user-reference': { zh: '密码分类与积木参考', en: 'Cryptographic families and block reference' },
   'user-reference-foundations': { zh: '通用原语 · 数学与数据编码', en: 'Shared primitives · math and encoding' },
-  // 算法规范（37 类）
+  // 算法规范（40 类）
   'fips180-4-SHA2': { zh: 'FIPS 180-4 — SHA-2 哈希', en: 'FIPS 180-4 — SHA-2 Hash' },
   'fips186-5-ecdsa': { zh: 'FIPS 186-5 — ECDSA', en: 'FIPS 186-5 — ECDSA' },
   'fips197-AES': { zh: 'FIPS 197 — AES', en: 'FIPS 197 — AES' },
@@ -216,6 +219,10 @@ const CATEGORY_LABELS: Record<string, { zh: string; en: string }> = {
   'gbt17964-modes': { zh: 'GB/T 17964 — 分组模式', en: 'GB/T 17964 — Block Modes' },
   'gbt32905-SM3': { zh: 'GB/T 32905 — SM3 哈希', en: 'GB/T 32905 — SM3 Hash' },
   'gbt32907-SM4': { zh: 'GB/T 32907 — SM4', en: 'GB/T 32907 — SM4' },
+  'gbt32915-randomness': {
+    zh: 'GB/T 32915 — 二元序列随机性检测方法',
+    en: 'GB/T 32915 — Randomness Test Methods for Binary Sequences',
+  },
   'gbt32918-SM2': { zh: 'GB/T 32918 — SM2 椭圆曲线', en: 'GB/T 32918 — SM2 Elliptic Curve' },
   'gbt33133-ZUC': { zh: 'GB/T 33133 — ZUC 序列密码', en: 'GB/T 33133 — ZUC Stream Cipher' },
   'gbt36624-aead': { zh: 'GB/T 36624 — 认证加密', en: 'GB/T 36624 — AEAD' },
@@ -223,6 +230,10 @@ const CATEGORY_LABELS: Record<string, { zh: string; en: string }> = {
   'gmt0005-randomness': { zh: 'GM/T 0005 — 随机性检测', en: 'GM/T 0005 — Randomness Testing' },
   'gmt0091-kdf': { zh: 'GM/T 0091 — KDF', en: 'GM/T 0091 — KDF' },
   'gmt0103-rng': { zh: 'GM/T 0103 — 随机数发生器', en: 'GM/T 0103 — RNG' },
+  'randomness-certification-sources': {
+    zh: '随机源与密码模块验证：官方资料',
+    en: 'Randomness Sources and Cryptographic Module Validation — Official Materials',
+  },
   'mceliece-goppa': { zh: 'Classic McEliece — Goppa 码', en: 'Classic McEliece — Goppa Codes' },
   'papers': { zh: '论文与参考资料', en: 'Papers & References' },
   'rfc-references': { zh: 'RFC 与协议参考', en: 'RFC and protocol references' },
@@ -246,6 +257,28 @@ export function getStandardDocCategory(category: string): string {
   if (category.startsWith('rfc')) return 'rfc-references';
   if (category === 'china-pqc-tracking') return 'research';
   return category;
+}
+
+// 标准目录下的顶层页面分为两类：读者参照页（覆盖矩阵、原文分层）与
+// 开发/审计工具页（提取、拆分、证据台账、认证准备）。后者单独成组，
+// 避免用户文档区出现工程流程口吻的内容。
+const STANDARDS_TOOLING_DOCS = new Set([
+  'CONFORMANCE-INVENTORY',
+  'DOCUMENT-STATUS',
+  'ENDPOINT-MATRIX',
+  'FUNCTION-PRIMITIVE-INDEX',
+  'PRODUCT-CERTIFICATION-FEASIBILITY',
+  'REEXTRACTION-REPORT',
+  'SOURCE-QUALITY-AUDIT',
+  'SOURCE-SPLIT-COVERAGE',
+  'SOURCE-SPLIT-INVENTORY',
+  'STRUCTURED-ENTRY-SCHEMA',
+]);
+
+export function getStandardsIndexCategory(filename: string): string {
+  return STANDARDS_TOOLING_DOCS.has(filenameStem(filename))
+    ? 'standards-tooling'
+    : 'standards-index';
 }
 
 const GUIDE_CATEGORIES: Record<string, string> = {
@@ -531,7 +564,11 @@ function normalizeTitleCase(title: string): string {
   }).join('');
 }
 
-export function getDocTitle(filename: string, locale: string): string {
+export function getDocTitle(pathOrFilename: string, locale: string): string {
+  // 优先用构建期生成的正文标题索引（按 /docs/... 完整路径），避免标准目录下的 README 一律显示 “README”。
+  const indexed = (DOC_TITLES as Record<string, string>)[pathOrFilename];
+  if (indexed) return indexed;
+  const filename = pathOrFilename;
   const key = filenameStem(filename);
   const label = TITLE_LABELS[key];
   if (label) return label[locale as 'zh' | 'en'];

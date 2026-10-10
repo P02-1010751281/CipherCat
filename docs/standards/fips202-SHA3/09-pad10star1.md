@@ -7,7 +7,7 @@
 | 标准定位 | §5.1 |
 | 原文证据 | [source：fips202-SHA3](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
 | 原文位置 | [提取稿定位](./00-Standard-Source.md#L1108)；PDF 物理页需结合同目录 PDF 核对 |
-| 项目状态 | 已实现（详见本文现有实现/缺项说明） |
+| 项目状态 | 已映射并有定向回归（不代表完整标准验证） |
 
 ## 原文定位与引用
 
@@ -44,7 +44,7 @@ pad10*1 确保输出长度对齐 rate x。
 
 `sha3_pad` — 支持可配置 suffix (SHA-3: 0x06, SHAKE: 0x1F)
 ## 原文摘录
-> 以下为 source 中 Algorithm 9 的完整原文算法块；仅移除了 PDF 分页标记和页眉页码。
+> 以下为 source 中 Algorithm 9 的完整原文算法块；仅移除了 PDF 分页标记和页眉页码。PDF 中 `j` 是 `0` 的上标，线性文本以 `0^j` 表示。
 
 ```text
 Algorithm 9: pad10*1(x, m)
@@ -58,7 +58,7 @@ string P such that m + len(P) is a positive multiple of x.
 
 Steps:
     1. Let j = (– m – 2) mod x.
-    2. Return P = 1 || 0j || 1.
+    2. Return P = 1 || 0^j || 1.
 ```
 
 ## 标准定义
@@ -67,7 +67,7 @@ Steps:
 
 ## 公式或伪代码
 
-> 以下完整保留本条目的标准算法块；只移除了 PDF 页眉、页脚、页码和分页标记。
+> 以下完整保留本条目的标准算法块；只移除了 PDF 页眉、页脚、页码和分页标记。PDF 中 `j` 是 `0` 的上标，线性文本以 `0^j` 表示。
 
 ```text
 Algorithm 9: pad10*1(x, m)
@@ -81,7 +81,7 @@ string P such that m + len(P) is a positive multiple of x.
 
 Steps:
     1. Let j = (– m – 2) mod x.
-    2. Return P = 1 || 0j || 1.
+    2. Return P = 1 || 0^j || 1.
 ```
 
 ## 输入与输出
@@ -90,8 +90,8 @@ Steps:
 
 ## 项目映射
 
-本页是标准结构化参考条目；项目是否有同名 Blockly 块、源码入口或 demo，按本目录 README 和覆盖矩阵核对。本页不把文档条目等同于已实现。
+`hash_sha3_pad_text` 提供严格 UTF-8 文本入口，`hash_sha3_pad_hex` 提供严格 Hex 入口；通用 `sponge_pad` 支持按 rate/suffix 配置的字节填充。文本拒绝孤立代理项，Hex 要求偶数长度且不含空白，原始字节值限 `0..255`。这些是项目接口契约，不是 FIPS 202 新增限制。SHA-3 与 SHAKE 分别使用各自规定的 suffix，不能互换。
 
 ## 核验与缺项
 
-已机械核对完整算法块与 source 算法标题及行号；标准向量、实现语义、边界负例和认证结论仍须按本目录记录分别核验。
+[`sha256-padding-contract.test.ts`](../../../tests/unit/sha256-padding-contract.test.ts) 从真实 Blockly 块生成并执行双语言代码，核对 SHA-3 文本/Hex 填充、严格文本与 Hex 输入、非法字节，以及五种受支持 rate（SHA3-224/256/384/512、SHAKE128）在 `rate−1`、`rate`、`rate+1` 输入长度和 `0x06`/`0x1F` suffix 下的边界行为。测试覆盖的是项目回归，不是 FIPS 202 完整测试向量集或正式算法验证。

@@ -1,8 +1,8 @@
 /**
  * 哈希基后量子结构件 JavaScript 代码生成器
  *
- * 哈希函数 = SHAKE-256（FIPS 205 的 H），32 字节输出；复用 registerKeccakF1600
- * 与 shakeXOF（与 pq_xof 同 key 同内容，provideFunction_ 幂等去重）。
+ * 项目教学哈希辅助函数以 SHAKE-256 输出 32 字节；不是 FIPS 205 的带地址/种子 H/F/PRF 封装。
+ * 复用 registerKeccakF1600 与 shakeXOF（provideFunction_ 幂等去重）。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
@@ -105,10 +105,12 @@ function registerHashBased(): string {
     '  }',
     '  function slhAddr(layer, tree, leaf, type) {',
     '    let a = new Uint8Array(32);',
-    '    a[0] = layer & 0xFF;',
-    '    for (let i = 0; i < 12; i++) a[12 - i] = Math.floor(tree / Math.pow(256, i)) & 0xFF;',
-    '    a[13] = (type >> 24) & 0xFF; a[14] = (type >> 16) & 0xFF; a[15] = (type >> 8) & 0xFF; a[16] = type & 0xFF;',
-    '    for (let i = 0; i < 4; i++) a[20 - i] = Math.floor(leaf / Math.pow(256, i)) & 0xFF;',
+    '    function write(offset, width, value) {',
+    '      if (!Number.isSafeInteger(value) || value < 0) throw new RangeError("ADRS fields must be non-negative safe integers");',
+    '      let n = BigInt(value); if (n >= (1n << BigInt(width * 8))) throw new RangeError("ADRS field out of range");',
+    '      for (let i = width - 1; i >= 0; i--) { a[offset + i] = Number(n & 0xFFn); n >>= 8n; }',
+    '    }',
+    '    write(0, 4, layer); write(4, 12, tree); write(16, 4, type); write(20, 4, leaf);',
     '    return a;',
     '  }',
     '  function forsRoot(roots, adrs) { return h32(adrs, roots); }',

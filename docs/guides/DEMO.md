@@ -24,21 +24,21 @@
 2. 检查块连接 → 点击“生成”查看 JavaScript/Python 输出；
 3. 打开函数封装 Demo，检查函数在其他流程中的调用方式。
 
-![“更多”菜单中的导入工作区入口（界面示例）](/docs-assets/tutorials/03-import-menu.png)
+![“更多”菜单中的导入工作区入口](/docs-assets/tutorials/03-import-menu.png)
 
 _图：先从“更多”菜单选择导入工作区。_
 
-![导入的 AES 原子轮工作区（界面截图）](/docs-assets/tutorials/04-editor-imported.png)
+![导入的 AES 原子轮工作区](/docs-assets/tutorials/04-editor-imported.png)
 
 _图：工作区中可见已导入的 AES 原子块链。点击“生成”后会显示相应代码。_
 
-![生成的 Python 代码（界面截图）](/docs-assets/tutorials/05-generated-python.png)
+![生成的 Python 代码](/docs-assets/tutorials/05-generated-python.png)
 
 _图：生成面板展示当前工作区对应的 Python 代码。_
 
 ## Demo 验证状态
 
-当前登记的 59 个 Demo 均由自动化 harness 检查 Python 和 JavaScript 生成代码。测试规格包括标准向量、性质断言和独立实现交叉验证；命令和结果见 [demos/README.md](../../demos/README.md)。
+每个已登记 Demo 都配有验证说明，标明它用标准向量、性质断言还是固定输入核对，以及覆盖的参数范围；逐项清单见 [demos/README.md](../../demos/README.md)。某个 Demo 通过只说明该登记项通过，不代表完整标准符合性或认证。
 
 ---
 

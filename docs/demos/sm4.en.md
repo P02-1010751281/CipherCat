@@ -3,38 +3,42 @@
 
 > [← Back to index](../guides/DEMO.en.md) · [demo file index](../../demos/README.en.md)
 >
-> Scenario 1 (round function) + Scenario 6 (S-box lookup), per the `docs/DEMO.md` index.
+> Round function and S-box lookup, per the [Demo guide](../guides/DEMO.en.md).
 
 ---
+
+> Step-by-step block chains live in the [assembly guide](../build/INDEX.en.md); this page covers the scenario, inputs/outputs, and boundaries.
 
 ## Scenario 1: SM4 Round Function (5 min)
 
 ### Goal
-Build SM4's round function F and linear transform L with atomic blocks; understand national standard §7.3.
+Inspect one SM4 round. The `sm4_round_func` block already performs both the S-box substitution and linear transform L; this demo does not split L into a second block.
 
 ### Steps
 
 1. **Load demo**: import `demos/SM4-Atomic-Round.json`
 2. **Inspect**:
-   - 5 `variables_set`: X0 X1 X2 X3 (4 32-bit state words) + RK (round key)
-   - `sm4_round_func`: F(X0,X1,X2,X3,rk) = (X0⊕X1⊕X2⊕X3⊕rk) through S-box + L
-   - `sm4_linear_transform`: L(B) = B ⊕ (B<<<2) ⊕ (B<<<10) ⊕ (B<<<18) ⊕ (B<<<24)
-3. **Generate**: click "▶" and pick JavaScript
-4. **Verify**: output is a 4-word integer list (new X0 X1 X2 X3)
+   - Four input variables `i`, `j`, `k`, and `m`, each representing a 32-bit state word as a four-byte big-endian list
+   - `RK` is supplied directly as the number `0xF12186F9`
+   - Variable `n` receives the four-byte result of `sm4_round_func(i,j,k,m,RK)`
+   - `sm4_round_func` computes `F = X0 ⊕ L(τ(X1 ⊕ X2 ⊕ X3 ⊕ RK))`; the S-box and L are internal to this block
+3. **Generate**: click "▶" and choose JavaScript or Python
+4. **Verify**: `n` is `27fad345`, the first-round output in GB/T 32907-2016 Appendix A.1; this is one round vector, not a complete encryption suite
 
 ### Atomic blocks
 | Block | Function | Standard |
 |----|------|------|
-| `sm4_round_func` | F(X0,X1,X2,X3,rk) | GM/T 0002 §7.3 |
-| `sm4_linear_transform` | L(B) 32-bit rotations | GM/T 0002 §7.2.2 |
+| `sm4_round_func` (used in this workspace) | Full single-round F, including the S-box and L | GB/T 32907-2016 §7.3 |
 | `variables_set` / `variables_get` | variable assign/read | Blockly built-in |
+
+`sm4_linear_transform` is available as a separate primitive but is not in this workspace. To inspect L alone, build `data_value(B) → sm4_linear_transform → variables_set(C)` and inspect C in the generated code. For `B=[0x00,0x00,0x00,0x01]`, standard equation (3) gives `C=[0x01,0x04,0x04,0x05]`. Do not connect L after `sm4_round_func`: that would compute `L(F(...))`, not the L step inside F.
 
 ---
 
 ## Scenario 6: SM4 S-box Lookup (3 min)
 
 ### Goal
-Wrap the `sm4_sbox` atomic block with `procedures_defreturn`; verify the GM/T 0002-2012 S-box table.
+Wrap the `sm4_sbox` atomic block with `procedures_defreturn`; check the GB/T 32907-2016 Appendix A S-box table.
 
 ### Steps
 
@@ -45,12 +49,12 @@ Wrap the `sm4_sbox` atomic block with `procedures_defreturn`; verify the GM/T 00
 3. **Generate**: click "▶", pick Python or JavaScript
 4. **Verify**:
    - Python: `SM4_Sbox(1)` → `144` (0x90)
-   - Official vector: S(0x01)=0x90 (GM/T 0002-2012 appendix)
+   - Standard sample: S(0x01)=0x90 (GB/T 32907-2016 Appendix A)
 
 ### Blocks
 | Block | Function |
 |----|------|
-| `sm4_sbox` | SM4 8×8 S-box lookup (GM/T 0002-2012) |
+| `sm4_sbox` | SM4 8×8 S-box lookup (GB/T 32907-2016) |
 | `procedures_defreturn` | define a typed-parameter function |
 
 ---
@@ -60,19 +64,17 @@ Wrap the `sm4_sbox` atomic block with `procedures_defreturn`; verify the GM/T 00
 No demo import — build scenario 1's round function from the toolbox:
 
 1. **Drag**: toolbox "Symmetric" category → drag out `sm4_round_func` (round function F)
-2. **Wire state words**: `sm4_round_func` has 4 state-word inputs (X0-X3) + round key rk:
-   - Drag 4 `data_value` blocks ("Data" category), fill 32-bit hex words (e.g. `0x01234567` / `0x89ABCDEF` / `0xFEDCBA98` / `0x76543210`), connect to X0..X3
-   - Drag one more `data_value` for round key rk (e.g. `0x01234567`)
-3. **Connection check**: X0..X3/rk are all Number type — plugs turn green when connectable
-4. **Linear transform** (optional): drag `sm4_linear_transform` onto F's output to see L(B) rotate-xor composition
+2. **Wire state words**: X0-X3 accept `IntList`, with each input represented by a four-byte big-endian list (for example, `[0x01,0x23,0x45,0x67]`). RK accepts `Number`, for example `0xF12186F9`.
+3. **Connection check**: connect four-byte lists to X0-X3 and a number to RK; `sm4_round_func` returns a four-byte list.
+4. **Inspect L separately (optional)**: add another `data_value` containing a four-byte big-endian value `B`, connect it to `sm4_linear_transform`, and connect that result to `variables_set` as `C`. For example, `B=[0x00,0x00,0x00,0x01]` gives `C=[0x01,0x04,0x04,0x05]`; do not apply L to the completed F output.
 5. **Generate**: ▶ Generate → JavaScript / Python
-6. **Verify**: output is a 4-word integer list (round output = new state)
+6. **Verify**: output is a four-byte list representing the next state word `X4` in big-endian order
 
-> Compare: identical block topology to `demos/SM4-Atomic-Round.json` (demo stores intermediates in variables_set; manual uses direct data_value inputs).
+> Both constructions call the complete single-round `sm4_round_func`. The demo stores its four inputs in variables and writes the result to `n`; a manual workspace can provide inputs directly with `data_value` blocks.
 
 ---
 
-**Official-vector verification**: `node dist-verify/verify-demo.js demos/procedures/SM4-Sbox.json --exec` → `=== ALL VECTORS PASS ===`
+This page compares the workspace-generated variable `n` with the GB/T 32907-2016 Annex A.1 first-round value `27fad345`; `SM4-Sbox.json` separately checks S(0x01)=0x90. Both cover only the listed samples, not full algorithm certification.
 
 ---
 

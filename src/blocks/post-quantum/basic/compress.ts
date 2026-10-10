@@ -43,7 +43,7 @@ Blockly.Blocks['pq_compress'] = {
           ['10 (ML-KEM-512/768 du)', '10'],
           ['5 (ML-KEM-1024 dv)', '5'],
           ['4 (ML-KEM-512/768 dv)', '4'],
-          ['12', '12'],
+          ['12 (project extension)', '12'],
           ['6', '6'],
           ['3', '3'],
           ['1', '1'],
@@ -58,7 +58,7 @@ Blockly.Blocks['pq_compress'] = {
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(230);
     this.setTooltip(
-      'Compress_q(x, d): Compress integer(s) modulo q to d bits. Compress(x,d) = round((2^d/q)·x) mod 2^d (FIPS 203 §4.2.1)',
+      'Compress_q(x, d): FIPS 203 §4.2.1 allows 1 ≤ d < 12. The d=12 option is a project math extension, not a standardized parameter.',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf');
   },
@@ -78,7 +78,7 @@ Blockly.Blocks['pq_decompress'] = {
           ['10 (ML-KEM-512/768 du)', '10'],
           ['5 (ML-KEM-1024 dv)', '5'],
           ['4 (ML-KEM-512/768 dv)', '4'],
-          ['12', '12'],
+          ['12 (project extension)', '12'],
           ['6', '6'],
           ['3', '3'],
           ['1', '1'],
@@ -93,7 +93,7 @@ Blockly.Blocks['pq_decompress'] = {
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(230);
     this.setTooltip(
-      'Decompress_q(y, d): Decompress d-bit integer(s) back to modulo q. Decompress(y,d) = round((q/2^d)·y) (FIPS 203 §4.2.1)',
+      'Decompress_q(y, d): FIPS 203 §4.2.1 allows 1 ≤ d < 12. The d=12 option is a project math extension, not a standardized parameter.',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf');
   },

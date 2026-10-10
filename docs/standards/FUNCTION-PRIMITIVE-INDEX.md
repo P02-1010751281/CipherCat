@@ -1,6 +1,6 @@
 # 标准文档函数/原语拆分索引
 
-核对日期：2026-09-23
+核对日期：2026-09-30
 
 ## 目的与粒度
 
@@ -25,7 +25,7 @@
 | 标准目录 | 拆分入口 | 主要原语族 |
 |---|---|---|
 | FIPS 180-4 | [SHA-2](./fips180-4-SHA2/README.md) | 填充、消息扩展、压缩、摘要输出 |
-| FIPS 186-5 | [ECDSA](./fips186-5-ecdsa/README.md) | 曲线点运算、签名、验签 |
+| FIPS 186-5 | [DSS 总览](./fips186-5-ecdsa/README.md)、[ECDSA](./fips186-5-ecdsa/01-ECDSA.md)、[RSA 密钥生成](./fips186-5-ecdsa/05-RSA-Key-Generation.md)、[RSA 素性测试](./fips186-5-ecdsa/06-RSA-Primality-Testing.md) | ECDSA 曲线点运算与签名；RSA 签名密钥约束、素数生成及 Miller–Rabin（仅规范参照） |
 | GB/T 32905 | [SM3](./gbt32905-SM3/README.md) | 填充、扩展/压缩、完整哈希/HMAC |
 | GB/T 32918 | [SM2](./gbt32918-SM2/README.md) | 曲线、签名、加密、密钥交换 |
 | GB/T 33133 | [ZUC](./gbt33133-ZUC/README.md) | S 盒/线性变换、F/LFSR、密钥流、EEA3/EIA3 |
@@ -70,7 +70,7 @@
 |---|---|---|
 | AES | [SubBytes](./fips197-AES/01-SubBytes.md)、[ShiftRows](./fips197-AES/02-ShiftRows.md)、[MixColumns/AddRoundKey](./fips197-AES/03-MixColumns-AddRoundKey.md) | S 盒、状态置换、有限域列混合、轮密钥异或 |
 | SM4 | [参数结构](./gbt32907-SM4/01-Overview.md)、[算法/密钥扩展](./gbt32907-SM4/03-Algorithm.md)、[附录向量](./gbt32907-SM4/04-Appendix.md) | 轮函数输入输出、`T'`、轮密钥顺序、标准向量 |
-| SM2 / ECDSA | [SM2 曲线](./gbt32918-SM2/02-Curve-Operations.md)、[SM2 签名](./gbt32918-SM2/03-Signature.md)、[ECDSA 曲线](./fips186-5-ecdsa/02-Curve-Operations.md) | 点运算、`ZA`、签名/验签公式和编码边界 |
+| SM2 / ECDSA / RSA | [SM2 曲线](./gbt32918-SM2/02-Curve-Operations.md)、[SM2 签名](./gbt32918-SM2/03-Signature.md)、[ECDSA 曲线](./fips186-5-ecdsa/02-Curve-Operations.md)、[RSA 密钥生成](./fips186-5-ecdsa/05-RSA-Key-Generation.md)、[RSA 素性测试](./fips186-5-ecdsa/06-RSA-Primality-Testing.md) | 点运算、`ZA`、签名/验签公式、RSA 密钥条件与素性测试；RSA 条目是规范参照，不表示项目实现符合 |
 | ZUC | [S/L](./gbt33133-ZUC/02-SBox-Linear.md)、[F/LFSR](./gbt33133-ZUC/03-F-and-LFSR.md)、[密钥流](./gbt33133-ZUC/04-Keystream.md)、[EEA3/EIA3](./gbt33133-ZUC/05-EEA3-EIA3.md) | 原子变换、状态机、流密码输出、保密/完整性构造 |
 | Ascon / AEAD | [置换](./sp800-232-ascon/02-Permutation.md)、[Hash/XOF/CXOF](./sp800-232-ascon/03-Hash-XOF.md)、[CCM 编码](./sp800-38c-ccm/02-Formatting.md)、[GCM 边界](./sp800-38d-gcm/04-AEAD-Limits.md) | 轮函数、海绵、编码、标签和 nonce/IV 边界 |
 | DRBG / 测评 | [DRBG Generate](./sp800-90a-drbg/03-Generate-and-Lifecycle.md)、[GM/T 0005 频数](./gmt0005-randomness/04-Frequency-and-Pattern-Tests.md)、[游程关系](./gmt0005-randomness/05-Runs-and-Relation-Tests.md)、[复杂度频谱](./gmt0005-randomness/06-Matrix-Complexity-and-Spectrum.md)、[最终判定](./gmt0005-randomness/07-Decision-and-Sample-Settings.md) | 状态更新、15 项检测统计量、1000 样本两层判定 |
@@ -79,7 +79,7 @@
 现行覆盖由 `npm run standards:split-check` 机械核对，统一字段及新增条目要求见
 [STRUCTURED-ENTRY-SCHEMA.md](./STRUCTURED-ENTRY-SCHEMA.md)。
 
-本索引不是“所有标准条款均已逐字转录”的声明。当前已为 38 个目录、227 个结构化条目建立统一清单，GB/T 32915 的原件拆分仍待补；标准原文锚点共 220 个（185 个 source 行号、35 个精确 PDF 页码），另有 2 个 RFC 全文证据项、2 个仅回链研究书目的条目和 2 个无原件来源项。研究书目回链不计作标准原文锚点。逐条状态见
+本索引不是“所有标准条款均已逐字转录”的声明。当前已为 40 个目录、229 个结构化条目建立统一清单，GB/T 32915 的原件拆分仍待补；标准原文锚点共 222 个（187 个 source 行号、35 个精确 PDF 页码）。研究书目回链不计作标准原文锚点。逐条状态见
 [SOURCE-SPLIT-INVENTORY.md](./SOURCE-SPLIT-INVENTORY.md)，验收口径见
 [SOURCE-SPLIT-COVERAGE.md](./SOURCE-SPLIT-COVERAGE.md)。
 

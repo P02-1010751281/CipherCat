@@ -5,7 +5,7 @@
       https://www.rfc-editor.org/rfc/rfc5903.txt      (2010-06)
 
 > CipherCat ECDH 块族（`src/blocks/ecdh/`）覆盖 ECDH 共享密钥计算（P-256）。
-> 官方向量：RFC 5903 §8.1（IKE P-256）+ cryptography 确定性派生交叉，JS/Python 双语言。
+> 官方向量：RFC 5903 §8.1（IKE P-256）两方向，JS/Python 双语言回归，并由独立实现复算。
 
 ## 算法清单
 
@@ -23,5 +23,5 @@
 ## 相关
 
 - Demo：`demos/procedures/ECDH.json`（RFC 5903 §8.1 IKE P-256 官方向量 +
-  cryptography 交叉 2 组）。
+  独立实现复算 2 组）。
 - SM2 椭圆曲线原语（同 `ecc_*` 块）见 `gbt32918-SM2/`。

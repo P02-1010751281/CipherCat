@@ -198,13 +198,27 @@ function registerSm2Enc(): string {
     '}',
     '',
     'function sm2KeyExchange(dB, rB, pax, pay, RA, RBP, ZA, ZB, klen) {',
-    '  // GB/T 32918.3-2016 §6.2 B 侧（B1-B9）',
+    '  // GB/T 32918.3-2016 §6.1 响应方 B（B1-B7）',
     '  var C=sm2Params();',
+    '  if (typeof dB!=="string"||!/^[0-9a-fA-F]{64}$/.test(dB)) throw new Error("SM2-KEX: invalid responder static private key");',
+    '  if (typeof rB!=="string"||!/^[0-9a-fA-F]{64}$/.test(rB)) throw new Error("SM2-KEX: invalid responder ephemeral scalar");',
     '  var db=sm2ToBig(dB), rb=sm2ToBig(rB);',
     '  var hexToBytes=function(h){var b=[];for(var i=0;i<h.length;i+=2)b.push(parseInt(h.substr(i,2),16));return b;};',
+    '  if (db<=0n||db>=C.n) throw new Error("SM2-KEX: invalid responder static private key");',
+    '  if (typeof RA!=="string"||!/^04[0-9a-fA-F]{128}$/.test(RA)) throw new Error("SM2-KEX: invalid initiator ephemeral point");',
+    '  if (typeof RBP!=="string"||!/^04[0-9a-fA-F]{128}$/.test(RBP)) throw new Error("SM2-KEX: invalid responder public point");',
+    '  if (typeof pax!=="string"||typeof pay!=="string"||!/^[0-9a-fA-F]{64}$/.test(pax)||!/^[0-9a-fA-F]{64}$/.test(pay)) throw new Error("SM2-KEX: invalid initiator static point");',
+    '  if (typeof ZA!=="string"||typeof ZB!=="string"||!/^[0-9a-fA-F]{64}$/.test(ZA)||!/^[0-9a-fA-F]{64}$/.test(ZB)) throw new Error("SM2-KEX: invalid identity hash");',
     '  var RAp={x:sm2ToBig(hexToBytes(RA).slice(1,33)),y:sm2ToBig(hexToBytes(RA).slice(33,65))};',
     '  var Rbp={x:sm2ToBig(hexToBytes(RBP).slice(1,33)),y:sm2ToBig(hexToBytes(RBP).slice(33,65))};',
     '  var PA={x:sm2ToBig(pax),y:sm2ToBig(pay)};',
+    '  if (!Number.isSafeInteger(klen)||klen<=0||klen>=(2**32-1)*256) throw new Error("SM2-KEX: invalid key length");',
+    '  var isOnCurve=function(P){return P.x>=0n&&P.x<C.p&&P.y>=0n&&P.y<C.p&&sm2Mod(P.y*P.y-(P.x*P.x*P.x+C.a*P.x+C.b),C.p)===0n;};',
+    '  if (!isOnCurve(RAp)) throw new Error("SM2-KEX: invalid initiator ephemeral point");',
+    '  if (!isOnCurve(PA)) throw new Error("SM2-KEX: invalid initiator static point");',
+    '  if (rb<=0n||rb>=C.n) throw new Error("SM2-KEX: invalid responder ephemeral scalar");',
+    '  var expectedRB=sm2PointMul(rb,{x:C.gx,y:C.gy});',
+    '  if (!expectedRB||expectedRB.x!==Rbp.x||expectedRB.y!==Rbp.y) throw new Error("SM2-KEX: responder public point does not match scalar");',
     '  // w = ceil(ceil(log2 n)/2) - 1；x̄ = 2^w + (x & (2^w - 1))',
     '  var w=Math.ceil((C.n.toString(2).length-1)/2)-1;',
     '  var xb1=2n**BigInt(w)+(RAp.x&(2n**BigInt(w)-1n));',
@@ -212,7 +226,7 @@ function registerSm2Enc(): string {
     '  var tb=(db+xb2*rb)%C.n;',
     '  var sum=sm2PointAdd(PA,sm2PointMul(xb1,RAp));',
     '  var V=sm2PointMul(tb,sum);',
-    '  if (V.x===0n&&V.y===0n) throw new Error("SM2-KEX: V at infinity");',
+    '  if (V===null) throw new Error("SM2-KEX: V at infinity");',
     '  var xVb=sm2BigToBytes(V.x,32),yVb=sm2BigToBytes(V.y,32);',
     '  var ZAb=hexToBytes(ZA),ZBb=hexToBytes(ZB);',
     '  var K=sm2Kdf(xVb.concat(yVb,ZAb,ZBb),klen);',
@@ -237,7 +251,7 @@ javascriptGenerator.forBlock['sm2_decrypt'] = function (block: Block): [string, 
   const ct = javascriptGenerator.valueToCode(block, 'CT', Order.ATOMIC) || '""';
   const da = javascriptGenerator.valueToCode(block, 'DA', Order.ATOMIC) || '""';
   registerSm2Enc();
-  return ['sm2Decrypt(' + ct + ', ' + da + ')', Order.ATOMIC];
+  return ['Uint8Array.from(sm2Decrypt(' + ct + ', ' + da + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['sm2_key_exchange'] = function (block: Block): [string, number] {

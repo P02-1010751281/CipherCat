@@ -67,10 +67,14 @@ pythonGenerator.forBlock['cipher_key_from_seed'] = function (
   _block: Block,
 ): [string, Order] {
   void _block;
-  return [
-    'if len(data) < 16: raise ValueError(\'Seed too short\')\n[int.from_bytes(data[0:4].ljust(4,b"\\x00"),"big"), int.from_bytes(data[4:8].ljust(4,b"\\x00"),"big"), int.from_bytes(data[8:12].ljust(4,b"\\x00"),"big"), int.from_bytes(data[12:16].ljust(4,b"\\x00"),"big")]',
-    Order.ATOMIC,
-  ];
+  const helper = pythonGenerator.provideFunction_('crypto_cipher_key_from_seed', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed):',
+    '    if not isinstance(seed, (bytes, bytearray)): raise TypeError("seed must be bytes")',
+    '    if len(seed) < 16: raise ValueError("seed must contain at least 16 bytes")',
+    '    return [int.from_bytes(seed[i:i + 4], "big") for i in range(0, 16, 4)]',
+    '',
+  ]);
+  return [helper + '(data)', Order.ATOMIC];
 };
 
 const migrationMap = getMigrationMap();

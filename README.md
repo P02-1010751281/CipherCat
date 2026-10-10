@@ -9,8 +9,8 @@
 
 - 🔮 **后量子密码** — 以格基密码为核心，覆盖 NTT/INTT、编码压缩、SampleNTT 等公共原语与算法阶段
 - 🔐 **密码学教学覆盖** — AES 单轮原语与模式、SM4 全轮、哈希函数（SM3/SHA/HMAC）和数论运算
-- 🧮 **算法模板** — 29 个密码算法模板（拖出即用，自动预填原子链）
-- ✅ **官方向量验证** — SM4/SM3/SM2/ML-KEM 双语言通过官方测试向量
+- 🧮 **算法模板** — 29 个预填教学起始模板；拖出后仍需按标注补全参数或算法步骤
+- ✅ **标准参考向量回归** — SM4/SM3/SM2/ML-KEM 等选定用例在 Python 与 JavaScript 生成代码中核对；不代表算法认证
 - 🧩 **可视化编程** — 拖拽积木块，像搭乐高一样写密码学代码
 - 🌐 **多语言** — 中英文界面，Blockly 积木块同步切换
 - 💻 **代码生成** — 一键生成 JavaScript / Python 可执行代码
@@ -40,11 +40,15 @@ npm run tauri:build  # 打包
 # 质量门禁
 npm run test:unit
 npm run standards:check
+npm run standards:split-check
+npm run standards:formula-check
 npm run standards:inventory
 # 重新生成逐项 source 清单时使用：npm run standards:inventory:write
 npm run cycles:check
 npm run lint:check
 npm run type-check
+npm run docs:titles:check
+npm run build-guide:check
 npm run verify:all
 npm run docs:check-links
 ```
@@ -114,7 +118,7 @@ demos/                          # Blockly 工作区示例（含官方向量期�
 | 后量子密码 | ML-KEM/ML-DSA 格基构件与阶段；另含 SLH-DSA、纠错码教学构件 |
 | 函数与 Blockly 原生类目 | 29 个函数模板及变量、数学、数组、逻辑等 Blockly 原生块 |
 
-> 总数按 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES` 递归展开、去重得到 194 个自定义块类型。另有 29 个函数模板注册项，其中 3 个基础 `crypto_*` 块已计入这 194 个类型，26 个 `proc_*` 模板是额外类型；块与模板合并去重后共 220 个类型。工具箱 17 类目含 4 个 Blockly 原生类目。上表用于说明能力范围，不提供可能重叠的分类小计。
+> 总数按 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES` 递归展开、去重得到 194 个活动块类型。另有 29 个函数模板注册项，其中 3 个基础 `crypto_*` 块已计入这 194 个类型，26 个 `proc_*` 模板是额外类型；块与模板合并去重后共 220 个类型。此外还注册 1 个仅供存量工作区加载的兼容身份 `ctrl_assign`（不在工具箱、不计入 194 与 220）。工具箱 17 类目含 4 个 Blockly 原生类目。上表用于说明能力范围，不提供可能重叠的分类小计。
 
 ## 代码生成示例
 

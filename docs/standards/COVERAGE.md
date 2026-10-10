@@ -4,8 +4,9 @@
 > **原子块**（`src/blocks/` 注册的块）、**Demo**（`demos/` 预构建工作区）、**模板**（`src/blocks/procedure/blocks.ts` 的 `proc_*` 预填模板）、**搭建指南**（`standards/*/guides/`）。
 > 文档提取质量、原件可检索性和未完成项另见 [DOCUMENT-STATUS.md](./DOCUMENT-STATUS.md)，不要把本矩阵当作标准全文覆盖证明。
 > 函数/原语页的拆分规则和入口见 [FUNCTION-PRIMITIVE-INDEX.md](./FUNCTION-PRIMITIVE-INDEX.md)。
+> 对象总册（194 个活动块 + 1 个已登记兼容身份、29 个模板身份、59 个 Demo）见 [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md)；本矩阵是标准维度的聚合映射，不替代对象级测试证据。
 >
-> 块事实以代码为准（2026-09-12 核对）；Demo 文件清单见 [demos/README.md](../../demos/README.md)；搭建步骤教程见 [docs/demos/](../demos/) 与 [docs/guides/DEMO.md](../guides/DEMO.md)。`standards/papers/` 是研究材料索引，不计入下方 37 个算法标准目录。
+> 块与模板注册清单按 2026-09-29 核对；Demo 文件清单及测试分类见 [demos/README.md](../../demos/README.md) 和 [`demos/tests.json`](../../demos/tests.json)；搭建步骤教程见 [docs/demos/](../demos/) 与 [docs/guides/DEMO.md](../guides/DEMO.md)。`standards/papers/` 是研究材料索引，不计入下方算法标准目录。
 
 ---
 
@@ -20,53 +21,60 @@
 
 | 标准 | standards 目录 | 原子块覆盖 | Demo | 模板 | 指南 |
 |------|----------------|------------|------|------|------|
-| AES | `fips197-AES/` | `aes_sub_bytes` · `aes_shift_rows` · `aes_mix_columns` · `aes_add_round_key` · `sbox`(PRESET=AES) · `pad_pkcs7` | `demos/AES-Atomic-Round.json` · `Procedure-AES-Round.json` · `procedures/AES-Round.json` · `procedures/AES-LastRound.json` | `proc_aes_round` · `proc_aes_last_round` · `proc_aes_key_schedule` | — |
-| SHA-2 | `fips180-4-SHA2/` | `hash_sha224_hash` · `hash_sha256_pad` · `hash_sha256_compress` · `hash_sha512_pad` · `hash_sha512_compress` · `hash_sha512_hash`(SHA-384/512 下拉) | `demos/SHA256-Atomic-Hash.json` · `procedures/SHA224-Hash.json` · `procedures/SHA256-Hash.json` · `procedures/SHA384-Hash.json` · `procedures/SHA512-Hash.json` | `proc_sha256_hash` · `proc_md_iterate` | — |
-| SHA-3 / SHAKE | `fips202-SHA3/` | `keccak_f` · `sponge_pad` · `sponge_absorb` · `sponge_squeeze` · `keccak_state_init` · `sha3_hash` · `pq_xof`(SHAKE-128/256) · `pq_prf` | `demos/procedures/SHA3-Hash.json` | `proc_sponge_duplex` | — |
-| HMAC | `fips198-1-hmac/` | `hash_hmac`(HASH 下拉：SHA-256 / SM3) | `demos/procedures/HMAC-SHA256.json` | `proc_hmac_sha256` · `proc_sm3_hmac` | — |
-| ML-KEM | `fips203-ML-KEM/` | `pq_sample_poly_cbd` · `pq_sample_ntt` · `pq_ntt` · `pq_intt` · `pq_ntt_mul` · `pq_ntt_butterfly` · `pq_poly_add/sub/mul` · `pq_mat_vec_mul` · `pq_compress/decompress` · `pq_byte_encode/decode` · `pq_bytes_to_bits` · `pq_bits_to_bytes` · `pq_byte_concat` · `pq_bytes_slice` · `pq_seed_with_nonce` · `nt_mod_pow`(q=3329) | `demos/ML-KEM-Atomic.json` · `procedures/ML-KEM-Encaps.json` | `proc_mlkem_keygen` · `proc_ntt_vec` · `proc_pq_cbd` · `proc_pq_sample` · `proc_pq_vec_add` · `proc_pq_vec_sub` · `proc_pq_mat_mul` | ✅ [ML-KEM-768-Encaps-搭建指南](fips203-ML-KEM/guides/ML-KEM-768-Encaps-搭建指南.md)（+ [en](fips203-ML-KEM/guides/ML-KEM-768-Encaps-build-guide.md)） |
-| ML-DSA | `fips204-ML-DSA/` | `mldsa_sign` · `mldsa_verify` · `pq_power2round` · `pq_decompose` · `pq_make_hint` · `pq_use_hint` · `pq_sample_in_ball` · `pq_rej_sample`（+ ML-KEM 共享 `pq_*` / `nt_mod_pow`(q=8380417) 原语） | `demos/procedures/ML-DSA-Sign.json` · `procedures/ML-DSA-Primitives.json` · `procedures/ML-DSA-NTT.json` | —（复用 `proc_ntt_vec` 等 pq 模板） | ✅ [ML-DSA-Sign-搭建指南](fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.md)（+ [en](fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.en.md)） |
+| AES | `fips197-AES/` | `aes_sub_bytes` · `aes_shift_rows` · `aes_mix_columns` · `aes_add_round_key` · `sbox`(PRESET=AES) · `pad_pkcs7` | `demos/AES-Atomic-Round.json` · `Procedure-AES-Round.json` · `procedures/AES-Round.json` · `procedures/AES-LastRound.json` | `proc_aes_round` · `proc_aes_last_round` · `proc_aes_key_schedule`（10 次空循环；无轮密钥计算） | — |
+| SHA-2 | `fips180-4-SHA2/` | `hash_sha224_hash` · `hash_sha256_pad` · `hash_sha256_compress` · `hash_sha512_pad` · `hash_sha512_compress` · `hash_sha512_hash`(SHA-384/512 下拉) | `demos/SHA256-Atomic-Hash.json` · `procedures/SHA224-Hash.json` · `procedures/SHA256-Hash.json` · `procedures/SHA384-Hash.json` · `procedures/SHA512-Hash.json` | `proc_sha256_hash`（仅 padding 片段）· `proc_md_iterate` | — |
+| SHA-3 / SHAKE | `fips202-SHA3/` | `keccak_f`(200/18、400/20、800/22、1600/24；SHA-3/SHAKE 仍固定用 1600/24) · `sponge_pad` · `sponge_absorb` · `sponge_squeeze` · `keccak_state_init` · `sha3_hash` · `pq_xof`(SHAKE-128/256) | `demos/procedures/SHA3-Hash.json` | `proc_sponge_duplex`（仅 squeeze 起始骨架；输出长度留空，不是 duplex） | — |
+| HMAC | `fips198-1-hmac/` | `hash_hmac`(HASH 下拉：SHA-256 / SM3) | `demos/procedures/HMAC-SHA256.json` | `proc_hmac_sha256` · `proc_sm3_hmac`（模板消息输入留空） | — |
+| ML-KEM | `fips203-ML-KEM/` | `pq_sample_poly_cbd` · `pq_sample_ntt` · `pq_prf`(PRFη：SHAKE256) · `pq_ntt` · `pq_intt` · `pq_ntt_mul` · `pq_ntt_butterfly` · `pq_poly_add/sub` · `pq_compress/decompress` · `pq_byte_encode/decode` · `pq_bytes_to_bits` · `pq_bits_to_bytes` · `pq_byte_concat` · `pq_bytes_slice` · `pq_seed_with_nonce` · `nt_mod_pow`(q=3329) | `demos/ML-KEM-Atomic.json` · `procedures/ML-KEM-Encaps.json`（ML-KEM-512 固定向量） | `proc_mlkem_keygen`（CBD→NTT 片段）· `proc_mlkem_encaps`（固定 ML-KEM-512；结构模板检查仅冒烟）· `proc_ntt_vec` · `proc_pq_cbd` · `proc_pq_sample` · `proc_pq_vec_add` · `proc_pq_vec_sub` | ✅ [ML-KEM-768-Encaps-搭建指南](fips203-ML-KEM/guides/ML-KEM-768-Encaps-搭建指南.md)（该指南为 768 参数集；+ [en](fips203-ML-KEM/guides/ML-KEM-768-Encaps-build-guide.md)） |
+| ML-DSA | `fips204-ML-DSA/` | `mldsa_sign` · `mldsa_verify` · `pq_power2round` · `pq_decompose` · `pq_make_hint` · `pq_use_hint` · `pq_sample_in_ball` · `pq_rej_sample` · 共享构件 `pq_xof/prf`、`pq_sample_ntt`、`pq_ntt/intt/ntt_mul`、`pq_poly_add/sub`（逐项范围见 Inventory） | `demos/procedures/ML-DSA-Sign.json` · `procedures/ML-DSA-Primitives.json` · `procedures/ML-DSA-NTT.json` | —（复用 `proc_ntt_vec` 等 pq 模板） | ✅ [ML-DSA-Sign-搭建指南](fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.md)（+ [en](fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.en.md)） |
 | SLH-DSA | `fips205-SLH-DSA/` | `hash_chain` · `merkle_leaf` · `merkle_node` · `merkle_root` · `merkle_auth_path` · `slh_addr` · `slh_adrs_full` · `wots_checksum` · `fors_sign` · `fors_verify` · `fors_pk_from_sk` · `fors_root` · `fors_leaf_index` | `demos/procedures/Hash-Based-Structures.json` · `FORS-Sign.json` · `Tree-Index.json` | — | — |
 | McEliece（Goppa 码） | `mceliece-goppa/` | `gf2_poly_mul/div/mod/gcd` · `bin_mat_mul/inv` · `ham_weight` · `ham_dist` · `goppa_gen_poly` · `syndrome_calc` · `gf2m_mul/add/inv` · `gf2m_poly_add/mul/mod/xgcd/eval` · `goppa_decode` · `berlekamp_massey` · `arr_slice` | `demos/procedures/Code-Based-Math.json` · `GF2m-Poly.json` · `Goppa-Decode.json` · `PQC-Gaps.json` | — | — |
 | ECDSA | `fips186-5-ecdsa/` | `ecdsa_sign` · `ecdsa_verify` · `ecc_load_curve_params` · `ecc_load_point` · `ecc_add` · `ecc_point_double` · `ecc_multiply` | `demos/procedures/ECDSA.json` | — | — |
-| SP 800-38A 分组模式 | `sp800-38a-modes/` | `mode_ecb_encrypt/decrypt` · `mode_cbc_encrypt` · `mode_ctr_encrypt` · `pad_pkcs7` · `pad_zero` | `demos/procedures/Mode-ECB.json` · `Mode-CBC.json` · `Mode-CTR.json` | `proc_mode_ecb` · `proc_mode_cbc` · `proc_mode_ctr` | — |
+| SP 800-38A 分组模式 | `sp800-38a-modes/` | `mode_ecb_encrypt/decrypt` · `mode_cbc_encrypt` · `mode_ctr_encrypt` · `pad_pkcs7` · `pad_zero` | `demos/procedures/Mode-ECB.json` · `Mode-CBC.json` · `Mode-CTR.json` | `proc_mode_ecb`（AES-128；key 留空）· `proc_mode_cbc`（AES-128；key/IV 留空）· `proc_mode_ctr`（AES-128；key/nonce 留空） | — |
 | CMAC | `sp800-38b-cmac/` | `cmac_mac`(CIPHER 下拉：AES-128 / SM4) | — | — | — |
 | CCM | `sp800-38c-ccm/` | `ccm_encrypt` | `demos/procedures/CCM-Encrypt.json` | — | — |
-| GCM | `sp800-38d-gcm/` | `gcm_encrypt`（+ `mode_ctr_encrypt` 基础） | `demos/procedures/GCM-Encrypt.json` | `proc_mode_gcm` | — |
+| GCM | `sp800-38d-gcm/` | `gcm_encrypt`（+ `mode_ctr_encrypt` 基础） | `demos/procedures/GCM-Encrypt.json`（GCM 规范 Test Case 2/13 编号体系 + NIST ACVP AES-GCM 官方用例 tagLen=128/96-bit IV 15 例；SP 800-38D 正文不含用例表） | `proc_mode_gcm`（仅 CTR 起始骨架，无 GHASH/tag，不构成 GCM 证据） | — |
 | XTS | `sp800-38e-xts/` | `xts_encrypt` | `demos/procedures/XTS-Encrypt.json` | — | — |
 | DRBG | `sp800-90a-drbg/` | `drbg_generate` | `demos/procedures/DRBG.json` | — | — |
-| PBKDF2 | `sp800-132-pbkdf2/` | `pbkdf2` | `demos/procedures/PBKDF2-SHA256.json` · `procedures/PBKDF2.json` | `proc_pbkdf2` | — |
-| ASCON | `sp800-232-ascon/` | `ascon_encrypt` · `ascon_decrypt` · `ascon_hash256` · `ascon_xof128` · `ascon_cxof128` | `demos/procedures/ASCON.json` · `ASCON-Extended.json` | — | 标签错误拒绝已在扩展 Demo 中验证 |
-| HKDF | `rfc5869-hkdf/` | `hkdf` | `demos/procedures/HKDF-SHA256.json` · `procedures/HKDF.json` | `proc_hkdf` | — |
+| PBKDF2 | `sp800-132-pbkdf2/` | `pbkdf2` | `demos/procedures/PBKDF2-SHA256.json` · `procedures/PBKDF2.json` | `proc_pbkdf2`（空循环起始模板，不含派生运算） | — |
+| ASCON | `sp800-232-ascon/` | `ascon_encrypt` · `ascon_decrypt` · `ascon_hash256` · `ascon_xof128` · `ascon_cxof128` | `demos/procedures/ASCON.json` · `ASCON-Extended.json` | — | — |
+| HKDF | `rfc5869-hkdf/` | `hkdf` | `demos/procedures/HKDF-SHA256.json` · `procedures/HKDF.json` | `proc_hkdf`（空循环占位，不含 Extract/Expand） | — |
 | X25519 | `rfc7748-x25519/` | `x25519` | `demos/procedures/X25519.json` | — | — |
 | EdDSA | `rfc8032-eddsa/` | `eddsa_sign` · `eddsa_verify` | `demos/procedures/EDDSA.json` | — | — |
 | ECDH | `rfc5903-ecdh/` | `ecdh_shared_secret`（+ `ecc_*` 曲线原语） | `demos/procedures/ECDH.json` | — | — |
-| RSA | `rfc8017-pkcs1/` | `rsa_keygen` · `rsa_encrypt` · `rsa_decrypt` · `rsa_sign` · `rsa_verify` | `demos/procedures/RSA-Encrypt.json` · `RSA-Sign.json` | — | — |
+| ECDSA 确定性 k | `rfc6979-ecdsa/` | —（不单独映射块：`ecdsa_sign`/`ecdsa_verify` 已计入 `fips186-5-ecdsa/`；本目录提供 RFC 6979 §3.2 确定性 `k` 的规范依据与附录 A.2.5 向量来源） | `demos/procedures/ECDSA.json` | — | — |
+| 随机性认证来源索引 | `randomness-certification-sources/` | —（认证来源与规则索引，不映射块） | — | — | — |
+| RSA 签名密钥条件 / 素性测试 | `fips186-5-ecdsa/05-RSA-Key-Generation.md` · `06-RSA-Primality-Testing.md` | `rsa_keygen`（教学实现）· `rsa_sign` · `rsa_verify`（方案映射；不表示符合） | `demos/procedures/RSA-Sign.json` | — | — |
+| RSAES/RSASSA PKCS#1 v1.5 | `rfc8017-pkcs1/` | `rsa_encrypt` · `rsa_decrypt` · `rsa_sign` · `rsa_verify`（教学实现） | `demos/procedures/RSA-Encrypt.json` · `RSA-Sign.json` | — | — |
 | Argon2 | `rfc9106-argon2/` | `argon2_hash` | `demos/procedures/ARGON2.json` | — | — |
 | Base64 | `rfc4648-base64/` | `base64_encode` · `base64_decode` | — | — | — |
 | PKCS#7 | `rfc2315-pkcs7/` | `pad_pkcs7`（填充语义） | — | — | — |
-| SM3 | `gbt32905-SM3/` | `hash_sm3_pad` · `hash_sm3_compress` · `hash_hmac`(SM3) | `demos/procedures/SM3-Hash.json` · `procedures/PBKDF2-SM3.json` | `proc_sm3_hash` · `proc_sm3_hmac` | — |
-| SM4 | `gbt32907-SM4/` | `sm4_sbox` · `sm4_round_func` · `sm4_linear_transform` · `sbox`(PRESET=SM4) | `demos/SM4-Atomic-Round.json` · `Procedure-SM4-Round.json` · `procedures/SM4-Sbox.json` · `procedures/SM4-Round.json` | `proc_sm4_round` · `proc_sm4_key_schedule` | — |
+| SM3 | `gbt32905-SM3/` | `hash_sm3_pad` · `hash_sm3_compress` · `hash_hmac`(SM3) | `demos/procedures/SM3-Hash.json` · `procedures/PBKDF2-SM3.json` | `proc_sm3_hash`（仅 padding）· `proc_sm3_hmac`（消息输入留空） | — |
+| SM4 | `gbt32907-SM4/` | `sm4_sbox` · `sm4_round_func` · `sm4_linear_transform` · `sbox`(PRESET=SM4) | `demos/SM4-Atomic-Round.json` · `Procedure-SM4-Round.json` · `procedures/SM4-Sbox.json` · `procedures/SM4-Round.json` | `proc_sm4_round` · `proc_sm4_key_schedule`（32 次空循环；无轮密钥计算） | — |
 | SM2 | `gbt32918-SM2/` | `ecc_load_curve_params` · `ecc_load_point` · `ecc_add` · `ecc_point_double` · `ecc_multiply` · `sm2_sign` · `sm2_verify` · `sm2_encrypt` · `sm2_decrypt` · `sm2_key_exchange` | `demos/procedures/SM2-PointMul.json` · `SM2-Sign.json` · `SM2-Encrypt.json` · `SM2-KeyExchange.json` | — | — |
-| ZUC | `gbt33133-ZUC/` | `zuc_s0` · `zuc_s1` · `zuc_l1` · `zuc_l2` · `zuc_f` · `zuc_keystream` · `zuc_eia3` · `sbox`(PRESET=ZUC S0/S1) | `demos/procedures/EEA3.json` · `EIA3.json` | `proc_zuc_keystream` | ✅ [ZUC-KeyStream-搭建指南](gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.md)（+ [en](gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.en.md)） |
+| ZUC | `gbt33133-ZUC/` | `zuc_s0` · `zuc_s1` · `zuc_l1` · `zuc_l2` · `zuc_f` · `zuc_keystream` · `zuc_eia3` · `sbox`(PRESET=ZUC S0/S1) | `demos/procedures/EEA3.json` · `EIA3.json` | `proc_zuc_keystream`（IV/长度留空的起始骨架） | ✅ [ZUC-KeyStream-搭建指南](gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.md)（+ [en](gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.en.md)） |
 | SM9 | `gbt38635-SM9/` | `sm9_master_key` · `sm9_user_key` · `sm9_sign` · `sm9_verify` | `demos/procedures/SM9-Sign.json` | — | — |
-| GM/T 0103 随机数发生器 | `gmt0103-rng/` | `gm_rng`（SM3-HMAC-DRBG） | `demos/procedures/GM-RNG.json` | — | — |
+| GM/T 0103 随机数发生器框架参考（非符合性） | `gmt0103-rng/` | `gm_rng`（确定性 SM3-HMAC 教学示例，不覆盖熵源/评估/检测） | `demos/procedures/GM-RNG.json` | — | — |
 | GM/T 0091 密钥派生 | `gmt0091-kdf/` | `hash_hmac`(SM3) · `pbkdf2`（SM3 同构） | `demos/procedures/PBKDF2-SM3.json` | `proc_pbkdf2` | — |
 | GB/T 17964 分组模式 | `gbt17964-modes/` | `mode_ecb_encrypt/decrypt` · `mode_cbc_encrypt` · `mode_ctr_encrypt`（当前生成器为 AES helper；SM4 映射待补） | `demos/procedures/Mode-ECB.json` · `Mode-CBC.json` · `Mode-CTR.json` | `proc_mode_ecb` · `proc_mode_cbc` · `proc_mode_ctr` | — |
 | GB/T 36624 可鉴别加密 | `gbt36624-aead/` | —（官方记录现行；本地扫描件，尚无条款映射） | — | — | — |
-| GB/T 15852 MAC（.1-2020/.2-2024/.3-2019） | `gbt15852-mac/` | `cmac_mac`(SM4) · `hash_hmac`(SM3/SHA-256)（仅实现映射） | — | `proc_hmac_sha256` · `proc_sm3_hmac` | — |
+| GB/T 15852 MAC（.1-2020/.2-2024/.3-2019） | `gbt15852-mac/` | `cmac_mac`(SM4) · `hash_hmac`(SM3/SHA-256)（仅实现映射） | — | `proc_hmac_sha256` · `proc_sm3_hmac`（模板消息输入留空，不作为 MAC 证据） | — |
 | GM/T 0005 随机性检测 | `gmt0005-randomness/` | —（Go 后端 `randomness/` 实现，非 Blockly 块） | — | — | — |
-| GB/T 32915 二元序列随机性检测 | `gbt32915-randomness/` | —（后端统计检测标准，非 Blockly 块；符合性待核查） | — | — | [标准状态与边界](gbt32915-randomness/README.md) |
+| GB/T 32915 二元序列随机性检测 | `gbt32915-randomness/` | —（后端统计检测标准，非 Blockly 块；符合性待核查） | — | — | — |
 | 中国抗量子密码进展 | `china-pqc-tracking/` | —（官方研究与标准化信息追踪，非算法） | — | — | — |
 
 ---
 
+`pq_mat_vec_mul` 与 `proc_pq_mat_mul` 保留为通用标量教学构件，不属于 ML-KEM/ML-DSA 的多项式环矩阵向量运算，因而不列入以上标准覆盖映射。`ML-KEM-Atomic.json` 中该块只是独立标量示例。
+
 ## 汇总
 
-- 标准目录总数：**38**
-- 研究材料目录：**1**（`standards/papers/`，不计入算法目录）
-- 有原子块覆盖：**34**（无覆盖 4：GB/T 36624 AEAD、GM/T 0005 随机性检测、GB/T 32915 二元序列随机性检测、中国抗量子密码进展追踪）
-- 有 Demo：**30**
+RSA 的 `rsa_keygen` 是项目自定义教学块，不属于 RFC 8017；FIPS 186-5 RSA 页提供规范参照，不证明当前块或 Demo 符合标准。矩阵中的资产映射仅表示功能/方案对应关系。
+
+- 覆盖矩阵目录映射：**40** 个标准与参考目录（不含下方单列的 `papers/`；含 `randomness-certification-sources/` 与 `rfc6979-ecdsa/`）
+- 研究材料目录：**1**（`standards/papers/`，不计入覆盖矩阵）
+- 有原子块覆盖：**34**（无覆盖 6：GB/T 36624 AEAD、GM/T 0005 随机性检测、GB/T 32915 二元序列随机性检测、中国抗量子密码进展追踪、`randomness-certification-sources/`、`rfc6979-ecdsa/`；34 + 6 = 40，与 `directories=` 口径一致）
+- 有 Demo：**31**
 - 有 `proc_*` 模板：**15**（另有 ML-DSA 复用 pq 模板）
 - 有搭建指南：**3**（ML-KEM、ML-DSA、ZUC）
 - 结构化拆分边界：25 个目录已有本地标准 source；其余 RFC、扫描件、历史/路线追踪目录仅保留实现映射或证据边界，不能据此宣称全部函数、原语、公式和表格均已拆分。

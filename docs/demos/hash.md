@@ -3,9 +3,11 @@
 
 > [← 返回索引](../guides/DEMO.md) · [demo 文件清单](../../demos/README.md)
 >
-> 场景 3（SHA-256）+ 场景 7（SM3），对应 `docs/DEMO.md` 索引。
+> SHA-256 与 SM3 两个示例，对应 [Demo 指南](../guides/DEMO.md)。
 
 ---
+
+> 逐步块链以[分步拼装指南](../build/INDEX.md)为准；本页讲场景、输入输出与边界。
 
 ## 场景 3：SHA-256 哈希（5 分钟）
 
@@ -14,9 +16,9 @@
 
 ### 步骤
 
-1. **加载 demo**：导入 `demos/SHA256-Atomic-Hash.json`
+1. **加载 Demo**：导入 `demos/SHA256-Atomic-Hash.json`
 2. **观察结构**：
-   - `data_value`："abc"（SHA-256 最经典测试向量）
+   - `data_value`：`[0x61,0x62,0x63]`（即 `"abc"` 的字节，SHA-256 最经典测试向量）
    - `hash_sha256_pad`：填充（追加 1+0*+64-bit 长度），输出 512-bit 块列表
    - `hash_sha256_compress`：64 轮压缩（σ0 σ1 Σ0 Σ1 Ch Maj 位运算）
 3. **生成代码**：点击「▶」选择 JavaScript
@@ -25,7 +27,7 @@
 ### 涉及原子块
 | 块 | 功能 | 标准 |
 |----|------|------|
-| `data_text` | UTF-8 文本输入 | — |
+| `data_value` | 原样透传的表达式（字节数组或文本字面量） | — |
 | `hash_sha256_pad` | SHA-256 消息填充 | FIPS 180-4 §5.1 |
 | `hash_sha256_compress` | 64 轮压缩函数 | FIPS 180-4 §6.2 |
 
@@ -41,7 +43,7 @@ SHA-256("abc") = `ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61
 
 ### 步骤
 
-1. **加载 demo**：导入 `demos/procedures/SM3-Hash.json`
+1. **加载 Demo**：导入 `demos/procedures/SM3-Hash.json`
 2. **观察结构**：
    - `procedures_defreturn` 块：函数名 `SM3_Hash`，参数 `msg: message`
    - 函数体 RETURN：`hash_sm3_compress(V=IV 常量, W=hash_sm3_pad(msg))`
@@ -67,14 +69,14 @@ SHA-256("abc") = `ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61
 1. **拖块**：工具箱「哈希」→ 拖 `hash_sm3_pad`（消息填充 1‖0*‖64-bit 长度）
 2. **消息输入**：拖 `data_value` 填消息（如文本 `"abc"`）连到 pad 输入
 3. **压缩**：拖 `hash_sm3_compress`，把 pad 输出连到其输入；IV 输入拖 `data_value` 填 SM3 初始值（`0x7380166F` `0x4914B2B9` `0x172442D7` `0xDA8A0600` `0xA96F30BC` `0x163138AA` `0xE38DEE4D` `0xB0FB0E4E`）
-4. **生成代码**：▶ Generate → `sm3_compress(IV, hash_sm3_pad(msg))`
+4. **生成代码**：▶ Generate → Python 输出 `sm3_compress(IV, sm3_pad(msg))`，JavaScript 输出 `sm3Compress(IV, sm3Pad(msg))`
 5. **验证**：`SM3("abc") = 66c7f0f462eeedd9d1f2d46bdc10e4e24167c4875cf2f7a2297da02b8f4ba8e0`（GB/T 32905 A.1 官方向量）
 
 > 注意：单块消息（≤55 字节）走直链；多块消息需 `ctrl_iterate` 循环逐块压缩（demo 留作扩展）。
 
 ---
 
-**官方向量验证**：`node dist-verify/verify-demo.js demos/procedures/SM3-Hash.json --exec` → `=== ALL VECTORS PASS ===`
+本页示例使用仓库提供的固定输入，输出与 GB/T 32905 附录 A.1 的 SM3("abc") 示例值一致。这是固定样例核对，不是完整算法验证。
 
 ---
 

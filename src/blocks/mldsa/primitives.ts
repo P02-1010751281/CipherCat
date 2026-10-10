@@ -48,7 +48,7 @@ Blockly.Blocks['pq_power2round'] = {
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(PQC_COLOUR);
     this.setTooltip(
-      'Power2Round_d(r)：中心化 2^d 分解（d=13，ML-DSA-44）——r = r1·2^d + r0，r0 ∈ (-2^12, 2^12]。r1 用于公钥 t1，r0 用于签名提示。FIPS 204 Algorithm 12',
+      'Power2Round_d(r)：中心化 2^d 分解（d=13，ML-DSA-44）——r = r1·2^d + r0，r0 ∈ (-2^12, 2^12]。密钥生成将 r1 放入公钥 t1、将 r0 保留为秘密 t0；签名阶段用 t0 参与 hint 计算。输入为 256 个 Zq 系数。FIPS 204 Algorithm 35',
     );
     this.setHelpUrl(FIPS204_URL);
   },
@@ -74,7 +74,7 @@ Blockly.Blocks['pq_decompose'] = {
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(PQC_COLOUR);
     this.setTooltip(
-      'Decompose(r, 2γ2)：中心化 2γ2 分解（γ2=95232，ML-DSA-44）——r = r1·2γ2 + r0，r0 ∈ (-γ2, γ2]。签名取 w1=HighBits(w) 生成挑战，验证端用 w1 恢复。FIPS 204 Algorithm 13',
+      'Decompose(r, 2γ2)：中心化 2γ2 分解（γ2=95232，ML-DSA-44）——r = r1·2γ2 + r0，r0 ∈ (-γ2, γ2]。输入为 256 个 Zq 系数；签名取 w1=HighBits(w) 生成挑战，验证端用 w1 恢复。FIPS 204 Algorithm 36',
     );
     this.setHelpUrl(FIPS204_URL);
   },
@@ -94,7 +94,7 @@ Blockly.Blocks['pq_make_hint'] = {
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(PQC_COLOUR);
     this.setTooltip(
-      'MakeHint(z, r)：逐系数比较 HighBits(r) 与 HighBits(r+z)（γ2=95232），不同 → 1。签名端将 z=-c·t0 的舍入差异记录为 hint 位数组（0/1）。FIPS 204 Algorithm 16',
+      'MakeHint(z, r)：对两个各含 256 个 Zq 系数的向量逐项比较 HighBits(r) 与 HighBits(r+z)（γ2=95232），不同 → 1；输出 256 项 0/1 hint 向量。签名端将 z=-c·t0 的舍入差异记录为 hint。FIPS 204 Algorithm 39',
     );
     this.setHelpUrl(FIPS204_URL);
   },
@@ -114,7 +114,7 @@ Blockly.Blocks['pq_use_hint'] = {
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(PQC_COLOUR);
     this.setTooltip(
-      'UseHint(h, r)：逐系数用 hint 位修正 r1（h=1 且 r0>0 → +1，r0≤0 → -1）。验证端从 w1\' 重建挑战输入。FIPS 204 Algorithm 17',
+      'UseHint(h, r)：输入 256 项 0/1 hint 向量和 256 个 Zq 系数；逐项修正 r1（h=1 且 r0>0 → +1，r0≤0 → -1）。验证端从 w1\' 重建挑战输入。FIPS 204 Algorithm 40',
     );
     this.setHelpUrl(FIPS204_URL);
   },
@@ -131,7 +131,7 @@ Blockly.Blocks['pq_sample_in_ball'] = {
     this.setOutput(true, TYPE_INT_LIST);
     this.setColour(PQC_COLOUR);
     this.setTooltip(
-      'SampleInBall(ρ)：SHAKE256(ρ) 采样恰 τ=39 个非零系数（±1，符号由输出字节决定）的稀疏挑战多项式 c（τ=39，ML-DSA-44；65/87 为 49/60）。FIPS 204 Algorithm 8',
+      'SampleInBall(ρ)：ρ 为 32 字节；SHAKE256(ρ) 采样恰 τ=39 个非零系数（±1，符号由输出字节决定）的稀疏挑战多项式 c（ML-DSA-44；65/87 为 49/60）。FIPS 204 Algorithm 29',
     );
     this.setHelpUrl(FIPS204_URL);
   },

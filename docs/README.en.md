@@ -14,6 +14,7 @@
 |------|------|------|
 | [USER-GUIDE.en.md](./guides/USER-GUIDE.en.md) | Users | End-to-end path from project creation and demos to block assembly, code generation, verification, and backend assessment |
 | [TUTORIALS.en.md](./guides/TUTORIALS.en.md) | Users | Step-by-step editor, demo import, code generation, function wrapping, and assessment tutorials with interface states and troubleshooting |
+| [Step-by-step assembly guide](./build/INDEX.en.md) | Users | Per-family, per-workspace instructions for every block: what to drag, where to connect it, and what result to expect |
 | [CAPABILITY-MAP.en.md](./guides/CAPABILITY-MAP.en.md) | Users/Researchers | Primitives, algorithm families, demos, standard references, and evidence boundaries |
 | [BLOCKLY-GUIDE.en.md](./guides/BLOCKLY-GUIDE.en.md) | Users | Blockly usage guide: editor operations, type system, function templates, algorithm assembly examples |
 | [DEMO.en.md](./guides/DEMO.en.md) | Users | Demo guide index (per algorithm: SM4/AES/hash/SM2/post-quantum, with official-vector verification) |
@@ -26,7 +27,7 @@ Block documentation follows one overview plus multiple details: start with the [
 | Doc | Audience | Description |
 |------|------|------|
 | [ARCHITECTURE.en.md](./guides/ARCHITECTURE.en.md) | Developers | System architecture, data flow, module organization |
-| [SETUP.en.md](./guides/SETUP.en.md) | Developers | Local startup, production preview, desktop builds, and acceptance gates |
+| [SETUP.en.md](./guides/SETUP.en.md) | Developers | Local startup, production preview, desktop builds, and acceptance checks |
 | [DEVELOPMENT.en.md](./guides/DEVELOPMENT.en.md) | Developers | Environment setup, adding blocks, i18n, code style |
 | [TYPE-SYSTEM.en.md](./guides/TYPE-SYSTEM.en.md) | Developers | Blockly type declarations, connection checks, and explicit conversions |
 
@@ -39,20 +40,13 @@ Block documentation follows one overview plus multiple details: start with the [
 
 ### 🔬 Algorithm specifications
 
-Coverage matrix (standard ↔ blocks ↔ demos ↔ templates ↔ guides): [standards/COVERAGE.en.md](./standards/COVERAGE.en.md). Extraction quality, evidence tiers, and missing items are tracked in [standards/DOCUMENT-STATUS.en.md](./standards/DOCUMENT-STATUS.en.md). The relationship between the original-source extraction layer and the structured user-reference layer is documented in [standards/SOURCE-LAYERS.en.md](./standards/SOURCE-LAYERS.en.md). Standard metadata, source snapshot dates, errata status and local PDF hashes are maintained by [`standards-manifest.json`](./standards/standards-manifest.json) and `npm run standards:check`. Documentation i18n uses `.en.md` counterparts; when a standard page has no English translation, the English view keeps an explicit source-language fallback instead of pretending it is translated. The list below contains 37 standard and reference directories; `standards/papers/` is a literature index and is not counted as an algorithm directory:
+Coverage matrix (standard ↔ blocks ↔ demos ↔ templates ↔ guides): [standards/COVERAGE.en.md](./standards/COVERAGE.en.md). The relationship between the original-source extraction layer and the structured user-reference layer is documented in [standards/SOURCE-LAYERS.en.md](./standards/SOURCE-LAYERS.en.md). Documentation i18n uses `.en.md` counterparts; when a standard page has no English translation, the English view keeps an explicit source-language fallback instead of pretending it is translated. The list below contains 40 standard and reference directories; `standards/papers/` is a literature index and is not counted as an algorithm directory:
 
 | Doc | Description |
 |------|------|
 | [blocks/INDEX.en.md](./blocks/INDEX.en.md) | Block standard-basis reference (split by category) |
 | [COVERAGE.en.md](./standards/COVERAGE.en.md) | Standards coverage matrix (standard ↔ block ↔ Demo ↔ template ↔ guide) |
-| [DOCUMENT-STATUS.en.md](./standards/DOCUMENT-STATUS.en.md) | Documentation extraction review, evidence tiers, and gap list |
-| [REEXTRACTION-REPORT.en.md](./standards/REEXTRACTION-REPORT.en.md) | Standards PDF re-extraction, visual spot checks, and fix record |
-| [SOURCE-QUALITY-AUDIT.en.md](./standards/SOURCE-QUALITY-AUDIT.en.md) | Source-layer quality grades for formulas, tables, font mappings, and readability |
-| [FUNCTION-PRIMITIVE-INDEX.en.md](./standards/FUNCTION-PRIMITIVE-INDEX.en.md) | Function/primitive-family split index for standards references |
-| [STRUCTURED-ENTRY-SCHEMA.en.md](./standards/STRUCTURED-ENTRY-SCHEMA.en.md) | Common entry fields for functions, primitives, formulas, and algorithm stages |
 | [SOURCE-LAYERS.en.md](./standards/SOURCE-LAYERS.en.md) | Complete source layer versus structured reference layer |
-| [SOURCE-SPLIT-COVERAGE.en.md](./standards/SOURCE-SPLIT-COVERAGE.en.md) | Source-to-entry split coverage and acceptance boundary |
-| [SOURCE-SPLIT-INVENTORY.en.md](./standards/SOURCE-SPLIT-INVENTORY.en.md) | Entry-by-entry source links for 37 standard directories and 227 structured entries |
 | [fips197-AES/](./standards/fips197-AES/README.md) | FIPS 197 AES reference |
 | [fips180-4-SHA2/](./standards/fips180-4-SHA2/README.md) | FIPS 180-4 SHA-2 reference |
 | [fips202-SHA3/](./standards/fips202-SHA3/README.md) | FIPS 202 SHA-3 / SHAKE / KECCAK-p |
@@ -65,7 +59,7 @@ Coverage matrix (standard ↔ blocks ↔ demos ↔ templates ↔ guides): [stand
 | [sp800-90a-drbg/](./standards/sp800-90a-drbg/README.md) | SP 800-90A DRBG random generator |
 | [sp800-132-pbkdf2/](./standards/sp800-132-pbkdf2/README.md) | SP 800-132 PBKDF2 |
 | [sp800-232-ascon/](./standards/sp800-232-ascon/README.md) | SP 800-232 ASCON lightweight AEAD |
-| [fips186-5-ecdsa/](./standards/fips186-5-ecdsa/README.md) | FIPS 186-5 ECDSA |
+| [fips186-5-ecdsa/](./standards/fips186-5-ecdsa/README.md) | FIPS 186-5 Digital Signature Standard (ECDSA, RSA key generation, and primality-test references) |
 | [fips203-ML-KEM/](./standards/fips203-ML-KEM/README.md) | FIPS 203 ML-KEM (Kyber) |
 | [fips204-ML-DSA/](./standards/fips204-ML-DSA/README.md) | FIPS 204 ML-DSA (Dilithium) |
 | [fips205-SLH-DSA/](./standards/fips205-SLH-DSA/README.md) | FIPS 205 SLH-DSA stateless hash-based signatures |
@@ -77,9 +71,11 @@ Coverage matrix (standard ↔ blocks ↔ demos ↔ templates ↔ guides): [stand
 | [rfc8017-pkcs1/](./standards/rfc8017-pkcs1/README.md) | RFC 8017 PKCS#1 RSA encryption/signature |
 | [rfc8032-eddsa/](./standards/rfc8032-eddsa/README.md) | RFC 8032 EdDSA |
 | [rfc5903-ecdh/](./standards/rfc5903-ecdh/README.md) | RFC 5903 ECDH key agreement (P-256) |
-| [rfc9106-argon2/](./standards/rfc9106-argon2/README.md) | RFC 9106 Argon2 password hash |
+| [rfc6979-ecdsa/](./standards/rfc6979-ecdsa/README.md) | RFC 6979 deterministic ECDSA (P-256/SHA-256 cases) |
+| [rfc9106-argon2/](./standards/rfc9106-argon2/README.en.md) | RFC 9106 Argon2 reference |
 | [gbt32905-SM3/](./standards/gbt32905-SM3/README.md) | GB/T 32905 SM3 hash |
 | [gbt32907-SM4/](./standards/gbt32907-SM4/README.md) | GB/T 32907 SM4 block cipher |
+| [gbt32915-randomness/](./standards/gbt32915-randomness/README.md) | GB/T 32915 binary-sequence randomness testing (status entry; source and split pending) |
 | [gbt32918-SM2/](./standards/gbt32918-SM2/README.md) | GB/T 32918 SM2 public-key cryptography |
 | [gmt0005-randomness/](./standards/gmt0005-randomness/README.md) | GM/T 0005 randomness testing (Go backend) |
 | [gbt33133-ZUC/](./standards/gbt33133-ZUC/README.md) | GB/T 33133 ZUC stream cipher |
@@ -90,7 +86,25 @@ Coverage matrix (standard ↔ blocks ↔ demos ↔ templates ↔ guides): [stand
 | [gmt0091-kdf/](./standards/gmt0091-kdf/README.md) | GM/T 0091 key derivation |
 | [gmt0103-rng/](./standards/gmt0103-rng/README.md) | GM/T 0103 random number generator |
 | [china-pqc-tracking/](./standards/china-pqc-tracking/README.md) | Public information on China’s post-quantum cryptography |
+| [randomness-certification-sources/](./standards/randomness-certification-sources/README.md) | Official materials on randomness sources and cryptographic module validation |
 | [papers/](./standards/papers/README.md) | Standard versions, research material and local literature index (not an algorithm implementation directory) |
+
+### 🧪 Standards tooling and evidence (development)
+
+These pages record extraction, splitting, evidence ledgers, and certification preparation. They are intended for developers, not as user guides:
+
+| Doc | Description |
+|------|------|
+| [DOCUMENT-STATUS.en.md](./standards/DOCUMENT-STATUS.en.md) | Documentation extraction review, evidence tiers, and gap list |
+| [REEXTRACTION-REPORT.en.md](./standards/REEXTRACTION-REPORT.en.md) | Standards PDF re-extraction and visual spot-check record |
+| [SOURCE-QUALITY-AUDIT.en.md](./standards/SOURCE-QUALITY-AUDIT.en.md) | Source-layer quality grades for formulas, tables, font mappings, and readability |
+| [FUNCTION-PRIMITIVE-INDEX.en.md](./standards/FUNCTION-PRIMITIVE-INDEX.en.md) | Function/primitive-family split index for standards references |
+| [STRUCTURED-ENTRY-SCHEMA.en.md](./standards/STRUCTURED-ENTRY-SCHEMA.en.md) | Common entry fields for functions, primitives, formulas, and algorithm stages |
+| [SOURCE-SPLIT-COVERAGE.en.md](./standards/SOURCE-SPLIT-COVERAGE.en.md) | Source-to-entry split coverage and acceptance boundary |
+| [SOURCE-SPLIT-INVENTORY.en.md](./standards/SOURCE-SPLIT-INVENTORY.en.md) | Entry-by-entry source links for 229 structured entries |
+| [CONFORMANCE-INVENTORY.md](./standards/CONFORMANCE-INVENTORY.md) | Verification objects and evidence scope for 194 active blocks (plus 1 compat identity), 29 procedure templates, and 59 demos (Chinese only) |
+| [ENDPOINT-MATRIX.md](./standards/ENDPOINT-MATRIX.md) | Block endpoint (public standard algorithm interface) matrix (Chinese only) |
+| [PRODUCT-CERTIFICATION-FEASIBILITY.en.md](./standards/PRODUCT-CERTIFICATION-FEASIBILITY.en.md) | Formal certification routes, candidate product boundary, gaps, and decision sequence |
 
 ### 📝 Root specifications
 

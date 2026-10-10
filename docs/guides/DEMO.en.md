@@ -1,7 +1,7 @@
 # Demo guide
 
 
-Pre-built Blockly workspace examples built from atomic blocks: top-level atomic demos show the block chain directly, while Procedure demos place the same chains inside reusable functions; no convenience-wrapper blocks are used. Split into per-algorithm docs; corresponding demo files are listed in the [demos/README.md](../../demos/README.en.md) file index:
+Pre-built Blockly workspace examples built from atomic blocks: top-level atomic demos show the block chain directly, while Procedure Demos place the same chains inside reusable functions; no convenience-wrapper blocks are used. Split into per-algorithm docs; corresponding demo files are listed in the [demos/README.md](../../demos/README.en.md) file index:
 
 | Algorithm | Build steps | Demo files |
 |------|----------|----------------|
@@ -24,21 +24,21 @@ The recommended entry point for platform operation is the [user tutorial](./TUTO
 2. Check the block wiring → choose "Generate" to view JavaScript/Python output;
 3. Open a function-wrapping demo and inspect its calls from other flows.
 
-![Import-workspace entry in the More menu (interface example)](/docs-assets/tutorials/03-import-menu.png)
+![Import-workspace entry in the More menu](/docs-assets/tutorials/03-import-menu.png)
 
 _Figure: Start by choosing Import Workspace from the More menu._
 
-![Imported AES atomic-round workspace (interface screenshot)](/docs-assets/tutorials/04-editor-imported.png)
+![Imported AES atomic-round workspace](/docs-assets/tutorials/04-editor-imported.png)
 
 _Figure: The imported workspace shows the AES atomic-block chain. Choose Generate to display its code._
 
-![Generated Python code (interface screenshot)](/docs-assets/tutorials/05-generated-python.png)
+![Generated Python code](/docs-assets/tutorials/05-generated-python.png)
 
 _Figure: The generated-code panel displays Python for the current workspace._
 
 ## Demo verification status
 
-All 59 registered demos are checked by the automated harness in both Python and JavaScript. Test specifications include standard vectors, property assertions, and independent cross-checks; commands and results are listed in [demos/README.en.md](../../demos/README.en.md).
+Each registered demo records whether it is checked with standard vectors, algebraic properties, or fixed inputs, together with the parameter set it covers; see [demos/README.en.md](../../demos/README.en.md) for the item-by-item list. A passing demo covers only its registered case, not complete standards conformance or certification.
 
 ---
 

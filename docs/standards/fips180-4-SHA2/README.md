@@ -20,7 +20,7 @@
 | 序号 | 文件 | 名称 | § | 块实现 |
 |:--:|------|------|---|---|
 | 1 | [01-SHA2.md](./01-SHA2.md) | SHA-2 总览 | §4–§6 | — |
-| 2 | [02-Padding.md](./02-Padding.md) | 消息填充 | §5 | `hash_sha256_pad` · `hash_sha512_pad` |
+| 2 | [02-Padding.md](./02-Padding.md) | 消息填充 | §5 | `hash_sha256_pad` · `hash_sha256_pad_text` · `hash_sha256_pad_hex` · `hash_sha512_pad` |
 | 3 | [03-MessageExpansion.md](./03-MessageExpansion.md) | 消息扩展 | §6 | 压缩块内部 |
 | 4 | [04-Compression.md](./04-Compression.md) | 压缩函数 | §6 | `hash_sha256_compress` · `hash_sha512_compress` |
 | 5 | [05-Digest.md](./05-Digest.md) | 摘要输出与变体 | §6 | `hash_sha224_hash` · `hash_sha512_hash` |
@@ -29,7 +29,7 @@
 
 | 变体 | 输出 | 字长 | 轮数 | 状态 |
 |------|------|------|------|------|
-| SHA-224 | 224 bit | 32 | 64 | ✅ `hash_sha256_compress` + SHA-224 IV（demo `SHA224-Hash.json`） |
+| SHA-224 | 224 bit | 32 | 64 | ✅ `hash_sha256_compress` + SHA-224 IV（Demo `SHA224-Hash.json`） |
 | SHA-384 | 384 bit | 64 | 80 | ✅ `hash_sha512_hash`（HASH 下拉 SHA-384/512） |
 | SHA-512 | 512 bit | 64 | 80 | ✅ `hash_sha512_hash`（HASH 下拉） |
 | SHA-512/224 | 224 bit | 64 | 80 | 未实现 |

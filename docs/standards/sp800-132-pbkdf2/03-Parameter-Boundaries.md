@@ -30,7 +30,11 @@
 |---|---|
 | 口令 `P` | 按明确字符/字节编码处理 |
 | 盐 `S` | 应独立、不可预测并与口令分离 |
-| 迭代次数 `c` | 必须为正，并按系统策略可升级 |
-| 派生长度 `dkLen` | 不超过 PBKDF2/PRF 的编码和实现上限 |
+| 迭代次数 `c` | RFC 8018 §5.2 要求正整数；SP 800-132 §5.2 建议至少 1,000，并应按目标环境性能选择和升级 |
+| 派生长度 `dkLen` | RFC 8018 §5.2 要求正整数，且不超过 `(2^32−1) × hLen` 字节；当前 SHA-256 与 SM3-HMAC 的 `hLen` 均为 32 字节，对应理论上限 137,438,953,440 字节 |
+
+生成器还要求 `c` 是 JavaScript 可精确表示的安全整数，以保持 JS/Python 参数语义一致。理论标准上限不是建议的实际密钥长度；项目当前未设置更低的资源上限，超大输出可能受运行环境内存限制。
 
 PBKDF2 只提供派生构造；口令存储格式、参数升级、验证式解码和账户策略不在当前块内。Demo 成功不能单独证明口令安全。
+
+[`kdf-parameter-contract.test.ts`](../../../tests/unit/kdf-parameter-contract.test.ts) 检查参数拒绝与 JS/Python `Bytes` 输出，并以 [RFC 7914 §11](https://www.rfc-editor.org/rfc/rfc7914.html#section-11) 的 PBKDF2-HMAC-SHA-256 向量验证 SHA-256 路径。该向量不覆盖 SM3-HMAC 路径或完整 ACVP/CAVP 测试集。

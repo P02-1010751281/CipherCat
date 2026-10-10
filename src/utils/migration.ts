@@ -54,6 +54,7 @@ export function migrateXmlText(xmlText: string): string {
   let result = xmlText;
 
   result = migrateSboxXml(result);
+  result = migrateLegacyGetTextXml(result);
 
   const sortedEntries = Object.entries(BLOCK_TYPE_MIGRATION_MAP).sort(
     ([a], [b]) => b.length - a.length,
@@ -71,9 +72,6 @@ export function migrateXmlText(xmlText: string): string {
         `type='${newType}'`,
       );
     }
-    if (oldType === 'crypto_get_text' && newType === 'data_value') {
-      result = result.replace(/<field name="TEXT"/g, '<field name="NUM"');
-    }
   }
 
   // crypto_sbox_def / sbox_def → sbox_variables_set: 结构迁移
@@ -81,8 +79,30 @@ export function migrateXmlText(xmlText: string): string {
 
   result = migrateCompoundFieldXml(result);
   result = migrateBitOperationFieldXml(result);
+  result = migratePartitionModeXml(result);
 
   return result;
+}
+
+function migrateLegacyGetTextXml(xml: string): string {
+  const openings = /<block\b(?:[^'">]|"[^"]*"|'[^']*')*>/g;
+  const replacements: Array<{ start: number; end: number; value: string }> = [];
+  let match: RegExpExecArray | null;
+  while ((match = openings.exec(xml))) {
+    const type = match[0].match(/\btype=(['"])(.*?)\1/);
+    if (type?.[2] !== 'crypto_get_text') continue;
+    const end = matchingBlockClose(xml, match.index);
+    if (end < 0) continue;
+    const openingEnd = openings.lastIndex;
+    const field = directXmlField(xml.slice(openingEnd, end), 'TEXT');
+    if (!field) continue;
+    const renamed = field.tag.replace(/\bname=(['"])TEXT\1/, (_, quote: string) => `name=${quote}NUM${quote}`);
+    replacements.push({ start: openingEnd + field.index, end: openingEnd + field.index + field.tag.length, value: renamed });
+  }
+  for (const replacement of replacements.reverse()) {
+    xml = `${xml.slice(0, replacement.start)}${replacement.value}${xml.slice(replacement.end)}`;
+  }
+  return xml;
 }
 
 function migrateSboxXml(xml: string): string {
@@ -213,32 +233,176 @@ export function migrateJsonState(
 
   jsonStr = migrateSboxFieldNamesJson(jsonStr);
 
-  const sortedEntries = Object.entries(BLOCK_TYPE_MIGRATION_MAP).sort(
-    ([a], [b]) => b.length - a.length,
-  );
-  for (const [oldType, newType] of sortedEntries) {
-    if (jsonStr.includes(`"${oldType}"`)) {
-      jsonStr = jsonStr.replace(
-        new RegExp(`"${oldType}"`, 'g'),
-        `"${newType}"`,
-      );
-    }
-  }
-
   try {
     const parsed = JSON.parse(jsonStr);
+    migrateBlockTypesJson(parsed);
     injectSboxRowColFields(parsed);
     migrateSboxJsonMutateData(parsed);
     migrateSboxDefJson(parsed);
     // deferSboxFields 已移除：Blockly 12 原生支持大量字段，不再搬移到 _sbx_def_
     migrateCompoundInstrField(parsed);
     migrateBitOpFieldValues(parsed);
+    const variableNames = new Map<string, string>();
+    if (Array.isArray(parsed.variables)) {
+      for (const variable of parsed.variables) {
+        if (typeof variable !== 'object' || variable === null) continue;
+        const { id, name } = variable as Record<string, unknown>;
+        if (typeof id === 'string' && typeof name === 'string') variableNames.set(id, name);
+      }
+    }
+    migratePartitionModeJson(parsed, variableNames);
     // ctrl_assign 赋值块 → variables_set（Blockly 内置变量赋值）
     migrateAssignmentBlocks(parsed);
     return parsed as Record<string, unknown>;
   } catch {
     return state;
   }
+}
+
+function migrateBlockTypesJson(value: unknown): void {
+  if (Array.isArray(value)) {
+    for (const item of value) migrateBlockTypesJson(item);
+    return;
+  }
+  if (typeof value !== 'object' || value === null) return;
+
+  const record = value as Record<string, unknown>;
+  const oldType = record.type;
+  if (oldType === 'crypto_get_text' && typeof record.fields === 'object' && record.fields !== null) {
+    const fields = record.fields as Record<string, unknown>;
+    if ('TEXT' in fields) {
+      fields.NUM = fields.TEXT;
+      delete fields.TEXT;
+    }
+  }
+  if (typeof oldType === 'string' && Object.prototype.hasOwnProperty.call(BLOCK_TYPE_MIGRATION_MAP, oldType)) {
+    record.type = BLOCK_TYPE_MIGRATION_MAP[oldType];
+  }
+  for (const child of Object.values(record)) migrateBlockTypesJson(child);
+}
+
+const LEGACY_BYTE_TARGETS = new Set(['B', 'Block', 'padded', 'data', 'state']);
+
+function legacyPartitionMode(target: string | undefined): 'BYTES' | 'WORDS32' {
+  return target && LEGACY_BYTE_TARGETS.has(target.trim()) ? 'BYTES' : 'WORDS32';
+}
+
+function migratePartitionModeXml(xml: string): string {
+  const blockOpenings = /<block\b(?:[^'">]|"[^"]*"|'[^']*')*>/g;
+  const insertions: Array<{ index: number; field: string }> = [];
+  let match: RegExpExecArray | null;
+
+  while ((match = blockOpenings.exec(xml))) {
+    const type = match[0].match(/\btype=(['"])(.*?)\1/);
+    if (!type || (type[2] !== 'crypto_partition_to_array' && type[2] !== 'arr_partition_to_array') || match[0].endsWith('/>')) continue;
+    const end = matchingBlockClose(xml, match.index);
+    if (end < 0) continue;
+    const openingEnd = blockOpenings.lastIndex;
+    const contents = xml.slice(openingEnd, end);
+    if (!hasDirectXmlField(contents, 'MODE')) {
+      const target = xmlPartitionTarget(contents);
+      insertions.push({
+        index: openingEnd,
+        field: `<field name="MODE">${legacyPartitionMode(target)}</field>`,
+      });
+    }
+  }
+
+  for (const insertion of insertions.reverse()) {
+    xml = `${xml.slice(0, insertion.index)}${insertion.field}${xml.slice(insertion.index)}`;
+  }
+  return xml;
+}
+
+function hasDirectXmlField(contents: string, fieldName: string): boolean {
+  return directXmlField(contents, fieldName) !== null;
+}
+
+function directXmlField(contents: string, fieldName: string): { index: number; tag: string } | null {
+  const tags = /<\/?(?:block|shadow)\b(?:[^'">]|"[^"]*"|'[^']*')*>|<field\b(?:[^'">]|"[^"]*"|'[^']*')*>/g;
+  let depth = 0;
+  let match: RegExpExecArray | null;
+  while ((match = tags.exec(contents))) {
+    if (match[0].startsWith('</')) depth--;
+    else if (/^<field\b/.test(match[0])) {
+      const name = match[0].match(/\bname=(['"])(.*?)\1/);
+      if (depth === 0 && name?.[2] === fieldName) return { index: match.index, tag: match[0] };
+    } else if (!match[0].endsWith('/>')) depth++;
+  }
+  return null;
+}
+
+function matchingBlockClose(xml: string, openIndex: number): number {
+  const tags = /<\/?block\b(?:[^'">]|"[^"]*"|'[^']*')*>/g;
+  tags.lastIndex = openIndex;
+  let depth = 0;
+  let match: RegExpExecArray | null;
+  while ((match = tags.exec(xml))) {
+    if (match[0].startsWith('</')) depth--;
+    else if (!match[0].endsWith('/>')) depth++;
+    if (depth === 0) return match.index;
+  }
+  return -1;
+}
+
+function xmlPartitionTarget(contents: string): string | undefined {
+  const targetInput = contents.match(/<value\b[^>]*\bname=(['"])TARGET\1[^>]*>([\s\S]*?)<\/value>/);
+  if (!targetInput) return undefined;
+  const targetBlock = targetInput[2];
+  const dataValue = targetBlock.match(/<(?:block|shadow)\b[^>]*\btype=(['"])data_value\1[^>]*>[\s\S]*?<field\b[^>]*\bname=(['"])NUM\2[^>]*>([\s\S]*?)<\/field>/);
+  if (dataValue) return decodeXmlText(dataValue[3]);
+  const variable = targetBlock.match(/<(?:block|shadow)\b[^>]*\btype=(['"])variables_get\1[^>]*>[\s\S]*?<field\b[^>]*\bname=(['"])VAR\2[^>]*>([\s\S]*?)<\/field>/);
+  return variable ? decodeXmlText(variable[3]) : undefined;
+}
+
+function decodeXmlText(value: string): string {
+  return value
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, '&');
+}
+
+function migratePartitionModeJson(value: unknown, variableNames: ReadonlyMap<string, string>): void {
+  if (Array.isArray(value)) {
+    for (const item of value) migratePartitionModeJson(item, variableNames);
+    return;
+  }
+  if (typeof value !== 'object' || value === null) return;
+
+  const record = value as Record<string, unknown>;
+  if (record.type === 'arr_partition_to_array') {
+    const fields = record.fields && typeof record.fields === 'object'
+      ? record.fields as Record<string, unknown>
+      : (record.fields = {}) as Record<string, unknown>;
+    if (!('MODE' in fields)) {
+      fields.MODE = legacyPartitionMode(jsonPartitionTarget(record.inputs, variableNames));
+    }
+  }
+  for (const child of Object.values(record)) migratePartitionModeJson(child, variableNames);
+}
+
+function jsonPartitionTarget(value: unknown, variableNames: ReadonlyMap<string, string>): string | undefined {
+  if (typeof value !== 'object' || value === null) return undefined;
+  const inputs = value as Record<string, unknown>;
+  const target = inputs.TARGET;
+  if (typeof target !== 'object' || target === null) return undefined;
+  const input = target as Record<string, unknown>;
+  const child = input.block ?? input.shadow;
+  if (typeof child !== 'object' || child === null) return undefined;
+  const block = child as Record<string, unknown>;
+  const fields = block.fields;
+  if (typeof fields !== 'object' || fields === null) return undefined;
+  const blockFields = fields as Record<string, unknown>;
+  const field = block.type === 'data_value' ? blockFields.NUM : block.type === 'variables_get' ? blockFields.VAR : undefined;
+  if (typeof field === 'string' || typeof field === 'number') return String(field);
+  if (typeof field === 'object' && field !== null) {
+    const variableField = field as Record<string, unknown>;
+    if (typeof variableField.name === 'string') return variableField.name;
+    if (typeof variableField.id === 'string') return variableNames.get(variableField.id);
+  }
+  return undefined;
 }
 
 function migrateSboxFieldNamesJson(json: string): string {

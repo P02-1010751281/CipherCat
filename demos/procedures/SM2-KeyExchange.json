@@ -181,11 +181,15 @@
         },
         "WLEN": {
          "block": {
-          "type": "math_number",
+          "type": "variables_get",
           "id": "kex_wlen",
           "inline": true,
           "fields": {
-           "NUM": 128
+           "VAR": {
+            "id": "kex_wlen_p",
+            "name": "wlen",
+            "type": "int"
+           }
           }
          }
         }

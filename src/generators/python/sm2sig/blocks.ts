@@ -6,7 +6,7 @@
  *   sm3_hash  —— 与 remaining.ts hash_hmac SM3 分支同体（GB/T 32905）
  *   sm2_za    —— ZA = SM3(ENTLA ‖ IDA ‖ a ‖ b ‖ Gx ‖ Gy ‖ PAx ‖ PAy)
  *   sm2_sign  —— e = SM3(ZA ‖ M)；r/s 公式；输出 r‖s 各 32 字节大端
- *   sm2_verify —— t = (r+s) mod n，[s]G + [t]PA，R = (e + x0') mod n == r
+ *   sm2_verify —— 校验 PA；t = (r+s) mod n，[s]G + [t]PA，R = (e + x0') mod n == r
  * 原生 int + pow(a,-1,m) 模逆。官方向量 ZA/e/r/s 全 PASS。
  */
 import { pythonGenerator, Order } from 'blockly/python';
@@ -80,7 +80,7 @@ function registerSm2(): string {
     '    }',
     '',
     'def sm2_to_big(v):',
-    '    if isinstance(v, int):',
+    '    if isinstance(v, int) and not isinstance(v, bool):',
     '        return v',
     '    if isinstance(v, str):',
     '        return int(v, 16)',
@@ -126,6 +126,15 @@ function registerSm2(): string {
     '        k >>= 1',
     '    return R',
     '',
+    'def sm2_public_key_is_valid(P):',
+    '    C = sm2_params()',
+    '    x, y = P',
+    '    if not 0 <= x < C["p"] or not 0 <= y < C["p"]:',
+    '        return False',
+    '    if (y * y - x * x * x - C["a"] * x - C["b"]) % C["p"] != 0:',
+    '        return False',
+    '    return sm2_point_mul(C["n"], P) is None',
+    '',
     'def sm2_za(ida, pax, pay):',
     '    C = sm2_params()',
     '    if isinstance(ida, str):',
@@ -143,39 +152,45 @@ function registerSm2(): string {
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(da, ida, msg, k):',
     '    C = sm2_params()',
     '    d = sm2_to_big(da)',
-    '    if d <= 0 or d >= C["n"]:',
+    '    if d <= 0 or d >= C["n"] - 1:',
     '        raise ValueError("SM2: invalid private key")',
     '    PA = sm2_point_mul(d, (C["gx"], C["gy"]))',
     '    za = sm2_za(ida, PA[0], PA[1])',
     '    e = sm2_to_big(sm3_hash(za + list(msg)))',
-    '    if k is None or k == "":',
-    '        import os',
-    '        kk = sm2_to_big(os.urandom(32))',
+    '    random_k = k is None or (type(k) is str and k == "")',
+    '    if random_k:',
+    '        import secrets',
     '    else:',
     '        kk = sm2_to_big(k)',
-    '    kk %= C["n"]',
-    '    if kk == 0:',
-    '        kk = 1',
-    '    x1 = sm2_point_mul(kk, (C["gx"], C["gy"]))',
-    '    r = (e + x1[0]) % C["n"]',
-    '    s = (sm2_mod_inverse(1 + d, C["n"]) * ((kk - r * d) % C["n"])) % C["n"]',
-    '    if r == 0 or r + kk == C["n"] or s == 0:',
-    '        raise ValueError("SM2: retry (r or s invalid)")',
-    '    return sm2_big_to_bytes(r, 32) + sm2_big_to_bytes(s, 32)',
+    '        if not 0 < kk < C["n"]:',
+    '            raise ValueError("SM2: invalid nonce")',
+    '    while True:',
+    '        if random_k:',
+    '            kk = secrets.randbelow(C["n"] - 1) + 1',
+    '        x1 = sm2_point_mul(kk, (C["gx"], C["gy"]))',
+    '        r = (e + x1[0]) % C["n"]',
+    '        s = (sm2_mod_inverse(1 + d, C["n"]) * ((kk - r * d) % C["n"])) % C["n"]',
+    '        if r == 0 or r + kk == C["n"] or s == 0:',
+    '            if random_k:',
+    '                continue',
+    '            raise ValueError("SM2: invalid nonce for signature")',
+    '        return sm2_big_to_bytes(r, 32) + sm2_big_to_bytes(s, 32)',
     '',
     'def sm2_verify(pax, pay, ida, msg, r, s):',
     '    C = sm2_params()',
-    '    rr = sm2_to_big(r) % C["n"]',
-    '    ss = sm2_to_big(s) % C["n"]',
-    '    if rr == 0 or rr >= C["n"] or ss == 0 or ss >= C["n"]:',
+    '    rr = sm2_to_big(r)',
+    '    ss = sm2_to_big(s)',
+    '    if not 0 < rr < C["n"] or not 0 < ss < C["n"]:',
     '        return False',
     '    t = (rr + ss) % C["n"]',
     '    if t == 0:',
     '        return False',
+    '    PA = (sm2_to_big(pax), sm2_to_big(pay))',
+    '    if not sm2_public_key_is_valid(PA):',
+    '        return False',
     '    za = sm2_za(ida, pax, pay)',
     '    e = sm2_to_big(sm3_hash(za + list(msg)))',
     '    G = (C["gx"], C["gy"])',
-    '    PA = (sm2_to_big(pax), sm2_to_big(pay))',
     '    pt = sm2_point_add(sm2_point_mul(ss, G), sm2_point_mul(t, PA))',
     '    if pt is None:',
     '        return False',
@@ -190,7 +205,7 @@ pythonGenerator.forBlock['sm2_sign'] = function (block: Block): [string, number]
   const msg = pythonGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   const k = pythonGenerator.valueToCode(block, 'K', Order.ATOMIC) || '""';
   registerSm2();
-  return ['sm2_sign(' + da + ', ' + ida + ', ' + msg + ', ' + k + ')', Order.ATOMIC];
+  return ['bytes(sm2_sign(' + da + ', ' + ida + ', ' + msg + ', ' + k + '))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['sm2_verify'] = function (block: Block): [string, number] {

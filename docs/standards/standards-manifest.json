@@ -1,51 +1,824 @@
 {
-  "schema_version": 2,
-  "updated_at": "2026-09-26",
-  "status_values": ["current", "tracking", "review", "reference"],
+  "schema_version": 3,
+  "updated_at": "2026-10-09",
+  "status_values": [
+    "current",
+    "tracking",
+    "review",
+    "reference"
+  ],
   "policy": {
     "source": "标准原文或发布机构页面优先；论文和二手实现只能作为补充证据。",
-    "errata": "每次标准或官方页面更新时复核；不把示例/KAT通过写成认证。",
-    "hash": "目录内每一个 PDF 都必须在 artifacts 中登记 SHA-256。",
+    "errata": "errata_status 取值：tracked=已登记真正的勘误/更新文档；landing-page-only=仅复核了发布页（errata_url 与 source_url 相同），未发现独立勘误文档；not-listed=未记录勘误链接。每次标准或官方页面更新时复核；不把示例/KAT通过写成认证。",
+    "hash": "目录内每一个 PDF 与每个 RFC/标准全文 .txt 都必须在 artifacts 中登记 SHA-256。",
     "verification": "source_checked_at 是本地快照日期；errata_status=tracked 仅表示已记录复核 URL，不表示远程页面声明无 errata。"
   },
   "entries": [
-    {"id":"china-pqc-tracking","kind":"tracking","standard":"中国抗量子密码公开进展","version":"official-source snapshot (2026-09-23)","status":"tracking","source_url":"https://oscca.gov.cn/sca/xwdt/2026-01/30/content_1061322.shtml","source_checked_at":"2026-09-23","errata_url":null,"errata_status":"not-listed","artifacts":[]},
-    {"id":"fips180-4-SHA2","kind":"standard","standard":"NIST FIPS 180-4","version":"180-4","status":"current","source_url":"https://csrc.nist.gov/pubs/fips/180-4/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/fips/180-4/final","errata_status":"tracked","artifacts":[{"path":"NIST.FIPS.180-4.pdf","sha256":"0455b406d89648d20cbde375561e19c245b9815e894164c2670772e3d54deb82"}]},
-    {"id":"fips186-5-ecdsa","kind":"standard","standard":"NIST FIPS 186-5","version":"186-5","status":"current","source_url":"https://csrc.nist.gov/pubs/fips/186-5/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/fips/186-5/final","errata_status":"tracked","artifacts":[{"path":"NIST.FIPS.186-5.pdf","sha256":"fbb9c7c2ba442f03c57b63b43c888311903c9d0f29f89b06efdebd9b619140c5"}]},
-    {"id":"fips197-AES","kind":"standard","standard":"NIST FIPS 197","version":"2023 editorial update","status":"current","source_url":"https://csrc.nist.gov/pubs/fips/197/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/fips/197/final","errata_status":"tracked","artifacts":[{"path":"NIST.FIPS.197.pdf","sha256":"62c86eb567f13edb8f71826e985da870b04ef6381634f303cdb16e84d47becd1"}]},
-    {"id":"fips198-1-hmac","kind":"standard","standard":"NIST FIPS 198-1","version":"198-1","status":"current","source_url":"https://csrc.nist.gov/pubs/fips/198-1/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/fips/198-1/final","errata_status":"tracked","artifacts":[{"path":"NIST.FIPS.198-1.pdf","sha256":"67661ba1407b391c799ff407471de18f36697af51d78a777e817c067ac30da23"}]},
-    {"id":"fips202-SHA3","kind":"standard","standard":"NIST FIPS 202","version":"202","status":"current","source_url":"https://csrc.nist.gov/pubs/fips/202/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/fips/202/final","errata_status":"tracked","artifacts":[{"path":"NIST.FIPS.202.pdf","sha256":"1592607831ff0908cc590632ce371c6c95e94025bb1a0c8ae90a4d0ec1ed025e"}]},
-    {"id":"fips203-ML-KEM","kind":"standard","standard":"NIST FIPS 203 ML-KEM","version":"203 (2024-08-13)","status":"current","source_url":"https://csrc.nist.gov/pubs/fips/203/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/fips/203/final","errata_status":"tracked","artifacts":[{"path":"NIST.FIPS.203.pdf","sha256":"fe1f12f32a7e44ec9fdebbf400cda843a40b506dee676725234dc6f7923b6cac"}]},
-    {"id":"fips204-ML-DSA","kind":"standard","standard":"NIST FIPS 204 ML-DSA","version":"204 (2024-08-13)","status":"current","source_url":"https://csrc.nist.gov/pubs/fips/204/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/fips/204/final","errata_status":"tracked","artifacts":[{"path":"NIST.FIPS.204.pdf","sha256":"57239b9f84c03227eda3ca0991204dc7764c79af9ce2e6824eda774918d46b6b"}]},
-    {"id":"fips205-SLH-DSA","kind":"standard","standard":"NIST FIPS 205 SLH-DSA","version":"205 (2024-08-13)","status":"current","source_url":"https://csrc.nist.gov/pubs/fips/205/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/fips/205/final","errata_status":"tracked","artifacts":[{"path":"NIST.FIPS.205.pdf","sha256":"8ef34228276f3386d23cb0da8c14592b8cfb0db3358016bba64df7a004f8d13d"}]},
-    {"id":"gbt15852-mac","kind":"standard","standard":"GB/T 15852.1-2020 / 15852.2-2024 / 15852.3-2019","version":"15852.1-2020 / 15852.2-2024 / 15852.3-2019","status":"review","source_url":"https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=2CE2B006D80BF9D3EE2BAC4CB80C03FB","source_checked_at":"2026-09-13","errata_url":null,"errata_status":"not-listed","artifacts":[]},
-    {"id":"gbt32915-randomness","kind":"standard","standard":"GB/T 32915-2016 / GB/T 32915-2026","version":"2016 current; 2026 effective 2026-12-01","status":"current","source_url":"https://std.samr.gov.cn/gb/search/gbDetailed?id=oOfJ0FpRS8Q%3D&mode=p","source_checked_at":"2026-09-26","errata_url":null,"errata_status":"not-listed","artifacts":[]},
-    {"id":"gbt17964-modes","kind":"standard","standard":"GB/T 17964","version":"2021 (replaces 2008)","status":"review","source_url":"https://openstd.samr.gov.cn/","source_checked_at":"2026-09-13","errata_url":null,"errata_status":"not-listed","artifacts":[{"path":"GBT+17964-2021.pdf","sha256":"1749e6bc49a0db6d260fe4fe54e972b881ace3fce2481d60076495a66ccf3724"}]},
-    {"id":"gbt32905-SM3","kind":"standard","standard":"GB/T 32905-2016 SM3","version":"32905-2016","status":"current","source_url":"https://openstd.samr.gov.cn/","source_checked_at":"2026-09-12","errata_url":null,"errata_status":"not-listed","artifacts":[{"path":"GBT-32905-2016-SM3.pdf","sha256":"a84f7c57ba76f0747ce040cf65c8301eaceeabcc5bb3197772499a22723c9ec9"}]},
-    {"id":"gbt32907-SM4","kind":"standard","standard":"GB/T 32907-2016 SM4","version":"32907-2016","status":"current","source_url":"https://openstd.samr.gov.cn/","source_checked_at":"2026-09-12","errata_url":null,"errata_status":"not-listed","artifacts":[{"path":"GBT-32907-2016-SM4.pdf","sha256":"7844b34640e074fb7c886a14f3223ec15abf21d74513efbb21416370b08b80de"}]},
-    {"id":"gbt32918-SM2","kind":"standard","standard":"GB/T 32918 SM2","version":"32918-2016 / 32918.5-2017","status":"current","source_url":"https://openstd.samr.gov.cn/","source_checked_at":"2026-09-12","errata_url":null,"errata_status":"not-listed","artifacts":[{"path":"GBT-32918.1-2016.pdf","sha256":"b6ddd0a1f323133c115698250ee1eea52e385cd6e72bcaa95ccb5d36addec276"},{"path":"GBT-32918.2-2016.pdf","sha256":"2dcc42479512d5b497ce2b5e2515d97d491dcc965784261ce383d06181bff618"},{"path":"GBT-32918.3-2016.pdf","sha256":"03acaa8aad1385305628e0569ac308dcf2352214965117cdad626dd365e3a6ad"},{"path":"GBT-32918.4-2016.pdf","sha256":"04a2948dcaaea299170c4777e665ced86a0d998c0a6d23f32e5c8e25e353156d"},{"path":"GBT+32918.5-2017.pdf","sha256":"359cdd9afbd2b61ebb9c370241f758f88ed186309c7a0c5c912c3ded0b760ae5"}]},
-    {"id":"gbt33133-ZUC","kind":"standard","standard":"GB/T 33133 ZUC","version":"33133.1-2016 / 33133.2-2021 / 33133.3-2021","status":"current","source_url":"https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=8C41A3AEECCA52B5C0011C8010CF0715","source_checked_at":"2026-09-12","errata_url":null,"errata_status":"not-listed","artifacts":[{"path":"GBT-33133.1-2016.pdf","sha256":"8fc9bbfb192bcc8a856a30c913fc947eda9fe04e06cb3ae38f7844fbffe14cbc"},{"path":"GBT+33133.2-2021.pdf","sha256":"dc546a34dddd90888a74cc0236366953f677888e636aa0637daebc604c3f0de3"},{"path":"GBT+33133.3-2021.pdf","sha256":"c484534850a63a1aa5aa1f45ce9e259036819caa3af2c48f56a2b1cf6ac060dd"}]},
-    {"id":"gbt36624-aead","kind":"standard","standard":"GB/T 36624-2018 AEAD","version":"36624-2018","status":"review","source_url":"https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=7DF46F1692B9F774F53E0BEF094379C3","source_checked_at":"2026-09-23","errata_url":null,"errata_status":"not-listed","artifacts":[{"path":"GB∕T 36624-2018 信息技术 安全技术 可鉴别的加密机制.pdf","sha256":"d2c24232bf6ef85e187e4c243f68e62dbaf4c8bb2779a7f9ec15dcfce27fd86f"}]},
-    {"id":"gbt38635-SM9","kind":"standard","standard":"GB/T 38635 SM9","version":"38635.1-2020 / 38635.2-2020","status":"current","source_url":"https://openstd.samr.gov.cn/","source_checked_at":"2026-09-12","errata_url":null,"errata_status":"not-listed","artifacts":[{"path":"GBT+38635.1-2020.pdf","sha256":"444fad30e5e38fce05a9ba586bbfb5560d2e89c5f2b8f997f1b65be3c75638e2"},{"path":"GBT+38635.2-2020.pdf","sha256":"8b4aa14a526ea8f9af5a6dfcb7db1896da0bb23a6d07d6a533caf644ce23847e"}]},
-    {"id":"gmt0005-randomness","kind":"standard","standard":"GM/T 0005-2021","version":"0005-2021","status":"current","source_url":"https://www.sca.gov.cn/sca/xwdt/2021-10/19/content_1060880.shtml","source_checked_at":"2026-09-12","errata_url":null,"errata_status":"not-listed","artifacts":[{"path":"0005-2021随机性检测规范DI.pdf","sha256":"89bbfa931b781fe750d2ff84b7744c96ddaeacefb7111ccffb324c3c8c6f1aec"}]},
-    {"id":"gmt0091-kdf","kind":"standard","standard":"GM/T 0091-2020","version":"0091-2020","status":"current","source_url":"https://github.com/gmkits/cryptography-standards","source_checked_at":"2026-09-12","errata_url":null,"errata_status":"not-listed","artifacts":[{"path":"GMT-0091-2020.pdf","sha256":"8aeefc9400dccb63d945fb34aa2bdb0650e53919ccb38ec487a639a717c63f69"}]},
-    {"id":"gmt0103-rng","kind":"standard","standard":"GM/T 0103-2021","version":"0103-2021","status":"current","source_url":"https://github.com/gmkits/cryptography-standards","source_checked_at":"2026-09-12","errata_url":null,"errata_status":"not-listed","artifacts":[{"path":"GMT-0103-2021.pdf","sha256":"07467bd13be36b0fd6a69335412545ad0f87d999bb8be5172b02145b8f322a7b"}]},
-    {"id":"mceliece-goppa","kind":"reference","standard":"Classic McEliece / Goppa codes","version":"ISO/IEC 18033-2:2006/Amd 2:2026; NIST IR 8545 (2025)","status":"reference","source_url":"https://www.iso.org/standard/86890.html","source_checked_at":"2026-09-23","errata_url":null,"errata_status":"not-listed","artifacts":[{"path":"NIST.IR.8545.pdf","sha256":"d802f4849a52d18001533cef86e0950f31350643cc06881ee62b2382e1ea0e9d"},{"path":"McEliece-1978.pdf","sha256":"33a47430ca58a8374a19180cb90fcb186925dace20c03e73a19b85ae359603dc"}]},
-    {"id":"rfc2315-pkcs7","kind":"rfc","standard":"RFC 2315 PKCS#7","version":"2315","status":"current","source_url":"https://www.rfc-editor.org/rfc/rfc2315.txt","source_checked_at":"2026-09-12","errata_url":"https://www.rfc-editor.org/errata_search.php?rfc=2315","errata_status":"tracked","artifacts":[]},
-    {"id":"rfc4648-base64","kind":"rfc","standard":"RFC 4648 Base64","version":"4648","status":"current","source_url":"https://www.rfc-editor.org/rfc/rfc4648.txt","source_checked_at":"2026-09-12","errata_url":"https://www.rfc-editor.org/errata_search.php?rfc=4648","errata_status":"tracked","artifacts":[]},
-    {"id":"rfc5869-hkdf","kind":"rfc","standard":"RFC 5869 HKDF","version":"5869","status":"current","source_url":"https://www.rfc-editor.org/rfc/rfc5869.txt","source_checked_at":"2026-09-12","errata_url":"https://www.rfc-editor.org/errata_search.php?rfc=5869","errata_status":"tracked","artifacts":[]},
-    {"id":"rfc5903-ecdh","kind":"rfc","standard":"RFC 5903 ECDH","version":"5903","status":"current","source_url":"https://www.rfc-editor.org/rfc/rfc5903.txt","source_checked_at":"2026-09-12","errata_url":"https://www.rfc-editor.org/errata_search.php?rfc=5903","errata_status":"tracked","artifacts":[]},
-    {"id":"rfc7748-x25519","kind":"rfc","standard":"RFC 7748 X25519/X448","version":"7748","status":"current","source_url":"https://www.rfc-editor.org/rfc/rfc7748.txt","source_checked_at":"2026-09-12","errata_url":"https://www.rfc-editor.org/errata_search.php?rfc=7748","errata_status":"tracked","artifacts":[]},
-    {"id":"rfc8017-pkcs1","kind":"rfc","standard":"RFC 8017 PKCS#1 v2.2","version":"8017","status":"current","source_url":"https://www.rfc-editor.org/rfc/rfc8017.txt","source_checked_at":"2026-09-12","errata_url":"https://www.rfc-editor.org/errata_search.php?rfc=8017","errata_status":"tracked","artifacts":[]},
-    {"id":"rfc8032-eddsa","kind":"rfc","standard":"RFC 8032 EdDSA","version":"8032","status":"current","source_url":"https://www.rfc-editor.org/rfc/rfc8032.txt","source_checked_at":"2026-09-12","errata_url":"https://www.rfc-editor.org/errata_search.php?rfc=8032","errata_status":"tracked","artifacts":[]},
-    {"id":"rfc9106-argon2","kind":"rfc","standard":"RFC 9106 Argon2","version":"9106","status":"current","source_url":"https://www.rfc-editor.org/rfc/rfc9106.txt","source_checked_at":"2026-09-12","errata_url":"https://www.rfc-editor.org/errata_search.php?rfc=9106","errata_status":"tracked","artifacts":[]},
-    {"id":"sp800-132-pbkdf2","kind":"standard","standard":"NIST SP 800-132","version":"132","status":"current","source_url":"https://csrc.nist.gov/pubs/sp/800/132/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/sp/800/132/final","errata_status":"tracked","artifacts":[{"path":"NIST.SP.800-132.pdf","sha256":"ddeb9007f37f952744f3ce177f1c8cd09f6ad7600786c1713d2bbfc0f2ed6a89"}]},
-    {"id":"sp800-232-ascon","kind":"standard","standard":"NIST SP 800-232 Ascon","version":"232 final (2025-08-13)","status":"current","source_url":"https://csrc.nist.gov/pubs/sp/800/232/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/sp/800/232/final","errata_status":"tracked","artifacts":[{"path":"NIST.SP.800-232.pdf","sha256":"1be9bb9a5fef3665ee8b258babe54b8e500d667fcfbbcc99710fe6077c6bad27"}]},
-    {"id":"sp800-38a-modes","kind":"standard","standard":"NIST SP 800-38A","version":"38A","status":"current","source_url":"https://csrc.nist.gov/pubs/sp/800/38/a/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/sp/800/38/a/final","errata_status":"tracked","artifacts":[{"path":"NIST.SP.800-38A.pdf","sha256":"66821162de1e7130c5fb5eedb22140d8d6d013ec51af4550bb095c2a9481a00e"}]},
-    {"id":"sp800-38b-cmac","kind":"standard","standard":"NIST SP 800-38B","version":"38B","status":"current","source_url":"https://csrc.nist.gov/pubs/sp/800/38/b/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/sp/800/38/b/final","errata_status":"tracked","artifacts":[{"path":"NIST.SP.800-38B.pdf","sha256":"da9dc0f1e1f08af917caf4a831a7497cf18997b8046353af89570a812f1ec5a2"}]},
-    {"id":"sp800-38c-ccm","kind":"standard","standard":"NIST SP 800-38C","version":"38C","status":"current","source_url":"https://csrc.nist.gov/pubs/sp/800/38/c/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/sp/800/38/c/final","errata_status":"tracked","artifacts":[{"path":"NIST.SP.800-38C.pdf","sha256":"16ec6f99424192757b5b9928a7dcf41817be3aaf85d48366740dfdf7c16db250"}]},
-    {"id":"sp800-38d-gcm","kind":"standard","standard":"NIST SP 800-38D","version":"38D","status":"current","source_url":"https://csrc.nist.gov/pubs/sp/800/38/d/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/sp/800/38/d/final","errata_status":"tracked","artifacts":[{"path":"NIST.SP.800-38D.pdf","sha256":"d99f3921ccebca049e7522426553aba071dae14ec3d5b6041e8c111a6cb57bba"}]},
-    {"id":"sp800-38e-xts","kind":"standard","standard":"NIST SP 800-38E","version":"38E","status":"current","source_url":"https://csrc.nist.gov/pubs/sp/800/38/e/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/sp/800/38/e/final","errata_status":"tracked","artifacts":[{"path":"NIST.SP.800-38E.pdf","sha256":"b43ed11fd9f85bf06aa3a6e54206da361a3d02eb09da6974b80eb1b3e1803342"}]},
-    {"id":"sp800-90a-drbg","kind":"standard","standard":"NIST SP 800-90A Rev.1","version":"90A Rev.1","status":"current","source_url":"https://csrc.nist.gov/pubs/sp/800/90/a/final","source_checked_at":"2026-09-12","errata_url":"https://csrc.nist.gov/pubs/sp/800/90-updates","errata_status":"tracked","artifacts":[{"path":"NIST.SP.800-90A.pdf","sha256":"d58e3dac4aaa5971c9a6a20a9bd5c13e2f1930cd1a199c0c00f768e7327355e2"}]}
+    {
+      "id": "china-pqc-tracking",
+      "kind": "tracking",
+      "standard": "中国抗量子密码公开进展",
+      "version": "official-source snapshot (2026-09-23)",
+      "status": "tracking",
+      "source_url": "https://oscca.gov.cn/sca/xwdt/2026-01/30/content_1061322.shtml",
+      "source_checked_at": "2026-09-23",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": []
+    },
+    {
+      "id": "fips180-4-SHA2",
+      "kind": "standard",
+      "standard": "NIST FIPS 180-4",
+      "version": "180-4",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/fips/180-4/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/fips/180-4/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.FIPS.180-4.pdf",
+          "sha256": "0455b406d89648d20cbde375561e19c245b9815e894164c2670772e3d54deb82"
+        },
+        {
+          "path": "vectors/shabytetestvectors.zip",
+          "sha256": "929ef80b7b3418aca026643f6f248815913b60e01741a44bba9e118067f4c9b8",
+          "kind": "CAVP-zip"
+        }
+      ]
+    },
+    {
+      "id": "fips186-5-ecdsa",
+      "kind": "standard",
+      "standard": "NIST FIPS 186-5",
+      "version": "186-5",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/fips/186-5/final",
+      "source_checked_at": "2026-09-30",
+      "errata_url": "https://csrc.nist.gov/files/pubs/fips/186-5/final/docs/fips186-5-potential-updates.xlsx",
+      "errata_status": "tracked",
+      "artifacts": [
+        {
+          "path": "NIST.FIPS.186-5.pdf",
+          "sha256": "fbb9c7c2ba442f03c57b63b43c888311903c9d0f29f89b06efdebd9b619140c5"
+        },
+        {
+          "path": "fips186-5-potential-updates.xlsx",
+          "sha256": "306e356009813225152609c6b1361202268f2df834f7f2ec55a8898eb1ddd679"
+        }
+      ]
+    },
+    {
+      "id": "fips197-AES",
+      "kind": "standard",
+      "standard": "NIST FIPS 197",
+      "version": "2023 editorial update",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/fips/197/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/fips/197/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.FIPS.197.pdf",
+          "sha256": "62c86eb567f13edb8f71826e985da870b04ef6381634f303cdb16e84d47becd1"
+        },
+        {
+          "path": "vectors/CAVP-KAT-AES.zip",
+          "sha256": "a203b16c9246b2ebae31dee5de21a606be80cf78ceabaca37150236fa098eb60",
+          "kind": "CAVP-zip",
+          "url": "https://csrc.nist.gov/projects/cryptographic-algorithm-validation-program"
+        }
+      ]
+    },
+    {
+      "id": "fips198-1-hmac",
+      "kind": "standard",
+      "standard": "NIST FIPS 198-1",
+      "version": "198-1",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/fips/198-1/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/fips/198-1/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.FIPS.198-1.pdf",
+          "sha256": "67661ba1407b391c799ff407471de18f36697af51d78a777e817c067ac30da23"
+        },
+        {
+          "path": "vectors/hmactestvectors.zip",
+          "sha256": "418c3837d38f249d6668146bd0090db24dd3c02d2e6797e3de33860a387ae4bd",
+          "kind": "CAVP-zip"
+        }
+      ]
+    },
+    {
+      "id": "fips202-SHA3",
+      "kind": "standard",
+      "standard": "NIST FIPS 202",
+      "version": "202",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/fips/202/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/fips/202/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.FIPS.202.pdf",
+          "sha256": "1592607831ff0908cc590632ce371c6c95e94025bb1a0c8ae90a4d0ec1ed025e"
+        }
+      ]
+    },
+    {
+      "id": "fips203-ML-KEM",
+      "kind": "standard",
+      "standard": "NIST FIPS 203 ML-KEM",
+      "version": "203 (2024-08-13)",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/fips/203/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/fips/203/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.FIPS.203.pdf",
+          "sha256": "fe1f12f32a7e44ec9fdebbf400cda843a40b506dee676725234dc6f7923b6cac"
+        },
+        {
+          "path": "vectors/ACVP-ML-KEM-internalProjection.json",
+          "sha256": "a556952ce869bb89c3a3196a701dad89647c193a34c86eafb61a9d710d5b810f",
+          "kind": "ACVP-json",
+          "url": "https://github.com/usnistgov/ACVP-Server"
+        }
+      ]
+    },
+    {
+      "id": "fips204-ML-DSA",
+      "kind": "standard",
+      "standard": "NIST FIPS 204 ML-DSA",
+      "version": "204 (2024-08-13)",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/fips/204/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/fips/204/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.FIPS.204.pdf",
+          "sha256": "57239b9f84c03227eda3ca0991204dc7764c79af9ce2e6824eda774918d46b6b"
+        },
+        {
+          "path": "vectors/ACVP-ML-DSA-internalProjection.json",
+          "sha256": "72dcaf5f69853ca267ccd16af9cb40949786aca0fcfbf05d1ebeba132b93af22",
+          "kind": "ACVP-json",
+          "url": "https://github.com/usnistgov/ACVP-Server"
+        }
+      ]
+    },
+    {
+      "id": "fips205-SLH-DSA",
+      "kind": "standard",
+      "standard": "NIST FIPS 205 SLH-DSA",
+      "version": "205 (2024-08-13)",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/fips/205/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/fips/205/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.FIPS.205.pdf",
+          "sha256": "8ef34228276f3386d23cb0da8c14592b8cfb0db3358016bba64df7a004f8d13d"
+        }
+      ]
+    },
+    {
+      "id": "gbt15852-mac",
+      "kind": "standard",
+      "standard": "GB/T 15852.1-2020 / 15852.2-2024 / 15852.3-2019",
+      "version": "15852.1-2020 / 15852.2-2024 / 15852.3-2019",
+      "status": "review",
+      "source_url": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=2CE2B006D80BF9D3EE2BAC4CB80C03FB",
+      "source_checked_at": "2026-09-13",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": []
+    },
+    {
+      "id": "gbt32915-randomness",
+      "kind": "standard",
+      "standard": "GB/T 32915-2016 / GB/T 32915-2026",
+      "version": "2016 current; 2026 effective 2026-12-01",
+      "status": "current",
+      "source_url": "https://std.samr.gov.cn/gb/search/gbDetailed?id=oOfJ0FpRS8Q%3D&mode=p",
+      "source_checked_at": "2026-09-26",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": []
+    },
+    {
+      "id": "gbt17964-modes",
+      "kind": "standard",
+      "standard": "GB/T 17964",
+      "version": "2021 (replaces 2008)",
+      "status": "review",
+      "source_url": "https://openstd.samr.gov.cn/",
+      "source_checked_at": "2026-09-13",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": [
+        {
+          "path": "GBT+17964-2021.pdf",
+          "sha256": "1749e6bc49a0db6d260fe4fe54e972b881ace3fce2481d60076495a66ccf3724"
+        }
+      ]
+    },
+    {
+      "id": "gbt32905-SM3",
+      "kind": "standard",
+      "standard": "GB/T 32905-2016 SM3",
+      "version": "32905-2016",
+      "status": "current",
+      "source_url": "https://openstd.samr.gov.cn/",
+      "source_checked_at": "2026-09-12",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": [
+        {
+          "path": "GBT-32905-2016-SM3.pdf",
+          "sha256": "a84f7c57ba76f0747ce040cf65c8301eaceeabcc5bb3197772499a22723c9ec9"
+        }
+      ]
+    },
+    {
+      "id": "gbt32907-SM4",
+      "kind": "standard",
+      "standard": "GB/T 32907-2016 SM4",
+      "version": "32907-2016",
+      "status": "current",
+      "source_url": "https://openstd.samr.gov.cn/",
+      "source_checked_at": "2026-09-12",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": [
+        {
+          "path": "GBT-32907-2016-SM4.pdf",
+          "sha256": "7844b34640e074fb7c886a14f3223ec15abf21d74513efbb21416370b08b80de"
+        }
+      ]
+    },
+    {
+      "id": "gbt32918-SM2",
+      "kind": "standard",
+      "standard": "GB/T 32918 SM2",
+      "version": "32918-2016 / 32918.5-2017",
+      "status": "current",
+      "source_url": "https://openstd.samr.gov.cn/",
+      "source_checked_at": "2026-09-12",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": [
+        {
+          "path": "GBT-32918.1-2016.pdf",
+          "sha256": "b6ddd0a1f323133c115698250ee1eea52e385cd6e72bcaa95ccb5d36addec276"
+        },
+        {
+          "path": "GBT-32918.2-2016.pdf",
+          "sha256": "2dcc42479512d5b497ce2b5e2515d97d491dcc965784261ce383d06181bff618"
+        },
+        {
+          "path": "GBT-32918.3-2016.pdf",
+          "sha256": "03acaa8aad1385305628e0569ac308dcf2352214965117cdad626dd365e3a6ad"
+        },
+        {
+          "path": "GBT-32918.4-2016.pdf",
+          "sha256": "04a2948dcaaea299170c4777e665ced86a0d998c0a6d23f32e5c8e25e353156d"
+        },
+        {
+          "path": "GBT+32918.5-2017.pdf",
+          "sha256": "359cdd9afbd2b61ebb9c370241f758f88ed186309c7a0c5c912c3ded0b760ae5"
+        },
+        {
+          "path": "part1.txt",
+          "sha256": "bb40765a586eb8c0931b58ff7436da3a380beb095e639538ae8c80ce8dd75043",
+          "kind": "extracted-text"
+        }
+      ]
+    },
+    {
+      "id": "gbt33133-ZUC",
+      "kind": "standard",
+      "standard": "GB/T 33133 ZUC",
+      "version": "33133.1-2016 / 33133.2-2021 / 33133.3-2021",
+      "status": "current",
+      "source_url": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=8C41A3AEECCA52B5C0011C8010CF0715",
+      "source_checked_at": "2026-09-12",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": [
+        {
+          "path": "GBT-33133.1-2016.pdf",
+          "sha256": "8fc9bbfb192bcc8a856a30c913fc947eda9fe04e06cb3ae38f7844fbffe14cbc"
+        },
+        {
+          "path": "GBT+33133.2-2021.pdf",
+          "sha256": "dc546a34dddd90888a74cc0236366953f677888e636aa0637daebc604c3f0de3"
+        },
+        {
+          "path": "GBT+33133.3-2021.pdf",
+          "sha256": "c484534850a63a1aa5aa1f45ce9e259036819caa3af2c48f56a2b1cf6ac060dd"
+        },
+        {
+          "path": "part1.txt",
+          "sha256": "3255806fd1db3df4cf1c3a4734f126654ca3d92717a777c0d0f49a97c6085bfd",
+          "kind": "extracted-text"
+        }
+      ]
+    },
+    {
+      "id": "gbt36624-aead",
+      "kind": "standard",
+      "standard": "GB/T 36624-2018 AEAD",
+      "version": "36624-2018",
+      "status": "review",
+      "source_url": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=7DF46F1692B9F774F53E0BEF094379C3",
+      "source_checked_at": "2026-09-23",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": [
+        {
+          "path": "GB∕T 36624-2018 信息技术 安全技术 可鉴别的加密机制.pdf",
+          "sha256": "d2c24232bf6ef85e187e4c243f68e62dbaf4c8bb2779a7f9ec15dcfce27fd86f"
+        }
+      ]
+    },
+    {
+      "id": "gbt38635-SM9",
+      "kind": "standard",
+      "standard": "GB/T 38635 SM9",
+      "version": "38635.1-2020 / 38635.2-2020",
+      "status": "current",
+      "source_url": "https://openstd.samr.gov.cn/",
+      "source_checked_at": "2026-09-12",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": [
+        {
+          "path": "GBT+38635.1-2020.pdf",
+          "sha256": "444fad30e5e38fce05a9ba586bbfb5560d2e89c5f2b8f997f1b65be3c75638e2"
+        },
+        {
+          "path": "GBT+38635.2-2020.pdf",
+          "sha256": "8b4aa14a526ea8f9af5a6dfcb7db1896da0bb23a6d07d6a533caf644ce23847e"
+        }
+      ]
+    },
+    {
+      "id": "gmt0005-randomness",
+      "kind": "standard",
+      "standard": "GM/T 0005-2021",
+      "version": "0005-2021",
+      "status": "current",
+      "source_url": "https://www.sca.gov.cn/sca/xwdt/2021-10/19/content_1060880.shtml",
+      "source_checked_at": "2026-09-12",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": [
+        {
+          "path": "0005-2021随机性检测规范DI.pdf",
+          "sha256": "89bbfa931b781fe750d2ff84b7744c96ddaeacefb7111ccffb324c3c8c6f1aec"
+        }
+      ]
+    },
+    {
+      "id": "gmt0091-kdf",
+      "kind": "standard",
+      "standard": "GM/T 0091-2020",
+      "version": "0091-2020",
+      "status": "current",
+      "source_url": "https://github.com/gmkits/cryptography-standards",
+      "source_checked_at": "2026-09-12",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": [
+        {
+          "path": "GMT-0091-2020.pdf",
+          "sha256": "8aeefc9400dccb63d945fb34aa2bdb0650e53919ccb38ec487a639a717c63f69"
+        }
+      ]
+    },
+    {
+      "id": "gmt0103-rng",
+      "kind": "standard",
+      "standard": "GM/T 0103-2021",
+      "version": "0103-2021",
+      "status": "current",
+      "source_url": "https://github.com/gmkits/cryptography-standards",
+      "source_checked_at": "2026-09-12",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": [
+        {
+          "path": "GMT-0103-2021.pdf",
+          "sha256": "07467bd13be36b0fd6a69335412545ad0f87d999bb8be5172b02145b8f322a7b"
+        }
+      ]
+    },
+    {
+      "id": "mceliece-goppa",
+      "kind": "reference",
+      "standard": "Classic McEliece / Goppa codes",
+      "version": "ISO/IEC 18033-2:2006/Amd 2:2026; NIST IR 8545 (2025)",
+      "status": "reference",
+      "source_url": "https://www.iso.org/standard/86890.html",
+      "source_checked_at": "2026-09-23",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": [
+        {
+          "path": "NIST.IR.8545.pdf",
+          "sha256": "d802f4849a52d18001533cef86e0950f31350643cc06881ee62b2382e1ea0e9d"
+        },
+        {
+          "path": "McEliece-1978.pdf",
+          "sha256": "33a47430ca58a8374a19180cb90fcb186925dace20c03e73a19b85ae359603dc"
+        }
+      ]
+    },
+    {
+      "id": "rfc2315-pkcs7",
+      "kind": "rfc",
+      "standard": "RFC 2315 PKCS#7",
+      "version": "2315",
+      "status": "current",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc2315.txt",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://www.rfc-editor.org/errata_search.php?rfc=2315",
+      "errata_status": "tracked",
+      "artifacts": [
+        {
+          "path": "rfc2315.txt",
+          "sha256": "154610a11c76a8b499d8453c0190d4ff8ee354dd6a203f40d8252840747cb4e0",
+          "kind": "rfc-text"
+        }
+      ]
+    },
+    {
+      "id": "rfc4648-base64",
+      "kind": "rfc",
+      "standard": "RFC 4648 Base64",
+      "version": "4648",
+      "status": "current",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc4648.txt",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://www.rfc-editor.org/errata_search.php?rfc=4648",
+      "errata_status": "tracked",
+      "artifacts": [
+        {
+          "path": "rfc4648.txt",
+          "sha256": "84e14418f795d503be5f34bf23ce4ebaa119e9ec7c9f667d8caeb111385b178f",
+          "kind": "rfc-text"
+        }
+      ]
+    },
+    {
+      "id": "rfc5869-hkdf",
+      "kind": "rfc",
+      "standard": "RFC 5869 HKDF",
+      "version": "5869",
+      "status": "current",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc5869.txt",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://www.rfc-editor.org/errata_search.php?rfc=5869",
+      "errata_status": "tracked",
+      "artifacts": [
+        {
+          "path": "rfc5869.txt",
+          "sha256": "7a40eb3835b35fc947eb12a2ed614db079d43b26e50dbc537c31fba16397089c",
+          "kind": "rfc-text"
+        }
+      ]
+    },
+    {
+      "id": "rfc5903-ecdh",
+      "kind": "rfc",
+      "standard": "RFC 5903 ECDH",
+      "version": "5903",
+      "status": "current",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc5903.txt",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://www.rfc-editor.org/errata_search.php?rfc=5903",
+      "errata_status": "tracked",
+      "artifacts": [
+        {
+          "path": "rfc5903.txt",
+          "sha256": "939fab548a6e6bb49a5b3c4dd24a3c5df54a46645447b2d6f4df4fd88ff2d69f",
+          "kind": "rfc-text"
+        }
+      ]
+    },
+    {
+      "id": "rfc7748-x25519",
+      "kind": "rfc",
+      "standard": "RFC 7748 X25519/X448",
+      "version": "7748",
+      "status": "current",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc7748.txt",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://www.rfc-editor.org/errata_search.php?rfc=7748",
+      "errata_status": "tracked",
+      "artifacts": [
+        {
+          "path": "rfc7748.txt",
+          "sha256": "279ca0ecc5e92e2962e27b846986aeb74729d9dd34bd4a04a362f80dcb596ad3",
+          "kind": "rfc-text"
+        }
+      ]
+    },
+    {
+      "id": "rfc8017-pkcs1",
+      "kind": "rfc",
+      "standard": "RFC 8017 PKCS#1 v2.2",
+      "version": "8017",
+      "status": "current",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc8017.txt",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://www.rfc-editor.org/errata_search.php?rfc=8017",
+      "errata_status": "tracked",
+      "artifacts": [
+        {
+          "path": "rfc8017.txt",
+          "sha256": "1e72dc473d18df3fc5598cdc12795a9f18f36f1aef15abc23a55eb0d58151d11",
+          "kind": "rfc-text"
+        }
+      ]
+    },
+    {
+      "id": "rfc8032-eddsa",
+      "kind": "rfc",
+      "standard": "RFC 8032 EdDSA",
+      "version": "8032",
+      "status": "current",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc8032.txt",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://www.rfc-editor.org/errata_search.php?rfc=8032",
+      "errata_status": "tracked",
+      "artifacts": [
+        {
+          "path": "rfc8032.txt",
+          "sha256": "ed63657ff389301282b169b0abde9b5dd2c7e4d524fdfa5da6ff3094fc93c4c3",
+          "kind": "rfc-text"
+        }
+      ]
+    },
+    {
+      "id": "rfc9106-argon2",
+      "kind": "rfc",
+      "standard": "RFC 9106 Argon2",
+      "version": "9106",
+      "status": "current",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc9106.txt",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://www.rfc-editor.org/errata_search.php?rfc=9106",
+      "errata_status": "tracked",
+      "artifacts": [
+        {
+          "path": "rfc9106.txt",
+          "sha256": "855c06f060379e34285e83a217e9069b5c72e161a1e54df9af5cd88dbb231f31",
+          "kind": "rfc-text"
+        }
+      ]
+    },
+    {
+      "id": "sp800-132-pbkdf2",
+      "kind": "standard",
+      "standard": "NIST SP 800-132",
+      "version": "132",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/sp/800/132/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/sp/800/132/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.SP.800-132.pdf",
+          "sha256": "ddeb9007f37f952744f3ce177f1c8cd09f6ad7600786c1713d2bbfc0f2ed6a89"
+        }
+      ]
+    },
+    {
+      "id": "sp800-232-ascon",
+      "kind": "standard",
+      "standard": "NIST SP 800-232 Ascon",
+      "version": "232 final (2025-08-13)",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/sp/800/232/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/sp/800/232/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.SP.800-232.pdf",
+          "sha256": "1be9bb9a5fef3665ee8b258babe54b8e500d667fcfbbcc99710fe6077c6bad27"
+        },
+        {
+          "path": "vectors/ACVP-Ascon-AEAD128-SP800-232.json",
+          "sha256": "0c5baffbab9000cd2329c1a2670f4d480e4e184c52e49f9c785f9baebeb15b1b",
+          "kind": "ACVP-json"
+        },
+        {
+          "path": "vectors/ACVP-Ascon-Hash256-SP800-232.json",
+          "sha256": "643274a80f256c517c2fbb34fca4eda13b6526d48f6f9387ad22ae6a515d0136",
+          "kind": "ACVP-json"
+        },
+        {
+          "path": "vectors/ACVP-Ascon-XOF128-SP800-232.json",
+          "sha256": "66efeb34ae67c8ea01ef2fade03d9c61c3fc46a4a5c0a75cb5bb11627e66a983",
+          "kind": "ACVP-json"
+        },
+        {
+          "path": "vectors/ACVP-Ascon-CXOF128-SP800-232.json",
+          "sha256": "a387c6d9254a312a32c7bd23a23db68ec14fd1d8fe1d2854d07977642bd13db6",
+          "kind": "ACVP-json"
+        }
+      ]
+    },
+    {
+      "id": "sp800-38a-modes",
+      "kind": "standard",
+      "standard": "NIST SP 800-38A",
+      "version": "38A",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/sp/800/38/a/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/sp/800/38/a/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.SP.800-38A.pdf",
+          "sha256": "66821162de1e7130c5fb5eedb22140d8d6d013ec51af4550bb095c2a9481a00e"
+        }
+      ]
+    },
+    {
+      "id": "sp800-38b-cmac",
+      "kind": "standard",
+      "standard": "NIST SP 800-38B",
+      "version": "38B",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/sp/800/38/b/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/sp/800/38/b/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.SP.800-38B.pdf",
+          "sha256": "da9dc0f1e1f08af917caf4a831a7497cf18997b8046353af89570a812f1ec5a2"
+        }
+      ]
+    },
+    {
+      "id": "sp800-38c-ccm",
+      "kind": "standard",
+      "standard": "NIST SP 800-38C",
+      "version": "38C",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/sp/800/38/c/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/sp/800/38/c/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.SP.800-38C.pdf",
+          "sha256": "16ec6f99424192757b5b9928a7dcf41817be3aaf85d48366740dfdf7c16db250"
+        }
+      ]
+    },
+    {
+      "id": "sp800-38d-gcm",
+      "kind": "standard",
+      "standard": "NIST SP 800-38D",
+      "version": "38D",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/sp/800/38/d/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/sp/800/38/d/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.SP.800-38D.pdf",
+          "sha256": "d99f3921ccebca049e7522426553aba071dae14ec3d5b6041e8c111a6cb57bba"
+        },
+        {
+          "path": "vectors/ACVP-AES-GCM-internalProjection.json",
+          "sha256": "0703118c1f751f32cdb8d32b8e54d5f80eb9bbe7bb99b83a6b0221cb40b34f0e",
+          "kind": "ACVP-json"
+        },
+        {
+          "path": "vectors/CAVP-gcmtestvectors.zip",
+          "sha256": "f9fc479e134cde2980b3bb7cddbcb567b2cd96fd753835243ed067699f26a023",
+          "kind": "CAVP-zip"
+        }
+      ]
+    },
+    {
+      "id": "sp800-38e-xts",
+      "kind": "standard",
+      "standard": "NIST SP 800-38E",
+      "version": "38E",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/sp/800/38/e/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/sp/800/38/e/final",
+      "errata_status": "landing-page-only",
+      "artifacts": [
+        {
+          "path": "NIST.SP.800-38E.pdf",
+          "sha256": "b43ed11fd9f85bf06aa3a6e54206da361a3d02eb09da6974b80eb1b3e1803342"
+        }
+      ]
+    },
+    {
+      "id": "sp800-90a-drbg",
+      "kind": "standard",
+      "standard": "NIST SP 800-90A Rev.1",
+      "version": "90A Rev.1",
+      "status": "current",
+      "source_url": "https://csrc.nist.gov/pubs/sp/800/90/a/final",
+      "source_checked_at": "2026-09-12",
+      "errata_url": "https://csrc.nist.gov/pubs/sp/800/90-updates",
+      "errata_status": "tracked",
+      "artifacts": [
+        {
+          "path": "NIST.SP.800-90A.pdf",
+          "sha256": "d58e3dac4aaa5971c9a6a20a9bd5c13e2f1930cd1a199c0c00f768e7327355e2"
+        }
+      ]
+    },
+    {
+      "id": "randomness-certification-sources",
+      "kind": "reference",
+      "standard": "GM/T 密码模块及 NIST 随机源与密码模块验证资料合集",
+      "version": "官方资料快照（2026-09-30）",
+      "status": "reference",
+      "source_url": "https://hbba.sacinfo.org.cn/portal/download/6cfea21bf63c59d33b8da2e979fa9193acf28d61e10593f816dad9feeefed5f2",
+      "source_checked_at": "2026-09-30",
+      "errata_url": null,
+      "errata_status": "not-listed",
+      "artifacts": [
+        {
+          "path": "GM-T-0028-2024.pdf",
+          "sha256": "7d6059d6a700969638ac8b06581d1673d5bc1229b9011ea284cab31d0e8805cc"
+        },
+        {
+          "path": "GM-T-0039-2024.pdf",
+          "sha256": "a65921ac02b3d3e40b96d2427e8419b61cfcaee63e1822fe48a6db669e788348"
+        },
+        {
+          "path": "GM-T-0134-2024.pdf",
+          "sha256": "610b9c96fdbae105048881b795acc19932fdc54c04dc51318be3ce6a393ce54d"
+        },
+        {
+          "path": "GM-T-0105-2021.pdf",
+          "sha256": "1bee5add5884883bc25244e891141b0d0b6b689d9e77d71f0f02d7dad1f01bfa"
+        },
+        {
+          "path": "NIST.SP.800-90B.pdf",
+          "sha256": "9b0dd77131ade3617a91cd8457fa09e0dc354c273bb2220a6afeaca16e5defe7"
+        },
+        {
+          "path": "NIST.SP.800-90C.pdf",
+          "sha256": "22dc2de903b2fe602fa0729c38b9512927ad96ef5669a3da8a0ffb4d22c8e6d8"
+        },
+        {
+          "path": "FIPS-140-3-Implementation-Guidance.pdf",
+          "sha256": "15ebdd396a31129f9d75137ace99be56b1085feb25a95c990f8b6558440aeb02"
+        },
+        {
+          "path": "FIPS-140-3-CMVP-Management-Manual.pdf",
+          "sha256": "e2efe42a638efd3b96446aa502079925ef875d4794ae530aa4f8b74983dc4584"
+        }
+      ]
+    },
+    {
+      "id": "rfc6979-ecdsa",
+      "kind": "standard",
+      "standard": "RFC 6979 — Deterministic Usage of the DSA and ECDSA",
+      "version": "RFC 6979 (2013-08)",
+      "status": "current",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc6979.txt",
+      "source_checked_at": "2026-10-08",
+      "errata_url": "https://www.rfc-editor.org/errata_search.php?rfc=6979",
+      "errata_status": "tracked",
+      "artifacts": [
+        {
+          "path": "rfc6979.txt",
+          "sha256": "456e8f17558fdbd206f968b96fc6f1b4a71ea331ab30ad17f711ab3adaa7d701",
+          "kind": "rfc-text"
+        }
+      ]
+    }
   ]
 }

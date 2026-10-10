@@ -8,7 +8,7 @@
 | 标准定位 | ADRS — 地址格式（FIPS 205 §3.4） |
 | 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
 | 原文位置 | [提取稿 §4.2，行 798–939](./00-Standard-Source.md#L798-L939)；PDF 物理页需结合同目录 PDF 核对 |
-| 项目状态 | 已实现（详见本文现有实现/缺项说明） |
+| 项目状态 | 部分教学编码（不构成完整 ADRS/FIPS 205 实现） |
 
 ## 原文定位与引用
 
@@ -26,7 +26,7 @@ SLH-DSA 用 32 字节地址（ADRS）对哈希调用做**域分隔**：同一哈
 
 ```
 offset  大小  字段
-0       4B    layer 地址（本层号，0..d-1；标准仅用低 1 字节）
+0       4B    layer 地址（本层号，0..d-1）
 4       12B   tree 地址（本层树索引，大端）
 16      4B    type（见下表）
 20      4B    key pair 地址（树内密钥对索引）
@@ -36,26 +36,28 @@ offset  大小  字段
 
 ## type 字段（§3.4 Table 1）
 
-| type | 含义 | 24..31 字段 |
-|:----:|------|-------------|
-| 0 | WOTS_HASH | chain 地址 (4B) ‖ hash 地址 (4B) |
-| 1 | WOTS_PK | 保留 (8B) |
-| 2 | TREE | tree height (4B) ‖ tree index (4B) |
-| 3 | FORS_TREE | tree height (4B) ‖ tree index (4B) |
-| 4 | FORS_ROOTS | 保留 (8B) |
-| 5 | WOTS_PRF | chain 地址 (4B) ‖ hash 地址 (4B，=0) |
-| 6 | FORS_PRF | tree height (4B，=0) ‖ tree index (4B) |
+| type | 含义 | word4（20..23） | word5（24..27） | word6（28..31） |
+|:----:|------|----------------|----------------|----------------|
+| 0 | WOTS_HASH | keypair | chain 地址 | hash 地址 |
+| 1 | WOTS_PK | keypair | 0 | 0 |
+| 2 | TREE | padding = 0 | tree height | tree index |
+| 3 | FORS_TREE | keypair | tree height | tree index |
+| 4 | FORS_ROOTS | keypair | 0 | 0 |
+| 5 | WOTS_PRF | keypair | chain 地址 | hash 地址 = 0 |
+| 6 | FORS_PRF | keypair | tree height = 0 | tree index |
 
-## CipherCat 块实现
+## CipherCat 块实现（教学编码）
 
-- `slh_addr(layer, tree, type, keypair)` → 32 字节地址：层 1B + 树 12B + type 4B
-  + keypair 4B，其余零填充（教学简化版，不写 type 相关字段）。
-- `slh_adrs_full(layer, tree, type, keypair, height, index)` → 完整 32B：
-  与标准布局一致，type 下拉 0-6；WOTS_HASH/TREE/FORS_TREE 的 24..31 字段按
-  上表写入（WOTS_HASH 用 height 为 chain、index 为 hash 位置），其余 type 补零。
+- `slh_addr(layer, tree, type, keypair)` → 32 字节前缀教学编码，写入四字节 layer、
+  12 字节 tree、type 与 keypair；末尾 8 字节置零，不处理 type 专用字段。
+- `slh_adrs_full(layer, tree, type, keypair, height, index)` → 输出 32 字节，并按上表
+  写入各 type 的 word 字段；TREE(type 2) 的 word4 是零填充，不使用 keypair 输入。
+  两块只接受 JavaScript 安全整数，因此无法覆盖全部 96-bit tree address；字段编码
+  与标准字段布局对应，不等于完整 ADRS 范围支持或 SLH-DSA 实现。
 
-哈希函数 H = SHAKE-256（32 字节输出）。演示：`demos/procedures/Hash-Based-Structures.json`
-ADRS 32B 确定性 + `demos/procedures/PQC-Gaps.json` type 字段位置/域分隔（TREE vs ROOTS）。
+ADRS 编码自身不实现 FIPS 205 的 PRF/F/H/Tℓ 哈希调用。回归演示：
+`demos/procedures/Hash-Based-Structures.json` 检查前缀；`demos/procedures/PQC-Gaps.json`
+检查部分 type 字段位置及 TREE/FORS_ROOTS 类型区分。
 
 ## 公式或伪代码
 

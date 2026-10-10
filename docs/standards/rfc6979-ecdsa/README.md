@@ -1,0 +1,21 @@
+# RFC 6979 — 确定性数字签名（DSA/ECDSA）
+
+来源: RFC 6979 — Deterministic Usage of the DSA and ECDSA
+      https://www.rfc-editor.org/rfc/rfc6979.txt
+      全文: [rfc6979.txt](./rfc6979.txt)
+
+## 相关块
+
+| 块 | 说明 |
+|----|------|
+| `ecdsa_sign` / `ecdsa_verify` | 项目固定 P-256/SHA-256，签名按 RFC 6979 §3.2 的 HMAC_DRBG 派生确定性 `k` |
+
+## 向量与验证范围
+
+项目使用 RFC 6979 §A.2.5 的 P-256/SHA-256 “sample”/“test” 用例作为 `ecdsa_sign` 的期望值来源：
+签名 `k` 由 RFC 6979 §3.2 的确定性流程派生（HMAC-SHA-256），`r`/`s` 与该附录一致。
+回归覆盖非法私钥、签名长度/标量与公钥点的拒绝路径；`demos/procedures/ECDSA.json` 由 JS/Python 双语言驱动执行该向量。
+
+边界：只覆盖 P-256 + SHA-256 与附录 A.2.5 的用例，不是 FIPS 186-5 或 RFC 6979 的完整测试集；
+不提供常数时间、密钥管理、证书/身份绑定或认证结论。该 RFC 附录与 FIPS 186-5 对确定性签名的定位不同，
+项目按 RFC 6979 声明这一路径，不据此声称通过 CAVP/ACVP。

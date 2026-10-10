@@ -26,7 +26,7 @@ Blockly.Blocks['cmac_mac'] = {
     this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
     this.setTooltip(
-      'CMAC 认证标签 (NIST SP 800-38B)：子密钥生成（GF(2^128) 加倍）+ CBC-MAC。AES-128 官方向量验证通过；SM4 为 GB/T 15852 同类结构。',
+      'CMAC 认证标签 (NIST SP 800-38B)：子密钥生成（GF(2^128) 加倍）+ CBC-MAC。已核对 SP 800-38B / RFC 4493 的 AES-128 向量（0/16/40/64 字节）与 SM4 同类结构路径；不是完整 CMAC 测试集或认证。',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38B.pdf');
   },

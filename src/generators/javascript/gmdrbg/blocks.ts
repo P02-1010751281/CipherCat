@@ -1,11 +1,12 @@
 /**
  * GM-RNG 原子块 JavaScript 代码生成器
- * SM3-HMAC-DRBG（SP 800-90A §10.1.2 结构 + GM/T 0103 框架，PRF = SM3）
+ * SM3-HMAC-DRBG 教学路径：借鉴 SP 800-90A §10.1.2 的 HMAC_DRBG 结构，以 SM3 为 PRF；
+ * GM/T 0103 仅作 RNG 总体框架背景。不是完整 RNG，也不声明符合上述标准。
  *
  * sm3Hmac 与 remaining.ts hash_hmac SM3 分支逐行同体（provideFunction_ 按名去重），
- * gmDrbg 与 /tmp/vectors/gmdrbg_check.{js,py} 验证脚本同构。
- * 验证：SHA-256 版同构实现对拍 NIST CAVS 14.3（240 例）+ Botan vec（240 例）；SM3 版 JS/Python
- * 交叉一致；底层 SM3 由 GB/T 32905 官方向量背书（SM3-Hash demo）。
+ * Demo 回归目前只含少量固定样例；未运行 NIST CAVP / Botan 完整向量集。SM3 版 Python 与
+ * JavaScript 输出逐项对照；生成代码内嵌的 SM3 未单独对照 GB/T 32905 官方向量，SM3-Hash demo
+ * 测试的是另一套 Blockly 原语实现，不作为此处内嵌实现的向量证据。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
@@ -66,11 +67,12 @@ function registerSm3Hmac(): string {
   ]);
 }
 
-/** 完整 GM-RNG（SM3-HMAC-DRBG，返回请求字节数的确定输出 number[]） */
+/** SM3-HMAC-DRBG 确定性教学路径（不是完整 RNG） */
 function registerGmDrbg(): string {
   registerSm3Hmac();
   return javascriptGenerator.provideFunction_('gmDrbg', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(entropy, nonce, perso, len) {',
+    '  if (!Number.isSafeInteger(len) || len < 0 || len > 65536) throw new RangeError("GM-RNG output length must be an integer from 0 to 65536 bytes");',
     '  var seed = Array.from(entropy||[]).concat(Array.from(nonce||[])).concat(Array.from(perso||[]));',
     '  var K=[],V=[],i;',
     '  for(i=0;i<32;i++){K.push(0);V.push(1);}',
@@ -96,5 +98,5 @@ javascriptGenerator.forBlock['gm_rng'] = function (block: Block): [string, numbe
   const perso = javascriptGenerator.valueToCode(block, 'PERSO', Order.ATOMIC) || '[]';
   const len = javascriptGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '32';
   const fn = registerGmDrbg();
-  return [fn + '(' + entropy + ', ' + nonce + ', ' + perso + ', ' + len + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + entropy + ', ' + nonce + ', ' + perso + ', ' + len + '))', Order.ATOMIC];
 };

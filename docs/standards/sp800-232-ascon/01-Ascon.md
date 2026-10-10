@@ -46,15 +46,15 @@ SP 800-232 为受约束设备定义 Ascon 系列认证加密、哈希和可扩�
 3. 吸收明文 `M` 并逐块输出密文 `C`；末块使用同一分隔填充规则。
 4. 再次注入密钥，执行 `p[12]`，输出 16 字节认证标签 `T`。
 
-输出编码为 `C || T`。解密必须验证 `T` 后才释放明文；项目现已提供解密块，并在标签篡改时拒绝输出，
+输出编码为 `C ‖ T`。解密必须验证 `T` 后才释放明文；项目现已提供解密块，并在标签篡改时拒绝输出，
 但仍需补齐更广泛的官方解密 KAT 和流式接口才能称为完整实现。
 
 ## 项目覆盖与缺项
 
 | 能力 | 状态 |
 |---|---|
-| Ascon-AEAD128 加密 | `ascon_encrypt` 已实现，输入为 key/nonce/AD/message，输出 `C || T` |
-| Ascon-Hash256 | `ascon_hash256` 已实现；空消息摘要与 Botan 独立结果一致 |
+| Ascon-AEAD128 加密 | `ascon_encrypt` 已实现，输入为 key/nonce/AD/message，输出 `C ‖ T` |
+| Ascon-Hash256 | `ascon_hash256` 已实现；空消息摘要与仓库内登记的空消息固定值一致 |
 | Ascon-XOF128 / CXOF128 | `ascon_xof128` / `ascon_cxof128` 已实现；扩展 Demo 双语言一致，覆盖 32 字节输出 |
 | AEAD 解密与标签拒绝路径 | `ascon_decrypt` 已实现；空消息解密和错误标签拒绝已核验 |
 | 标准最终版 PDF | 已保存，SHA-256 见 `standards-manifest.json` |

@@ -19,9 +19,9 @@ flowchart LR
 - **工作区（Workspace）**：中央画布，积木块在此连接。支持缩放（Ctrl+滚轮）与拖动。
 - **生成代码**：工具栏按钮，将工作区积木块转换为 JavaScript 或 Python 代码。
 
-![导入工作区后的编辑器界面（界面示例）](/docs-assets/tutorials/04-editor-imported.png)
+![编辑器界面：工具箱、工作区和代码面板](/docs-assets/tutorials/04-editor-imported.png)
 
-_图：截图显示工具箱、工作区块和代码区域，用于说明控件位置；不替代生成器测试。_
+_图：工具箱、工作区块和代码区域的位置。_
 
 ## 2. 基本操作
 
@@ -75,7 +75,7 @@ Functions 类目使用 Blockly 原生 procedure 系统：
 
 工具栏「函数管理」面板支持：＋新建函数、📥 导入函数（.json）、📤 导出函数、模板加入/移出工具箱（＋📦）。
 
-![函数定义 Demo（界面示例）](/docs-assets/tutorials/08-function-demo.png)
+![函数定义 Demo：参数、函数体与返回接口](/docs-assets/tutorials/08-function-demo.png)
 
 _图：函数定义 Demo 展示参数、函数体和返回值的界面状态。_
 
@@ -83,7 +83,7 @@ _图：函数定义 Demo 展示参数、函数体和返回值的界面状态。_
 
 点击“生成”生成代码，可在 Python / JavaScript 间切换。生成结果包含所需辅助函数展开。示例——SM3 哈希工作区生成：
 
-![生成 Python 代码后的代码面板（界面示例）](/docs-assets/tutorials/05-generated-python.png)
+![代码面板中的生成结果](/docs-assets/tutorials/05-generated-python.png)
 
 _图：代码面板是生成结果的查看和复制入口。_
 
@@ -96,7 +96,7 @@ def sm3_compress(v, block):  # ...
 result = sm3_compress(IV, hash_sm3_pad(b"abc"))
 ```
 
-官方向量验证：`demos/procedures/` 下的 4 个 Demo（SM4-Sbox / SM3-Hash / SM2-PointMul / ML-KEM-Encaps）双语言生成结果与官方测试向量一致（见 `scripts/verify-demo.ts`）。
+生成代码是下一步的起点：把它复制到本机 Python 或 JavaScript 环境运行，用标准文档给出的输入和向量检验输出。已登记演示工作区及其验证范围见[演示文件清单](../../demos/README.md)；某个演示通过只覆盖它登记的那组输入，不代表完整标准符合性或认证。
 
 ## 6. 导入 / 导出
 
@@ -114,7 +114,7 @@ result = sm3_compress(IV, hash_sm3_pad(b"abc"))
 ### 7.1 SM4 S-box 查表
 
 ```text
-sm4_sbox( 0x01 )  →  0x90   （GM/T 0002 官方向量）
+sm4_sbox( 0x01 )  →  0x90   （GB/T 32907-2016 附录 A）
 ```
 
 ### 7.2 SM3 哈希
@@ -151,4 +151,4 @@ flowchart TD
 | 插头变红连不上 | 类型不匹配（Bytes/IntList/Number 检查） |
 | 模板拖出后链不完整 | 模板缺输入（key/iv/nonce）留空，需手动填入数据块 |
 | 生成代码报错 | 检查函数模板是否被拖到主工作区（flyout 预览不生成） |
-| 结果验证 | 打开 `demos/procedures/*.json` 并点击“生成”对照官方向量 |
+| 结果验证 | 打开 `demos/` 下对应工作区，点击“生成”，与标准文档中的向量或示例比对 |

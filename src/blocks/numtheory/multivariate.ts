@@ -71,7 +71,7 @@ Blockly.Blocks['comb'] = {
     this.setOutput(true, TYPE_NUMBER);
     this.setColour(COLOUR);
     this.setTooltip(
-      '组合数 C(n,k) = n!/(k!(n-k)!)：CBD 采样（中心二项分布）与二项式教学。C(n,0)=C(n,n)=1，C(n,k)=C(n,n-k)',
+      '组合数 C(n,k) = n!/(k!(n-k)!)：n、k 必须为安全整数；超出 JavaScript 安全整数范围的结果会报错。用于 CBD 与二项式教学。',
     );
   },
 };
@@ -86,7 +86,7 @@ Blockly.Blocks['vec_dot'] = {
     this.setOutput(true, TYPE_NUMBER);
     this.setColour(COLOUR);
     this.setTooltip(
-      '向量点积 a·b = Σ a_i·b_i。格基内积、正交性与线性代数通用基础',
+      '向量点积 a·b = Σ a_i·b_i；两向量长度必须相同。格基内积、正交性与线性代数通用基础',
     );
     this.setHelpUrl('');
   },

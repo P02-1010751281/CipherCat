@@ -7,7 +7,7 @@
 | 标准定位 | §4 |
 | 原文证据 | [source：fips202-SHA3](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
 | 原文位置 | [提取稿定位](./00-Standard-Source.md#L1072)；PDF 物理页需结合同目录 PDF 核对 |
-| 项目状态 | 已实现（详见本文现有实现/缺项说明） |
+| 项目状态 | 部分实现：吸收/挤出阶段固定使用 KECCAK-f[1600]，挤出长度须为非负安全整数值且受运行时内存限制 |
 
 ## 原文定位与引用
 
@@ -41,11 +41,11 @@ Output: string Z with len(Z) = d
 吸收 (absorb): 将每 r-bit 块异或到状态前 r 位后置换。
 挤出 (squeeze): 从状态前 r 位读取输出，不足时再置换。
 
-absorb 和 squeeze 块使用 bytes 而非 bits (rate_bytes = r/8)。
+标准算法先对消息应用 `pad(r, len(N))`，再把填充结果切成完整的 rate 位块。项目的 `sponge_absorb` 和 `sponge_squeeze` 接口使用 bytes，而非 bits (`rate_bytes = r/8`)；因此 `sponge_absorb` 只接受输入长度为 rate 字节整数倍的数据，部分块会被拒绝，调用方须先显式填充。空输入对应零次内部吸收，不等同于完整 SPONGE 对空消息执行填充后的结果。
 
 ### 块实现
 
-`hash_sha3_absorb` + `hash_sha3_squeeze`
+`sponge_absorb` 与 `sponge_squeeze` 分别实现吸收、挤出阶段；调用方负责按所选 `r` 提供状态、填充和完整输入块。JS/Python 生成代码均拒绝非完整 rate 块。这两个海绵阶段块固定调用 KECCAK-f[1600]，不暴露一般化的 `f`、`b`、`c` 参数；另一个独立 `keccak_f` 置换块虽支持 200/400/800 位，但不因此成为 SHA-3/SHAKE 构造。
 ## 原文摘录
 > 以下为 source 中 Algorithm 8 的完整原文算法块；仅移除了 PDF 分页标记和页眉页码。
 
@@ -115,4 +115,4 @@ Steps:
 
 ## 核验与缺项
 
-已机械核对完整算法块与 source 算法标题及行号；标准向量、实现语义、边界负例和认证结论仍须按本目录记录分别核验。
+[`sponge-absorb-contract.test.ts`](../../../tests/unit/sponge-absorb-contract.test.ts) 与 [`sponge-squeeze-contract.test.ts`](../../../tests/unit/sponge-squeeze-contract.test.ts) 通过真实 Blockly 块生成并执行双语言代码，核验不完整 rate 块拒绝、完整单块/多块输入、lane 字节序及负数/小数输出长度拒绝。该测试不覆盖所有 rate、完整多块挤出及官方完整测试集；项目内测试也不等同于正式验证或产品认证。

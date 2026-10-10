@@ -1,7 +1,9 @@
 /**
- * ML-KEM-512 Encaps 模板预填（从 demos/procedures/ML-KEM-Encaps.json 提取，FIPS 203 官方向量链）
+ * ML-KEM-512 Encaps 模板预填（从 demos/procedures/ML-KEM-Encaps.json 提取）
  * bodyState = 28 条 variables_set 语句链；returnBlock = ret 变量引用；变量 id 清单供注入前创建。
- * 提取自官方向量 PASS 的 procedure demo——模板拖出即得等价可编辑函数。
+ * 链结构取自该 Demo 的 procedure 全链——模板拖出即得等价可编辑函数。
+ * 注意：该 Demo 现登记为项目固定回归（来源向量 ID 未登记），因此这里不声明“官方向量”；
+ * 模板检查本身也只做结构与可执行性冒烟。
  */
 
 export const MLKEM_ENCAPS_VARIABLE_IDS: string[] = ["v_H", "ek", "v_G", "m", "v_Kp", "v_r", "v_rho", "v_t0", "v_t1", "v_A00", "v_A01", "v_A10", "v_A11", "v_s0", "v_s1", "v_e1_0", "v_e1_1", "v_e2", "v_sh0", "v_sh1", "v_u0", "v_u1", "v_v", "v_mu", "v_c1a", "v_c1b", "v_c1", "v_c2", "v_c", "v_ret"];

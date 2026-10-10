@@ -6,10 +6,9 @@
       https://csrc.nist.gov/pubs/fips/205/final      (2024-08-13)
       https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.205.pdf
 
-> CipherCat 哈希基块族（`src/blocks/hash/hashbased.ts` + `fors.ts` + `adrs.ts` + `wots.ts`）
-> 覆盖 SLH-DSA 的 WOTS+ 哈希链、Merkle 树、ADRS 地址与 FORS 少时签名结构件。
-> 教学参数简化：统一 n = 32（SHAKE-256 32 字节，即标准 H 函数），非标准参数集
-> （标准 n ∈ {16, 24, 32}，见下表）。
+> 仓库中的相关积木是用于讲解结构的教学/研究辅助项，不是 SLH-DSA 实现，也不应被称为覆盖该标准。
+> 项目哈希拼接省略标准 `PK.seed` 与专用 `H/F/PRF/T_k` 调用；FORS 使用自定义参数和内部自洽测试。
+> 下表列出的是 FIPS 205 的正式参数集，仅供参照，不表示项目支持或通过了这些参数集。
 
 ## 参数集（Table 2，仅列 SHAKE 参数集，SHA2 参数相同）
 
@@ -28,12 +27,12 @@
 
 ## 算法清单
 
-| 序号 | 文件 | 名称 | 类别 | 块实现 |
+| 序号 | 文件 | 名称 | 类别 | 项目状态 |
 |:--:|------|------|------|:--:|
-| — | `01-ADRS.md` | 地址格式 ADRS（32B） | 结构 | ✅ |
-| — | `02-WOTS.md` | WOTS+ 一次性签名 | 签名 | ✅ |
-| — | `03-FORS.md` | FORS 少时签名（§8） | 签名 | ✅ |
-| — | `04-SLH-DSA.md` | 完整 SLH-DSA（§9-10） | 签名 | ✅（黑盒 demo） |
+| — | `01-ADRS.md` | 地址格式 ADRS（32B） | 结构 | 部分教学编码；不支持完整 96-bit tree 值 |
+| — | `02-WOTS.md` | WOTS+ 一次性签名 | 签名 | 简化哈希链/校验和构件；无标准 WOTS+ 实现 |
+| — | `03-FORS.md` | FORS 少时签名（§8） | 签名 | 非标准教学变体；参数及哈希/PRF 语义不兼容 |
+| — | `04-SLH-DSA.md` | 完整 SLH-DSA（§9-10） | 签名 | 未实现；无端到端标准 KAT |
 
 ### 标准算法逐项拆分
 
@@ -70,21 +69,20 @@ Algorithm 标题、Input/Output 和伪代码，并用 source 行号回链；“�
 
 ### 块实现明细
 
+下表是教学构件与标准概念的对应关系，不是已实现/符合的清单。当前 `FORS-Sign` Demo 仅检查确定性、内部往返和篡改拒绝；不代表标准兼容性。
+
 | 标准部件 | 类别 | 块 |
 |------|------|----|
-| ADRS 地址（layer/tree/type/keypair） | 结构 | `slh_addr` |
-| ADRS 完整 32B（type 0-6 + height/index） | 结构 | `slh_adrs_full` |
-| WOTS+ 哈希链 c^i(x) = H^i(x) | WOTS+ | `hash_chain` |
-| WOTS+ 校验和（w=16，len2 = ⌊log₂(len1·15)/4⌋+1） | WOTS+ | `wots_checksum` |
-| Merkle 叶子 leaf = H(ADRS ‖ MSG) | 树 | `merkle_leaf` |
-| Merkle 节点 node = H(ADRS ‖ L ‖ R) | 树 | `merkle_node` |
-| 整树根（叶子拼接 + 全层组合） | 树 | `merkle_root` |
-| 认证路径（叶子 + 目标 idx → 每层兄弟） | 树 | `merkle_auth_path` |
-| FORS 选叶索引（M 的 4-bit 块，块 0 最高位） | FORS | `fors_leaf_index` |
-| FORS 森林根 R = H(ADRS(FORS_ROOTS) ‖ roots) | FORS | `fors_root` |
-| FORS.SigGen / PkFromSig / 公钥派生 | FORS（黑盒） | `fors_sign` · `fors_verify` · `fors_pk_from_sk` |
+| ADRS 前缀/部分字字段 | 教学结构 | `slh_addr` · `slh_adrs_full`（范围和完整语义受限） |
+| WOTS+ 链/校验和概念 | 教学构件 | `hash_chain` · `wots_checksum`（未组合成标准 WOTS+） |
+| 通用 Merkle 叶、节点、根和认证路径 | 教学结构 | `merkle_leaf` · `merkle_node` · `merkle_root` · `merkle_auth_path` |
+| 固定 4-bit 分组取索引 | 教学参数 | `fors_leaf_index` |
+| SHAKE 拼接森林根 | 项目变体 | `fors_root`（非 `T_k`） |
+| 固定参数 FORS 签验 | 非标准教学变体 | `fors_sign` · `fors_verify` · `fors_pk_from_sk` |
+
+`slh_adrs_full` 按 FIPS 205 的 32-byte ADRS word 边界编码：layer `[0,4)`、tree `[4,16)`、type `[16,20)`、keypair `[20,24)`、word5 `[24,28)`、word6 `[28,32)`。目前输入受 JavaScript 安全整数范围限制，不能表示完整 96-bit tree address；FORS 签验生成器也使用项目自定义 SHAKE 拼接，并非标准 PRF/F/T_k。
 
 ## 图例
 
-- ✅ 已直接实现
-- — 未实现或不属于封装路径
+- “教学结构”仅表示代码中存在可运行构件，不表示算法标准符合。
+- 完整 SLH-DSA 目前未实现；官方测试向量/ACVP 完整验证状态仍是缺口。

@@ -37,7 +37,7 @@ Blockly.Blocks['mode_ecb_decrypt'] = {
     this.setInputsInline(true);
     this.setOutput(true, TYPE_BYTES);
     this.setColour(190);
-    this.setTooltip('AES-ECB 解密：每个密文块独立用 AES-128 解密。 (SP 800-38A §6.1)');
+    this.setTooltip('AES-ECB 解密：仅接受完整的 16 字节密文分组，不移除 PKCS#7 或其他填充。 (SP 800-38A §6.1)');
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38A.pdf');
   },
 };

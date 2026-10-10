@@ -1,6 +1,6 @@
 # 标准原文提取参考：fips203-ML-KEM
 
-> 本页是仓库内 PDF 的可搜索证据层，由 pdftotext -layout 重新提取生成。它保留原文中的章节线索、公式、伪代码、函数定义、表格和测试向量；断行和版式异常必须回看同目录 PDF，不把本页单独当作认证依据。
+> 本页是仓库内 PDF 的可搜索证据层，由 pdftotext -layout 重新提取生成。它保留原文中的章节线索、公式、伪代码、函数定义、表格和测试向量；PDF 抽取拆散的公式下标会在确认后合并写作 `_{...}`（如 Algorithm 15），断行和版式异常仍须回看同目录 PDF。本页不单独构成认证依据。
 >
 > 面向用户的解释、Blockly 映射和实现边界见同目录的 README.md 与 01-*.md；本页不替代结构化参考页。
 
@@ -1240,7 +1240,7 @@ Input: bit array 𝑏 ∈ {0, 1}8⋅ℓ .
 Output: byte array 𝐵 ∈ 𝔹ℓ .
   1: 𝐵 ← (0, … , 0)
   2: for (𝑖 ← 0; 𝑖 < 8ℓ; 𝑖 ++)
-  3:     𝐵 [⌊𝑖/8⌋] ← 𝐵 [⌊𝑖/8⌋] + 𝑏[𝑖] ⋅ 2𝑖 mod 8
+  3:     𝐵 [⌊𝑖/8⌋] ← 𝐵 [⌊𝑖/8⌋] + 𝑏[𝑖] ⋅ 2^{𝑖 mod 8}
   4: end for
   5: return 𝐵
 
@@ -1267,23 +1267,23 @@ Output: bit array 𝑏 ∈ {0, 1}8⋅ℓ .
 Converting between bits and bytes. The algorithms BitsToBytes (Algorithm 3) and BytesToBits
 (Algorithm 4) convert between bit arrays and byte arrays. The inputs to BitsToBytes and the
 outputs of BytesToBits are bit arrays, with each segment of eight bits representing a byte in
-little-endian order. As an example, the 8-bit string 11010001 corresponds to the byte 20 + 21 +
-23 + 27 = 139.
+little-endian order. As an example, the 8-bit string 11010001 corresponds to the byte 2^0 + 2^1 +
+2^3 + 2^7 = 139.
 
 Compression and decompression. Recall that 𝑞 = 3329, and that the bit length of 𝑞 is 12. For
 𝑑 < 12, define
 
-                             Compress𝑑 ∶ ℤ𝑞 ⟶ ℤ2𝑑                                          (4.7)
-                                         𝑥 ⟼ ⌈(2𝑑 /𝑞) ⋅ 𝑥⌋ mod 2𝑑 .
-                         Decompress𝑑 ∶ ℤ2𝑑 ⟶ ℤ𝑞                                            (4.8)
-                                           𝑦 ⟼ ⌈(𝑞/2𝑑 ) ⋅ 𝑦⌋ .
+                             Compress_d : Z_q -> Z_{2^d}                                  (4.7)
+                                         x -> ⌈(2^d / q) * x⌋ mod 2^d.
+                         Decompress_d : Z_{2^d} -> Z_q                                  (4.8)
+                                           y -> ⌈(q / 2^d) * y⌋.
 
 The input and output types of these functions are integers modulo 𝑚 (see Section 2.4.1). Division
 and rounding in the computation of these functions are performed in the set of rational numbers.
 Floating-point computations shall not be used.
 The Compress and Decompress algorithms satisfy two important properties. First, decompression
-followed by compression preserves the input. That is, Compress𝑑 (Decompress𝑑 (𝑦)) = 𝑦 for
-all 𝑦 ∈ ℤ2𝑑 and all 𝑑 < 12. Second, if 𝑑 is large (i.e., close to 12), compression followed by
+followed by compression preserves the input. That is, Compress_d(Decompress_d(y)) = y for
+all y in Z_{2^d} and all d < 12. Second, if d is large (i.e., close to 12), compression followed by
 decompression does not significantly alter the value.
 
 Encoding and decoding. The algorithms ByteEncode (Algorithm 5) and ByteDecode (Algorithm
@@ -1296,15 +1296,15 @@ between integers and bits. The conversion between bits and bytes is straightforw
 using BitsToBytes and BytesToBits. The valid range of values for the parameter 𝑑 is 1 ≤ 𝑑 ≤ 12.
 Bit arrays are divided into 𝑑-bit segments. The operations are performed in two different ways,
 depending on the value of 𝑑:
-   • For 𝑑 satisfying 1 ≤ 𝑑 ≤ 11, the conversion is one-to-one. ByteDecode𝑑 converts each
-     𝑑-bit segment of its input into one integer modulo 2𝑑 , while ByteEncode𝑑 performs the
+   • For 𝑑 satisfying 1 ≤ 𝑑 ≤ 11, the conversion is one-to-one. ByteDecode_{𝑑} converts each
+     𝑑-bit segment of its input into one integer modulo 2^{𝑑}, while ByteEncode_{𝑑} performs the
      inverse operation.
-   • For 𝑑 = 12, ByteDecode12 produces integers modulo 𝑞 as output, while ByteEncode12
-     receives integers modulo 𝑞 as input. Specifically, ByteDecode12 converts each 12-bit
+   • For 𝑑 = 12, ByteDecode_{12} produces integers modulo 𝑞 as output, while ByteEncode_{12}
+     receives integers modulo 𝑞 as input. Specifically, ByteDecode_{12} converts each 12-bit
      segment of its input into an integer modulo 2¹² = 4096 and then reduces the result
      modulo 𝑞. This is no longer a one-to-one operation. Indeed, some 12-bit segments could
      correspond to an integer greater than 𝑞 − 1 = 3328 but less than 4096. However, this
-     cannot occur for arrays produced by ByteEncode12 . These aspects of ByteDecode12 and
+     cannot occur for arrays produced by ByteEncode_{12}. These aspects of ByteDecode_{12} and
 
                                                21
 FIPS 203                                      MODULE-LATTICE-BASED KEY-ENCAPSULATION MECHANISM
@@ -1313,15 +1313,15 @@ depending on the value of 𝑑:
         ByteEncode12 will be important when considering checking of the ML-KEM encapsulation
         key in Section 7.
 
-Algorithm 5 ByteEncode𝑑 (𝐹 )
+Algorithm 5 ByteEncode_{𝑑}(𝐹)
 Encodes an array of 𝑑-bit integers into a byte array for 1 ≤ 𝑑 ≤ 12.
-Input: integer array 𝐹 ∈ ℤ256                𝑑
-                              𝑚 , where 𝑚 = 2 if 𝑑 < 12, and 𝑚 = 𝑞 if 𝑑 = 12.
-Output: byte array 𝐵 ∈ 𝔹32𝑑 .
+Input: integer array 𝐹 ∈ ℤ_{𝑚}^{256}, where 𝑚 = 2^𝑑 if 𝑑 < 12, and
+       𝑚 = 𝑞 if 𝑑 = 12.
+Output: byte array 𝐵 ∈ 𝔹^{32𝑑}.
   1: for (𝑖 ← 0; 𝑖 < 256; 𝑖 ++)
-  2:     𝑎 ← 𝐹 [𝑖]                                                                      ▷ 𝑎 ∈ ℤ𝑚
+  2:     𝑎 ← 𝐹 [𝑖]                                                                      ▷ 𝑎 ∈ ℤ_{𝑚}
   3:     for (𝑗 ← 0; 𝑗 < 𝑑; 𝑗 ++)
-  4:         𝑏[𝑖 ⋅ 𝑑 + 𝑗] ← 𝑎 mod 2                                            ▷ 𝑏 ∈ {0, 1}256⋅𝑑
+  4:         𝑏[𝑖 ⋅ 𝑑 + 𝑗] ← 𝑎 mod 2                                            ▷ 𝑏 ∈ {0, 1}^{256⋅𝑑}
   5:         𝑎 ← (𝑎 − 𝑏[𝑖 ⋅ 𝑑 + 𝑗])/2                      ▷ note 𝑎 − 𝑏[𝑖 ⋅ 𝑑 + 𝑗] is always even
   6:     end for
   7: end for
@@ -1329,15 +1329,15 @@ Output: byte array 𝐵 ∈ 𝔹32𝑑 .
   9: return 𝐵
 
 
-Algorithm 6 ByteDecode𝑑 (𝐵)
+Algorithm 6 ByteDecode_{𝑑}(𝐵)
 Decodes a byte array into an array of 𝑑-bit integers for 1 ≤ 𝑑 ≤ 12.
-Input: byte array 𝐵 ∈ 𝔹32𝑑 .
-Output: integer array 𝐹 ∈ ℤ256                𝑑
-                               𝑚 , where 𝑚 = 2 if 𝑑 < 12 and 𝑚 = 𝑞 if 𝑑 = 12.
+Input: byte array 𝐵 ∈ 𝔹^{32𝑑}.
+Output: integer array 𝐹 ∈ ℤ_{𝑚}^{256}, where 𝑚 = 2^𝑑 if 𝑑 < 12 and
+        𝑚 = 𝑞 if 𝑑 = 12.
   1: 𝑏 ← BytesToBits(𝐵)
   2: for (𝑖 ← 0; 𝑖 < 256; 𝑖 ++)
-                    𝑑−1
-  3:     𝐹 [𝑖] ← ∑𝑗←0 𝑏[𝑖 ⋅ 𝑑 + 𝑗] ⋅ 2𝑗 mod 𝑚
+
+  3:     𝐹[𝑖] ← (∑_{𝑗=0}^{𝑑−1} 𝑏[𝑖 ⋅ 𝑑 + 𝑗] ⋅ 2^𝑗) mod 𝑚
   4: end for
   5: return 𝐹
 
@@ -1822,20 +1822,20 @@ the plaintext message 𝑚 from 𝑣′ − 𝑣 and outputting 𝑚.
 
 Algorithm 15 K-PKE.Decrypt(dkPKE , 𝑐)
 Uses the decryption key to decrypt a ciphertext.
-Input: decryption key dkPKE ∈ 𝔹384𝑘 .
-Input: ciphertext 𝑐 ∈ 𝔹32(𝑑𝑢 𝑘+𝑑𝑣 ) .
-Output: message 𝑚 ∈ 𝔹32 .
-  1: 𝑐1 ← 𝑐[0 ∶ 32𝑑𝑢 𝑘]
-  2: 𝑐2 ← 𝑐[32𝑑𝑢 𝑘 ∶ 32(𝑑𝑢 𝑘 + 𝑑𝑣 )]
-  3: 𝐮′ ← Decompress𝑑 (ByteDecode𝑑 (𝑐1 )) ▷ run Decompress𝑑 and ByteDecode𝑑 𝑘 times
-                        𝑢                𝑢                 𝑢                  𝑢
-  4: 𝑣′ ← Decompress𝑑 (ByteDecode𝑑 (𝑐2 ))
-                        𝑣               𝑣
-  5: 𝐬 ̂ ← ByteDecode12 (dkPKE )                           ▷ run ByteDecode12 𝑘 times
-  6: 𝑤 ← 𝑣 − NTT (𝐬 ̂ ∘ NTT(𝐮 ))                   ▷ run NTT 𝑘 times; run NTT−1 once
-            ′       −1 ⊺              ′
+Input: decryption key dkPKE ∈ 𝔹^{384k}.
+Input: ciphertext 𝑐 ∈ 𝔹^{32(d_u k+d_v)}.
+Output: message 𝑚 ∈ 𝔹^{32}.
+  1: 𝑐1 ← 𝑐[0 ∶ 32d_u k]
+  2: 𝑐2 ← 𝑐[32d_u k ∶ 32(d_u k + d_v)]
+  3: 𝐮′ ← Decompress_{d_u}(ByteDecode_{d_u}(𝑐1)) ▷ run Decompress_{d_u} and ByteDecode_{d_u} 𝑘 times
 
-  7: 𝑚 ← ByteEncode1 (Compress1 (𝑤))             ▷ decode plaintext 𝑚 from polynomial 𝑣
+  4: 𝑣′ ← Decompress_{d_v}(ByteDecode_{d_v}(𝑐2))
+
+  5: 𝐬̂ ← ByteDecode_{12}(dkPKE) ▷ run ByteDecode_{12} 𝑘 times
+  6: 𝑤 ← 𝑣′ − NTT⁻¹(𝐬̂ᵀ ∘ NTT(𝐮′)) ▷ run NTT 𝑘 times; run NTT⁻¹ once
+
+
+  7: 𝑚 ← ByteEncode_{1}(Compress_{1}(𝑤)) ▷ decode plaintext 𝑚 from polynomial 𝑣
   8: return 𝑚
 
 

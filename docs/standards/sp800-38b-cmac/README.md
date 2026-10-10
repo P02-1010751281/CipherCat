@@ -17,7 +17,7 @@
 
 ## 实现状态
 
-✅ 已实现：`cmac_mac`（CIPHER 下拉：AES-128 / SM4），SP 800-38B 官方向量 + pycryptodome 交叉（双语言）。
+✅ 已实现：`cmac_mac`（CIPHER 下拉：AES-128 / SM4）。AES-128 分支以 RFC 4493 与 SP 800-38B 共有的 AES-CMAC 示例值做双语言回归；SM4 分支目前只有密钥长度等契约检查，没有官方向量，仓库内无 pycryptodome 依赖或第三方交叉验证。
 
 > 版本注：NIST 2025-01 提案修订 SP 800-38B（去除 3DES 依赖）；现行版仍为 2005。
 

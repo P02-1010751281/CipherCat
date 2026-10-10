@@ -1,55 +1,68 @@
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
+import { registerHexToBytes } from '../data/helpers';
+
+export function registerSm3LengthField(): string {
+  return pythonGenerator.provideFunction_('sm3_length_field', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(byte_length):',
+    '    return (byte_length * 8).to_bytes(8, "big")',
+  ]);
+}
+
+function registerSm3Pad(): string {
+  const lengthField = registerSm3LengthField();
+  return pythonGenerator.provideFunction_('sm3_pad', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg):',
+    '    if isinstance(msg, str):',
+    '        msg = msg.encode("utf-8")',
+    '    elif isinstance(msg, (list, tuple)):',
+    '        if any(isinstance(value, bool) or not isinstance(value, (int, float)) or not 0 <= value <= 255 or int(value) != value for value in msg): raise ValueError("SM3 input must contain byte integers from 0 to 255")',
+    '        msg = bytes(int(value) for value in msg)',
+    '    elif not isinstance(msg, (bytes, bytearray)):',
+    '        raise TypeError("SM3 input must be UTF-8 text or bytes")',
+    '    else:',
+    '        msg = bytes(msg)',
+    '    mlen = len(msg)',
+    '    msg += b"\\x80"',
+    '    while (len(msg) * 8) % 512 != 448:',
+    '        msg += b"\\x00"',
+    '    msg += ' + lengthField + '(mlen)',
+    '    return msg',
+  ]);
+}
+
+function registerSm3PadText(): string {
+  const pad = registerSm3Pad();
+  return pythonGenerator.provideFunction_('sm3_pad_text', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(text):',
+    '    if not isinstance(text, str): raise TypeError("expected UTF-8 text")',
+    '    return ' + pad + '(text)',
+  ]);
+}
 
 pythonGenerator.forBlock['hash_sm3_pad'] = function (
   block: Block,
 ): [string, number] {
   const input =
     pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || 'b\'\'';
-  const fn = pythonGenerator.provideFunction_('sm3_pad', [
-    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg):',
-    '    if isinstance(msg, str):',
-    '        msg = msg.encode("utf-8")',
-    '    elif isinstance(msg, list):',
-    '        msg = bytes(msg)',
-    '    msg = bytes(msg)',
-    '    mlen = len(msg) * 8',
-    '    msg += b"\\x80"',
-    '    while (len(msg) * 8) % 512 != 448:',
-    '        msg += b"\\x00"',
-    '    msg += mlen.to_bytes(8, "big")',
-    '    return msg',
-  ]);
-  return [fn + '(' + input + ')', Order.ATOMIC];
+  return [registerSm3Pad() + '(' + input + ')', Order.ATOMIC];
 };
 
-pythonGenerator.forBlock['hash_sm3_pad_text'] =
-  pythonGenerator.forBlock['hash_sm3_pad'];
+pythonGenerator.forBlock['hash_sm3_pad_text'] = function (
+  block: Block,
+): [string, number] {
+  const input =
+    pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || "''";
+  return [registerSm3PadText() + '(' + input + ')', Order.ATOMIC];
+};
 
 pythonGenerator.forBlock['hash_sm3_pad_hex'] = function (
   block: Block,
 ): [string, number] {
   const input =
     pythonGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
-  const fn = pythonGenerator.provideFunction_('sm3_pad_hex', [
-    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg):',
-    '    if isinstance(msg, bytes):',
-    '        data = msg',
-    '    elif isinstance(msg, str):',
-    '        data = bytes.fromhex(msg)',
-    '    elif isinstance(msg, int):',
-    '        bl = (msg.bit_length() + 7) // 8',
-    '        data = msg.to_bytes(bl, "big")',
-    '    else:',
-    '        data = bytes(msg)',
-    '    mlen = len(data) * 8',
-    '    data += b"\\x80"',
-    '    while (len(data) * 8) % 512 != 448:',
-    '        data += b"\\x00"',
-    '    data += mlen.to_bytes(8, "big")',
-    '    return data',
-  ]);
-  return [fn + '(' + input + ')', Order.ATOMIC];
+  const hexToBytes = registerHexToBytes();
+  return [registerSm3Pad() + '(' + hexToBytes + '(' + input + '))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['hash_sm3_compress'] = function (

@@ -17,7 +17,7 @@
 
 ## 实现状态
 
-✅ 已实现：`drbg_generate`（HMAC-DRBG / HMAC-SHA-256 的教学子集，使用 NIST CAVP 向量核对）。
+✅ 已实现：`drbg_generate`（HMAC-DRBG / HMAC-SHA-256 的教学子集，Demo 含少量固定输入/输出回归；不是完整 NIST CAVP 向量集）。
 未覆盖：Hash_DRBG、CTR_DRBG、additional input、prediction resistance，以及公开块级别的完整 reseed 生命周期验证。Demo：`demos/procedures/DRBG.json`。
 
 ## 函数/原语索引

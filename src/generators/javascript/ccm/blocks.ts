@@ -75,5 +75,5 @@ javascriptGenerator.forBlock['ccm_encrypt'] = function (block: Block): [string, 
   const tagLen = Number(block.getFieldValue('TAGLEN')) || 16;
   registerAesEcb();
   const fn = registerCcmEncrypt();
-  return [fn + '(' + key + ', ' + nonce + ', ' + aad + ', ' + msg + ', ' + tagLen + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + key + ', ' + nonce + ', ' + aad + ', ' + msg + ', ' + tagLen + '))', Order.ATOMIC];
 };

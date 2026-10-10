@@ -1,5 +1,7 @@
 import { pythonGenerator } from 'blockly/python';
 
+import { registerSafeIntegers } from '@/generators/python/safe-int';
+
 export function registerSeedWithNonce(): string {
   return pythonGenerator.provideFunction_('seed_with_nonce', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed, nonce):',
@@ -10,9 +12,13 @@ export function registerSeedWithNonce(): string {
 }
 
 export function registerPolyAddMod(): string {
+  const require_safe = registerSafeIntegers();
   return pythonGenerator.provideFunction_('poly_add_mod', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, b, q=3329):',
-    '    return [(x + y) % q for x, y in zip(a, b)]',
+    '    if len(a) != 256 or len(b) != 256: raise ValueError("R_q polynomial addition requires 256 coefficients")',
+    `    ${require_safe}("polynomial coefficients must be safe integers", a, b)`,
+    '    a = [int(value) for value in a]; b = [int(value) for value in b]',
+    '    return [((a[i] % q) + (b[i] % q)) % q for i in range(256)]',
   ]);
 }
 
@@ -20,22 +26,62 @@ export function registerPolyAddMod(): string {
 
 
 export function registerMatVecMul(): string {
+  const require_safe = registerSafeIntegers();
   return pythonGenerator.provideFunction_('mat_vec_mul', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(A, v, q=3329):',
+    '    if type(A) is not list or type(v) is not list: raise TypeError("matrix and vector must be lists")',
+    '    if q not in (3329, 8380417): raise ValueError("unsupported matrix-vector modulus")',
     '    k = len(v)',
-    '    return [sum(A[i * k + j] * v[j] for j in range(k)) % q for i in range(k)]',
+    '    if len(A) != k * k: raise ValueError("matrix must contain k squared entries")',
+    `    ${require_safe}("matrix entries must be safe integers", A)`,
+    `    ${require_safe}("vector entries must be safe integers", v)`,
+    '    A = [int(value) for value in A]; v = [int(value) for value in v]',
+    '    result = []',
+    '    for i in range(k):',
+    '        total = 0',
+    '        for j in range(k):',
+    '            total = (total + (A[i * k + j] % q) * (v[j] % q)) % q',
+    '        result.append(total)',
+    '    return result',
   ]);
 }
 export function registerPolySubMod(): string {
+  const require_safe = registerSafeIntegers();
   return pythonGenerator.provideFunction_('poly_sub_mod', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, b, q=3329):',
-    '    return [(x - y) % q for x, y in zip(a, b)]',
+    '    if len(a) != 256 or len(b) != 256: raise ValueError("R_q polynomial subtraction requires 256 coefficients")',
+    `    ${require_safe}("polynomial coefficients must be safe integers", a, b)`,
+    '    a = [int(value) for value in a]; b = [int(value) for value in b]',
+    '    return [((a[i] % q) - (b[i] % q)) % q for i in range(256)]',
   ]);
 }
 
 export function registerNtt(): string {
+  const require_safe = registerSafeIntegers();
   return pythonGenerator.provideFunction_('ntt', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, q=3329, n=256):',
+    '    if n != 256 or len(a) != 256: raise ValueError("NTT requires n=256 and 256 coefficients")',
+    `    ${require_safe}("NTT input coefficients must be safe integers", a)`,
+    '    a = [int(value) % q for value in a]',
+    '    if q == 12289:',
+    '        root = pow(11, 48, q); res = list(a); j = 0',
+    '        for i in range(1, 256):',
+    '            bit = 128',
+    '            while j & bit: j ^= bit; bit >>= 1',
+    '            j ^= bit',
+    '            if i < j: res[i], res[j] = res[j], res[i]',
+    '        size = 2',
+    '        while size <= 256:',
+    '            root_step = pow(root, 256 // size, q); half = size // 2',
+    '            for start in range(0, 256, size):',
+    '                w = 1',
+    '                for offset in range(half):',
+    '                    u = res[start + offset]; t = w * res[start + offset + half] % q',
+    '                    res[start + offset] = (u + t) % q',
+    '                    res[start + offset + half] = (u - t) % q',
+    '                    w = w * root_step % q',
+    '            size *= 2',
+    '        return res',
     '    if q == 8380417:',
     '        # ML-DSA (FIPS 204 §6.3.2): Cooley-Tukey 8 layers, ζ=1753 (2^32 mod q, 512th primitive root)',
     '        def _brv8(x):',
@@ -89,8 +135,32 @@ export function registerNtt(): string {
 }
 
 export function registerIntt(): string {
+  const require_safe = registerSafeIntegers();
   return pythonGenerator.provideFunction_('intt', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, q=3329, n=256):',
+    '    if n != 256 or len(a) != 256: raise ValueError("INTT requires n=256 and 256 coefficients")',
+    `    ${require_safe}("NTT input coefficients must be safe integers", a)`,
+    '    a = [int(value) % q for value in a]',
+    '    if q == 12289:',
+    '        root = pow(11, 48, q); inverse_root = pow(root, q - 2, q); res = list(a); j = 0',
+    '        for i in range(1, 256):',
+    '            bit = 128',
+    '            while j & bit: j ^= bit; bit >>= 1',
+    '            j ^= bit',
+    '            if i < j: res[i], res[j] = res[j], res[i]',
+    '        size = 2',
+    '        while size <= 256:',
+    '            root_step = pow(inverse_root, 256 // size, q); half = size // 2',
+    '            for start in range(0, 256, size):',
+    '                w = 1',
+    '                for offset in range(half):',
+    '                    u = res[start + offset]; t = w * res[start + offset + half] % q',
+    '                    res[start + offset] = (u + t) % q',
+    '                    res[start + offset + half] = (u - t) % q',
+    '                    w = w * root_step % q',
+    '            size *= 2',
+    '        inverse_length = pow(256, q - 2, q)',
+    '        return [value * inverse_length % q for value in res]',
     '    if q == 8380417:',
     '        # ML-DSA (FIPS 204 §6.3.3): Gentleman-Sande 8 layers, -zetas[m], final × 256⁻¹',
     '        def _brv8(x):',
@@ -148,8 +218,12 @@ export function registerIntt(): string {
 }
 
 export function registerNttMul(): string {
+  const require_safe = registerSafeIntegers();
   return pythonGenerator.provideFunction_('ntt_mul', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, b, q=3329):',
+    '    if len(a) != 256 or len(b) != 256: raise ValueError("NTT multiplication requires 256 coefficients")',
+    `    ${require_safe}("NTT multiplication coefficients must be safe integers", a, b)`,
+    '    a = [int(value) % q for value in a]; b = [int(value) % q for value in b]',
     '    if q == 8380417:',
     '        # ML-DSA (FIPS 204 §6.3.4): pointwise multiplication of NTT-domain polynomials',
     '        return [(a[i] * b[i]) % q for i in range(256)]',

@@ -2,8 +2,8 @@
  * ZUC 原子块 JavaScript 代码生成器
  * GB/T 33133-2016
  *
- * S0/S1 S-box 数据与算法结构对照 luminousmen/ZUC 参考实现
- * （S0 与本仓库 docs/standards/gbt33133-ZUC/01-ZUC.md 附录 A.1 交叉验证一致）。
+ * S0/S1 S-box 数据取自本仓库 docs/standards/gbt33133-ZUC/00-Standard-Source.md 的
+ * GB/T 33133.1 附录表 A.1/A.2 提取原文，并由 zuc-primitives.test.ts 逐项核对。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
@@ -59,7 +59,8 @@ function registerZucS0(): string {
 function registerZucS0Lookup(): string {
   return javascriptGenerator.provideFunction_('zucS0Lookup', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(x) {',
-    '  return ' + registerZucS0() + '[x & 0xFF];',
+    '  if (!Number.isInteger(x) || x < 0 || x > 0xFF) throw new RangeError("ZUC S0 input must be an integer byte");',
+    '  return ' + registerZucS0() + '[x];',
     '}',
   ]);
 }
@@ -73,7 +74,8 @@ function registerZucS1(): string {
 function registerZucS1Lookup(): string {
   return javascriptGenerator.provideFunction_('zucS1Lookup', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(x) {',
-    '  return ' + registerZucS1() + '[x & 0xFF];',
+    '  if (!Number.isInteger(x) || x < 0 || x > 0xFF) throw new RangeError("ZUC S1 input must be an integer byte");',
+    '  return ' + registerZucS1() + '[x];',
     '}',
   ]);
 }
@@ -113,8 +115,9 @@ javascriptGenerator.forBlock['zuc_s1'] = function (block: Block): [string, numbe
 javascriptGenerator.forBlock['zuc_l1'] = function (block: Block): [string, number] {
   const input = javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '0';
   const rotl = registerZucRotl();
+  const expression = ['x', ...[2, 10, 18, 24].map((shift) => `${rotl}(x, ${shift})`)].join(' ^ ');
   return [
-    '((' + input + ' ^ ' + rotl + '(' + input + ', 2) ^ ' + rotl + '(' + input + ', 10) ^ ' + rotl + '(' + input + ', 18) ^ ' + rotl + '(' + input + ', 24)) >>> 0)',
+    '(function(x){if(!Number.isInteger(x)||x<0||x>0xFFFFFFFF)throw new RangeError("ZUC L1 input must be a 32-bit unsigned integer");return (' + expression + ')>>>0;})(' + input + ')',
     Order.ATOMIC,
   ];
 };
@@ -122,8 +125,9 @@ javascriptGenerator.forBlock['zuc_l1'] = function (block: Block): [string, numbe
 javascriptGenerator.forBlock['zuc_l2'] = function (block: Block): [string, number] {
   const input = javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '0';
   const rotl = registerZucRotl();
+  const expression = ['x', ...[8, 14, 22, 30].map((shift) => `${rotl}(x, ${shift})`)].join(' ^ ');
   return [
-    '((' + input + ' ^ ' + rotl + '(' + input + ', 8) ^ ' + rotl + '(' + input + ', 14) ^ ' + rotl + '(' + input + ', 22) ^ ' + rotl + '(' + input + ', 30)) >>> 0)',
+    '(function(x){if(!Number.isInteger(x)||x<0||x>0xFFFFFFFF)throw new RangeError("ZUC L2 input must be a 32-bit unsigned integer");return (' + expression + ')>>>0;})(' + input + ')',
     Order.ATOMIC,
   ];
 };
@@ -150,6 +154,7 @@ javascriptGenerator.forBlock['zuc_f'] = function (block: Block): [string, number
 
   const fn = javascriptGenerator.provideFunction_('zucF', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(X0, X1, X2, R1, R2) {',
+    '  if (![X0, X1, X2, R1, R2].every(function(x){return Number.isInteger(x) && x >= 0 && x <= 0xFFFFFFFF;})) throw new RangeError("ZUC F inputs must be 32-bit unsigned integers");',
     '  var rotl = ' + rotl + ';',
     '  var S = ' + s32 + ';',
     '  var L1 = function (x) { x = x >>> 0; return (x ^ rotl(x, 2) ^ rotl(x, 10) ^ rotl(x, 18) ^ rotl(x, 24)) >>> 0; };',
@@ -199,6 +204,10 @@ function registerZucKeystream(): string {
   const fn = javascriptGenerator.provideFunction_('zucKeystream', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, iv, len) {',
     '  if (!Number.isSafeInteger(len) || len < 0 || len > ' + MAX_ZUC_OUTPUT_WORDS + ') throw new RangeError("ZUC output length must be an integer from 0 to ' + MAX_ZUC_OUTPUT_WORDS + ' words");',
+    '  if (!(Array.isArray(key) || key instanceof Uint8Array) || !(Array.isArray(iv) || iv instanceof Uint8Array)) throw new TypeError("ZUC key and IV must be byte arrays");',
+    '  key = Array.from(key); iv = Array.from(iv);',
+    '  var validBytes = function (bytes) { return bytes.length === 16 && bytes.every(function (byte) { return Number.isInteger(byte) && byte >= 0 && byte <= 255; }); };',
+    '  if (!validBytes(key) || !validBytes(iv)) throw new RangeError("ZUC key and IV must each contain exactly 16 bytes");',
     '  var M = 0x7FFFFFFF;',
     '  var addm = function (a, b) { var c = (a >>> 0) + (b >>> 0); return ((c & M) + (c >>> 31)) >>> 0; };',
     '  var mulByPow2 = function (x, k) { x = x >>> 0; return ((x << k) | (x >>> (31 - k))) & M; };',

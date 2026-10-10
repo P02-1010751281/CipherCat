@@ -77,7 +77,7 @@ Blockly.Blocks['pq_seed_with_nonce'] = {
   },
 };
 
-/** Rejection sampling（ML-DSA RejBounded 单值版）：X < BOUND 接受，否则拒绝返回 -1 */
+/** Generic teaching threshold helper; this is not the FIPS 204 RejBoundedPoly algorithm. */
 Blockly.Blocks['pq_rej_sample'] = {
   init: function () {
     this.appendValueInput('X').setCheck(null).appendField('RejSample(');
@@ -87,9 +87,8 @@ Blockly.Blocks['pq_rej_sample'] = {
     this.setOutput(true, TYPE_NUMBER);
     this.setColour(190);
     this.setTooltip(
-      'RejSample(X, BOUND): 拒绝采样（ML-DSA RejBoundedPoly 单系数）。' +
-        'X < BOUND 接受返回 X；否则拒绝返回 -1（表示需重试采样）。' +
-        'ML-DSA 用均匀采样 γ1 域/eta 域系数（FIPS 204 Alg 13/14）。',
+      'RejSample(X, BOUND)：通用阈值教学辅助块；X < BOUND 时返回 X，否则返回 -1。' +
+        '只判断调用者提供的数值，不生成样本、不循环取数，也不是 FIPS 204 RejBoundedPoly（Algorithm 31）。',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf');
   },

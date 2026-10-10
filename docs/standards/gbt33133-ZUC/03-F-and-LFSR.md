@@ -106,4 +106,4 @@ ZUC_Initialization(k, iv):
 
 ## 项目映射
 
-对应原子块包括 `zuc_lfsr_init`、`zuc_lfsr_work`、`zuc_f`。块接口必须保留 31-bit 状态宽度、模 `2^31 - 1` 规则和零状态替换规则。
+对应原子块包括 `zuc_lfsr_init`、`zuc_lfsr_work`、`zuc_f`。`zuc_f` 的五个输入 `X0/X1/X2/R1/R2` 必须是无符号 32-bit 字；实现会拒绝非整数和越界值，且该块只输出 `W`，记忆单元更新须按本节公式另行承接。LFSR 块接口必须保留 31-bit 状态宽度、模 `2^31 - 1` 规则和零状态替换规则。

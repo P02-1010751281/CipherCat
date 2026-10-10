@@ -3,16 +3,36 @@ import { javascriptGenerator } from 'blockly/javascript';
 export function registerHexToBytes(): string {
   return javascriptGenerator.provideFunction_('hexToBytes', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(hex){',
-    '  hex = String(hex).replace(/\\s+/g,"");',
-    '  if (hex.length % 2 !== 0) throw new Error("hex length must be even");',
+    '  if (typeof hex !== "string" || hex.length % 2 !== 0) throw new TypeError("expected an even-length hexadecimal string");',
+    '  for (var i = 0; i < hex.length; i++) {',
+    '    var code = hex.charCodeAt(i);',
+    '    if (!((code >= 48 && code <= 57) || (code >= 65 && code <= 70) || (code >= 97 && code <= 102))) throw new TypeError("expected an even-length hexadecimal string");',
+    '  }',
     '  var out = new Uint8Array(hex.length/2);',
     '  for (var i=0;i<out.length;i++) {',
-    '    var b = parseInt(hex.substring(i*2,i*2+2),16);',
-    '    if (Number.isNaN(b)) throw new Error("invalid hex at position "+(i*2));',
-    '    out[i] = b;',
+    '    out[i] = parseInt(hex.substring(i*2,i*2+2),16);',
     '  }',
     '  return out;',
     '}'
+  ]);
+}
+
+export function registerUtf8ToBytes(): string {
+  return javascriptGenerator.provideFunction_('utf8ToBytes', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(text) {',
+    '  if (typeof text !== "string") throw new TypeError("expected UTF-8 text");',
+    '  for (var i = 0; i < text.length; i++) {',
+    '    var code = text.charCodeAt(i);',
+    '    if (code >= 0xD800 && code <= 0xDBFF) {',
+    '      var next = text.charCodeAt(i + 1);',
+    '      if (!(next >= 0xDC00 && next <= 0xDFFF)) throw new TypeError("text contains an unpaired surrogate");',
+    '      i++;',
+    '    } else if (code >= 0xDC00 && code <= 0xDFFF) {',
+    '      throw new TypeError("text contains an unpaired surrogate");',
+    '    }',
+    '  }',
+    '  return new TextEncoder().encode(text);',
+    '}',
   ]);
 }
 

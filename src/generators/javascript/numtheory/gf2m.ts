@@ -5,6 +5,7 @@ javascriptGenerator.forBlock['gf2m_mul'] = function (block: Block): [string, num
   const a = javascriptGenerator.valueToCode(block, 'A', Order.ATOMIC) || '[]';
   const b = javascriptGenerator.valueToCode(block, 'B', Order.ATOMIC) || '[]';
   const field = block.getFieldValue('FIELD') || 'aes';
+  if (field !== 'aes' && field !== 'gcm') throw new Error(`unsupported GF(2^m) field: ${field}`);
 
   if (field === 'aes') {
     // GF(2^8) with irreducible x^8+x^4+x^3+x+1 (0x11B)
@@ -20,25 +21,24 @@ javascriptGenerator.forBlock['gf2m_mul'] = function (block: Block): [string, num
       '  return p;',
       '}',
     ]);
-    return [fn + '(' + a + '[0],' + b + '[0])', Order.ATOMIC];
+    return ['[' + fn + '(' + a + '[0],' + b + '[0])]', Order.ATOMIC];
   }
 
-  // GCM: GF(2^128) with irreducible x^128+x^7+x^2+x+1
-  // IntList representation: 4 x 32-bit limbs, LSB first
+  // NIST SP 800-38D block multiplication; limbs are low-word first.
   const fn = javascriptGenerator.provideFunction_('gf2mMulGCM', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a,b){',
     '  var z=[0,0,0,0];',
     '  var v=b.slice();',
     '  for(var i=0;i<128;i++){',
-    '    if(a[Math.floor(i/32)]&(1<<(i%32))){',
-    '      z[0]^=v[0];z[1]^=v[1];z[2]^=v[2];z[3]^=v[3];',
+    '    if(a[3-Math.floor(i/32)]&(1<<(31-(i%32)))){',
+    '      z[0]=(z[0]^v[0])>>>0;z[1]=(z[1]^v[1])>>>0;z[2]=(z[2]^v[2])>>>0;z[3]=(z[3]^v[3])>>>0;',
     '    }',
-    '    var lsb=v[3]>>>31;',
-    '    v[3]=(v[3]<<1)|(v[2]>>>31);',
-    '    v[2]=(v[2]<<1)|(v[1]>>>31);',
-    '    v[1]=(v[1]<<1)|(v[0]>>>31);',
-    '    v[0]=(v[0]<<1)&0xFFFFFFFF;',
-    '    if(lsb){v[0]^=0xE1;v[4]=0;}', // R = x^128 mod f = 0xE1 (E1 = 11100001 = x^7+x^2+x+1)
+    '    var lsb=v[0]&1;',
+    '    v[0]=((v[0]>>>1)|(v[1]<<31))>>>0;',
+    '    v[1]=((v[1]>>>1)|(v[2]<<31))>>>0;',
+    '    v[2]=((v[2]>>>1)|(v[3]<<31))>>>0;',
+    '    v[3]=v[3]>>>1;',
+    '    if(lsb)v[3]=(v[3]^0xE1000000)>>>0;',
     '  }',
     '  return z;',
     '}',
@@ -71,24 +71,28 @@ javascriptGenerator.forBlock['gf2m_add'] = function (block: Block): [string, num
   const a = javascriptGenerator.valueToCode(block, 'A', Order.ATOMIC) || '[]';
   const b = javascriptGenerator.valueToCode(block, 'B', Order.ATOMIC) || '[]';
   const field = block.getFieldValue('FIELD') || 'aes';
+  if (field !== 'aes' && field !== 'gcm') throw new Error(`unsupported GF(2^m) field: ${field}`);
   if (field === 'aes') {
-    return ['(' + a + '[0] ^ ' + b + '[0])', Order.ATOMIC];
+    return ['[(' + a + '[0] ^ ' + b + '[0])]', Order.ATOMIC];
   }
-  return ['[' + a + '[0]^' + b + '[0],' + a + '[1]^' + b + '[1],' + a + '[2]^' + b + '[2],' + a + '[3]^' + b + '[3]]', Order.ATOMIC];
+  return ['[(' + a + '[0]^' + b + '[0])>>>0,(' + a + '[1]^' + b + '[1])>>>0,(' + a + '[2]^' + b + '[2])>>>0,(' + a + '[3]^' + b + '[3])>>>0]', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['gf2m_inv'] = function (block: Block): [string, number] {
   const a = javascriptGenerator.valueToCode(block, 'A', Order.ATOMIC) || '[]';
   const field = block.getFieldValue('FIELD') || 'aes';
+  if (field !== 'aes' && field !== 'gcm') throw new Error(`unsupported GF(2^m) field: ${field}`);
   if (field === 'aes') {
     const fn = registerGf2mInvAES();
     return ['[' + fn + '(' + a + '[0])]', Order.ATOMIC];
   }
-  // GCM: 128-bit 多项式欧几里得（BigInt）
+  // Reverse the NIST block bit order to polynomial coefficient order for Euclid.
   const fn = javascriptGenerator.provideFunction_('gf2mInvGCM', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a){',
-    '  var A = 0n; for (var i = 0; i < 4; i++) A |= BigInt(a[i]) << BigInt(32 * i);',
-    '  var MOD = (1n << 128n) ^ (0xE1n << 120n);',
+    '  var packed = 0n; for (var i = 0; i < 4; i++) packed |= BigInt(a[i]) << BigInt(32 * i);',
+    '  var A = 0n; for (var i = 0; i < 128; i++) if ((packed >> BigInt(i)) & 1n) A |= 1n << BigInt(127 - i);',
+    '  if (A === 0n) throw new RangeError("zero has no multiplicative inverse");',
+    '  var MOD = (1n << 128n) | 0x87n;',
     '  var r0 = MOD, r1 = A, t0 = 0n, t1 = 1n;',
     '  while (r1 !== 0n) {',
     '    var d0 = 0n, d1 = 0n, x = r0, y = r1;',
@@ -97,19 +101,19 @@ javascriptGenerator.forBlock['gf2m_inv'] = function (block: Block): [string, num
     '    var q = 0n, r = r0;',
     '    var sh = d0 - d1;',
     '    while (sh >= 0n) { if ((r >> (d1 + sh)) & 1n) { q ^= (1n << sh); r ^= (r1 << sh); } sh -= 1n; }',
-    '    var t2 = t0 ^ gf2mMulGCMBig(q, t1);',
+    '    var t2 = t0 ^ gf2mMulGCMPoly(q, t1);',
     '    r0 = r1; r1 = r; t0 = t1; t1 = t2;',
     '  }',
-    '  var out = [0,0,0,0]; var v = t0;',
-    '  for (var i = 0; i < 4; i++) { out[i] = Number(v & 0xFFFFFFFFn); v >>= 32n; }',
+    '  var out = [0,0,0,0], packedInverse = 0n;',
+    '  for (var i = 0; i < 128; i++) if ((t0 >> BigInt(i)) & 1n) packedInverse |= 1n << BigInt(127 - i);',
+    '  for (var i = 0; i < 4; i++) out[i] = Number((packedInverse >> BigInt(32 * i)) & 0xFFFFFFFFn);',
     '  return out;',
     '}',
   ]);
-  javascriptGenerator.provideFunction_('gf2mMulGCMBig', [
+  javascriptGenerator.provideFunction_('gf2mMulGCMPoly', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(a, b){',
-    '  var MOD = (1n << 128n) ^ (0xE1n << 120n);',
     '  var p = 0n;',
-    '  for (var i = 0; i < 128; i++) { if ((b >> BigInt(i)) & 1n) p ^= a; var hi = (a >> 127n) & 1n; a = (a << 1n) & ((1n << 128n) - 1n); if (hi) a ^= 0xE1n; }',
+    '  for (var i = 0; i < 128; i++) { if ((b >> BigInt(i)) & 1n) p ^= a; var hi = (a >> 127n) & 1n; a = (a << 1n) & ((1n << 128n) - 1n); if (hi) a ^= 0x87n; }',
     '  return p;',
     '}',
   ]);

@@ -1,8 +1,8 @@
 /**
- * RSA 原子块 Python 代码生成器
- * FIPS 186-4 / RFC 8017（PKCS#1 v1.5）
+ * RSA 教学块 Python 代码生成器。
+ * Key generation is project-specific; this is not a validated FIPS 186-5 implementation.
  *
- * 内嵌（与 /tmp/vectors/rsa_ref.py 同构，cryptography 交叉验证全 PASS）：
+ * Generated helpers:
  * - rsa_keygen：os.urandom + Miller-Rabin（小素数筛 + 20 轮随机基底）
  * - rsa_encrypt/rsa_decrypt：PKCS#1 v1.5（随机非零 PS）
  * - rsa_sign/rsa_verify：PKCS#1 v1.5 + SHA-256（hashlib.sha256 + DER DigestInfo 前缀）
@@ -15,7 +15,7 @@ import type { Block } from 'blockly/core';
 function registerRsaIsPrime(): string {
   return pythonGenerator.provideFunction_('rsa_is_prime', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(n, rounds=20):',
-    '    import os',
+    '    import secrets',
     '    if n < 2:',
     '        return False',
     '    small = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,199,211,223,227,229,233,239,241,251]',
@@ -30,7 +30,7 @@ function registerRsaIsPrime(): string {
     '        d >>= 1',
     '        r += 1',
     '    for _ in range(rounds):',
-    '        a = 2 + int.from_bytes(os.urandom((n.bit_length() + 7) // 8), "big") % (n - 3)',
+    '        a = secrets.randbelow(n - 3) + 2',
     '        x = pow(a, d, n)',
     '        if x == 1 or x == n - 1:',
     '            continue',
@@ -44,7 +44,7 @@ function registerRsaIsPrime(): string {
   ]);
 }
 
-/** 随机 bits 位素数：顶两位 + 最低位置 1（FIPS 186-4） */
+/** 教学用随机 bits 位素数候选：置最高两位和最低位 */
 function registerRsaRandPrime(): string {
   return pythonGenerator.provideFunction_('rsa_rand_prime', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(bits):',
@@ -192,7 +192,7 @@ pythonGenerator.forBlock['rsa_keygen'] = function (block: Block): [string, numbe
   registerRsaIsPrime();
   registerRsaRandPrime();
   const fn = registerRsaKeygen();
-  return [fn + '(' + bits + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + bits + '))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['rsa_encrypt'] = function (block: Block): [string, number] {
@@ -200,7 +200,7 @@ pythonGenerator.forBlock['rsa_encrypt'] = function (block: Block): [string, numb
   const msg = pythonGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '""';
   registerRsaParseKey();
   const fn = registerRsaEncrypt();
-  return [fn + '(' + key + ', ' + msg + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + key + ', ' + msg + '))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['rsa_decrypt'] = function (block: Block): [string, number] {
@@ -208,7 +208,7 @@ pythonGenerator.forBlock['rsa_decrypt'] = function (block: Block): [string, numb
   const ct = pythonGenerator.valueToCode(block, 'CT', Order.ATOMIC) || '[]';
   registerRsaParseKey();
   const fn = registerRsaDecrypt();
-  return [fn + '(' + key + ', ' + ct + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + key + ', ' + ct + '))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['rsa_sign'] = function (block: Block): [string, number] {
@@ -216,7 +216,7 @@ pythonGenerator.forBlock['rsa_sign'] = function (block: Block): [string, number]
   const msg = pythonGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '""';
   registerRsaParseKey();
   const fn = registerRsaSign();
-  return [fn + '(' + key + ', ' + msg + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + key + ', ' + msg + '))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['rsa_verify'] = function (block: Block): [string, number] {

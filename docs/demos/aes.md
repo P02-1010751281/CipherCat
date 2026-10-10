@@ -3,24 +3,26 @@
 
 > [← 返回索引](../guides/DEMO.md) · [demo 文件清单](../../demos/README.md)
 >
-> 场景 2（单轮加密）+ 场景 5（函数封装），对应 `docs/DEMO.md` 索引。
+> 单轮加密与函数封装两个示例，对应 [Demo 指南](../guides/DEMO.md)。
 
 ---
+
+> 逐步块链以[分步拼装指南](../build/INDEX.md)为准；本页讲场景、输入输出与边界。
 
 ## 场景 2：AES 单轮变换（10 分钟）
 
 ### 目标
-按 FIPS 197 §5.1 的顺序执行一次 AES 单轮变换。`AES-Atomic-Round.json` 将四个原语块放在工作区顶层，生成代码依次调用并原地修改共享状态；画布上没有值接口连线。显式数据流连接见 `demos/procedures/AES-Round.json`。
+按 FIPS 197 §5.1 的顺序执行一次 AES 单轮变换。`AES-Atomic-Round.json` 将四个原语块放在工作区顶层，生成代码依次调用并原地修改共享状态；四个原语互不相连，各自通过 `variables_get`/`variables_set` 读写同一个状态变量。逐层嵌套的显式数据流见 `demos/procedures/AES-Round.json`。
 
 ### 步骤
 
-1. **加载 demo**：导入 `demos/AES-Atomic-Round.json`
+1. **加载 Demo**：导入 `demos/AES-Atomic-Round.json`
 2. **观察结构**：
    - `variables_set`：16 字节状态与轮密钥，分别保存在共享变量 `i`、`j`
    - 四个顶层原语：`aes_sub_bytes`、`aes_shift_rows`、`aes_mix_columns`、`aes_add_round_key`
-3. **执行顺序**：生成代码按工作区顺序调用原语，逐步修改同一状态；画布中的值接口没有互相连接
+3. **执行顺序**：生成代码按工作区顺序调用原语，逐步修改同一状态；四个原语通过变量读写共享状态，彼此之间没有直接连线
 4. **生成代码**：点击“生成”，选择 Python 或 JavaScript，再在自己的环境中运行
-5. **验证**：仓库回归测试对给定状态和轮密钥检查结果 `4807f3cfdcc929d006f1297cdb24c59f`。这是固定输入的项目回归值，不是 FIPS 197 附录 C.1 完整加密向量。
+5. **验证**：与仓库提供的样例输出 `4807f3cfdcc929d006f1297cdb24c59f` 对照。这是固定输入下的样例值，不是 FIPS 197 附录 C.1 的完整加密向量。
 
 ### 涉及原子块
 | 块 | 功能 | S-Box 标准 |
@@ -39,16 +41,17 @@
 
 ### 步骤
 
-1. **加载 demo**：导入 `demos/Procedure-AES-Round.json`
+1. **加载 Demo**：导入 `demos/Procedure-AES-Round.json`
 2. **观察结构**：
    - `procedures_defreturn` 块：函数名 `AES_Round`，参数 `state: int_list` + `round_key: int_list`（经齿轮 ⚙ mutator 添加）
    - 返回链：`aes_add_round_key(aes_mix_columns(aes_shift_rows(aes_sub_bytes(state))), round_key)`
 3. **生成代码**：点击「▶」选择 Python
 4. **观察输出**：
    ```python
-   def aes_round(state: list[int], round_key: list[int]) -> list[int]:
-       """AES_Round"""
-       # AddRoundKey(MixColumns(ShiftRows(SubBytes(state))), round_key)
+   def AES_Round(state, round_key):
+       """
+       Crypto function: AES_Round
+       """
        ...
    ```
 5. **调用**：在工作区 Flyout 中找到 `AES_Round` 函数块，拖出后传入 state 和 round_key

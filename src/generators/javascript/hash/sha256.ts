@@ -1,29 +1,31 @@
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly';
-import { registerHexToBytes } from '../data/helpers';
+import { registerHexToBytes, registerUtf8ToBytes } from '../data/helpers';
 
-let _sha256PadFn: string | null = null;
 function getSha256PadFn(): string {
-  if (!_sha256PadFn) {
-    _sha256PadFn = javascriptGenerator.provideFunction_('sha256Pad', [
-      'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg) {',
-      '  if (typeof msg === "string") msg = new TextEncoder().encode(msg);',
-      '  else if (Array.isArray(msg)) msg = Uint8Array.from(msg);',
-      '  var mLen = msg.length;',
-      '  var mLenBits = mLen * 8;',
-      '  var k = (448 - mLenBits - 1) % 512;',
-      '  if (k < 0) k += 512;',
-      '  var padded = new Uint8Array(mLen + 1 + Math.floor(k / 8) + 8);',
-      '  padded.set(msg);',
-      '  padded[mLen] = 0x80;',
-      '  for (var i = 0; i < 8; i++) {',
-      '    padded[padded.length - 1 - i] = Math.floor(mLenBits / Math.pow(2, 8 * i)) & 0xFF;',
-      '  }',
-      '  return padded;',
-      '}',
-    ]);
-  }
-  return _sha256PadFn;
+  const utf8ToBytes = registerUtf8ToBytes();
+  return javascriptGenerator.provideFunction_('sha256Pad', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg) {',
+    '  if (typeof msg === "string") msg = ' + utf8ToBytes + '(msg);',
+    '  else if (Array.isArray(msg)) {',
+    '    for (var i = 0; i < msg.length; i++) if (!Number.isSafeInteger(msg[i]) || msg[i] < 0 || msg[i] > 255) throw new TypeError("SHA-256 input must contain byte integers from 0 to 255");',
+    '    msg = Uint8Array.from(msg);',
+    '  } else if (!(msg instanceof Uint8Array)) {',
+    '    throw new TypeError("SHA-256 input must be UTF-8 text or bytes");',
+    '  }',
+    '  var mLen = msg.length;',
+    '  var mLenBits = mLen * 8;',
+    '  var k = (448 - mLenBits - 1) % 512;',
+    '  if (k < 0) k += 512;',
+    '  var padded = new Uint8Array(mLen + 1 + Math.floor(k / 8) + 8);',
+    '  padded.set(msg);',
+    '  padded[mLen] = 0x80;',
+    '  for (var i = 0; i < 8; i++) {',
+    '    padded[padded.length - 1 - i] = Math.floor(mLenBits / Math.pow(2, 8 * i)) & 0xFF;',
+    '  }',
+    '  return padded;',
+    '}',
+  ]);
 }
 
 javascriptGenerator.forBlock['hash_sha256_pad'] = function (
@@ -39,7 +41,8 @@ javascriptGenerator.forBlock['hash_sha256_pad_text'] = function (
 ): [string, number] {
   const input =
     javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
-  return [getSha256PadFn() + '(' + input + ')', Order.ATOMIC];
+  const utf8ToBytes = registerUtf8ToBytes();
+  return [getSha256PadFn() + '(' + utf8ToBytes + '(' + input + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['hash_sha256_pad_hex'] = function (
@@ -61,6 +64,10 @@ javascriptGenerator.forBlock['hash_sha256_compress'] = function (
     'function ' +
       javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
       '(state, block) {',
+    '  if (!Array.isArray(state) || state.length !== 8) throw new RangeError("SHA-256 compression state must contain 8 words");',
+    '  for (var i = 0; i < 8; i++) if (!Number.isSafeInteger(state[i]) || state[i] < 0 || state[i] > 0xFFFFFFFF) throw new RangeError("SHA-256 state words must be unsigned 32-bit integers");',
+    '  if (!(Array.isArray(block) || block instanceof Uint8Array) || block.length !== 64) throw new RangeError("SHA-256 compression block must contain 64 bytes");',
+    '  for (var i = 0; i < 64; i++) if (!Number.isSafeInteger(block[i]) || block[i] < 0 || block[i] > 255) throw new RangeError("SHA-256 block bytes must be integers from 0 to 255");',
     '  var K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,',
     '           0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,',
     '           0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,',
@@ -86,7 +93,7 @@ javascriptGenerator.forBlock['hash_sha256_compress'] = function (
     '    var t2 = (S0 + maj) | 0;',
     '    h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;',
     '  }',
-    '  return [a,b,c,d,e,f,g,h].map(function(x, i) { return (x + state[i]) | 0; });',
+    '  return [a,b,c,d,e,f,g,h].map(function(x, i) { return (x + state[i]) >>> 0; });',
     '}',
   ]);
 
@@ -105,6 +112,10 @@ javascriptGenerator.forBlock['hash_sha224_hash'] = function (
     'function ' +
       javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ +
       '(state, block) {',
+    '  if (!Array.isArray(state) || state.length !== 8) throw new RangeError("SHA-256 compression state must contain 8 words");',
+    '  for (var i = 0; i < 8; i++) if (!Number.isSafeInteger(state[i]) || state[i] < 0 || state[i] > 0xFFFFFFFF) throw new RangeError("SHA-256 state words must be unsigned 32-bit integers");',
+    '  if (!(Array.isArray(block) || block instanceof Uint8Array) || block.length !== 64) throw new RangeError("SHA-256 compression block must contain 64 bytes");',
+    '  for (var i = 0; i < 64; i++) if (!Number.isSafeInteger(block[i]) || block[i] < 0 || block[i] > 255) throw new RangeError("SHA-256 block bytes must be integers from 0 to 255");',
     '  var K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,',
     '           0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,',
     '           0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,',
@@ -130,7 +141,7 @@ javascriptGenerator.forBlock['hash_sha224_hash'] = function (
     '    var t2 = (S0 + maj) | 0;',
     '    h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;',
     '  }',
-    '  return [a,b,c,d,e,f,g,h].map(function(x, i) { return (x + state[i]) | 0; });',
+    '  return [a,b,c,d,e,f,g,h].map(function(x, i) { return (x + state[i]) >>> 0; });',
     '}',
   ]);
 

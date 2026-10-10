@@ -3,44 +3,45 @@
 
 > [← 返回索引](../guides/DEMO.md) · [demo 文件清单](../../demos/README.md)
 >
-> 场景 4（ML-KEM 底层）+ 场景 9（ML-KEM.Encaps），对应 `docs/DEMO.md` 索引。
+> 后量子原语、标量数学示例与 ML-KEM Encaps，对应 [Demo 指南](../guides/DEMO.md)。
 
 ---
 
-## 场景 4：ML-KEM 后量子底层（10 分钟）
+> 逐步块链以[分步拼装指南](../build/INDEX.md)为准；本页讲场景、输入输出与边界。
+
+## 场景 4：后量子原语与标量数学示例（10 分钟）
 
 ### 目标
-用原子块理解 ML-KEM 密钥生成的核心步骤：CBD 采样 → NTT 变换 → 矩阵生成 → 矩阵×向量。
+分别观察几个 ML-KEM 相关原语，以及一个通用标量矩阵向量教学块。该工作区是独立示例集合，不构成 ML-KEM 密钥生成流程；标量矩阵向量块也不是 ML-KEM 的多项式环运算。
 
 ### 步骤
 
-1. **加载 demo**：导入 `demos/ML-KEM-Atomic.json`
+1. **加载 Demo**：导入 `demos/ML-KEM-Atomic.json`
 2. **观察结构**：
-   - 32-byte seed（ρ/σ 的 SHAKE-256 输出）
-   - `pq_sample_poly_cbd`：CBD(η₂) 采样 → 秘密向量 ŝ/ê
-   - `pq_sample_ntt`：从 seed 采样 NTT 矩阵 A ∈ Z_q^{K×K×256}
-   - `pq_ntt`：对向量做 NTT 变换
-   - `pq_mat_vec_mul`：A × ŝ 在 NTT 域
-3. **生成代码**：点击「▶」选择 JavaScript
+   - `pq_sample_poly_cbd`：固定输入下的 CBD(η₂) 采样示例
+   - `pq_sample_ntt`：固定 seed 下的 SampleNTT 示例
+   - `pq_ntt`：独立的 256 项 NTT 变换示例
+   - `pq_mat_vec_mul`：`[1,2,3,4] × [1,2] mod 3329 = [5,11]` 的标量教学示例；与上面原语互不构成算法链
+3. **生成代码**：点击「▶」选择 JavaScript。各块是独立输入/输出示例，不代表完整 KeyGen 或符合性验证。
 
 ### 涉及原子块
 | 块 | 功能 | 标准 |
 |----|------|------|
-| `pq_sample_poly_cbd` | CBD(η₂) 采样 | FIPS 203 §4.2.2 |
-| `pq_sample_ntt` | 伪随机 NTT 矩阵 A | FIPS 203 §4.2.2 |
-| `pq_ntt` | 向量 NTT 域变换 | FIPS 203 §4.3 |
-| `pq_mat_vec_mul` | NTT 域矩阵×向量 | FIPS 203 §4.3 |
+| `pq_sample_poly_cbd` | CBD(η₂) 采样示例 | FIPS 203 Algorithm 8 `SamplePolyCBD`（原语级示例，不是完整 KeyGen） |
+| `pq_sample_ntt` | SampleNTT 示例 | FIPS 203 Algorithm 7 `SampleNTT`（原语级示例，不是完整矩阵生成） |
+| `pq_ntt` | NTT 变换示例 | FIPS 203 Algorithm 9 `NTT`（原语级示例） |
+| `pq_mat_vec_mul` | 标量模矩阵向量教学辅助 | 无标准映射；不属于 ML-KEM/ML-DSA 符合性证据 |
 
 ---
 
 ## 场景 9：ML-KEM.Encaps（进阶，20 分钟）
 
 ### 目标
-用后量子原子块搭完整 ML-KEM-512 Encaps 全链（k=2），验证 FIPS 203 官方向量。
+用后量子原子块搭完整 ML-KEM-512 Encaps 全链（k=2），核对该参数集随仓库登记的 FIPS 203 参考样例。
 
 ### 步骤
 
-1. **加载 demo**：导入 `demos/procedures/ML-KEM-Encaps.json`
+1. **加载 Demo**：导入 `demos/procedures/ML-KEM-Encaps.json`
 2. **观察结构**（`procedures_defreturn` 参数 `ek: bytes` + `m: bytes`，STACK 存中间量，RETURN = c‖K）：
    - **H(ek)**：SHA3-256（keccak_state_init → sponge_pad(1088, 0x06) → absorb → squeeze 32）
    - **G(m‖H)**：SHA3-512（rate 576）→ 前 32B = K、后 32B = r
@@ -50,7 +51,7 @@
    - **u/v**：`pq_ntt_mul` 点乘 + `pq_poly_add` 累加 → `pq_intt`；μ = Decompress(ByteDecode1(m))
    - **c1/c2**：`pq_compress`(d=10/4) → `pq_byte_encode` → concat
 3. **生成代码**：点击「▶」选择 Python 或 JavaScript
-4. **验证**：`node dist-verify/verify-demo.js demos/procedures/ML-KEM-Encaps.json --exec` → c（768B）‖K（32B）与 FIPS 203 参考一致
+4. **验证**：把生成代码在本机运行，与本页登记的固定期望值比对；同一实现另与 NIST ACVP 的 ML-KEM-512 encapsulation 用例（tgId=1，tcId 1–3）逐字节一致。这些用例随仓库提供，但不是完整的 ACVP 验证会话或认证
 
 ### 涉及块
 | 块 | 功能 |
@@ -81,35 +82,35 @@
 
 ---
 
-**官方向量验证**：`node dist-verify/verify-demo.js demos/procedures/ML-KEM-Encaps.json --exec` → `=== ALL VECTORS PASS ===`
+本页示例是项目固定回归；同一实现另与仓库提供的 ML-KEM-512 ACVP 用例（tgId=1，tcId 1–3）逐字节一致。这是官方用例子集核对，不是完整 ACVP 验证或认证。
 
 ---
 
-## 场景 10：FORS 少时签名（FIPS 205 §8，20 分钟）
+## 场景 10：FORS 教学变体（参考 FIPS 205 §8，20 分钟）
 
 ### 目标
-理解 SPHINCS+ 的 FORS（森林少时签名）：k 棵 Merkle 树、消息按 4-bit 分块选叶、认证路径、森林根。
+观察 FORS 的基本结构概念：多棵 Merkle 树、消息分块选叶、认证路径和森林根。本项目工作区是自定义教学变体，不是兼容 FIPS 205 的 SLH-DSA 实现。
 
 ### 步骤
 
-1. **加载 demo**：导入 `demos/procedures/FORS-Sign.json`
+1. **加载 Demo**：导入 `demos/procedures/FORS-Sign.json`
 2. **观察结构**（`procedures_defreturn` 封装三个黑盒块）：
-   - `FORS_Sign(sk_seed, m)`：sk_seed 32B + 消息摘要 m 2B（16 bit，按 4-bit 分块、块 0 最高位）→ **640B 签名**（4 树 × (32B 叶私钥 + 4×32B 认证路径)）
-   - `FORS_PkFromSk(sk_seed)`：4 棵 FORS 树根 → `pk = H(ADRS(FORS_ROOTS) ‖ roots)`（与消息无关）
-   - `FORS_Verify(pk, m, sig)`：由 sk + auth 重建树根 → 比对公钥
+   - `FORS_Sign(sk_seed, m)`：项目固定 `n=32,k=4,a=4`，输入 32B 种子和 2B 消息 → 640B 项目签名
+   - `FORS_PkFromSk(sk_seed)`：按项目自定义 SHAKE 拼接规则派生 32B 值
+   - `FORS_Verify(pk, m, sig)`：用同一项目规则重建并比较；这是内部自洽检查
 3. **选叶数学**：`fors_leaf_index(m, i)` 原子块——第 i 个 4-bit 块值即树内叶子索引（`demos/procedures/Tree-Index.json` 有分块断言：`0x3C A5` → [3, 12, 10, 5]）
-4. **Merkle 证明**：`merkle_auth_path` 输出每层兄弟 → leaf + auth 用 `merkle_node` 链重建根 == `merkle_root` 全树根（Tree-Index demo 性质向量）
-5. **验证**：`node dist-verify/verify-demo.js demos/procedures/FORS-Sign.json --exec` → 往返 / 确定性 / 篡改检测 PASS
+4. **Merkle 结构**：`merkle_auth_path` 和 `merkle_root` 展示通用树的认证路径与根重建关系，不等同 SLH-DSA 的 XMSS/FORS 节点算法
+5. **验证**：运行生成代码，检查签名往返、确定性和篡改检测；这里只做内部自洽检查，FORS 是教学变体，不是 FIPS 205 实现
 
 ### 涉及块
 | 块 | 功能 |
 |----|------|
-| `fors_sign` / `fors_verify` / `fors_pk_from_sk` | FORS 黑盒三件套（FIPS 205 Alg 12-14） |
+| `fors_sign` / `fors_verify` / `fors_pk_from_sk` | 项目自定义 FORS 教学变体；不是 FIPS 205 算法实现 |
 | `fors_leaf_index` | 消息 4-bit 块 → 叶子索引 |
 | `merkle_auth_path` / `merkle_root` / `merkle_node` | Merkle 证明（认证路径 + 重建） |
-| `slh_addr` / `slh_adrs_full` | ADRS 地址（SHAKE 域分隔） |
+| `slh_addr` / `slh_adrs_full` | ADRS 前缀/部分字段教学编码，不具备完整标准地址语义 |
 
-> 教学点：FORS 是"少时"签名——每对密钥只签少量消息；SPHINCS+ 用 Merkle 树聚合大量 WOTS+/FORS 密钥成树根。FORS 无独立官方向量（FIPS 205 KAT 为完整 SLH-DSA），性质向量覆盖。
+> 本页只检查签验往返、确定性和篡改拒绝等项目内部性质；不是官方向量，也不证明与 FIPS 205 兼容，FIPS 205 的标准实现尚未完成。
 >
 > **相关标准**：[standards/fips205-SLH-DSA/](../standards/fips205-SLH-DSA/)（FIPS 205 全算法索引 + ADRS/WOTS+/FORS 分解）。
 
@@ -122,13 +123,13 @@
 
 ### 步骤
 
-1. **加载 demo**：导入 `demos/procedures/Goppa-Decode.json`（GF(16) 子域 [14,6,5] 码，t=2）
+1. **加载 Demo**：导入 `demos/procedures/Goppa-Decode.json`（GF(16) 子域 [14,6,5] 码，t=2）
 2. **码构造**（原子链，可拼装）：
    - `GOPPA_G(alphas)`：`goppa_gen_poly([13, 81])` → G = [176, 92, 1]（z² + 92z + 176），根在 13/81（`GOPPA_EVAL` 求值为 0 验证）
    - `GOPPA_INV(a, g)`：`gf2m_poly_xgcd` + `arr_slice` 解析 → (z−α)⁻¹ mod g（逆元验证 `u·(z−177) ≡ 1`）
    - `GOPPA_SYN(a, b, g)`：syndrome 原子链 = Σ (z−αᵢ)⁻¹ mod g —— **Patterson 的教学入口**
 3. **译码**（黑盒）：`GOPPA_DEC(y, g, L)` → Patterson 完整算法：syndrome → sqrt(z+S⁻¹)（16×16 Frobenius 开方）→ 扩展欧几里得 → σ 求根定错位 → 翻转
-4. **验证**：`node dist-verify/verify-demo.js demos/procedures/Goppa-Decode.json --exec` → 无错/单错/双错往返 + 篡改 G 不可纠 PASS
+4. **验证**：运行生成代码，检查无错/单错/双错往返以及篡改生成矩阵后不可纠；这是纠错码教学构件的自洽检查，不是完整 McEliece 密码系统
 
 ### 涉及块
 | 块 | 功能 |

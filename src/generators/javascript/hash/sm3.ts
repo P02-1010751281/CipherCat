@@ -1,14 +1,34 @@
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly';
-import { registerHexToBytes } from '../data/helpers';
+import { registerHexToBytes, registerUtf8ToBytes } from '../data/helpers';
 
-let _sm3PadFn: string | null = null;
+export function registerSm3LengthField(): string {
+  return javascriptGenerator.provideFunction_('sm3LengthField', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(byteLength) {',
+    '  if (!Number.isSafeInteger(byteLength) || byteLength < 0) throw new RangeError("SM3 byte length must be a non-negative safe integer");',
+    '  var bitLength = BigInt(byteLength) * 8n;',
+    '  var field = new Uint8Array(8);',
+    '  for (var i = 7; i >= 0; i--) {',
+    '    field[i] = Number(bitLength & 0xFFn);',
+    '    bitLength >>= 8n;',
+    '  }',
+    '  return field;',
+    '}',
+  ]);
+}
+
 function getSm3PadFn(): string {
-  if (!_sm3PadFn) {
-    _sm3PadFn = javascriptGenerator.provideFunction_('sm3Pad', [
+  const lengthField = registerSm3LengthField();
+  const utf8ToBytes = registerUtf8ToBytes();
+  return javascriptGenerator.provideFunction_('sm3Pad', [
       'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg) {',
-      '  if (typeof msg === "string") msg = new TextEncoder().encode(msg);',
-      '  else if (Array.isArray(msg)) msg = Uint8Array.from(msg);',
+      '  if (typeof msg === "string") msg = ' + utf8ToBytes + '(msg);',
+      '  else if (Array.isArray(msg)) {',
+      '    for (var i = 0; i < msg.length; i++) if (!Number.isSafeInteger(msg[i]) || msg[i] < 0 || msg[i] > 255) throw new TypeError("SM3 input must contain byte integers from 0 to 255");',
+      '    msg = Uint8Array.from(msg);',
+      '  } else if (!(msg instanceof Uint8Array)) {',
+      '    throw new TypeError("SM3 input must be UTF-8 text or bytes");',
+      '  }',
       '  var mLen = msg.length;',
       '  var mLenBits = mLen * 8;',
       '  var k = (448 - mLenBits - 1) % 512;',
@@ -16,14 +36,20 @@ function getSm3PadFn(): string {
       '  var padded = new Uint8Array(mLen + 1 + Math.floor(k / 8) + 8);',
       '  padded.set(msg);',
       '  padded[mLen] = 0x80;',
-      '  for (var i = 0; i < 4; i++) {',
-      '    padded[padded.length - 1 - i] = (mLenBits >>> (8 * i)) & 0xFF;',
-      '  }',
+      '  padded.set(' + lengthField + '(mLen), padded.length - 8);',
       '  return padded;',
       '}',
-    ]);
-  }
-  return _sm3PadFn;
+  ]);
+}
+
+function registerSm3PadText(): string {
+  const pad = getSm3PadFn();
+  return javascriptGenerator.provideFunction_('sm3PadText', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(text) {',
+    '  if (typeof text !== "string") throw new TypeError("expected UTF-8 text");',
+    '  return ' + pad + '(text);',
+    '}',
+  ]);
 }
 
 javascriptGenerator.forBlock['hash_sm3_pad_text'] = function (
@@ -31,7 +57,7 @@ javascriptGenerator.forBlock['hash_sm3_pad_text'] = function (
 ): [string, number] {
   const input =
     javascriptGenerator.valueToCode(block, 'INPUT', Order.ATOMIC) || '\'\'';
-  return [getSm3PadFn() + '(' + input + ')', Order.ATOMIC];
+  return [registerSm3PadText() + '(' + input + ')', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['hash_sm3_pad'] = function (

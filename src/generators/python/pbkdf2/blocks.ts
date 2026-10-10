@@ -83,6 +83,12 @@ function registerSm3Hmac(): string {
 function registerPbkdf2(): string {
   return pythonGenerator.provideFunction_('pbkdf2', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(pw, salt, iter, dklen, prf):',
+    '    if isinstance(iter, bool) or not isinstance(iter, (int, float)) or (isinstance(iter, float) and not iter.is_integer()): raise ValueError("PBKDF2 iteration count must be a positive integer")',
+    '    iter = int(iter)',
+    '    if not 1 <= iter <= 9007199254740991: raise ValueError("PBKDF2 iteration count must be a positive integer")',
+    '    if isinstance(dklen, bool) or not isinstance(dklen, (int, float)) or (isinstance(dklen, float) and not dklen.is_integer()): raise ValueError("PBKDF2 derived-key length must be a positive integer within the RFC limit")',
+    '    dklen = int(dklen)',
+    '    if not 1 <= dklen <= 137438953440: raise ValueError("PBKDF2 derived-key length must be a positive integer within the RFC limit")',
     '    out = bytearray()',
     '    block = 1',
     '    while len(out) < dklen:',
@@ -110,12 +116,12 @@ pythonGenerator.forBlock['pbkdf2'] = function (block: Block): [string, number] {
   const fn = registerPbkdf2();
   if (hash === 'sm3') {
     const hmac = registerSm3Hmac();
-    return [fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + keylen + ', ' + hmac + ')', Order.ATOMIC];
+    return ['bytes(' + fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + keylen + ', ' + hmac + '))', Order.ATOMIC];
   }
   const hmac = pythonGenerator.provideFunction_('pbkdf2_hmac_sha256', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, msg):',
     '    import hashlib, hmac',
     '    return list(hmac.new(bytes(key), bytes(msg), hashlib.sha256).digest())',
   ]);
-  return [fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + keylen + ', ' + hmac + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + keylen + ', ' + hmac + '))', Order.ATOMIC];
 };

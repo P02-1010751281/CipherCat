@@ -147,7 +147,12 @@ function argsExtraState(block: AnyBlock): Record<string, unknown> | null {
 function loadArgsExtraState(block: AnyBlock, state: Record<string, unknown>): void {
   // flyout 传 {name, params}：name 应用到 NAME 字段（函数选择）
   if (typeof state.name === 'string' && state.name) {
-    try { block.setFieldValue(state.name, 'NAME'); } catch { /* noop */ }
+    // 旧工作区可能没有对应字段：恢复名字失败时保留默认值即可，不属于错误。
+    try {
+      block.setFieldValue(state.name, 'NAME');
+    } catch {
+      /* 预期内：字段缺失或值不被接受 */
+    }
   }
   const raw = (state.params as Array<{ name: string; id: string; type?: string } | string>) || [];
   block.arguments_ = [];
@@ -438,7 +443,8 @@ function buildCallOptions(block: AnyBlock): Array<[string, string]> {
       : all.map((n): [string, string] => [n, n]);
     callOptionsCache.set(block, { key: tplKey, options });
     return options;
-  } catch {
+  } catch (error) {
+    console.warn('function dropdown options failed:', error);
     return [[Blockly.Msg.PROCEDURES_UNNAMED || 'unnamed', '']];
   }
 }
@@ -741,7 +747,7 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'pq_poly_sub'],
     paramVarName: 'a',
   },
-  // 矩阵×向量：MatVecMul(mat, v) — v 输入留空
+  // 通用标量矩阵×向量教学示例；不是格密码多项式环运算
   proc_pq_mat_mul: {
     returnChain: ['variables_get', 'pq_mat_vec_mul'],
     paramVarName: 'mat',
@@ -761,18 +767,18 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'mode_ctr_encrypt'],
     paramVarName: 'data',
   },
-  // GCM：CTR-Encrypt(data, key, iv) 骨架 — GHASH 组合留待用户
+  // GCM 起始骨架仅预填 CTR 核心；缺少 GHASH/认证标签，不是可用的 GCM 加密流程。
   proc_mode_gcm: {
     returnChain: ['variables_get', 'mode_ctr_encrypt'],
     paramVarName: 'data',
   },
-  // PBKDF2：迭代 HMAC 骨架（password 参数）
+  // PBKDF2：1000 次空循环起始骨架（password 参数）；未实现 PRF/派生计算。
   proc_pbkdf2: {
     bodyState: iterateState(1000),
     returnChain: ['variables_get'],
     paramVarName: 'password',
   },
-  // HKDF：提取-扩展骨架
+  // HKDF：两次空循环占位（ikm 参数）；未实现 Extract/Expand 计算。
   proc_hkdf: {
     bodyState: iterateState(2),
     returnChain: ['variables_get'],
@@ -793,7 +799,7 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'mode_ecb_decrypt'],
     paramVarName: 'ciphertext',
   },
-  // 海绵海绵挤压：squeeze(state) — outlen 留空
+  // 仅预填 sponge_squeeze(state)，outlen 留空；不是 duplex 构造。
   proc_sponge_duplex: {
     returnChain: ['variables_get', 'sponge_squeeze'],
     paramVarName: 'state',
@@ -819,7 +825,8 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'pq_sample_poly_cbd', 'pq_ntt'],
     paramVarName: 'seed',
   },
-  // ML-KEM-512 Encaps：28 条 variables_set 语句全链（提取自官方向量 PASS 的 procedure demo）
+  // ML-KEM-512 Encaps：28 条 variables_set 语句全链（提取自已登记的 ML-KEM-Encaps Demo；
+  // 该 Demo 现登记为项目固定回归，来源向量 ID 未登记，见 docs/standards/CONFORMANCE-INVENTORY.md）
   proc_mlkem_encaps: {
     bodyState: MLKEM_ENCAPS_BODY_STATE as Blockly.serialization.blocks.State,
     returnState: MLKEM_ENCAPS_RETURN_STATE as Blockly.serialization.blocks.State,
@@ -830,13 +837,13 @@ const TEMPLATE_PREFILL: Record<string, TemplatePrefill> = {
     returnChain: ['variables_get', 'zuc_keystream'],
     paramVarName: 'key',
   },
-  // AES 密钥扩展：10 轮迭代循环骨架
+  // AES 密钥扩展起始模板：10 次空循环，不计算轮密钥。
   proc_aes_key_schedule: {
     bodyState: iterateState(10),
     returnChain: ['variables_get'],
     paramVarName: 'key',
   },
-  // SM4 密钥扩展：32 轮迭代循环骨架
+  // SM4 密钥扩展起始模板：32 次空循环，不计算轮密钥。
   proc_sm4_key_schedule: {
     bodyState: iterateState(32),
     returnChain: ['variables_get'],
@@ -1035,24 +1042,28 @@ function _makeTemplateBlock(
       const usesIndexedParams = paramsArr.length > 1;
       (usesIndexedParams ? paramsArr : []).forEach((p, i) => {
         const pf = new Blockly.FieldTextInput(p.name);
+        const typeField = new Blockly.FieldDropdown(CRYPTO_PARAM_TYPES);
         pf.setValidator(identifierValidator);
         pf.setSpellcheck(false);
         const row = this.appendDummyInput('PARAM_INPUT_' + i);
         if (i === 0) row.appendField(msg.CRYPTO_PROCEDURES_PARAM_MSG || 'param:');
         row.appendField(pf, 'PARAM_NAME_' + i)
           .appendField(':')
-          .appendField(new Blockly.FieldDropdown(CRYPTO_PARAM_TYPES), 'PARAM_TYPE_' + i);
+          .appendField(typeField, 'PARAM_TYPE_' + i);
+        typeField.setValue(p.type);
       });
       // 单参数模板：保留原生 PARAM_NAME/PARAM_TYPE 字段（call 同步/生成器兼容）
       if (paramsArr.length === 1) {
         const paramNameField = new Blockly.FieldTextInput(paramsArr[0].name);
+        const paramTypeField = new Blockly.FieldDropdown(CRYPTO_PARAM_TYPES);
         paramNameField.setValidator(identifierValidator);
         paramNameField.setSpellcheck(false);
         this.appendDummyInput('PARAM_INPUT')
           .appendField(msg.CRYPTO_PROCEDURES_PARAM_MSG || 'param:')
           .appendField(paramNameField, 'PARAM_NAME')
           .appendField(':')
-          .appendField(new Blockly.FieldDropdown(CRYPTO_PARAM_TYPES), 'PARAM_TYPE');
+          .appendField(paramTypeField, 'PARAM_TYPE');
+        paramTypeField.setValue(paramsArr[0].type);
       }
       this.appendStatementInput('BODY').setCheck(null).appendField(msg.CRYPTO_ITERATE_DO || 'Do');
       this.appendValueInput('RETURN').setCheck(null).appendField(msg.PROCEDURES_DEFRETURN_RETURN || '\u2699 return');
@@ -1144,7 +1155,7 @@ _makeTemplateBlock('proc_mode_ctr', 'data', 'bytes', MSG.PROC_MODE_CTR_LABEL || 
 _makeTemplateBlock('proc_mode_gcm', 'data', 'bytes', MSG.PROC_MODE_GCM_LABEL || '🔧 GCM', 'mode');
 _makeTemplateBlock('proc_ntt_vec', 'vec', 'int_list', MSG.PROC_NTT_VEC_LABEL || '🔧 NTT_Vec', 'pqc');
 _makeTemplateBlock('proc_pq_cbd', 'seed', 'seed', MSG.PROC_PQ_CBD_LABEL || '🔧 CBD_NTT_Vec', 'pqc');
-_makeTemplateBlock('proc_pq_mat_mul', 'mat', 'int_list', MSG.PROC_PQ_MAT_MUL_LABEL || '🔧 Mat×Vec_NTT', 'pqc');
+_makeTemplateBlock('proc_pq_mat_mul', 'mat', 'int_list', MSG.PROC_PQ_MAT_MUL_LABEL || '🔧 Scalar_Mat×Vec', 'pqc');
 _makeTemplateBlock('proc_pq_sample', 'seed', 'seed', MSG.PROC_PQ_SAMPLE_LABEL || '🔧 SampleNTT_Mat', 'pqc');
 _makeTemplateBlock('proc_pq_vec_add', 'a', 'int_list', MSG.PROC_PQ_VEC_ADD_LABEL || '🔧 Vec_Add', 'pqc');
 _makeTemplateBlock('proc_pq_vec_sub', 'a', 'int_list', MSG.PROC_PQ_VEC_SUB_LABEL || '🔧 Vec_Sub', 'pqc');

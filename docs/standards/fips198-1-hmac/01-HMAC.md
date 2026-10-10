@@ -30,7 +30,9 @@ HMAC(K, M) = H((K0 xor opad) || H((K0 xor ipad) || M))
 
 ## 项目边界
 
-`hash_hmac` 的 HASH 下拉支持 SHA-256 和 SM3；`hmac_sha256`、`sm3_hmac` 是对应快捷路径。Demo：`demos/procedures/HMAC-SHA256.json`。本项目只展示功能和中间结构，不宣称密钥擦除、常量时间或认证模块验证。
+`hash_hmac` 的 HASH 下拉支持 SHA-256 和 SM3；`hmac_sha256`、`sm3_hmac` 是对应快捷路径。FIPS 198-1 的 HMAC 适用经批准的底层哈希函数；SHA-256 属于 FIPS 180-4。SM3-HMAC 是本项目支持的国密扩展选项，不是 NIST FIPS 198-1 的批准哈希选项，也不因此获得 NIST 验证。Demo：`demos/procedures/HMAC-SHA256.json`。本项目只展示功能和中间结构，不宣称密钥擦除、常量时间或认证模块验证。
+
+定向回归 [hmac-block-contract.test.ts](../../../tests/unit/hmac-block-contract.test.ts) 通过 Blockly 块执行两种语言：SHA-256 覆盖 RFC 4231 case 1 与长密钥 case 6，SM3 与 Node 的 OpenSSL-backed HMAC-SM3 结果交叉比对，并验证非法及稀疏字节数组、孤立代理项会被拒绝；合法 Unicode 文本也有双语言一致性用例。[sha256-padding-contract.test.ts](../../../tests/unit/sha256-padding-contract.test.ts) 另以不分配大消息的方式核对 HMAC-SM3 内层哈希 `2^32` bit 长度字段。它们不是完整的 HMAC 官方测试集、CAVP 验证或产品认证。
 ## 原文摘录
 
 > 本页正文是按 source 的“# NIST FIPS 198-1 — HMAC 参考”拆出的结构化说明；该定位是概览/组合页，未强行截取不唯一的行号。需要核对时请按 [source 提取稿](./00-Standard-Source.md) 的章节标题和同目录 PDF 查看原文。

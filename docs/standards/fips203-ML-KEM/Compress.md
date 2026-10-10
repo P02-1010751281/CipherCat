@@ -7,7 +7,7 @@
 | 类型 | 算法阶段 / 原语 / 函数 |
 | 标准定位 | Compress / Decompress (§4.2.1) |
 | 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
-| 原文位置 | [提取稿](./00-Standard-Source.md#L1232)；PDF 物理页需结合同目录 PDF 核对 |
+| 原文位置 | [提取稿 §4.2.1](./00-Standard-Source.md#L1273-L1287)；PDF [物理第 30 页](./NIST.FIPS.203.pdf#page=30)（标准页 21） |
 | 项目状态 | 已实现（详见本文现有实现/缺项说明） |
 
 ## 原文定位与引用
@@ -23,10 +23,10 @@ ML-KEM 在 `q=3329` 上定义整数压缩与解压缩；`d<12`，计算在有理
 ```text
 q = 3329
 Compress_d:   Z_q -> Z_(2^d)
-    x -> ceil((2^d / q) * x) mod 2^d
+    x -> ⌈(2^d / q) * x⌋ mod 2^d
 
 Decompress_d: Z_(2^d) -> Z_q
-    y -> ceil((q / 2^d) * y)
+    y -> ⌈(q / 2^d) * y⌋
 
 For all y in Z_(2^d), d < 12:
     Compress_d(Decompress_d(y)) = y
@@ -58,7 +58,7 @@ Decompress_d: ℤ_{2^d} → ℤ_q
     Decompress_d(y) = ⌈(q / 2^d) · y⌋
 ```
 
-其中 ⌈·⌋ 为四舍五入到最近整数。**不得使用浮点运算。**
+其中 `⌈x⌋` 表示四舍五入到最近整数，恰好半整数时向上取整（定义见 FIPS 203 §2.3）。计算使用有理数语义；**不得使用浮点运算。**
 
 ### 整数实现
 
@@ -80,8 +80,8 @@ return (y * q + (1 << (d - 1))) // (1 << d)
 
 ### 块实现
 
-- `pq_compress`: Compress_d(x, d, q)  — 下拉框选择 d ∈ {1,3,4,5,6,10,11,12}
-- `pq_decompress`: Decompress_d(y, d, q)
+- `pq_compress`: Compress_d(x, d, q) — 标准参数 `d∈{1,3,4,5,6,10,11}`；积木额外保留 `d=12` 项目扩展，不属于 FIPS 203 §4.2.1 参数范围。
+- `pq_decompress`: Decompress_d(y, d, q) — 参数范围同上；`d=12` 仅为项目扩展。
 
 ## 项目映射
 

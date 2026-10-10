@@ -232,7 +232,7 @@ javascriptGenerator.forBlock['eddsa_sign'] = function (block: Block): [string, n
   const msg = javascriptGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   registerSha512();
   const fn = registerEddsaSign();
-  return [fn + '(' + secret + ', ' + msg + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + secret + ', ' + msg + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['eddsa_verify'] = function (block: Block): [string, number] {

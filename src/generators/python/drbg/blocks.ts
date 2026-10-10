@@ -9,12 +9,12 @@
  *   - drbg_reseed(st, entropy, additional)
  *   - drbg_generate(st, nbits, additional) → 字节列表（可变状态）
  *   - drbg_generate_all(entropy, nonce, perso, nbits) → 单次生成（块调用路径）
- * 官方向量：NIST CAVP drbgtestvectors（SHA-256 480 例全过）。
+ * 项目 Demo 仅含少量固定回归输出，未运行完整 NIST CAVP 向量集。
  */
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
 
-/** 完整状态化 HMAC-DRBG（HMAC-SHA-256，SP 800-90A §10.1.2） */
+/** 教学块与 Demo 共用的内部 HMAC-DRBG 状态 helper；不实现完整生命周期。 */
 function registerDrbg(): string {
   pythonGenerator.provideFunction_('drbg_update', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(st, provided):',
@@ -43,6 +43,9 @@ function registerDrbg(): string {
   pythonGenerator.provideFunction_('drbg_generate', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(st, nbits, additional=None):',
     '    import hmac, hashlib',
+    '    if isinstance(nbits, bool) or not isinstance(nbits, (int, float)) or (isinstance(nbits, float) and not nbits.is_integer()) or nbits < 0 or nbits > 524288:',
+    '        raise ValueError("requested_bits must be a safe integer from 0 to 524288")',
+    '    nbits = int(nbits)',
     '    if additional is not None:',
     '        drbg_update(st, additional)',
     '    outlen = (nbits + 7) // 8',
@@ -51,6 +54,8 @@ function registerDrbg(): string {
     '        st[1] = list(hmac.new(bytes(st[0]), bytes(st[1]), hashlib.sha256).digest())',
     '        temp += st[1]',
     '    out = temp[:outlen]',
+    '    unused_bits = (8 - (nbits % 8)) % 8',
+    '    if unused_bits and out: out[-1] &= (0xff << unused_bits) & 0xff',
     '    drbg_update(st, additional)',
     '    return out',
   ]);
@@ -66,5 +71,5 @@ pythonGenerator.forBlock['drbg_generate'] = function (block: Block): [string, nu
   const perso = pythonGenerator.valueToCode(block, 'PERSO', Order.ATOMIC) || '[]';
   const bits = pythonGenerator.valueToCode(block, 'BITS', Order.ATOMIC) || '256';
   const fn = registerDrbg();
-  return [fn + '(' + entropy + ', ' + nonce + ', ' + perso + ', ' + bits + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + entropy + ', ' + nonce + ', ' + perso + ', ' + bits + '))', Order.ATOMIC];
 };

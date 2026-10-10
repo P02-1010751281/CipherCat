@@ -97,6 +97,7 @@ function registerEcdsaSign(): string {
     '  for (var i = 0; i < 32; i++) z = (z << 8n) | BigInt(h1[i]);',
     '  var x = 0n;',
     '  for (var i = 0; i < 32; i++) x = (x << 8n) | BigInt(priv[i]);',
+    '  if (x < 1n || x >= N) throw new Error("ECDSA private key scalar must be in [1, n-1]");',
     '  // RFC 6979 §2.3.5 bits2octets(h1) = int2octets(bits2int(h1) mod n)',
     '  var b2i = [];',
     '  var zz = z % N;',
@@ -122,6 +123,7 @@ function registerEcdsaSign(): string {
     '  var R = ecdsaPointMul(k, {x: GX, y: GY}, P, A);',
     '  var r = R.x % N;',
     '  var s = modInverse(k, N) * ((z + r * x) % N) % N;',
+    '  if (r === 0n || s === 0n) throw new Error("ECDSA deterministic signature generation failed");',
     '  var out = [];',
     '  for (var i = 31; i >= 0; i--) out.push(Number((r >> BigInt(8 * i)) & 0xffn));',
     '  for (var i = 31; i >= 0; i--) out.push(Number((s >> BigInt(8 * i)) & 0xffn));',
@@ -137,10 +139,12 @@ function registerEcdsaVerify(): string {
     '  var P = 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffffn;',
     '  var A = 0xffffffff00000001000000000000000000000000fffffffffffffffffffffffcn;',
     '  var N = 0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551n;',
+    '  var B = 0x5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604bn;',
     '  var GX = 0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296n;',
     '  var GY = 0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5n;',
-    '  if (pub.length !== 64 || sig.length !== 64) throw new Error("ECDSA pub/sig must be 64 bytes");',
+    '  if (pub.length !== 64 || sig.length !== 64) return false;',
     '  var Q = {x: ecdsaBeInt(pub.slice(0, 32)), y: ecdsaBeInt(pub.slice(32, 64))};',
+    '  if (Q.x < 0n || Q.y < 0n || Q.x >= P || Q.y >= P || Q.y * Q.y % P !== (Q.x * Q.x % P * Q.x + A * Q.x + B) % P) return false;',
     '  var r = ecdsaBeInt(sig.slice(0, 32));',
     '  var s = ecdsaBeInt(sig.slice(32, 64));',
     '  if (!(r >= 1n && r < N && s >= 1n && s < N)) return false;',
@@ -169,7 +173,7 @@ javascriptGenerator.forBlock['ecdsa_sign'] = function (block: Block): [string, n
   registerEcdsaPointAdd();
   registerEcdsaPointMul();
   const fn = registerEcdsaSign();
-  return [fn + '(' + priv + ', ' + msg + ')', Order.ATOMIC];
+  return ['Uint8Array.from(' + fn + '(' + priv + ', ' + msg + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['ecdsa_verify'] = function (block: Block): [string, number] {

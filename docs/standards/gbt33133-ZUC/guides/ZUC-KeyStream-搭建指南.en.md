@@ -13,7 +13,7 @@ ZUC keystream generation (GB/T 33133.1-2016 §5)
   └─ Key loading: s_i = k_i ‖ d_i ‖ iv_i (i=0..15)   // 31-bit cells, d_i 8-bit constants
   └─ Initialization mode (repeat 32 ticks):
   │    └─ BitReconstruction()            // X0..X3 = s15H‖s14L, s11L‖s9H, s7L‖s5H, s2L‖s0H
-  │    └─ W = F(X0, X1, X2)              // updates R1/R2 memory cells
+  │    └─ W = F(X0, X1, X2)              // computes W and next R1/R2; the full flow carries state
   │    └─ LFSRWithInitialisationMode(u = W>>>1)   // mod 2³¹-1 feedback + u
   └─ Discard round: BitReconstruction → F → LFSRWithWorkMode()   // output discarded
   └─ Work mode (one 32-bit word z per tick):
@@ -22,7 +22,7 @@ ZUC keystream generation (GB/T 33133.1-2016 §5)
        └─ LFSRWithWorkMode()
 ```
 
-The keystream loop depends on cross-tick state: `R1/R2` memory cells persist (maintained inside the F block), and the LFSR state shifts each tick (initialization mode injects `W>>>1`, work mode injects nothing).
+The complete flow carries `R1/R2` and LFSR state across ticks. The atomic `zuc_f` block computes and returns `W` but does not store the next `R1/R2`; initialization-mode LFSR updates inject `W>>>1`, while work-mode updates inject nothing.
 
 ---
 
@@ -36,8 +36,10 @@ The keystream loop depends on cross-tick state: `R1/R2` memory cells persist (ma
 | S0 / S1 | 8×8 S-box | GB/T 33133 annex A.1 / A.2 |
 | L1 | 32-bit linear transform | L1(X) = X⊕(X<<<2)⊕(X<<<10)⊕(X<<<18)⊕(X<<<24) |
 | L2 | 32-bit linear transform | L2(X) = X⊕(X<<<8)⊕(X<<<14)⊕(X<<<22)⊕(X<<<30) |
-| F | non-linear function | W = (X₀⊕R₁)⊞R₂; R₁'=S(L1(W₁‖W₂)), R₂'=S(L2(W₂‖W₁)) |
+| F | non-linear function | W = (X₀⊕R₁)⊞R₂; R₁'=S(L1(W₁_L‖W₂_H)), R₂'=S(L2(W₂_L‖W₁_H)) |
 | Keystream word | 32-bit | z = W ⊕ X₃, one word per tick |
+
+`Wᵢ_H` and `Wᵢ_L` denote the high and low 16 bits of the 32-bit word `Wᵢ`, respectively.
 
 ---
 
@@ -49,7 +51,7 @@ The keystream loop depends on cross-tick state: `R1/R2` memory cells persist (ma
 | `ZUC S1` | `zuc_s1` | 8×8 S1 S-box lookup | S1(x), x ∈ 0..255 |
 | `ZUC L1` | `zuc_l1` | linear transform L1 | L1(X), see parameter table |
 | `ZUC L2` | `zuc_l2` | linear transform L2 | L2(X), see parameter table |
-| `ZUC F` | `zuc_f` | non-linear function F | W=(X₀⊕R₁)⊞R₂; R₁/R₂ updated inside the generator |
+| `ZUC F` | `zuc_f` | non-linear function F | W=(X₀⊕R₁)⊞R₂; the atomic block returns W only, and the full flow carries the next R₁/R₂ |
 | `ZUC Keystream` | `zuc_keystream` | full keystream (incl. LFSR loop) | key loading + 32 init rounds + discard round + work mode |
 
 S-box interleave: S(x) = S0(x>>24) ‖ S1(x>>16) ‖ S0(x>>8) ‖ S1(x) (used inside F).
@@ -155,11 +157,11 @@ def ZUC_Keystream(key):
 
 ---
 
-## Step 4: Atomic Teaching Path — S0/S1/L1/L2/F Verification
+## Step 4: Atomic Teaching Path — S0, L1, and F Checks
 
-Verify each atomic block against the known tick-0 values of test vector C1 (Annex A) to understand its role.
+Use the known tick-0 values from C1 in standard Annex C to demonstrate the inputs and outputs of the S0 lookup, L1 transform, and F function. This step does not demonstrate S1 or L2 individually.
 
-### 4a — S0 / L1 check
+### 4a — S0 lookup and L1 transform
 
 | # | Action |
 |---|--------|
@@ -189,28 +191,24 @@ set w = ZUC F(0x008f9a00, 0xf100005e, 0xaf00006b, 0, 0)
         // expect W = 0x008f9a00 (= X₀ since R₁=R₂=0)
 ```
 
-> **Note**: the `zuc_f` block returns W; the R₁'/R₂' update happens inside the generator (pure-function version returns `{W, R1, R2}`). The keystream generation loop (data-dependent LFSR shifting + per-tick F) is handled by the `zuc_keystream` full block — as with the ML-KEM Encaps guide, multi-step loops with intermediate state are not decomposed into workspace atomic chains.
+> **Note**: the `zuc_f` generator computes new state values R₁'/R₂', but the atomic block outputs only W and does not persist those values. Per-tick state management belongs to the full `zuc_keystream` block; the multi-step loop is not decomposed into an atomic workspace chain.
 
-**Block count** (step 4): 2× `set`, 1× `zuc_s0`, 1× `zuc_l1`, 1× `zuc_f`, 4× `data_value`, 1× `math_number`
+**Block count** (step 4): 3× `variables_set`, 1× `zuc_s0`, 1× `zuc_l1`, 1× `zuc_f`, 5× `data_value`, 2× `math_number`
 
 ---
 
-## Complete Block List
+## Block Types Used in This Guide
 
-| Category | Block | Count | Blockly ID |
-|----------|-------|:-----:|------------|
-| Variables | `set VAR to` | 6 | `variables_set` |
-| Variables | `VAR` (reference) | ~8 | `variables_get` |
-| Text | `""` | 2 | `text` |
-| Math | number block | 3 | `math_number` |
-| Data Processing | `value` | 3 | `data_value` |
-| ZUC Stream Cipher | `ZUC S0` | 1 | `zuc_s0` |
-| ZUC Stream Cipher | `ZUC S1` | 0–1 | `zuc_s1` |
-| ZUC Stream Cipher | `ZUC L1` | 1 | `zuc_l1` |
-| ZUC Stream Cipher | `ZUC L2` | 0–1 | `zuc_l2` |
-| ZUC Stream Cipher | `ZUC F` | 1 | `zuc_f` |
-| ZUC Stream Cipher | `ZUC Keystream` | 1 | `zuc_keystream` |
-| | **Total** | **~22–25** | |
+This table combines the full-block, template, and atomic teaching paths; the number of block instances differs by path. S1 and L2 are listed in the atomic block table but are not demonstrated individually in this guide.
+
+| Category | Block types | Blockly IDs |
+|----------|-------------|-------------|
+| Variables | `set VAR to`, `VAR` reference | `variables_set`, `variables_get` |
+| Text | `""` | `text` |
+| Math | number block | `math_number` |
+| Data Processing | `value` | `data_value` |
+| ZUC Stream Cipher | `ZUC S0`, `ZUC S1`, `ZUC L1`, `ZUC L2`, `ZUC F`, `ZUC Keystream` | `zuc_s0`, `zuc_s1`, `zuc_l1`, `zuc_l2`, `zuc_f`, `zuc_keystream` |
+| Procedure template | `ZUC_Keystream` definition and call | `procedures_defreturn`, `procedures_callreturn` |
 
 ---
 
@@ -229,7 +227,10 @@ set w = ZUC F(0x008f9a00, 0xf100005e, 0xaf00006b, 0, 0)
 | Vector | key | iv | len | z₁ | z₂ |
 |--------|-----|-----|:---:|------|------|
 | C1 | all 0 (16 bytes) | all 0 (16 bytes) | 2 | `27bede74` | `018082da` |
-| C2 | all 1 (16 bytes) | all 1 (16 bytes) | 2 | `0657cfa0` | `7096398b` |
+| C2 | 16 bytes of `0xFF` | 16 bytes of `0xFF` | 2 | `0657cfa0` | `7096398b` |
+| C3 | `3d4c4be96a82fdaeb58f641db17b455b` | `84319aa8de6915ca1f6bda6bfbd8c766` | 2 | `14f1c272` | `3279c419` |
+
+Source locations: C1 input and output are on [GB/T 33133.1-2016 PDF physical page 13 (printed page 9)](../GBT-33133.1-2016.pdf#page=13), with its state tables continuing on [physical page 14 (printed page 10)](../GBT-33133.1-2016.pdf#page=14); C2 is on physical page 14; C3 is on [physical page 15 (printed page 11)](../GBT-33133.1-2016.pdf#page=15).
 
 ---
 
@@ -267,11 +268,11 @@ a6c85fc66afb8533aafc2518dfe784940ee1e4b030238cc800
 | 2 | §5.6.3 | Discard round + work mode (z = W⊕X₃) |
 | 4 | §5.4 | Non-linear function F (S0/S1, L1/L2, R1/R2) |
 | 4 | Annex A.1/A.2 | S0/S1 S-box tables |
-| Annex A | Annex C | Test vectors 1/2/3 |
+| Vectors | Annex C | Official test vectors C1/C2/C3 |
 
 ---
 
-## Annex A: Official Vectors + Intermediate State
+## C1 Official Vector and Intermediate-State Walkthrough
 
 ### C1 (key=iv=all 0)
 
@@ -300,7 +301,7 @@ Discard round and keystream (standard Annex C table; t=0 is the discard round wh
 
 \* t=0 is the discard round (z output unused); R₁/R₂ columns show post-F-update values.
 
-### C2 (key=iv=all 1)
+### C2 (key=iv=16 bytes of `0xFF`)
 
 | Vector | z₁ | z₂ |
 |--------|------|------|
@@ -308,7 +309,7 @@ Discard round and keystream (standard Annex C table; t=0 is the discard round wh
 
 ---
 
-## Annex B: Quick Parameter Reference
+## Guide Appendix: ZUC-128 Quick Parameter Reference
 
 | Parameter | ZUC-128 |
 |-----------|---------|

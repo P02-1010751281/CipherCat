@@ -48,13 +48,19 @@ except NameError:
 if isinstance(_sbox_ref, list) and len(_sbox_ref) > 0 and isinstance(_sbox_ref[0], list):
     _sbox_ref = [item for row in _sbox_ref for item in row]
 if not isinstance(_sbox_ref, list) or len(_sbox_ref) < 256:
-    raise ValueError("Variable '${sboxVar}' must be a list containing at least 256 elements.")
+    raise ValueError("S-box must contain at least 256 entries")
+for _sbox_index in range(256):
+    _sbox_entry = _sbox_ref[_sbox_index]
+    if isinstance(_sbox_entry, bool) or not isinstance(_sbox_entry, (int, float)) or not 0 <= _sbox_entry <= 255 or int(_sbox_entry) != _sbox_entry:
+        raise ValueError("S-box entries must be bytes")
+_sbox_ref = [int(value) for value in _sbox_ref[:256]]
 
 _input_val = ${inputVar}
 if _input_val is None:
     _input_val = 0
-if isinstance(_input_val, (bytes, bytearray)):
-    _input_val = int.from_bytes(_input_val[:4].ljust(4, b'\\x00'), 'big')
+if isinstance(_input_val, bool) or not isinstance(_input_val, (int, float)) or not 0 <= _input_val <= 0xFFFFFFFF or int(_input_val) != _input_val:
+    raise ValueError("S-box input must be an unsigned 32-bit word")
+_input_val = int(_input_val)
 _b0 = (_input_val >> 24) & 0xFF
 _b1 = (_input_val >> 16) & 0xFF
 _b2 = (_input_val >> 8) & 0xFF

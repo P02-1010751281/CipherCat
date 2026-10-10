@@ -55,4 +55,4 @@
 - NIST IR 8545 的 NIST 流程结论与 ISO 已发布标准是两种不同状态；详见本页“标准化状态”及来源索引，不得合并成“NIST/国际均未标准化”。
 - `demos/procedures/Goppa-Decode.json`：G=[176,92,1] 根判定、逆元 u·(z−α)≡1、
   syndrome 原子链==已知值、无错/单错/双错往返、篡改 G 不可纠。
-- 教程：docs/demos/post-quantum.md 场景 11（Goppa/Patterson）。
+- 教程：[后量子演示](../../demos/post-quantum.md) 中的 Goppa/Patterson 一节。

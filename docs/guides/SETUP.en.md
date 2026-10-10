@@ -35,15 +35,15 @@ Open <http://127.0.0.1:3001/> and check the following in order:
 1. The home page opens and locale switching works.
 2. Open Documentation and confirm that user and development documentation are separate groups.
 3. Open the editor, create a project, and place a data block.
-4. Import `demos/AES-Atomic-Round.json` and confirm the four top-level AES primitives and shared state; the canvas has no value-socket connections.
+4. Import `demos/AES-Atomic-Round.json` and confirm the four top-level AES primitives and shared state; the four primitives are not connected to each other and each reads and writes the same state variable.
 5. Select Python, choose Generate, and confirm that the code panel shows syntax-colored code.
 6. Refresh the page and confirm that the project is still present in browser IndexedDB.
 
-![Documentation center with user and development groups (actual page screenshot)](/docs-assets/tutorials/06-docs-center-current.png)
+![Documentation center with user and development groups](/docs-assets/tutorials/06-docs-center-current.png)
 
 _Figure: The local page lists user docs, demos, primitive references, and development docs as separate groups._
 
-![Development-mode acceptance page after Python code generation (actual page screenshot)](/docs-assets/tutorials/05-generated-python.png)
+![Development-mode acceptance page after Python code generation](/docs-assets/tutorials/05-generated-python.png)
 
 _Figure: This screenshot shows the toolbox, workspace, and generated Python. The imported workspace with its empty code panel is shown in the user tutorial._
 

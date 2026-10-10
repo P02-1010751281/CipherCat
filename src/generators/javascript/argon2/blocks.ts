@@ -3,7 +3,7 @@
  *
  * 内嵌完整 Argon2d/i/id：BLAKE2b（RFC 7693，BigInt 64 位字，无 WebCrypto 依赖）、
  * H' 变长哈希、G 压缩函数（BLAKE2b 轮 + 2·trunc 乘法）、索引函数（Argon2i/id
- * 数据无关段 = H0 派生预计算伪随机地址）。官方向量 RFC 9106 §5.1-5.3 全 PASS。
+ * 数据无关段 = H0 派生预计算伪随机地址）。Demo 回归执行 RFC 9106 §5.1-5.3 最终 Tag 样例。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
@@ -138,11 +138,30 @@ function registerArgon2(): string {
     '      memory[cur] = fillBlock(prev, ref, old);',
     '    }',
     '  }',
-    '  pwd = Array.from(pwd || []); salt = Array.from(salt || []);',
-    '  secret = Array.from(secret || []); ad = Array.from(ad || []);',
-    '  mCost = Math.floor(Number(mCost)); tCost = Math.floor(Number(tCost));',
-    '  lanes = Math.floor(Number(lanes)); tagLen = Math.floor(Number(tagLen));',
-    '  variant = Number(variant);',
+    '  function inputBytes(name, value) {',
+    '    if (value == null) return [];',
+    '    if (typeof value === "string") {',
+    '      if (value.length > 0x100000) throw new RangeError("Argon2 " + name + " exceeds the 1 MiB project input limit");',
+    '      for (var i = 0; i < value.length; i++) { var code = value.charCodeAt(i); if (code >= 0xD800 && code <= 0xDBFF) { var next = value.charCodeAt(i + 1); if (i + 1 >= value.length || next < 0xDC00 || next > 0xDFFF) throw new TypeError("Argon2 text must be well-formed Unicode"); i++; } else if (code >= 0xDC00 && code <= 0xDFFF) throw new TypeError("Argon2 text must be well-formed Unicode"); }',
+    '      value = new TextEncoder().encode(value);',
+    '    }',
+    '    else if (!Array.isArray(value) && !(value instanceof Uint8Array)) throw new TypeError("Argon2 " + name + " must be bytes, text, or a byte array");',
+    '    var length = value.length;',
+    '    if (!Number.isSafeInteger(length) || length < 0 || length > 0x100000) throw new RangeError("Argon2 " + name + " exceeds the 1 MiB project input limit");',
+    '    var bytes = new Array(length);',
+    '    for (var i = 0; i < length; i++) { var byte = value[i]; if (!Number.isInteger(byte) || byte < 0 || byte > 255) throw new TypeError("Argon2 " + name + " must contain byte values"); bytes[i] = byte; }',
+    '    return bytes;',
+    '  }',
+    '  pwd = inputBytes("password", pwd); salt = inputBytes("salt", salt);',
+    '  secret = inputBytes("secret", secret); ad = inputBytes("associated data", ad);',
+    '  function checkedInt(name, value, min, max) { if (!Number.isInteger(value) || value < min || value > max) throw new RangeError("Argon2 " + name + " is out of range"); return value; }',
+    '  mCost = checkedInt("mCost", mCost, 1, 65536);',
+    '  tCost = checkedInt("tCost", tCost, 1, 10);',
+    '  lanes = checkedInt("lanes", lanes, 1, 16);',
+    '  tagLen = checkedInt("tagLen", tagLen, 4, 1024);',
+    '  variant = checkedInt("variant", variant, 0, 2);',
+    '  if (mCost < 8 * lanes) throw new RangeError("Argon2 mCost must be at least 8 * lanes");',
+    '  if (mCost * tCost > 65536) throw new RangeError("Argon2 memory/time budget exceeded");',
     '  var y = variant, version = 19;',
     '  var blockCount = 4 * lanes * Math.floor(mCost / (4 * lanes));',
     '  var laneLength = Math.floor(blockCount / lanes);',
@@ -178,7 +197,7 @@ javascriptGenerator.forBlock['argon2_hash'] = function (block: Block): [string, 
   const variant = block.getFieldValue('VARIANT') || '2';
   const fn = registerArgon2();
   return [
-    fn + '(' + pwd + ', ' + salt + ', ' + secret + ', ' + ad + ', ' + mCost + ', ' + tCost + ', ' + lanes + ', ' + tagLen + ', ' + variant + ')',
+    'Uint8Array.from(' + fn + '(' + pwd + ', ' + salt + ', ' + secret + ', ' + ad + ', ' + mCost + ', ' + tCost + ', ' + lanes + ', ' + tagLen + ', ' + variant + '))',
     Order.ATOMIC,
   ];
 };

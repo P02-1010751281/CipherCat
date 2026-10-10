@@ -73,6 +73,7 @@ function registerEcdsaSign(): string {
     '    h1 = hashlib.sha256(bytes(msg)).digest()',
     "    z = int.from_bytes(h1, 'big')        # bits2int(h1)：blen == qlen == 256 全量",
     "    x = int.from_bytes(bytes(priv), 'big')",
+    "    if not 1 <= x < N: raise ValueError('ECDSA private key scalar must be in [1, n-1]')",
     "    b2i = (z % N).to_bytes(32, 'big')    # bits2octets(h1) = bits2int(h1) mod n",
     '    xb = bytes(priv)',
     '    # RFC 6979 §3.2 确定性 k',
@@ -95,6 +96,7 @@ function registerEcdsaSign(): string {
     '    R = ecdsa_point_mul(k, (GX, GY), P, A)',
     '    r = R[0] % N',
     '    s = pow(k, -1, N) * (z + r * x) % N',
+    "    if r == 0 or s == 0: raise ValueError('ECDSA deterministic signature generation failed')",
     "    return list(r.to_bytes(32, 'big') + s.to_bytes(32, 'big'))",
   ]);
 }
@@ -110,8 +112,11 @@ function registerEcdsaVerify(): string {
     '    GX = 0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296',
     '    GY = 0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5',
     '    if len(pub) != 64 or len(sig) != 64:',
-    "        raise ValueError('ECDSA pub/sig must be 64 bytes')",
+    '        return False',
     "    Q = (int.from_bytes(bytes(pub[:32]), 'big'), int.from_bytes(bytes(pub[32:]), 'big'))",
+    '    B = 0x5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b',
+    '    if Q[0] < 0 or Q[1] < 0 or Q[0] >= P or Q[1] >= P or Q[1] * Q[1] % P != (Q[0] * Q[0] % P * Q[0] + A * Q[0] + B) % P:',
+    '        return False',
     "    r = int.from_bytes(bytes(sig[:32]), 'big')",
     "    s = int.from_bytes(bytes(sig[32:]), 'big')",
     '    if not (1 <= r < N and 1 <= s < N):',
@@ -139,7 +144,7 @@ pythonGenerator.forBlock['ecdsa_sign'] = function (block: Block): [string, numbe
   registerEcdsaPointAdd();
   registerEcdsaPointMul();
   const fn = registerEcdsaSign();
-  return [fn + '(' + priv + ', ' + msg + ')', Order.ATOMIC];
+  return ['bytes(' + fn + '(' + priv + ', ' + msg + '))', Order.ATOMIC];
 };
 
 pythonGenerator.forBlock['ecdsa_verify'] = function (block: Block): [string, number] {

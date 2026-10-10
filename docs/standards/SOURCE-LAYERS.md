@@ -25,7 +25,7 @@
 | 标准目录 | 原文参照 |
 |---|---|
 | FIPS 180-4 / SHA-2 | [00-Standard-Source.md](./fips180-4-SHA2/00-Standard-Source.md) |
-| FIPS 186-5 / ECDSA | [00-Standard-Source.md](./fips186-5-ecdsa/00-Standard-Source.md) |
+| FIPS 186-5 / DSS（ECDSA 与 RSA） | [00-Standard-Source.md](./fips186-5-ecdsa/00-Standard-Source.md) |
 | FIPS 197 / AES | [00-Standard-Source.md](./fips197-AES/00-Standard-Source.md) |
 | FIPS 198-1 / HMAC | [00-Standard-Source.md](./fips198-1-hmac/00-Standard-Source.md) |
 | FIPS 202 / SHA-3 | [00-Standard-Source.md](./fips202-SHA3/00-Standard-Source.md) |

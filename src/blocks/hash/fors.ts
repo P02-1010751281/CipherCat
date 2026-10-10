@@ -1,17 +1,11 @@
 /**
- * FORS 完整签名块定义（FIPS 205 §8，SPHINCS+ 少时签名 FORS）
+ * FORS-inspired project teaching variant; not compatible with FIPS 205.
  *
- * - fors_sign:       FORS.SigGen(SK.seed, M) → 签名 640 字节
- *                    （4 棵树 × (32B 叶私钥 + 4×32B 认证路径)）
- * - fors_verify:     FORS.PkFromSig 语义：由签名+消息重建 FORS 根 → 与公钥比对 → Boolean
- * - fors_pk_from_sk: FORS 公钥派生：4 棵 FORS 树根 → pk = H(ADRS(FORS_ROOTS) ‖ roots)
+ * - fors_sign:       项目变体签名 → 固定输出 640 字节
+ * - fors_verify:     项目变体验签 → 内部重建根并与项目公钥比较
+ * - fors_pk_from_sk: 项目变体公钥派生 → 拼接四棵教学树根后哈希
  *
- * 教学参数（固定）：n = 32（SHAKE-256 32B，即 FIPS 205 的 H）、k = 4 棵树、a = 4
- * （每树 2^4 = 16 叶）；消息摘要 M = k·a = 16 bit（2 字节），按 a-bit 分块（块 0 为
- * 最高位）选叶。结构严格对齐 FIPS 205：sk = PRF(SK.seed, ADRS(FORS_TREE, kp, 0, j))、
- * 节点 H(ADRS(FORS_TREE, kp, h, idx) ‖ l ‖ r)、pk = H(ADRS(FORS_ROOTS) ‖ roots)。
- * 验证用性质向量（确定性 / 往返 / 篡改检测）——FORS 无独立官方向量
- * （FIPS 205 KAT 为完整 SLH-DSA 签名，FORS 只是其中部件）。
+ * 固定教学参数 n=32/k=4/a=4。项目 SHAKE 拼接代替标准 PRF/F/T_k 调用；性质测试只证明项目内自洽。
  */
 import * as Blockly from 'blockly/core';
 import { TYPE_BOOLEAN, TYPE_BYTES } from '@/constants/block-types';
@@ -22,9 +16,9 @@ export type ForsBlockType = (typeof FORS_BLOCK_TYPES)[number];
 const FORS_COLOUR = 230; // 与哈希基结构件同色（Hash & Padding 类目）
 const FIPS205_URL = 'https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.205.pdf';
 const FORS_TOOLTIP =
-  'FORS 少时签名 (FIPS 205 §8)：n=32 / k=4 树 / a=4（每树 16 叶）。' +
+  'FORS 结构教学变体（参考 FIPS 205 §8，不兼容标准实现）：n=32 / k=4 树 / a=4。' +
   'sk_seed 32B + 消息摘要 M 2B（16 bit，按 4-bit 分块选叶）。' +
-  '教学参数集，性质向量验证（确定性/往返/篡改检测）。';
+  '使用项目自定义 SHAKE 拼接；性质回归不是官方向量或符合性证明。';
 
 Blockly.Blocks['fors_sign'] = {
   init: function () {

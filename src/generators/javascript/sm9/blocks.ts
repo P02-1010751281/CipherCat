@@ -5,8 +5,8 @@
  * 内嵌全套（一次 provideFunction_ 注册去重）：
  *   sm9Sm3/sm9ModInv/sm9H + Fp2/Fp6/Fp12 塔域 + G1/G2 射影点 + 线函数 + sm9Pair
  *   入口 sm9MasterKey/sm9UserKey/sm9Sign/sm9Verify（模块作用域，driver 可直接调用）
- * 官方向量（GB/T 38635.2-2020 附录 A.2：ks=0130E784…/IDA=Alice/hid=01/
- * M="Chinese IBS standard"/r=033c8616…）H/S/verify 全 PASS；与 Go gmsm 输出一致。
+ * GB/T 38635.2-2020 附录 A.2 向量（ks=0130E784…/IDA=Alice/hid=01/
+ * M="Chinese IBS standard"/r=033c8616…）在 JS/Python 生成代码回归中通过。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
 import type { Block } from 'blockly/core';
@@ -228,6 +228,15 @@ function registerSm9(): string {
     '  }',
     '  return r;',
     '}',
+    'function g1MulRaw(p, k) {',
+    '  var r = [0n, 1n, 0n], a = [p[0], p[1], p[2]];',
+    '  while (k > 0n) {',
+    '    if (k & 1n) r = g1Add(r, a);',
+    '    a = g1Dbl(a);',
+    '    k >>= 1n;',
+    '  }',
+    '  return r;',
+    '}',
     'function g1Affine(p) {',
     '  if (g1IsInf(p)) return null;',
     '  var zi = sm9ModInv(p[2], SM9P);',
@@ -300,6 +309,28 @@ function registerSm9(): string {
     '    k >>= 1n;',
     '  }',
     '  return r;',
+    '}',
+    'function g2IsInf(p) { return p[2][0] === 0n && p[2][1] === 0n; }',
+    'function g2MulRaw(p, k) {',
+    '  var r = [[0n, 0n], [0n, 1n], [0n, 0n], [0n, 0n]];',
+    '  var a = [p[0], p[1], p[2], p[3]];',
+    '  while (k > 0n) {',
+    '    if (k & 1n) r = g2Add(r, a);',
+    '    a = g2Dbl(a);',
+    '    k >>= 1n;',
+    '  }',
+    '  return r;',
+    '}',
+    'function g2OnCurve(p) {',
+    '  if (g2IsInf(p)) return true;',
+    '  var y2z = f2Mul(f2Sqr(p[1]), p[2]);',
+    '  var x3 = f2Mul(f2Sqr(p[0]), p[0]);',
+    '  var z3 = f2Mul(f2Sqr(p[2]), p[2]);',
+    '  var delta = f2Sub(y2z, f2Add(x3, f2Mul([5n, 0n], z3)));',
+    '  return delta[0] === 0n && delta[1] === 0n;',
+    '}',
+    'function g2IsValid(p) {',
+    '  return !g2IsInf(p) && g2OnCurve(p) && g2IsInf(g2MulRaw(p, SM9N));',
     '}',
     'function g2Affine(p) {',
     '  var x = p[0], y = p[1], z = p[2];',
@@ -429,52 +460,103 @@ function registerSm9(): string {
     '}',
     '',
     '// ---------- SM9 blocks ----------',
-    'function sm9MasterKey(ks) {',
+    'function sm9IsByteArray(value) {',
+    '  if (!Array.isArray(value) && !(value instanceof Uint8Array)) return false;',
+    '  for (var i = 0; i < value.length; i++) {',
+    '    if (!Number.isInteger(value[i]) || value[i] < 0 || value[i] > 255) return false;',
+    '  }',
+    '  return true;',
+    '}',
+    'function sm9RequireByteArray(value, name) {',
+    '  if (!Array.isArray(value) && !(value instanceof Uint8Array)) throw new Error("SM9 " + name + " must be a byte array");',
+    '  if (!sm9IsByteArray(value)) throw new Error("SM9 " + name + " must contain only bytes");',
+    '}',
+    'function sm9MasterScalar(ks) {',
+    '  sm9RequireByteArray(ks, "master key");',
     '  if (ks.length !== 32) throw new Error("SM9 master key must be 32 bytes");',
     '  var k = 0n;',
     '  for (var i = 0; i < 32; i++) k = (k << 8n) | BigInt(ks[i]);',
+    '  if (k < 1n || k >= SM9N) throw new Error("SM9 master key must satisfy 1 <= ks < n");',
+    '  return k;',
+    '}',
+    'function sm9MasterKey(ks) {',
+    '  var k = sm9MasterScalar(ks);',
     '  return g2MarshalRaw(g2Mul(SM9P2, k));',
     '}',
     'function sm9UserKey(ks, id, hid) {',
-    '  if (ks.length !== 32) throw new Error("SM9 master key must be 32 bytes");',
-    '  var k = 0n;',
-    '  for (var i = 0; i < 32; i++) k = (k << 8n) | BigInt(ks[i]);',
-    '  var t1 = sm9H(id.concat([hid]), 1);',
+    '  var k = sm9MasterScalar(ks);',
+    '  sm9RequireByteArray(id, "ID");',
+    '  if (hid !== 1) throw new Error("SM9 signing key requires HID 0x01");',
+    '  var t1 = sm9H(Array.from(id).concat([hid]), 1);',
     '  var sum = (t1 + k) % SM9N;',
     '  var t2 = k * sm9ModInv(sum, SM9N) % SM9N;',
     '  return g1MarshalRaw(g1Mul(SM9P1, t2));',
     '}',
-    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg, ds, ppub, r) {',
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg, ds, ppub, r, randomR) {',
+    '  sm9RequireByteArray(msg, "MSG");',
+    '  sm9RequireByteArray(ds, "DS");',
+    '  sm9RequireByteArray(ppub, "Ppub");',
     '  if (ds.length !== 64) throw new Error("SM9 ds must be 64 bytes");',
     '  if (ppub.length !== 128) throw new Error("SM9 Ppub must be 128 bytes");',
-    '  if (r.length === 0) {',
-    '    r = [];',
-    '    for (var i = 0; i < 32; i++) r.push(Math.floor(Math.random() * 256));',
-    '  }',
-    '  if (r.length !== 32) throw new Error("SM9 r must be 32 bytes or empty");',
+    '  var ppubPoint = g2ParseRaw(ppub);',
+    '  for (var c of ppubPoint[0].concat(ppubPoint[1])) if (c >= SM9P) throw new Error("SM9 Ppub coordinates must be less than q");',
+    '  if (!g2IsValid(ppubPoint)) throw new Error("SM9 Ppub must be a valid nonzero G2 point");',
+    '  var dsPoint = g1ParseRaw(ds);',
+    '  if (dsPoint[0] >= SM9P || dsPoint[1] >= SM9P) throw new Error("SM9 DS coordinates must be less than q");',
+    '  if (g1IsInf(dsPoint) || !g1OnCurve(dsPoint) || !g1IsInf(g1MulRaw(dsPoint, SM9N))) throw new Error("SM9 DS must be a valid nonzero G1 point");',
     '  var rInt = 0n;',
-    '  for (var i = 0; i < 32; i++) rInt = (rInt << 8n) | BigInt(r[i]);',
-    '  var g = sm9Pair(g2ParseRaw(ppub), SM9P1);      // e(P1, Ppub)',
-    '  var w = f12Pow(g, rInt);',
-    '  var h = sm9H(msg.concat(gtMarshal(w)), 2);',
-    '  var l = ((rInt - h) % SM9N + SM9N) % SM9N;',
-    '  var S = g1Marshal(g1Mul(g1ParseRaw(ds), l));',
-    '  var out = [];',
-    '  for (var i = 31; i >= 0; i--) out.push(Number((h >> BigInt(8 * i)) & 0xFFn));',
-    '  return out.concat(S);',
+    '  if (!randomR) {',
+    '    sm9RequireByteArray(r, "r");',
+    '    if (r.length !== 32) throw new Error("SM9 r must be 32 bytes");',
+    '    for (var i = 0; i < 32; i++) {',
+    '      if (!Number.isInteger(r[i]) || r[i] < 0 || r[i] > 255) throw new Error("SM9 r must contain only bytes");',
+    '      rInt = (rInt << 8n) | BigInt(r[i]);',
+    '    }',
+    '    if (rInt === 0n || rInt >= SM9N) throw new Error("SM9 r must satisfy 1 <= r < n");',
+    '  }',
+    '  if (randomR && typeof globalThis.crypto?.getRandomValues !== "function") throw new Error("Web Crypto is unavailable for SM9 signing");',
+    '  var randomBytes = randomR ? new Uint8Array(32) : null;',
+    '  for (;;) {',
+    '    if (randomR) {',
+    '      do {',
+    '        globalThis.crypto.getRandomValues(randomBytes);',
+    '        r = Array.from(randomBytes);',
+    '        rInt = 0n;',
+    '        for (var i = 0; i < 32; i++) rInt = (rInt << 8n) | BigInt(r[i]);',
+    '      } while (rInt === 0n || rInt >= SM9N);',
+    '    }',
+    '    var g = sm9Pair(ppubPoint, SM9P1);              // e(P1, Ppub)',
+    '    var w = f12Pow(g, rInt);',
+    '    var h = sm9H(msg.concat(gtMarshal(w)), 2);',
+    '    var l = ((rInt - h) % SM9N + SM9N) % SM9N;',
+    '    if (l === 0n) {',
+    '      if (randomR) continue;',
+    '      throw new Error("SM9 r produced l = 0; provide another scalar");',
+    '    }',
+    '    var S = g1Marshal(g1Mul(dsPoint, l));',
+    '    var out = [];',
+    '    for (var i = 31; i >= 0; i--) out.push(Number((h >> BigInt(8 * i)) & 0xFFn));',
+    '    return out.concat(S);',
+    '  }',
     '}',
     'function sm9Verify(msg, id, h, s, ppub, hid) {',
-    '  if (h.length !== 32) throw new Error("SM9 h must be 32 bytes");',
-    '  if (s.length !== 65 || s[0] !== 4) throw new Error("SM9 S must be 65 bytes (0x04 prefix)");',
-    '  if (ppub.length !== 128) throw new Error("SM9 Ppub must be 128 bytes");',
+    '  if (![msg, id, h, s, ppub].every(sm9IsByteArray)) return false;',
+    '  if (h.length !== 32) return false;',
+    '  if (s.length !== 65 || s[0] !== 4) return false;',
+    '  if (ppub.length !== 128) return false;',
     '  var hInt = 0n;',
     '  for (var i = 0; i < 32; i++) hInt = (hInt << 8n) | BigInt(h[i]);',
     '  if (hInt === 0n || hInt >= SM9N) return false;',
     '  var Spt = g1ParseRaw(s.slice(1));',
+    '  if (Spt[0] >= SM9P || Spt[1] >= SM9P) return false;',
     '  if (g1IsInf(Spt) || !g1OnCurve(Spt)) return false;',
+    '  if (!g1IsInf(g1MulRaw(Spt, SM9N))) return false;',
     '  var t1 = sm9H(id.concat([hid]), 1);',
-    '  var Q = g2Add(g2Mul(SM9P2, t1), g2ParseRaw(ppub));',
-    '  var g = sm9Pair(g2ParseRaw(ppub), SM9P1);',
+    '  var Ppub = g2ParseRaw(ppub);',
+    '  for (var c of Ppub[0].concat(Ppub[1])) if (c >= SM9P) return false;',
+    '  if (!g2IsValid(Ppub)) return false;',
+    '  var Q = g2Add(g2Mul(SM9P2, t1), Ppub);',
+    '  var g = sm9Pair(Ppub, SM9P1);',
     '  var u = sm9Pair(Q, Spt);                        // e(S, Q)',
     '  var w = f12Mul(u, f12Pow(g, hInt));',
     '  var h2 = sm9H(msg.concat(gtMarshal(w)), 2);',
@@ -487,24 +569,24 @@ function registerSm9(): string {
 javascriptGenerator.forBlock['sm9_master_key'] = function (block: Block): [string, number] {
   const ks = javascriptGenerator.valueToCode(block, 'KS', Order.ATOMIC) || '[]';
   registerSm9();
-  return ['sm9MasterKey(' + ks + ')', Order.ATOMIC];
+  return ['Uint8Array.from(sm9MasterKey(' + ks + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['sm9_user_key'] = function (block: Block): [string, number] {
   const ks = javascriptGenerator.valueToCode(block, 'KS', Order.ATOMIC) || '[]';
   const id = javascriptGenerator.valueToCode(block, 'ID', Order.ATOMIC) || '[]';
-  const hid = block.getFieldValue('HID') || '1';
   registerSm9();
-  return ['sm9UserKey(' + ks + ', ' + id + ', ' + hid + ')', Order.ATOMIC];
+  return ['Uint8Array.from(sm9UserKey(' + ks + ', ' + id + ', 1))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['sm9_sign'] = function (block: Block): [string, number] {
   const msg = javascriptGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
   const ds = javascriptGenerator.valueToCode(block, 'DS', Order.ATOMIC) || '[]';
   const ppub = javascriptGenerator.valueToCode(block, 'PPUB', Order.ATOMIC) || '[]';
+  const randomR = block.getInputTargetBlock('R') === null ? 'true' : 'false';
   const r = javascriptGenerator.valueToCode(block, 'R', Order.ATOMIC) || '[]';
   registerSm9();
-  return ['sm9Sign(' + msg + ', ' + ds + ', ' + ppub + ', ' + r + ')', Order.ATOMIC];
+  return ['Uint8Array.from(sm9Sign(' + msg + ', ' + ds + ', ' + ppub + ', ' + r + ', ' + randomR + '))', Order.ATOMIC];
 };
 
 javascriptGenerator.forBlock['sm9_verify'] = function (block: Block): [string, number] {
@@ -513,8 +595,6 @@ javascriptGenerator.forBlock['sm9_verify'] = function (block: Block): [string, n
   const h = javascriptGenerator.valueToCode(block, 'H', Order.ATOMIC) || '[]';
   const s = javascriptGenerator.valueToCode(block, 'S', Order.ATOMIC) || '[]';
   const ppub = javascriptGenerator.valueToCode(block, 'PPUB', Order.ATOMIC) || '[]';
-  const hid = block.getFieldValue('HID') || '1';
   registerSm9();
-  return ['sm9Verify(' + msg + ', ' + id + ', ' + h + ', ' + s + ', ' + ppub + ', ' + hid + ')', Order.ATOMIC];
+  return ['sm9Verify(' + msg + ', ' + id + ', ' + h + ', ' + s + ', ' + ppub + ', 1)', Order.ATOMIC];
 };
-

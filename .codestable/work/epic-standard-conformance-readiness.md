@@ -279,4 +279,17 @@ remote_publish: manual
 
 待清理项（无引用、不影响门禁）：仓库根目录未跟踪的 `None/`（内含 `.agents/memory`，2026-09-22 遗留）；`nohup.out` 已移出仓库。
 
-第 3 轮记录但未改的低优先项（不改动即冻结在已验证状态）：`verify-templates.ts` 的 `unlinkedStandards` 豁免可被语义列中的“项目/通用/教学”字样触发，建议后续把豁免收窄为“整格无标准 token”；`CONFORMANCE-INVENTORY.md` 的对象覆盖表宜注明“逐块证据行含 Demo 级证据”，避免被读成每条都有独立向量。
+### 第 4 轮（owner 指派：2 入库 / 3 跳过 / 4 全修 / 5 清理）
+
+- **入库**：门禁必需文件与新生成物已随提交 `e93e3b8` 入库（469 个路径：133 新增、336 修改），含 `docs/build/*`（24）、`src/generated/doc-titles.json`、`demos/evidence.json`、`CONFORMANCE-INVENTORY.md`、`BLOCK-IO-CONTRACT.json`、`ENDPOINT-MATRIX.md`、新增脚本与 `.gitignore` 补充（`.agents/`、`tmp/`、`nohup.out`）。提交后工作树干净，`git status` 为空。
+- **跳过**：发行包阻项（`.deb` Maintainer/版权文件）按 owner 指示暂不处理。
+- **全部修掉**：
+  - 生成器重复校验：新增 `src/generators/python/safe-int.ts`（共用 `require_safe_integers`），`postquantum/helpers.ts` 7 处与 `numtheory/poly-mul.ts` 1 处改为调用同一 helper；`test:unit` 59 files / 829 passed + 1 skipped 证明行为不变。
+  - 吞异常兜底：`sbox.ts` 弹窗定位失败改为记录 `console.warn` 后保持兜底坐标；`procedure/blocks.ts` 的 `setFieldValue` 恢复改为显式注明“预期内失败”，不再是无说明的 `noop`。
+  - 门禁豁免收窄：`verify-templates.ts` 的 `unlinkedStandards` 只接受 `无独立|无直接|无标准|非标准|自定` 这类“无独立依据”措辞，`通用/教学/研究/项目` 不再能绕过标准目录核对；重跑模板门禁 29/29 通过。
+  - 同源文档漂移：明确“逐步块链以 `docs/build/` 为准”，`docs/demos/*`（中英 10 个文件）加注指向分步拼装指南，构建指南索引页同步说明。
+- **清理**：仓库根 `None/`（2026-09-22 遗留的 project-context 产物）移出到 `/tmp/ciphercat-cleanup/None`（可恢复）；`nohup.out` 移至 `/tmp/ciphercat-nohup.out`；两者已加入 `.gitignore` 规则覆盖范围。
+
+第 4 轮 gates：`test:unit` 59 files / 829 passed + 1 skipped；`verify:all` 退出 0（metadata 40/40、artifacts 66 全哈希、coverage OK、titles 428、build-guide 24、docs 434/0、templates 29/29、demos 59/59）；`build`、`eslint src scripts`、`git diff --check` 通过。
+
+剩余未修（低优先、已记录）：`CONFORMANCE-INVENTORY.md` 对象覆盖表可补一句“逐块证据行含 Demo 级证据”的说明。

@@ -4,7 +4,7 @@
 import { pythonGenerator, Order } from 'blockly/python';
 import type { Block } from 'blockly/core';
 
-import { registerSafeIntegers } from '@/generators/python/safe-int';
+import { PY_MAX_SAFE_INTEGER, registerSafeIntegers } from '@/generators/python/safe-int';
 
 function registerPolyMul(): string {
   const require_safe = registerSafeIntegers();
@@ -24,7 +24,7 @@ function registerPolyMul(): string {
     '            if q:',
     '                out[i + j] = value % q',
     '            else:',
-    '                if abs(value) > 9007199254740991: raise OverflowError("convolution coefficient exceeds the safe-integer range")',
+    `                if abs(value) > ${PY_MAX_SAFE_INTEGER}: raise OverflowError("convolution coefficient exceeds the safe-integer range")`,
     '                out[i + j] = value',
     '    return out',
     '',

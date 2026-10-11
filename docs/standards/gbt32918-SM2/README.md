@@ -48,3 +48,38 @@ Demo：`demos/procedures/SM2-PointMul.json` · `SM2-Sign.json` · `SM2-Encrypt.j
 
 > 说明：`01-SM2.md` 已从本地 PDF 的标题、条款、公式和示例重新整理为结构化参考；
 > 原 PDF 保留用于逐条核验。该目录不宣称完整实现 GB/T 32918 的全部协议细节。
+
+<!-- standard-body:start -->
+
+## 标准内容
+
+本目录对应 **GB/T 32918 — SM2 椭圆曲线公钥密码算法**，按标准条款拆分为 5 个结构化条目，覆盖 「GB/T 32918 — SM2 算法参考」、「GB/T 32918.1-2016 §5；GB/T 32918.5-2017 参数」、「GB/T 32918.2-2016 §6–§7」、「SM2 — 公钥加密原语」 等。每个条目页给出标准定位、原文出处、公式或伪代码，以及对应积木块与验证边界。
+
+| 结构化条目 | 内容 | 项目状态 |
+|---|---|---|
+| [GB/T 32918 — SM2 算法参考](./01-SM2.md) | GB/T 32918 — SM2 算法参考 | 已实现（不代表完整标准覆盖） |
+| [SM2 — 曲线与点运算原语](./02-Curve-Operations.md) | GB/T 32918.1-2016 §5；GB/T 32918.5-2017 参数 | `ecc_*` 教学原语已覆盖 |
+| [SM2 — 数字签名原语](./03-Signature.md) | GB/T 32918.2-2016 §6–§7 | `sm2_sign` / `sm2_verify` 已映射；协议边界仍需独立验证 |
+| [SM2 — 公钥加密原语](./04-Encryption.md) | SM2 — 公钥加密原语 | 仅参考（未映射为块实现） |
+| [SM2 — 密钥交换原语](./05-Key-Exchange.md) | SM2 — 密钥交换原语 | 部分实现（不代表完整标准覆盖） |
+
+## 实现与验证映射
+
+| 积木块 | 规范语义范围 | 已登记验证入口 | 边界（本行不能证明什么） |
+|---|---|---|---|
+| `ecc_load_curve_params` | — | — | — |
+| `ecc_load_point` | — | — | — |
+| `ecc_add` | — | — | — |
+| `ecc_point_double` | — | — | — |
+| `ecc_multiply` | — | — | — |
+| `sm2_sign` | GB/T 32918.2-2016 附录 A 示例 1（ZA/e/r/s） | `procedures/SM2-Sign.json` 回归该示例；`sm2-verification.test.ts` 与 `sm2-nonce.test.ts` 覆盖验签与随机数路径；`public-key-bytes-output-contract.test.ts` 核对签名容器 | 不覆盖其它 ID、曲线参数或完整标准测试集 |
+| `sm2_verify` | GB/T 32918.2-2016 §7.1；公钥检查依 GB/T 32918.1-2016 §6.2.1，详见SM2 签名条目 | `sm2-verification.test.ts` 中的验签块双语端到端用例覆盖附录 A 向量、`r/s` 边界、`r+s=n`、身份/消息篡改及非规范公钥坐标；同文件的 helper 级测试检查公钥域外/离曲线输入和子群拒绝分支。子群分支通过替换阶参数触发，未构造真实非平凡余因子点 | 完整官方测试集、额外曲线/运行环境、密钥生命周期及正式算法验证 |
+| `sm2_encrypt` | — | — | — |
+| `sm2_decrypt` | — | — | — |
+| `sm2_key_exchange` | GB/T 32918.3-2016 附录 A.2 示例 1（B 侧共享密钥） | `SM2-KeyExchange.json` 与 `sm2-key-exchange.test.ts` 覆盖该示例的单方向计算 | 未覆盖完整协议双方与密钥确认流程 |
+
+示例工作区：`demos/procedures/SM2-PointMul.json`、`demos/SM2-Sign.json`、`demos/SM2-Encrypt.json`、`demos/SM2-KeyExchange.json`。
+
+以上是当前实现与回归范围，不代表已通过认证或完成完整标准测试；逐块证据与缺项见[标准符合性对象清单](../CONFORMANCE-INVENTORY.md)。
+
+<!-- standard-body:end -->

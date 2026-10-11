@@ -86,3 +86,65 @@ Algorithm 标题、Input/Output 和伪代码，并用 source 行号回链；“�
 
 - “教学结构”仅表示代码中存在可运行构件，不表示算法标准符合。
 - 完整 SLH-DSA 目前未实现；官方测试向量/ACVP 完整验证状态仍是缺口。
+
+<!-- standard-body:start -->
+
+## 标准内容
+
+本目录对应 **FIPS 205 — 全算法索引**，按标准条款拆分为 29 个结构化条目，覆盖 「ADRS — 地址格式（FIPS 205 §3.4）」、「WOTS+ — Winternitz 一次性签名（FIPS 205 §5）」、「FORS — 少时签名（FIPS 205 §8）」、「SLH-DSA — 完整签名方案（FIPS 205 §9-10）」 等。每个条目页给出标准定位、原文出处、公式或伪代码，以及对应积木块与验证边界。
+
+| 结构化条目 | 内容 | 项目状态 |
+|---|---|---|
+| [ADRS — 地址格式（FIPS 205 §3.4）](./01-ADRS.md) | ADRS — 地址格式（FIPS 205 §3.4） | 部分教学编码（不构成完整 ADRS/FIPS 205 实现） |
+| [WOTS+ — Winternitz 一次性签名（FIPS 205 §5）](./02-WOTS.md) | WOTS+ — Winternitz 一次性签名（FIPS 205 §5） | 已实现（不代表完整标准覆盖） |
+| [FORS — 少时签名（FIPS 205 §8）](./03-FORS.md) | FORS — 少时签名（FIPS 205 §8） | 已实现（不代表完整标准覆盖） |
+| [SLH-DSA — 完整签名方案（FIPS 205 §9-10）](./04-SLH-DSA.md) | SLH-DSA — 完整签名方案（FIPS 205 §9-10） | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 1 — WOTS+ 校验和链数计算（FIPS 205）](./05-gen_len2.md) | FIPS 205 §3.1，Algorithm 1 `gen_len2` | 仅参考 |
+| [Algorithm 2 — 大端字节串转整数（FIPS 205）](./06-toInt.md) | FIPS 205 §4.4，Algorithm 2 `toInt` | 仅参考 |
+| [Algorithm 3 — 整数转大端字节串（FIPS 205）](./07-toByte.md) | FIPS 205 §4.4，Algorithm 3 `toByte` | 仅参考 |
+| [Algorithm 4 — base-2^b 消息拆分（FIPS 205）](./08-base_2b.md) | FIPS 205 §4.4，Algorithm 4 `base_2b` | 部分实现 |
+| [Algorithm 5 — WOTS+ 哈希链（FIPS 205）](./09-chain.md) | FIPS 205 §5，Algorithm 5 `chain` | 部分实现 |
+| [Algorithm 6 — WOTS+ 公钥生成（FIPS 205）](./10-wots_pkGen.md) | FIPS 205 §5.1，Algorithm 6 `wots_pkGen` | 仅参考 |
+| [Algorithm 7 — WOTS+ 签名生成（FIPS 205）](./11-wots_sign.md) | FIPS 205 §5.2，Algorithm 7 `wots_sign` | 仅参考 |
+| [Algorithm 8 — 由签名恢复 WOTS+ 公钥（FIPS 205）](./12-wots_pkFromSig.md) | FIPS 205 §5.3，Algorithm 8 `wots_pkFromSig` | 仅参考 |
+| [Algorithm 9 — XMSS 子树节点/根（FIPS 205）](./13-xmss_node.md) | FIPS 205 §6.1，Algorithm 9 `xmss_node` | 部分实现 |
+| [Algorithm 10 — XMSS 签名生成（FIPS 205）](./14-xmss_sign.md) | FIPS 205 §6.2，Algorithm 10 `xmss_sign` | 仅参考 |
+| [Algorithm 11 — 由签名恢复 XMSS 公钥（FIPS 205）](./15-xmss_pkFromSig.md) | FIPS 205 §6.3，Algorithm 11 `xmss_pkFromSig` | 仅参考 |
+| [Algorithm 12 — 超树签名生成（FIPS 205）](./16-ht_sign.md) | FIPS 205 §7.1，Algorithm 12 `ht_sign` | 仅参考 |
+| [Algorithm 13 — 超树签名验证（FIPS 205）](./17-ht_verify.md) | FIPS 205 §7.2，Algorithm 13 `ht_verify` | 仅参考 |
+| [Algorithm 14 — FORS 私钥值生成（FIPS 205）](./18-fors_skGen.md) | FIPS 205 §8.1，Algorithm 14 `fors_skGen` | 部分实现 |
+| [Algorithm 15 — FORS 子树节点/根（FIPS 205）](./19-fors_node.md) | FIPS 205 §8.2，Algorithm 15 `fors_node` | 部分实现 |
+| [Algorithm 16 — FORS 签名生成（FIPS 205）](./20-fors_sign.md) | FIPS 205 §8.3，Algorithm 16 `fors_sign` | 部分实现 |
+| [Algorithm 17 — 由签名恢复 FORS 公钥（FIPS 205）](./21-fors_pkFromSig.md) | FIPS 205 §8.4，Algorithm 17 `fors_pkFromSig` | 部分实现 |
+| [Algorithm 18 — SLH-DSA 内部密钥生成（FIPS 205）](./22-slh_keygen_internal.md) | FIPS 205 §9.1，Algorithm 18 `slh_keygen_internal` | 仅参考 |
+| [Algorithm 19 — SLH-DSA 内部签名（FIPS 205）](./23-slh_sign_internal.md) | FIPS 205 §9.2，Algorithm 19 `slh_sign_internal` | 仅参考 |
+| [Algorithm 20 — SLH-DSA 内部验证（FIPS 205）](./24-slh_verify_internal.md) | FIPS 205 §9.3，Algorithm 20 `slh_verify_internal` | 仅参考 |
+| [Algorithm 21 — SLH-DSA 外部密钥生成（FIPS 205）](./25-slh_keygen.md) | FIPS 205 §10.1，Algorithm 21 `slh_keygen` | 仅参考 |
+| [Algorithm 22 — 纯 SLH-DSA 签名（FIPS 205）](./26-slh_sign.md) | FIPS 205 §10.2.1，Algorithm 22 `slh_sign` | 仅参考 |
+| [Algorithm 23 — 预哈希 SLH-DSA 签名（FIPS 205）](./27-hash_slh_sign.md) | FIPS 205 §10.2.2，Algorithm 23 `hash_slh_sign` | 仅参考 |
+| [Algorithm 24 — 纯 SLH-DSA 验证（FIPS 205）](./28-slh_verify.md) | FIPS 205 §10.3，Algorithm 24 `slh_verify` | 仅参考 |
+| [Algorithm 25 — 预哈希 SLH-DSA 验证（FIPS 205）](./29-hash_slh_verify.md) | FIPS 205 §10.3，Algorithm 25 `hash_slh_verify` | 仅参考 |
+
+## 实现与验证映射
+
+| 积木块 | 规范语义范围 | 已登记验证入口 | 边界（本行不能证明什么） |
+|---|---|---|---|
+| `hash_chain` | — | — | — |
+| `merkle_leaf` | — | — | — |
+| `merkle_node` | — | — | — |
+| `merkle_root` | — | — | — |
+| `merkle_auth_path` | — | — | — |
+| `slh_addr` | — | — | — |
+| `slh_adrs_full` | — | — | — |
+| `wots_checksum` | — | — | — |
+| `fors_sign` | — | — | — |
+| `fors_verify` | — | — | — |
+| `fors_pk_from_sk` | — | — | — |
+| `fors_root` | — | — | — |
+| `fors_leaf_index` | — | — | — |
+
+示例工作区：`demos/procedures/Hash-Based-Structures.json`、`demos/FORS-Sign.json`、`demos/Tree-Index.json`。
+
+以上是当前实现与回归范围，不代表已通过认证或完成完整标准测试；逐块证据与缺项见[标准符合性对象清单](../CONFORMANCE-INVENTORY.md)。
+
+<!-- standard-body:end -->

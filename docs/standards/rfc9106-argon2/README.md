@@ -22,3 +22,21 @@
 | 并行硬化 | ❌ | ✅ |
 | 规范来源 | SP 800-132 | RFC 9106（IRTF Informational） |
 | 项目用途 | 口令派生 | 受执行预算限制的教学/研究示例 |
+
+<!-- standard-body:start -->
+
+## 标准内容
+
+本目录对应 **RFC 9106 — Argon2 内存困难函数**，目前以标准来源与积木块映射为主，尚未拆出独立的条款条目页；具体覆盖范围见下方映射与覆盖矩阵。
+
+## 实现与验证映射
+
+| 积木块 | 规范语义范围 | 已登记验证入口 | 边界（本行不能证明什么） |
+|---|---|---|---|
+| `argon2_hash` | RFC 9106 §3.1 Argon2 v1.3；RFC 9106 是 IRTF Informational RFC。`P/S/K/X≤2^32−1` bytes、`m≥8p`、Tag 至少 4 bytes；盐无 RFC 最小长度，推荐 16 bytes。项目只接受字节序列/UTF-8 文本，每项输入限 1 MiB，执行参数另限 `m≤65,536 KiB`、`t≤10`、`p≤16`、Tag `≤1,024 bytes`、`m×t≤65,536 KiB-pass` | `generator-contracts.test.ts` 通过真实 Blockly JS/Python 生成代码，拒绝 4 类超 1 MiB 输入、任意迭代器和非法字节值，核对 UTF-8 文本与空盐的双语一致，并覆盖参数边界；`ARGON2.json` 回归执行 RFC 9106 §5.1–5.3 三种变体的最终 Tag 样例 | 项目输入/执行上限不是 RFC 限值，且不支持 RFC 推荐的 2 GiB/1-pass、64 MiB/3-pass 配置；Demo 只核对最终 Tag，不核对 pre-hash/中间块，不是完整测试集或生产口令哈希实现 |
+
+示例工作区：`demos/procedures/ARGON2.json`。
+
+以上是当前实现与回归范围，不代表已通过认证或完成完整标准测试；逐块证据与缺项见[标准符合性对象清单](../CONFORMANCE-INVENTORY.md)。
+
+<!-- standard-body:end -->

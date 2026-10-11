@@ -90,3 +90,81 @@ Sizes (bytes):
 | 49 | `49-MontgomeryReduce.md` | MontgomeryReduce(𝑎) | Montgomery 约简 | — |
 
 平台已实现 ML-DSA-44 签名/验签（`mldsa_sign` / `mldsa_verify`），并提供 5 个签名原语原子块（`pq_power2round` / `pq_decompose` / `pq_make_hint` / `pq_use_hint` / `pq_sample_in_ball`，参数固定 ML-DSA-44：d=13、γ₂=95232、τ=39）。当前回归取 NIST ACVP `ML-DSA-sigGen-FIPS204` 内部投影里 ML-DSA-44 的确定性用例（hashAlg=none、空 context，tgId=1 的 tcId 5、8，共 2 例），用官方 sk/message 驱动块生成的双语言实现，与官方 signature 逐字节一致；其余参数集、拒绝路径和完整用例集未覆盖，也不是 ACVP 验证会话或认证。NIST 当前发布的 ML-DSA ACVP JSON 规范仍是 Internet-Draft（2026-10-02 版）：测试数随注册能力组合变化，sigGen AFT 每种组合至少 15 项，内部确定性接口还须覆盖签名拒绝路径与多次拒绝情形；因此不能用固定“30 项”描述完整套件。实现范围和缺项见[逐块符合性清单](../CONFORMANCE-INVENTORY.md)。搭建教程见上表指南；Demo 见 `demos/procedures/ML-DSA-Primitives.json` 与 `demos/procedures/ML-DSA-Sign.json`。其余算法章节为参考规范。
+
+<!-- standard-body:start -->
+
+## 标准内容
+
+本目录对应 **FIPS 204 — 全算法索引**，按标准条款拆分为 49 个结构化条目，覆盖 「§5.1」、「§5.2」、「§5.3」、「§5.4.1」 等。每个条目页给出标准定位、原文出处、公式或伪代码，以及对应积木块与验证边界。
+
+| 结构化条目 | 内容 | 项目状态 |
+|---|---|---|
+| [Algorithm 1  ML-DSA.KeyGen()](./01-ML-DSA.KeyGen.md) | §5.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 2  ML-DSA.Sign(𝑠𝑘, 𝑀 , 𝑐𝑡𝑥)](./02-ML-DSA.Sign.md) | §5.2 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 3  ML-DSA.Verify(𝑝𝑘, 𝑀 , 𝜎, 𝑐𝑡𝑥)](./03-ML-DSA.Verify.md) | §5.3 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 4  HashML-DSA.Sign(𝑠𝑘, 𝑀 , 𝑐𝑡𝑥, PH)](./04-HashML-DSA.Sign.md) | §5.4.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 5  HashML-DSA.Verify(𝑝𝑘, 𝑀 , 𝜎, 𝑐𝑡𝑥, PH)](./05-HashML-DSA.Verify.md) | §5.4.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 6  ML-DSA.KeyGen_internal(𝜉)](./06-ML-DSA.KeyGen_internal.md) | §6.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 7  ML-DSA.Sign_internal(𝑠𝑘, 𝑀 ′ , 𝑟𝑛𝑑)](./07-ML-DSA.Sign_internal.md) | §6.2 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 8  ML-DSA.Verify_internal(𝑝𝑘, 𝑀 ′ , 𝜎)](./08-ML-DSA.Verify_internal.md) | §6.3 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 9  IntegerToBits(𝑥, 𝛼)](./09-IntegerToBits.md) | §7.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 10  BitsToInteger(𝑦, 𝛼)](./10-BitsToInteger.md) | §7.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 11  IntegerToBytes(𝑥, 𝛼)](./11-IntegerToBytes.md) | §7.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 12  BitsToBytes(𝑦)](./12-BitsToBytes.md) | §7.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 13  BytesToBits(𝑧)](./13-BytesToBits.md) | §7.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 14  CoeffFromThreeBytes(𝑏0 , 𝑏1 , 𝑏2 )](./14-CoeffFromThreeBytes.md) | §7.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 15  CoeffFromHalfByte(𝑏)](./15-CoeffFromHalfByte.md) | §7.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 16  SimpleBitPack(𝑤, 𝑏)](./16-SimpleBitPack.md) | §7.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 17  BitPack(𝑤, 𝑎, 𝑏)](./17-BitPack.md) | §7.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 18  SimpleBitUnpack(𝑣, 𝑏)](./18-SimpleBitUnpack.md) | §7.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 19  BitUnpack(𝑣, 𝑎, 𝑏)](./19-BitUnpack.md) | §7.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 20  HintBitPack(𝐡)](./20-HintBitPack.md) | §7.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 21  HintBitUnpack(𝑦)](./21-HintBitUnpack.md) | §7.1 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 22  pkEncode(𝜌, 𝐭1 )](./22-pkEncode.md) | §7.2 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 23  pkDecode(𝑝𝑘)](./23-pkDecode.md) | §7.2 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 24  skEncode(𝜌, 𝐾, 𝑡𝑟, 𝐬1 , 𝐬2 , 𝐭0 )](./24-skEncode.md) | §7.2 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 25  skDecode(𝑠𝑘)](./25-skDecode.md) | §7.2 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 26  sigEncode(𝑐,̃ 𝐳, 𝐡)](./26-sigEncode.md) | §7.2 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 27  sigDecode(𝜎)](./27-sigDecode.md) | §7.2 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 28  w1Encode(𝐰1 )](./28-w1Encode.md) | §7.2 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 29  SampleInBall(𝜌)](./29-SampleInBall.md) | §7.3 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 30  RejNTTPoly(𝜌)](./30-RejNTTPoly.md) | §7.3 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 31  RejBoundedPoly(𝜌)](./31-RejBoundedPoly.md) | §7.3 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 32  ExpandA(𝜌)](./32-ExpandA.md) | §7.3 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 33  ExpandS(𝜌)](./33-ExpandS.md) | §7.3 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 34  ExpandMask(𝜌, 𝜇)](./34-ExpandMask.md) | §7.3 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 35  Power2Round(𝑟)](./35-Power2Round.md) | §7.4 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 36  Decompose(𝑟)](./36-Decompose.md) | §7.4 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 37  HighBits(𝑟)](./37-HighBits.md) | §7.4 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 38  LowBits(𝑟)](./38-LowBits.md) | §7.4 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 39  MakeHint(𝑧, 𝑟)](./39-MakeHint.md) | §7.4 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 40  UseHint(ℎ, 𝑟)](./40-UseHint.md) | §7.4 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 41  NTT(𝑤)](./41-NTT.md) | §7.5 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 42  NTT−1 (𝑤)̂](./42-NTT−1.md) | §7.5 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 43  BitRev8 (𝑚)](./43-BitRev8.md) | §7.5 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 44  AddNTT(𝑎,̂ 𝑏)̂](./44-AddNTT.md) | §7.6 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 45  MultiplyNTT(𝑎,̂ 𝑏)̂](./45-MultiplyNTT.md) | §7.6 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 46  AddVectorNTT(𝐯,̂ 𝐰)](./46-AddVectorNTT.md) | §7.6 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 47  ScalarVectorNTT(𝑐,̂ 𝐯)̂](./47-ScalarVectorNTT.md) | §7.6 | 部分实现（不代表完整标准覆盖） |
+| [Algorithm 48 — MatrixVectorNTT(`M̂`, `v̂`)](./48-MatrixVectorNTT.md) | Algorithm 48 — MatrixVectorNTT(`M̂`, `v̂`) | 仅参考（未映射为块实现） |
+| [Algorithm 49  MontgomeryReduce(𝑎)](./49-MontgomeryReduce.md) | 附录 A | 部分实现（不代表完整标准覆盖） |
+
+## 实现与验证映射
+
+| 积木块 | 规范语义范围 | 已登记验证入口 | 边界（本行不能证明什么） |
+|---|---|---|---|
+| `mldsa_sign` | — | — | — |
+| `mldsa_verify` | — | — | — |
+| `pq_power2round` | — | — | — |
+| `pq_decompose` | — | — | — |
+| `pq_make_hint` | — | — | — |
+| `pq_use_hint` | — | — | — |
+| `pq_sample_in_ball` | — | — | — |
+| `pq_rej_sample` | FIPS 204 拒绝采样（Rej 边界） | `procedures/PQC-Gaps.json` 断言 Rej 边界排他性质 | 性质断言；不覆盖完整拒绝采样分布或 ML-DSA 端点 |
+| `共享构件 pq_xof/prf、pq_sample_ntt、pq_ntt/intt/ntt_mul、pq_poly_add/sub（逐项范围见 Inventory）` | — | — | — |
+
+示例工作区：`demos/procedures/ML-DSA-Sign.json`、`demos/procedures/ML-DSA-Primitives.json`、`demos/procedures/ML-DSA-NTT.json`；搭建指南：✅ ML-DSA-Sign-搭建指南（+ en）。
+
+以上是当前实现与回归范围，不代表已通过认证或完成完整标准测试；逐块证据与缺项见[标准符合性对象清单](../CONFORMANCE-INVENTORY.md)。
+
+<!-- standard-body:end -->

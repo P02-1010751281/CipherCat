@@ -56,3 +56,38 @@
 - `demos/procedures/Goppa-Decode.json`：G=[176,92,1] 根判定、逆元 u·(z−α)≡1、
   syndrome 原子链==已知值、无错/单错/双错往返、篡改 G 不可纠。
 - 教程：[后量子演示](../../demos/post-quantum.md) 中的 Goppa/Patterson 一节。
+
+<!-- standard-body:start -->
+
+## 标准内容
+
+本目录对应 **Classic McEliece / Goppa 码 — 算法与来源索引**，按标准条款拆分为 4 个结构化条目，覆盖 「Goppa 码定义、生成多项式与 syndrome」、「Patterson 代数译码、错误定位多项式与 Chien 搜索」。每个条目页给出标准定位、原文出处、公式或伪代码，以及对应积木块与验证边界。
+
+| 结构化条目 | 内容 | 项目状态 |
+|---|---|---|
+| [Goppa-code definition, generator polynomial, and syndrome](./01-Goppa-Codes.en.md) | — | — |
+| [Goppa 码定义、生成多项式与 syndrome](./01-Goppa-Codes.md) | Goppa 码定义、生成多项式与 syndrome | 已实现教学原语；未实现 ISO Classic McEliece KEM 参数集或符合性 |
+| [Patterson algebraic decoding, error-locator polynomial, and Chien search](./02-Patterson.en.md) | — | — |
+| [Patterson 代数译码、错误定位多项式与 Chien 搜索](./02-Patterson.md) | Patterson 代数译码、错误定位多项式与 Chien 搜索 | 已实现教学译码原语；未实现 ISO Classic McEliece KEM 参数集或符合性 |
+
+## 实现与验证映射
+
+| 积木块 | 规范语义范围 | 已登记验证入口 | 边界（本行不能证明什么） |
+|---|---|---|---|
+| `gf2_poly_mul`/div/mod/gcd | 通用 GF(2) 系数卷积，低位在前；无独立密码标准依据；空输入相乘返回 `[]` 表示零多项式 | `generator-contracts.test.ts` 通过真实 Blockly 生成并执行 JS/Python，覆盖左右空输入及非空已知结果 `[1,1]×[1,1,1]=[1,0,0,1]` | 只验证空输入约定和该卷积算例，不等同任何编码密码算法符合性 |
+| `bin_mat_mul`/inv | — | — | — |
+| `ham_weight` | — | — | — |
+| `ham_dist` | — | — | — |
+| `goppa_gen_poly` | — | — | — |
+| `syndrome_calc` | — | — | — |
+| `gf2m_mul`/add/inv | — | — | — |
+| `gf2m_poly_add`/mul/mod/xgcd/eval | — | — | — |
+| `goppa_decode` | — | — | — |
+| `berlekamp_massey` | — | — | — |
+| `arr_slice` | 通用数组切片构件；安全整数起始索引（负值按末尾相对索引处理）；非负安全整数长度表示元素个数，数组边界处截断 | `array-slice-contract.test.ts` 通过真实 Blockly 块生成并执行双语言代码，覆盖常规/尾端截断、负索引取足长度、起点越过数组头部、整数值浮点索引、输入只求值一次，并拒绝小数索引、负长度及超范围 start/length | 无独立密码标准算法身份；不证明父算法符合性 |
+
+示例工作区：`demos/procedures/Code-Based-Math.json`、`demos/GF2m-Poly.json`、`demos/Goppa-Decode.json`、`demos/PQC-Gaps.json`。
+
+以上是当前实现与回归范围，不代表已通过认证或完成完整标准测试；逐块证据与缺项见[标准符合性对象清单](../CONFORMANCE-INVENTORY.md)。
+
+<!-- standard-body:end -->

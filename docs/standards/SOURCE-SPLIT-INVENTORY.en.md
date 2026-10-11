@@ -1,6 +1,6 @@
 # Standard Source-to-Entry Inventory
 
-Checked: 2026-10-08
+Checked: 2026-10-11
 
 > Generated from every structured entry metadata block. This is an evidence index, not a claim that every standard clause has been transcribed.
 
@@ -33,7 +33,7 @@ No structured entry pages.
 
 | Entry | Standard position | Source location | Evidence status |
 |---|---|---|---|
-| [fips180-4-SHA2/01-SHA2.md](./fips180-4-SHA2/01-SHA2.md) | NIST FIPS 180-4 — SHA-2 参考 | [提取稿 §6.1–§6.7，行 886–1237](./fips180-4-SHA2/00-Standard-Source.md#L886-L1237)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [fips180-4-SHA2/01-SHA2.md](./fips180-4-SHA2/01-SHA2.md) | §6.1–§6.7 | [提取稿 §6.1–§6.7，行 886–1237](./fips180-4-SHA2/00-Standard-Source.md#L886-L1237)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips180-4-SHA2/02-Padding.md](./fips180-4-SHA2/02-Padding.md) | FIPS 180-4 §5.1，§5.2 | PDF 物理第 18–19 页（标准页 13–14）；[提取稿 §5.1](./fips180-4-SHA2/00-Standard-Source.md#L652) | `source PDF page anchor` |
 | [fips180-4-SHA2/03-MessageExpansion.md](./fips180-4-SHA2/03-MessageExpansion.md) | FIPS 180-4 §6.2.2、§6.4.2 | SHA-256：[提取稿第 1052 行](./fips180-4-SHA2/00-Standard-Source.md#L1052)；SHA-512：[第 1142 行](./fips180-4-SHA2/00-Standard-Source.md#L1142) | `source line anchor` |
 | [fips180-4-SHA2/04-Compression.md](./fips180-4-SHA2/04-Compression.md) | FIPS 180-4 §6.2.2、§6.4.2 | SHA-256：[提取稿第 1052 行](./fips180-4-SHA2/00-Standard-Source.md#L1052)；SHA-512：[第 1142 行](./fips180-4-SHA2/00-Standard-Source.md#L1142) | `source line anchor` |
@@ -43,7 +43,7 @@ No structured entry pages.
 
 | Entry | Standard position | Source location | Evidence status |
 |---|---|---|---|
-| [fips186-5-ecdsa/01-ECDSA.md](./fips186-5-ecdsa/01-ECDSA.md) | NIST FIPS 186-5 — ECDSA 参考 | [提取稿 §6.1–§6.4，行 1174–1384](./fips186-5-ecdsa/00-Standard-Source.md#L1174-L1384)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [fips186-5-ecdsa/01-ECDSA.md](./fips186-5-ecdsa/01-ECDSA.md) | §6.1–§6.4 | [提取稿 §6.1–§6.4，行 1174–1384](./fips186-5-ecdsa/00-Standard-Source.md#L1174-L1384)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips186-5-ecdsa/02-Curve-Operations.md](./fips186-5-ecdsa/02-Curve-Operations.md) | FIPS 186-5 §6；项目使用 NIST P-256 参数 | PDF 物理第 20–22 页（标准页 20–22）；[提取稿 §6.1 第 1174 行](./fips186-5-ecdsa/00-Standard-Source.md#L1174) | `source PDF page anchor` |
 | [fips186-5-ecdsa/03-Sign.md](./fips186-5-ecdsa/03-Sign.md) | FIPS 186-5 §6.4.1 | PDF 物理第 33 页（标准印刷页 24）；[提取稿 §6.4.1 第 1341 行](./fips186-5-ecdsa/00-Standard-Source.md#L1341) | `source PDF page anchor` |
 | [fips186-5-ecdsa/04-Verify.md](./fips186-5-ecdsa/04-Verify.md) | FIPS 186-5 §6.4.2 | PDF 物理第 34 页（标准印刷页 25）；[提取稿 §6.4.2 第 1391–1393 行](./fips186-5-ecdsa/00-Standard-Source.md#L1391-L1393) | `source PDF page anchor` |
@@ -54,12 +54,12 @@ No structured entry pages.
 
 | Entry | Standard position | Source location | Evidence status |
 |---|---|---|---|
-| [fips197-AES/01-AES.md](./fips197-AES/01-AES.md) | FIPS 197 — AES 算法参考 | [提取稿 §5，行 705–1043](./fips197-AES/00-Standard-Source.md#L705-L1043)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [fips197-AES/01-AES.md](./fips197-AES/01-AES.md) | §5 | [提取稿 §5，行 705–1043](./fips197-AES/00-Standard-Source.md#L705-L1043)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips197-AES/01-SubBytes.md](./fips197-AES/01-SubBytes.md) | FIPS 197 §5.1.1，Eq. (5.2)–(5.4) | PDF 物理第 21 页（标准页 12–13）；[提取稿 §5.1.1](./fips197-AES/00-Standard-Source.md#L798) | `source PDF page anchor` |
 | [fips197-AES/02-ShiftRows.md](./fips197-AES/02-ShiftRows.md) | FIPS 197 §5.1.2，Eq. (5.5) | PDF 物理第 22 页（标准页 14）；[提取稿 §5.1.2](./fips197-AES/00-Standard-Source.md#L883) | `source PDF page anchor` |
 | [fips197-AES/03-MixColumns-AddRoundKey.md](./fips197-AES/03-MixColumns-AddRoundKey.md) | FIPS 197 §5.1.3–§5.1.4，Eq. (5.6)–(5.9) | PDF 物理第 23–24 页（标准页 15–16）；[提取稿 §5.1.3](./fips197-AES/00-Standard-Source.md#L906)、[§5.1.4](./fips197-AES/00-Standard-Source.md#L906) | `source PDF page anchor` |
-| [fips197-AES/04-KeyExpansion.md](./fips197-AES/04-KeyExpansion.md) | FIPS 197 — AES 密钥扩展参考 | [提取稿 §5.2，行 974–1043](./fips197-AES/00-Standard-Source.md#L974-L1043)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [fips197-AES/05-Appendix.md](./fips197-AES/05-Appendix.md) | FIPS 197 — AES 标准向量 | [提取稿附录 A–C，行 1360–1701](./fips197-AES/00-Standard-Source.md#L1360-L1701)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [fips197-AES/04-KeyExpansion.md](./fips197-AES/04-KeyExpansion.md) | §5.2 | [提取稿 §5.2，行 974–1043](./fips197-AES/00-Standard-Source.md#L974-L1043)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [fips197-AES/05-Appendix.md](./fips197-AES/05-Appendix.md) | 附录 A–C | [提取稿附录 A–C，行 1360–1701](./fips197-AES/00-Standard-Source.md#L1360-L1701)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips197-AES/06-CIPHER.md](./fips197-AES/06-CIPHER.md) | NIST FIPS 197 §5.1，Algorithm 1 | `00-Standard-Source.md` 第 765 行起；PDF 物理页以 PDF 视觉版式核对 | `source line anchor` |
 | [fips197-AES/07-KEY-EXPANSION.md](./fips197-AES/07-KEY-EXPANSION.md) | NIST FIPS 197 §5.2，Algorithm 2 | `00-Standard-Source.md` 第 1018 行起；PDF 物理页以 PDF 视觉版式核对 | `source line anchor` |
 | [fips197-AES/08-INV-CIPHER.md](./fips197-AES/08-INV-CIPHER.md) | NIST FIPS 197 §5.3，Algorithm 3 | `00-Standard-Source.md` 第 1092 行起；PDF 物理页以 PDF 视觉版式核对 | `source line anchor` |
@@ -70,9 +70,9 @@ No structured entry pages.
 
 | Entry | Standard position | Source location | Evidence status |
 |---|---|---|---|
-| [fips198-1-hmac/01-HMAC.md](./fips198-1-hmac/01-HMAC.md) | NIST FIPS 198-1 — HMAC 参考 | [提取稿 §4，行 328–395](./fips198-1-hmac/00-Standard-Source.md#L328-L395)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [fips198-1-hmac/01-HMAC.md](./fips198-1-hmac/01-HMAC.md) | §4 | [提取稿 §4，行 328–395](./fips198-1-hmac/00-Standard-Source.md#L328-L395)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips198-1-hmac/02-Key-Normalization.md](./fips198-1-hmac/02-Key-Normalization.md) | FIPS 198-1 §3 | PDF 物理第 10 页（标准页 4）；[提取稿 §3](./fips198-1-hmac/00-Standard-Source.md#L318) | `source PDF page anchor` |
-| [fips198-1-hmac/03-Construction.md](./fips198-1-hmac/03-Construction.md) | HMAC — 内外层构造原语 | [提取稿 §4，行 328–395](./fips198-1-hmac/00-Standard-Source.md#L328-L395)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [fips198-1-hmac/03-Construction.md](./fips198-1-hmac/03-Construction.md) | §4 | [提取稿 §4，行 328–395](./fips198-1-hmac/00-Standard-Source.md#L328-L395)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 
 ### `fips202-SHA3` — standard source present
 
@@ -89,8 +89,8 @@ No structured entry pages.
 | [fips202-SHA3/09-pad10star1.md](./fips202-SHA3/09-pad10star1.md) | §5.1 | [提取稿定位](./fips202-SHA3/00-Standard-Source.md#L1108)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips202-SHA3/10-h2b.md](./fips202-SHA3/10-h2b.md) | Appendix B | [提取稿定位](./fips202-SHA3/00-Standard-Source.md#L1414)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 | [fips202-SHA3/11-b2h.md](./fips202-SHA3/11-b2h.md) | Appendix B | [提取稿定位](./fips202-SHA3/00-Standard-Source.md#L1464)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [fips202-SHA3/SHA3-functions.md](./fips202-SHA3/SHA3-functions.md) | SHA-3 Hash Functions (§6.1) | [提取稿定位](./fips202-SHA3/00-Standard-Source.md#L1149)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
-| [fips202-SHA3/SHAKE-functions.md](./fips202-SHA3/SHAKE-functions.md) | SHA-3 XOFs (§6.2–6.3) | [提取稿定位](./fips202-SHA3/00-Standard-Source.md#L1167)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [fips202-SHA3/SHA3-functions.md](./fips202-SHA3/SHA3-functions.md) | §6.1 | [提取稿定位](./fips202-SHA3/00-Standard-Source.md#L1149)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
+| [fips202-SHA3/SHAKE-functions.md](./fips202-SHA3/SHAKE-functions.md) | §6.2–6.3 | [提取稿定位](./fips202-SHA3/00-Standard-Source.md#L1167)；PDF 物理页需结合同目录 PDF 核对 | `source line anchor` |
 
 ### `fips203-ML-KEM` — standard source present
 

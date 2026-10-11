@@ -8,7 +8,7 @@
 | 标准定位 | DRBG — HMAC_DRBG Update 原语 |
 | 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
 | 原文位置 | [HMAC_DRBG §10.1.2.2，提取稿行 2396–2433](./00-Standard-Source.md#L2396-L2433)；PDF 第 44 页 |
-| 项目状态 | 仅参考（详见本文现有实现/缺项说明） |
+| 项目状态 | 仅参考（未映射为块实现） |
 
 ## 原文定位与引用
 

@@ -8,7 +8,7 @@
 | 标准定位 | XTS — 数据单元与 ciphertext stealing 边界 |
 | 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
 | 原文位置 | [提取稿 §5.1–§5.2，行 266–298](./00-Standard-Source.md#L266-L298)；PDF 物理页需结合同目录 PDF 核对 |
-| 项目状态 | 仅参考（详见本文现有实现/缺项说明） |
+| 项目状态 | 仅参考（未映射为块实现） |
 
 ## 原文定位与引用
 

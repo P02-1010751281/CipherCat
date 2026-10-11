@@ -8,7 +8,7 @@
 | 标准定位 | NIST SP 800-90A Rev.1 — DRBG 参考 |
 | 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
 | 原文位置 | [§7 行 877–925](./00-Standard-Source.md#L877-L925)、[§9 行 1501–1538](./00-Standard-Source.md#L1501-L1538)、[HMAC_DRBG §10.1.2 行 2332–2468](./00-Standard-Source.md#L2332-L2468) |
-| 项目状态 | 部分实现（详见本文现有实现/缺项说明） |
+| 项目状态 | 部分实现（不代表完整标准覆盖） |
 
 ## 原文定位与引用
 

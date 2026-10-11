@@ -4,14 +4,14 @@
 | 字段 | 内容 |
 |---|---|
 | 类型 | 算法阶段 / 原语 / 函数 |
-| 标准定位 | # FIPS 197 — AES 标准向量 |
+| 标准定位 | 附录 A–C |
 | 原文证据 | [source：fips197-AES](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
 | 原文位置 | [提取稿附录 A–C，行 1360–1701](./00-Standard-Source.md#L1360-L1701)；PDF 物理页需结合同目录 PDF 核对 |
-| 项目状态 | 仅参考（详见本文现有实现/缺项说明） |
+| 项目状态 | 仅参考（未映射为块实现） |
 
 ## 原文定位与引用
 
-> 本页按 source 中的“# FIPS 197 — AES 标准向量”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md) 与同目录 PDF。
+> 本页按 source 中的“附录 A–C”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md) 与同目录 PDF。
 
 
 原件：[NIST.FIPS.197.pdf](./NIST.FIPS.197.pdf)。以下向量来自 FIPS 197 Appendix B/C 的 AES-128 示例，用于快速核对字节序、密钥扩展和轮函数。

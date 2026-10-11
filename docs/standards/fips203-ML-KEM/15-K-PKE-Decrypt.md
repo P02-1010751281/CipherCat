@@ -8,7 +8,7 @@
 | 标准定位 | §5.3 K-PKE |
 | 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
 | 原文位置 | [Algorithm 15 提取稿](./00-Standard-Source.md#L1823-L1839)；PDF [物理第 40 页](./NIST.FIPS.203.pdf#page=40)（标准页 31） |
-| 项目状态 | 部分实现（详见本文现有实现/缺项说明） |
+| 项目状态 | 部分实现（不代表完整标准覆盖） |
 
 ## 原文定位与引用
 

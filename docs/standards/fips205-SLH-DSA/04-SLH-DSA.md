@@ -8,7 +8,7 @@
 | 标准定位 | SLH-DSA — 完整签名方案（FIPS 205 §9-10） |
 | 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
 | 原文位置 | [提取稿 Algorithm 19](./00-Standard-Source.md#L1881)；PDF 物理页需结合同目录 PDF 核对 |
-| 项目状态 | 部分实现（详见本文现有实现/缺项说明） |
+| 项目状态 | 部分实现（不代表完整标准覆盖） |
 
 ## 原文定位与引用
 

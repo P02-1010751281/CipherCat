@@ -8,7 +8,7 @@
 | 标准定位 | Compress / Decompress (§4.2.1) |
 | 原文证据 | [source 提取稿](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
 | 原文位置 | [提取稿 §4.2.1](./00-Standard-Source.md#L1273-L1287)；PDF [物理第 30 页](./NIST.FIPS.203.pdf#page=30)（标准页 21） |
-| 项目状态 | 已实现（详见本文现有实现/缺项说明） |
+| 项目状态 | 已实现（不代表完整标准覆盖） |
 
 ## 原文定位与引用
 

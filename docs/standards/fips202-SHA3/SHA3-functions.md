@@ -4,14 +4,14 @@
 | 字段 | 内容 |
 |---|---|
 | 类型 | 算法阶段 / 原语 / 函数 |
-| 标准定位 | # SHA-3 Hash Functions (§6.1) |
+| 标准定位 | §6.1 |
 | 原文证据 | [source：fips202-SHA3](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
 | 原文位置 | [提取稿定位](./00-Standard-Source.md#L1149)；PDF 物理页需结合同目录 PDF 核对 |
 | 项目状态 | 工程实现覆盖 SHA3-224/256/384/512；目前为有限回归证据，不是完整官方测试集 |
 
 ## 原文定位与引用
 
-> 本页按 source 中的“# SHA-3 Hash Functions (§6.1)”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L1149) 与同目录 PDF。
+> 本页按 source 中的“§6.1”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md#L1149) 与同目录 PDF。
 
 
 ## 标准定义

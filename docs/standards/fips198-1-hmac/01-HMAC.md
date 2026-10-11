@@ -5,14 +5,14 @@
 | 字段 | 内容 |
 |---|---|
 | 类型 | 算法阶段 / 原语 / 函数 |
-| 标准定位 | # NIST FIPS 198-1 — HMAC 参考 |
+| 标准定位 | §4 |
 | 原文证据 | [source：fips198-1-hmac](./00-Standard-Source.md)（本目录 PDF 清单见 source 页） |
 | 原文位置 | [提取稿 §4，行 328–395](./00-Standard-Source.md#L328-L395)；PDF 物理页需结合同目录 PDF 核对 |
-| 项目状态 | 仅参考（详见本文现有实现/缺项说明） |
+| 项目状态 | 仅参考（未映射为块实现） |
 
 ## 原文定位与引用
 
-> 本页按 source 中的“# NIST FIPS 198-1 — HMAC 参考”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md) 与同目录 PDF。
+> 本页按 source 中的“§4”拆分；这是定位说明，不替代标准逐字引文。完整正文、公式和表格请回看 [source 提取稿](./00-Standard-Source.md) 与同目录 PDF。
 
 原件：[NIST.FIPS.198-1.pdf](./NIST.FIPS.198-1.pdf) · [NIST 页面](https://csrc.nist.gov/pubs/fips/198-1/final)。
 

@@ -139,7 +139,8 @@ echo "  USER-GUIDE / TUTORIALS 不同步：入口、路由和测评流程按目�
 echo "== 降级 CipherCat 专属证据链接 ============="
 # 共享文档在 CipherCat 内链接到 src/、tests/、scripts/ 的真实文件；metacrypt
 # 仓库没有这些路径，原样同步会变成死链。目标仓库里把这类链接降级为
-# 「文本（CipherCat：路径）」的代码标记，保留出处但不留死链。
+# 「文本（源码路径：路径）」的代码标记，保留出处但不留死链；标记里不写仓库名，
+# 避免平台文档出现另一个仓库的名字。
 # 只处理本次同步过去的文件，避免改写目标仓库自有文档。
 sync_targets() {
   find "$MC_ROOT/docs/standards" "$MC_ROOT/docs/blocks" "$MC_ROOT/docs/demos" "$MC_ROOT/docs/build" -name '*.md' -print0 2>/dev/null
@@ -151,10 +152,45 @@ sync_targets() {
 }
 # grep 无输出时退出 1，在 `set -euo pipefail` 下会中断脚本；用 `|| true` 放行空集合。
 { sync_targets | grep -zv '\.en\.md$' || true; } \
-  | xargs -0 -r perl -0pi -e 's/\[([^\]]*)\]\((?:\.\.\/)+((?:tests|src|scripts)\/[^)\s]*)\)/$1（CipherCat：`$2`）/g'
+  | xargs -0 -r perl -0pi -e 's/\[([^\]]*)\]\((?:\.\.\/)+((?:tests|src|scripts)\/[^)\s]*)\)/$1（源码路径：`$2`）/g'
 { sync_targets | grep -z '\.en\.md$' || true; } \
-  | xargs -0 -r perl -0pi -e 's/\[([^\]]*)\]\((?:\.\.\/)+((?:tests|src|scripts)\/[^)\s]*)\)/$1 (CipherCat: `$2`)/g'
-echo "  CipherCat-only evidence links de-linked in target docs"
+  | xargs -0 -r perl -0pi -e 's/\[([^\]]*)\]\((?:\.\.\/)+((?:tests|src|scripts)\/[^)\s]*)\)/$1 (source path: `$2`)/g'
+echo "  CipherCat-only evidence links de-linked in target docs (marked as 源码路径)"
+
+echo "== 目标仓库去掉开发仓库名 ================"
+# 平台文档面向 Metacrypto 读者，标题与正文出现另一个仓库名会让人以为是两套产品。
+# 这里只改写本次同步过去的文件；调研/审计这类开发文档的叙述保留原样。
+# 中文文档
+{ sync_targets | grep -zv '\.en\.md$' || true; } | xargs -0 -r perl -0pi \
+  -e 's/^## (\d+\.?\s*)?CipherCat\s*/## ${1}项目/gm;' \
+  -e 's/\| CipherCat 状态 \|/| 项目状态 |/g;' \
+  -e 's/\| CipherCat 前端 \|/| 平台前端 |/g;' \
+  -e 's/前端 CipherCat/平台前端/g;' \
+  -e 's/CipherCat 前端/平台前端/g;' \
+  -e 's/CipherCat 块：/项目块：/g;' \
+  -e 's/CipherCat：/项目块：/g;' \
+  -e 's/（CipherCat /（/g;' \
+  -e 's/CipherCat 的/本项目的/g;' \
+  -e 's/CipherCat 对/本项目对/g;' \
+  -e 's/CipherCat 基于/本项目基于/g;' \
+  -e 's/CipherCat 整体/本项目整体/g;' \
+  -e 's/CipherCat 作为/本项目作为/g;' \
+  -e 's/CipherCat 当前/本项目当前/g;' \
+  -e 's/CipherCat 已有/本项目已有/g;' \
+  -e 's/CipherCat 积木体系/本项目积木体系/g;' \
+  -e 's/CipherCat Blockly 原语/Blockly 原语/g;' \
+  -e 's/CipherCat 实测/实测/g;' \
+  -e 's/CipherCat ECDH/本项目 ECDH/g;' \
+  -e 's/CipherCat 算法实现/本项目算法实现/g;' \
+  -e 's/CipherCat 或/本项目或/g;' \
+  -e 's/CipherCat 教学与科研定位/本项目教学与科研定位/g;'
+# 英文文档
+{ sync_targets | grep -z '\.en\.md$' || true; } | xargs -0 -r perl -0pi \
+  -e 's/^## (\d+\.?\s*)?CipherCat\s*/## ${1}Project /gm;' \
+  -e 's/CipherCat’s/Project’s/g;' \
+  -e 's/CipherCat\x27s/the project\x27s/g;' \
+  -e 's/\bCipherCat\b/the project/g;'
+echo "  repository name removed from platform-facing sections"
 
 # guides/ 内不同步的平台文档：metacrypt 的架构与部署文档位于 docs/ 顶层。
 { sync_targets || true; } | xargs -0 -r perl -0pi \

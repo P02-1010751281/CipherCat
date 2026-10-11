@@ -1,3 +1,5 @@
+# XTS — 数据单元与 ciphertext stealing 边界
+
 ## 条目元数据
 
 | 字段 | 内容 |

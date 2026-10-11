@@ -1,3 +1,5 @@
+# Patterson algebraic decoding, error-locator polynomial, and Chien search
+
 ## Entry Metadata
 
 | Field | Value |

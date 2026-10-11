@@ -1,3 +1,5 @@
+# Goppa-code definition, generator polynomial, and syndrome
+
 ## Entry Metadata
 
 | Field | Value |

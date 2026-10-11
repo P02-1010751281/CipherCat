@@ -183,13 +183,16 @@ echo "== 目标仓库去掉开发仓库名 ================"
   -e 's/CipherCat ECDH/本项目 ECDH/g;' \
   -e 's/CipherCat 算法实现/本项目算法实现/g;' \
   -e 's/CipherCat 或/本项目或/g;' \
-  -e 's/CipherCat 教学与科研定位/本项目教学与科研定位/g;'
+  -e 's/CipherCat 教学与科研定位/本项目教学与科研定位/g;' \
+  -e 's/当前本项目/本项目/g;'
 # 英文文档
 { sync_targets | grep -z '\.en\.md$' || true; } | xargs -0 -r perl -0pi \
   -e 's/^## (\d+\.?\s*)?CipherCat\s*/## ${1}Project /gm;' \
   -e 's/CipherCat’s/Project’s/g;' \
   -e 's/CipherCat\x27s/the project\x27s/g;' \
-  -e 's/\bCipherCat\b/the project/g;'
+  -e 's/\bCipherCat\b/the project/g;' \
+  -e 's/\bthe the project\b/the project/g;' \
+  -e 's/(^|[.!?]\s+)the project/${1}The project/gm;'
 echo "  repository name removed from platform-facing sections"
 
 # guides/ 内不同步的平台文档：metacrypt 的架构与部署文档位于 docs/ 顶层。

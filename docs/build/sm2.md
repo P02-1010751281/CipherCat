@@ -1,17 +1,17 @@
-# SM2：分步拼装
+# SM2
 
 SM2 的点乘与密钥交换可以逐原语拼出，加密和签名由接口块承担。
 
 ## 本页覆盖的工作区
 
-| | |
+| 工作区 | 文件 |
 |---|---|
 | `SM2-PointMul` | `demos/procedures/SM2-PointMul.json` |
 | `SM2-KeyExchange` | `demos/procedures/SM2-KeyExchange.json` |
 | `SM2-Encrypt` | `demos/procedures/SM2-Encrypt.json` |
 | `SM2-Sign` | `demos/procedures/SM2-Sign.json` |
 
-### `SM2-PointMul`
+### SM2-PointMul
 
 - 证据类别：标准/官方用例
 - 参数范围：SM2 推荐曲线（256-bit）
@@ -39,7 +39,7 @@ SM2 的点乘与密钥交换可以逐原语拼出，加密和签名由接口块�
 
 **该函数用到的算法块**：`ecc_load_curve_params` · `ecc_load_point` · `ecc_multiply`
 
-### `SM2-KeyExchange`
+### SM2-KeyExchange
 
 - 证据类别：标准/官方用例
 - 参数范围：SM2 推荐曲线（256-bit）+ SM3
@@ -73,7 +73,7 @@ SM2 的点乘与密钥交换可以逐原语拼出，加密和签名由接口块�
 
 **该函数用到的算法块**：`sm2_key_exchange`
 
-### `SM2-Encrypt`
+### SM2-Encrypt
 
 - 证据类别：标准/官方用例
 - 参数范围：SM2 推荐曲线（256-bit）+ SM3
@@ -107,7 +107,7 @@ SM2 的点乘与密钥交换可以逐原语拼出，加密和签名由接口块�
 
 **该函数用到的算法块**：`sm2_decrypt`
 
-### `SM2-Sign`
+### SM2-Sign
 
 - 证据类别：标准/官方用例
 - 参数范围：SM2 推荐曲线（256-bit）+ SM3

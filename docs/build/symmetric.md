@@ -1,10 +1,10 @@
-# 对称密码与工作模式：分步拼装
+# 对称密码与工作模式
 
 分组密码、工作模式与认证加密：先按标准轮/模式拼出链，再用接口块或模式块做组合。
 
 ## 本页覆盖的工作区
 
-| | |
+| 工作区 | 文件 |
 |---|---|
 | `AES-Atomic-Round` | `demos/AES-Atomic-Round.json` |
 | `Procedure-AES-Round` | `demos/Procedure-AES-Round.json` |
@@ -23,7 +23,7 @@
 | `ASCON` | `demos/procedures/ASCON.json` |
 | `ASCON-Extended` | `demos/procedures/ASCON-Extended.json` |
 
-### `AES-Atomic-Round`
+### AES-Atomic-Round
 
 - 证据类别：项目固定回归（非官方向量）
 - 依据：四个原子轮原语按工作区顺序原地修改共享状态，固定值 4807…c59f；非官方附录向量
@@ -55,7 +55,7 @@
     - `ROUND_KEY` ←
       - 变量 `ccd1658163e44eb6b76a`
 
-### `Procedure-AES-Round`
+### Procedure-AES-Round
 
 - 证据类别：项目固定回归（非官方向量）
 - 依据：显式值连接轮函数的固定输入回归 4807…c59f；非官方附录向量
@@ -77,7 +77,7 @@
 
 **该函数用到的算法块**：`aes_add_round_key` · `aes_mix_columns` · `aes_shift_rows` · `aes_sub_bytes`
 
-### `AES-Round`
+### AES-Round
 
 - 证据类别：项目固定回归（非官方向量）
 - 依据：正常轮 + 末轮（去 MixColumns）固定输入回归；不声称为官方完整加密向量
@@ -99,7 +99,7 @@
 
 **该函数用到的算法块**：`aes_add_round_key` · `aes_mix_columns` · `aes_shift_rows` · `aes_sub_bytes`
 
-### `AES-LastRound`
+### AES-LastRound
 
 - 证据类别：项目固定回归（非官方向量）
 - 依据：末轮固定输入回归；不声称为官方完整加密向量
@@ -121,7 +121,7 @@
 
 **该函数用到的算法块**：`aes_add_round_key` · `aes_shift_rows` · `aes_sub_bytes`
 
-### `SM4-Atomic-Round`
+### SM4-Atomic-Round
 
 - 证据类别：标准/官方用例
 - 参数范围：SM4-128 单轮
@@ -159,7 +159,7 @@
         - `RK` ←
           - 常量 `0xF12186F9`
 
-### `Procedure-SM4-Round`
+### Procedure-SM4-Round
 
 - 证据类别：标准/官方用例
 - 参数范围：SM4-128 轮函数
@@ -185,7 +185,7 @@
 
 **该函数用到的算法块**：`sm4_round_func`
 
-### `SM4-Round`
+### SM4-Round
 
 - 证据类别：标准/官方用例
 - 参数范围：SM4-128 轮函数（首轮密钥 0xf12186f9）
@@ -211,7 +211,7 @@
 
 **该函数用到的算法块**：`sm4_round_func`
 
-### `SM4-Sbox`
+### SM4-Sbox
 
 - 证据类别：标准/官方用例
 - 参数范围：SM4-128 字节代换表
@@ -229,7 +229,7 @@
 
 **该函数用到的算法块**：`sm4_sbox`
 
-### `Mode-ECB`
+### Mode-ECB
 
 - 证据类别：标准/官方用例
 - 参数范围：AES-128 ECB（单块；CAVP KAT 全例）
@@ -249,7 +249,7 @@
 
 **该函数用到的算法块**：`mode_ecb_encrypt`
 
-### `Mode-CBC`
+### Mode-CBC
 
 - 证据类别：标准/官方用例
 - 参数范围：AES-128 CBC（16B key/IV）
@@ -271,7 +271,7 @@
 
 **该函数用到的算法块**：`mode_cbc_encrypt`
 
-### `Mode-CTR`
+### Mode-CTR
 
 - 证据类别：标准/官方用例
 - 参数范围：AES-128 CTR（16B key、16B 初始计数器块）
@@ -293,7 +293,7 @@
 
 **该函数用到的算法块**：`mode_ctr_encrypt`
 
-### `GCM-Encrypt`
+### GCM-Encrypt
 
 - 证据类别：标准/官方用例
 - 参数范围：AES-128 GCM；96-bit IV、tagLen=128（ACVP tgId=1 全 15 例）；项目另有 120-bit IV/AAD 变体
@@ -317,7 +317,7 @@
 
 **该函数用到的算法块**：`gcm_encrypt`
 
-### `CCM-Encrypt`
+### CCM-Encrypt
 
 - 证据类别：标准/官方用例
 - 参数范围：AES-128 CCM：Example 1（N=7B、A=8B、P=4B、Tlen=4）、Example 2（N=8B、A=16B、P=16B、Tlen=6）、Example 3（N=12B、A=20B、P=24B、Tlen=8）
@@ -341,7 +341,7 @@
 
 **该函数用到的算法块**：`ccm_encrypt`
 
-### `XTS-Encrypt`
+### XTS-Encrypt
 
 - 证据类别：项目固定回归（非官方向量）
 - 参数范围：AES-128 XTS（32B key 拆两半、16B tweak、支持密文窃取）
@@ -363,7 +363,7 @@
 
 **该函数用到的算法块**：`xts_encrypt`
 
-### `ASCON`
+### ASCON
 
 - 证据类别：标准/官方用例
 - 参数范围：Ascon-AEAD128（固定样例）；Hash256/XOF128/CXOF128（ACVP 字节对齐用例，outLen ≤ 4096 字节子集）
@@ -387,7 +387,7 @@
 
 **该函数用到的算法块**：`ascon_encrypt`
 
-### `ASCON-Extended`
+### ASCON-Extended
 
 - 证据类别：项目固定回归（非官方向量）
 - 依据：扩展固定样例与错误标签/参数拒绝；非完整 KAT

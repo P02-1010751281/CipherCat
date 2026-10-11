@@ -1,10 +1,10 @@
-# 纠错码、多变量与共享数学构件：分步拼装
+# 纠错码、多变量与共享数学构件
 
 GF(2)、GF(2^m)、Goppa 码、多变量与通用数学构件：为多种算法提供可组合的原语。
 
 ## 本页覆盖的工作区
 
-| | |
+| 工作区 | 文件 |
 |---|---|
 | `Code-Based-Math` | `demos/procedures/Code-Based-Math.json` |
 | `GF2m-Poly` | `demos/procedures/GF2m-Poly.json` |
@@ -14,7 +14,7 @@ GF(2)、GF(2^m)、Goppa 码、多变量与通用数学构件：为多种算法�
 | `Research-Math` | `demos/procedures/Research-Math.json` |
 | `Wrap-Up-Math` | `demos/procedures/Wrap-Up-Math.json` |
 
-### `Code-Based-Math`
+### Code-Based-Math
 
 - 证据类别：代数或结构性质
 - 依据：GF(2) 多项式结合/除余重建/欧几里得、A·A⁻¹=I、d=wt(x⊕y)
@@ -103,7 +103,7 @@ GF(2)、GF(2^m)、Goppa 码、多变量与通用数学构件：为多种算法�
 
 **该函数用到的算法块**：`ham_dist`
 
-### `GF2m-Poly`
+### GF2m-Poly
 
 - 证据类别：代数或结构性质
 - 依据：GF(2^m) 多项式零元/交换/结合、Bezout 恒等式、Goppa 根判定
@@ -170,7 +170,7 @@ GF(2)、GF(2^m)、Goppa 码、多变量与通用数学构件：为多种算法�
 
 **该函数用到的算法块**：`goppa_gen_poly`
 
-### `Goppa-Decode`
+### Goppa-Decode
 
 - 证据类别：代数或结构性质
 - 依据：根判定与逆元、syndrome 原子链已知值、无错/单错/双错往返、篡改不可纠
@@ -271,7 +271,7 @@ GF(2)、GF(2^m)、Goppa 码、多变量与通用数学构件：为多种算法�
 
 **该函数用到的算法块**：`goppa_decode`
 
-### `Multivariate-Math`
+### Multivariate-Math
 
 - 证据类别：项目固定回归（非官方向量）
 - 依据：线性方程组、二次式、组合数与 GF(2⁸) 算例的项目固定输入回归；非标准 KAT
@@ -338,7 +338,7 @@ GF(2)、GF(2^m)、Goppa 码、多变量与通用数学构件：为多种算法�
 
 **该函数用到的算法块**：`gf2m_mul`
 
-### `PQC-Gaps`
+### PQC-Gaps
 
 - 证据类别：代数或结构性质
 - 依据：Rej 边界排他、卷积代数律、mod 8380417 范围、ADRS 域分隔、WOTS csum 单调、费马同余
@@ -427,7 +427,7 @@ GF(2)、GF(2^m)、Goppa 码、多变量与通用数学构件：为多种算法�
 
 **该函数用到的算法块**：`nt_mod_pow`
 
-### `Research-Math`
+### Research-Math
 
 - 证据类别：代数或结构性质
 - 依据：LLL 行列式保持、离散高斯 PMF 对称归一、Berlekamp–Massey 重放性质
@@ -466,7 +466,7 @@ GF(2)、GF(2^m)、Goppa 码、多变量与通用数学构件：为多种算法�
 
 **该函数用到的算法块**：`berlekamp_massey`
 
-### `Wrap-Up-Math`
+### Wrap-Up-Math
 
 - 证据类别：代数或结构性质
 - 依据：点积/多项式缩放、FORS 确定性、Goppa 多项式与 syndrome 算例（性质/固定回归）

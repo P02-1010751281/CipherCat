@@ -1,10 +1,10 @@
-# Code-based, multivariate, and shared math components: step-by-step assembly
+# Code-based, multivariate, and shared math components
 
 GF(2), GF(2^m), Goppa codes, multivariate, and general math components that other algorithms compose.
 
 ## Workspaces on this page
 
-| | |
+| Workspace | File |
 |---|---|
 | `Code-Based-Math` | `demos/procedures/Code-Based-Math.json` |
 | `GF2m-Poly` | `demos/procedures/GF2m-Poly.json` |
@@ -14,7 +14,7 @@ GF(2), GF(2^m), Goppa codes, multivariate, and general math components that othe
 | `Research-Math` | `demos/procedures/Research-Math.json` |
 | `Wrap-Up-Math` | `demos/procedures/Wrap-Up-Math.json` |
 
-### `Code-Based-Math`
+### Code-Based-Math
 
 - Evidence class: algebraic or structural properties
 - Basis: GF(2) 多项式结合/除余重建/欧几里得、A·A⁻¹=I、d=wt(x⊕y)（source text in Chinese）
@@ -103,7 +103,7 @@ GF(2), GF(2^m), Goppa codes, multivariate, and general math components that othe
 
 **Algorithm blocks used by this function**: `ham_dist`
 
-### `GF2m-Poly`
+### GF2m-Poly
 
 - Evidence class: algebraic or structural properties
 - Basis: GF(2^m) 多项式零元/交换/结合、Bezout 恒等式、Goppa 根判定（source text in Chinese）
@@ -170,7 +170,7 @@ GF(2), GF(2^m), Goppa codes, multivariate, and general math components that othe
 
 **Algorithm blocks used by this function**: `goppa_gen_poly`
 
-### `Goppa-Decode`
+### Goppa-Decode
 
 - Evidence class: algebraic or structural properties
 - Basis: 根判定与逆元、syndrome 原子链已知值、无错/单错/双错往返、篡改不可纠（source text in Chinese）
@@ -271,7 +271,7 @@ GF(2), GF(2^m), Goppa codes, multivariate, and general math components that othe
 
 **Algorithm blocks used by this function**: `goppa_decode`
 
-### `Multivariate-Math`
+### Multivariate-Math
 
 - Evidence class: project fixed regression (not an official vector)
 - Basis: 线性方程组、二次式、组合数与 GF(2⁸) 算例的项目固定输入回归；非标准 KAT（source text in Chinese）
@@ -338,7 +338,7 @@ GF(2), GF(2^m), Goppa codes, multivariate, and general math components that othe
 
 **Algorithm blocks used by this function**: `gf2m_mul`
 
-### `PQC-Gaps`
+### PQC-Gaps
 
 - Evidence class: algebraic or structural properties
 - Basis: Rej 边界排他、卷积代数律、mod 8380417 范围、ADRS 域分隔、WOTS csum 单调、费马同余（source text in Chinese）
@@ -427,7 +427,7 @@ GF(2), GF(2^m), Goppa codes, multivariate, and general math components that othe
 
 **Algorithm blocks used by this function**: `nt_mod_pow`
 
-### `Research-Math`
+### Research-Math
 
 - Evidence class: algebraic or structural properties
 - Basis: LLL 行列式保持、离散高斯 PMF 对称归一、Berlekamp–Massey 重放性质（source text in Chinese）
@@ -466,7 +466,7 @@ GF(2), GF(2^m), Goppa codes, multivariate, and general math components that othe
 
 **Algorithm blocks used by this function**: `berlekamp_massey`
 
-### `Wrap-Up-Math`
+### Wrap-Up-Math
 
 - Evidence class: algebraic or structural properties
 - Basis: 点积/多项式缩放、FORS 确定性、Goppa 多项式与 syndrome 算例（性质/固定回归）（source text in Chinese）

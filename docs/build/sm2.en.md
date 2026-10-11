@@ -1,17 +1,17 @@
-# SM2: step-by-step assembly
+# SM2
 
 SM2 point multiplication and key exchange can be assembled from primitives; encryption and signature are interface blocks.
 
 ## Workspaces on this page
 
-| | |
+| Workspace | File |
 |---|---|
 | `SM2-PointMul` | `demos/procedures/SM2-PointMul.json` |
 | `SM2-KeyExchange` | `demos/procedures/SM2-KeyExchange.json` |
 | `SM2-Encrypt` | `demos/procedures/SM2-Encrypt.json` |
 | `SM2-Sign` | `demos/procedures/SM2-Sign.json` |
 
-### `SM2-PointMul`
+### SM2-PointMul
 
 - Evidence class: standards or official cases
 - Parameter scope: SM2 推荐曲线（256-bit）（source text in Chinese）
@@ -39,7 +39,7 @@ SM2 point multiplication and key exchange can be assembled from primitives; encr
 
 **Algorithm blocks used by this function**: `ecc_load_curve_params` · `ecc_load_point` · `ecc_multiply`
 
-### `SM2-KeyExchange`
+### SM2-KeyExchange
 
 - Evidence class: standards or official cases
 - Parameter scope: SM2 推荐曲线（256-bit）+ SM3（source text in Chinese）
@@ -73,7 +73,7 @@ SM2 point multiplication and key exchange can be assembled from primitives; encr
 
 **Algorithm blocks used by this function**: `sm2_key_exchange`
 
-### `SM2-Encrypt`
+### SM2-Encrypt
 
 - Evidence class: standards or official cases
 - Parameter scope: SM2 推荐曲线（256-bit）+ SM3（source text in Chinese）
@@ -107,7 +107,7 @@ SM2 point multiplication and key exchange can be assembled from primitives; encr
 
 **Algorithm blocks used by this function**: `sm2_decrypt`
 
-### `SM2-Sign`
+### SM2-Sign
 
 - Evidence class: standards or official cases
 - Parameter scope: SM2 推荐曲线（256-bit）+ SM3（source text in Chinese）

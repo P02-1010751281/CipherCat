@@ -1,10 +1,10 @@
-# 哈希、XOF 与消息认证：分步拼装
+# 哈希、XOF 与消息认证
 
 填充、压缩、海绵与 HMAC：这一族最接近“从原语拼出完整接口”，也是理解块链的最佳起点。
 
 ## 本页覆盖的工作区
 
-| | |
+| 工作区 | 文件 |
 |---|---|
 | `SHA256-Atomic-Hash` | `demos/SHA256-Atomic-Hash.json` |
 | `SHA224-Hash` | `demos/procedures/SHA224-Hash.json` |
@@ -15,7 +15,7 @@
 | `SM3-Hash` | `demos/procedures/SM3-Hash.json` |
 | `HMAC-SHA256` | `demos/procedures/HMAC-SHA256.json` |
 
-### `SHA256-Atomic-Hash`
+### SHA256-Atomic-Hash
 
 - 证据类别：标准/官方用例
 - 参数范围：SHA-256 单块（<512-bit 消息）
@@ -38,7 +38,7 @@
         - `INPUT` ←
           - 常量 `[0x61,0x62,0x63]`
 
-### `SHA224-Hash`
+### SHA224-Hash
 
 - 证据类别：标准/官方用例
 - 参数范围：SHA-224（全部字节导向用例）
@@ -56,7 +56,7 @@
 
 **该函数用到的算法块**：`hash_sha224_hash`
 
-### `SHA256-Hash`
+### SHA256-Hash
 
 - 证据类别：标准/官方用例
 - 参数范围：SHA-256（单块 pad→compress 路径；Len ≤ 440 bit）
@@ -78,7 +78,7 @@
 
 **该函数用到的算法块**：`hash_sha256_compress` · `hash_sha256_pad`
 
-### `SHA384-Hash`
+### SHA384-Hash
 
 - 证据类别：标准/官方用例
 - 参数范围：SHA-384（全部字节导向用例）
@@ -96,7 +96,7 @@
 
 **该函数用到的算法块**：`hash_sha512_hash`
 
-### `SHA512-Hash`
+### SHA512-Hash
 
 - 证据类别：标准/官方用例
 - 参数范围：SHA-512（全部字节导向用例）
@@ -114,7 +114,7 @@
 
 **该函数用到的算法块**：`hash_sha512_hash`
 
-### `SHA3-Hash`
+### SHA3-Hash
 
 - 证据类别：与独立实现交叉核对
 - 参数范围：SHA3-256（1600-bit 状态、rate 1088）
@@ -132,7 +132,7 @@
 
 **该函数用到的算法块**：`sha3_hash`
 
-### `SM3-Hash`
+### SM3-Hash
 
 - 证据类别：标准/官方用例
 - 参数范围：SM3-256
@@ -154,7 +154,7 @@
 
 **该函数用到的算法块**：`hash_sm3_compress` · `hash_sm3_pad`
 
-### `HMAC-SHA256`
+### HMAC-SHA256
 
 - 证据类别：标准/官方用例
 - 参数范围：HMAC-SHA-256（CAVP [L=32] 全量；Tlen 覆盖用例给定值）

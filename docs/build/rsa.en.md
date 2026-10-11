@@ -1,15 +1,15 @@
-# RSA: step-by-step assembly
+# RSA
 
 RSA is provided as interface blocks: one each for key generation, encryption/decryption, and sign/verify, using a teaching PKCS#1 v1.5 flow.
 
 ## Workspaces on this page
 
-| | |
+| Workspace | File |
 |---|---|
 | `RSA-Encrypt` | `demos/procedures/RSA-Encrypt.json` |
 | `RSA-Sign` | `demos/procedures/RSA-Sign.json` |
 
-### `RSA-Encrypt`
+### RSA-Encrypt
 
 - Evidence class: project fixed regression (not an official vector)
 - Parameter scope: 项目教学参数：512-bit 模数（密文 64B）；`rsa_keygen` 为项目自定义，不满足 FIPS 186-5 密钥生成要求，也不代表可用密钥长度（source text in Chinese）
@@ -45,7 +45,7 @@ RSA is provided as interface blocks: one each for key generation, encryption/dec
 
 **Algorithm blocks used by this function**: `rsa_decrypt`
 
-### `RSA-Sign`
+### RSA-Sign
 
 - Evidence class: project fixed regression (not an official vector)
 - Parameter scope: 项目教学参数：512-bit 模数（签名 64B）+ SHA-256（source text in Chinese）

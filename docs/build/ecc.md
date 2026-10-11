@@ -1,10 +1,10 @@
-# 椭圆曲线与标识密码：分步拼装
+# 椭圆曲线与标识密码
 
 ECDH、X25519、ECDSA、EdDSA 与 SM9：曲线参数、点运算和协议链的组合方式。
 
 ## 本页覆盖的工作区
 
-| | |
+| 工作区 | 文件 |
 |---|---|
 | `ECDH` | `demos/procedures/ECDH.json` |
 | `X25519` | `demos/procedures/X25519.json` |
@@ -12,7 +12,7 @@ ECDH、X25519、ECDSA、EdDSA 与 SM9：曲线参数、点运算和协议链的�
 | `EDDSA` | `demos/procedures/EDDSA.json` |
 | `SM9-Sign` | `demos/procedures/SM9-Sign.json` |
 
-### `ECDH`
+### ECDH
 
 - 证据类别：标准/官方用例
 - 参数范围：NIST P-256 ECDH
@@ -34,7 +34,7 @@ ECDH、X25519、ECDSA、EdDSA 与 SM9：曲线参数、点运算和协议链的�
 
 **该函数用到的算法块**：`ecdh_shared_secret`
 
-### `X25519`
+### X25519
 
 - 证据类别：标准/官方用例
 - 参数范围：Curve25519（32B 标量/u 坐标）
@@ -54,7 +54,7 @@ ECDH、X25519、ECDSA、EdDSA 与 SM9：曲线参数、点运算和协议链的�
 
 **该函数用到的算法块**：`x25519`
 
-### `ECDSA`
+### ECDSA
 
 - 证据类别：标准/官方用例
 - 参数范围：NIST P-256 + SHA-256 + RFC 6979 确定性 k
@@ -86,7 +86,7 @@ ECDH、X25519、ECDSA、EdDSA 与 SM9：曲线参数、点运算和协议链的�
 
 **该函数用到的算法块**：`ecdsa_verify`
 
-### `EDDSA`
+### EDDSA
 
 - 证据类别：标准/官方用例
 - 参数范围：Ed25519（32B 私钥/公钥、64B 签名）
@@ -118,7 +118,7 @@ ECDH、X25519、ECDSA、EdDSA 与 SM9：曲线参数、点运算和协议链的�
 
 **该函数用到的算法块**：`eddsa_verify`
 
-### `SM9-Sign`
+### SM9-Sign
 
 - 证据类别：标准/官方用例
 - 参数范围：GB/T 38635.1-2020 系统参数（256-bit）

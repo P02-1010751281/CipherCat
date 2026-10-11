@@ -189,7 +189,7 @@ const CLASS_LABEL = {
 
 const TEXTS = {
   zh: {
-    h1: (name) => `# ${name}：分步拼装`,
+    h1: (name) => `# ${name}`,
     lead: '本页按工作区里的真实块链，逐步说明每个功能块怎么拖、接到哪里、最后得到什么。步骤顺序与对应工作区一致；块名后的括号是它在工具箱里的作用，“←”表示这个输入由谁提供——先拖出上游块，再把它的输出插头接到下游块对应的输入。',
     workspaces: '本页覆盖的工作区',
     evidence: '证据类别',
@@ -221,7 +221,7 @@ const TEXTS = {
     back: '返回分步拼装指南',
   },
   en: {
-    h1: (name) => `# ${name}: step-by-step assembly`,
+    h1: (name) => `# ${name}`,
     lead: 'This page walks through the real block chain in each workspace: which block to drag, where to connect it, and what it produces. Step order matches the workspace, the parenthesis after each block names its role in the toolbox, and “←” shows what feeds an input — drag the upstream block first, then plug its output into the downstream input.',
     workspaces: 'Workspaces on this page',
     evidence: 'Evidence class',
@@ -434,7 +434,7 @@ function renderWorkspace(path, ctxData, t, lang, descriptions) {
   const test = ctxData.tests[file];
   const lines = [];
 
-  lines.push(`### \`${workspaceLabel(file)}\``);
+  lines.push(`### ${workspaceLabel(file)}`);
   lines.push('');
   const meta = [];
   if (evidence) {
@@ -566,7 +566,10 @@ function main() {
     for (const family of FAMILIES) {
       const body = [t.h1(lang === 'zh' ? family.zh : family.en), '', lang === 'zh' ? family.introZh : family.introEn, ''];
       body.push(`## ${t.workspaces}`, '');
-      body.push('| | |', '|---|---|');
+      body.push(
+        lang === 'zh' ? '| 工作区 | 文件 |' : '| Workspace | File |',
+        '|---|---|',
+      );
       for (const file of family.files) body.push(`| \`${workspaceLabel(file)}\` | \`demos/${file}\` |`);
       body.push('');
       for (const file of family.files) {

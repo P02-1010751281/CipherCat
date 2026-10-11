@@ -1,10 +1,10 @@
-# 密钥派生与口令处理：分步拼装
+# 密钥派生与口令处理
 
 HKDF/PBKDF2/Argon2 目前以接口块为主，本页说明每个块的输入含义与拼装方式。
 
 ## 本页覆盖的工作区
 
-| | |
+| 工作区 | 文件 |
 |---|---|
 | `HKDF-SHA256` | `demos/procedures/HKDF-SHA256.json` |
 | `PBKDF2` | `demos/procedures/PBKDF2.json` |
@@ -12,7 +12,7 @@ HKDF/PBKDF2/Argon2 目前以接口块为主，本页说明每个块的输入含�
 | `PBKDF2-SM3` | `demos/procedures/PBKDF2-SM3.json` |
 | `ARGON2` | `demos/procedures/ARGON2.json` |
 
-### `HKDF-SHA256`
+### HKDF-SHA256
 
 - 证据类别：标准/官方用例
 - 参数范围：HMAC-SHA-256，L=42 bytes
@@ -36,7 +36,7 @@ HKDF/PBKDF2/Argon2 目前以接口块为主，本页说明每个块的输入含�
 
 **该函数用到的算法块**：`hkdf`
 
-### `PBKDF2`
+### PBKDF2
 
 - 证据类别：与独立实现交叉核对
 - 参数范围：PBKDF2-HMAC-SHA-256，dkLen=32
@@ -60,7 +60,7 @@ HKDF/PBKDF2/Argon2 目前以接口块为主，本页说明每个块的输入含�
 
 **该函数用到的算法块**：`pbkdf2`
 
-### `PBKDF2-SHA256`
+### PBKDF2-SHA256
 
 - 证据类别：与独立实现交叉核对
 - 参数范围：PBKDF2-HMAC-SHA-256，dkLen=32
@@ -84,7 +84,7 @@ HKDF/PBKDF2/Argon2 目前以接口块为主，本页说明每个块的输入含�
 
 **该函数用到的算法块**：`pbkdf2`
 
-### `PBKDF2-SM3`
+### PBKDF2-SM3
 
 - 证据类别：项目固定回归（非官方向量）
 - 依据：SM3-HMAC/PBKDF2 组合为项目实现固定回归；未见公开官方向量登记
@@ -107,7 +107,7 @@ HKDF/PBKDF2/Argon2 目前以接口块为主，本页说明每个块的输入含�
 
 **该函数用到的算法块**：`pbkdf2`
 
-### `ARGON2`
+### ARGON2
 
 - 证据类别：标准/官方用例
 - 参数范围：Argon2d / Argon2i / Argon2id v1.3（RFC §5.1–5.3）

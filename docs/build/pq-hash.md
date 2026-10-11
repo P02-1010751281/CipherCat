@@ -1,16 +1,16 @@
-# 后量子密码（哈希基教学构件）：分步拼装
+# 后量子密码（哈希基教学构件）
 
 哈希链、Merkle 树与 FORS 的教学组合；这些是结构构件，不是 FIPS 205 的兼容实现。
 
 ## 本页覆盖的工作区
 
-| | |
+| 工作区 | 文件 |
 |---|---|
 | `Hash-Based-Structures` | `demos/procedures/Hash-Based-Structures.json` |
 | `Tree-Index` | `demos/procedures/Tree-Index.json` |
 | `FORS-Sign` | `demos/procedures/FORS-Sign.json` |
 
-### `Hash-Based-Structures`
+### Hash-Based-Structures
 
 - 证据类别：代数或结构性质
 - 依据：hash chain 边界与半群性、4 叶树根手工组合、ADRS 32B 确定性
@@ -75,7 +75,7 @@
 
 **该函数用到的算法块**：`slh_addr`
 
-### `Tree-Index`
+### Tree-Index
 
 - 证据类别：代数或结构性质
 - 依据：FORS 选叶分块、leaf+auth 重建根与全树根一致（idx ∈ {0,1,3,5,7}）
@@ -144,7 +144,7 @@
 
 **该函数用到的算法块**：`slh_addr`
 
-### `FORS-Sign`
+### FORS-Sign
 
 - 证据类别：代数或结构性质
 - 依据：项目内部往返、确定性、篡改检测；非 FIPS 205 KAT 或符合性证据

@@ -1,10 +1,10 @@
-# Hashing, XOF, and message authentication: step-by-step assembly
+# Hashing, XOF, and message authentication
 
 Padding, compression, sponge, and HMAC: this family is the closest thing to assembling a full interface from primitives and is the best place to learn block chains.
 
 ## Workspaces on this page
 
-| | |
+| Workspace | File |
 |---|---|
 | `SHA256-Atomic-Hash` | `demos/SHA256-Atomic-Hash.json` |
 | `SHA224-Hash` | `demos/procedures/SHA224-Hash.json` |
@@ -15,7 +15,7 @@ Padding, compression, sponge, and HMAC: this family is the closest thing to asse
 | `SM3-Hash` | `demos/procedures/SM3-Hash.json` |
 | `HMAC-SHA256` | `demos/procedures/HMAC-SHA256.json` |
 
-### `SHA256-Atomic-Hash`
+### SHA256-Atomic-Hash
 
 - Evidence class: standards or official cases
 - Parameter scope: SHA-256 单块（<512-bit 消息）（source text in Chinese）
@@ -38,7 +38,7 @@ Padding, compression, sponge, and HMAC: this family is the closest thing to asse
         - `INPUT` ←
           - constant `[0x61,0x62,0x63]`
 
-### `SHA224-Hash`
+### SHA224-Hash
 
 - Evidence class: standards or official cases
 - Parameter scope: SHA-224（全部字节导向用例）（source text in Chinese）
@@ -56,7 +56,7 @@ Padding, compression, sponge, and HMAC: this family is the closest thing to asse
 
 **Algorithm blocks used by this function**: `hash_sha224_hash`
 
-### `SHA256-Hash`
+### SHA256-Hash
 
 - Evidence class: standards or official cases
 - Parameter scope: SHA-256（单块 pad→compress 路径；Len ≤ 440 bit）（source text in Chinese）
@@ -78,7 +78,7 @@ Padding, compression, sponge, and HMAC: this family is the closest thing to asse
 
 **Algorithm blocks used by this function**: `hash_sha256_compress` · `hash_sha256_pad`
 
-### `SHA384-Hash`
+### SHA384-Hash
 
 - Evidence class: standards or official cases
 - Parameter scope: SHA-384（全部字节导向用例）（source text in Chinese）
@@ -96,7 +96,7 @@ Padding, compression, sponge, and HMAC: this family is the closest thing to asse
 
 **Algorithm blocks used by this function**: `hash_sha512_hash`
 
-### `SHA512-Hash`
+### SHA512-Hash
 
 - Evidence class: standards or official cases
 - Parameter scope: SHA-512（全部字节导向用例）（source text in Chinese）
@@ -114,7 +114,7 @@ Padding, compression, sponge, and HMAC: this family is the closest thing to asse
 
 **Algorithm blocks used by this function**: `hash_sha512_hash`
 
-### `SHA3-Hash`
+### SHA3-Hash
 
 - Evidence class: cross-checked with an independent implementation
 - Parameter scope: SHA3-256（1600-bit 状态、rate 1088）（source text in Chinese）
@@ -132,7 +132,7 @@ Padding, compression, sponge, and HMAC: this family is the closest thing to asse
 
 **Algorithm blocks used by this function**: `sha3_hash`
 
-### `SM3-Hash`
+### SM3-Hash
 
 - Evidence class: standards or official cases
 - Parameter scope: SM3-256
@@ -154,7 +154,7 @@ Padding, compression, sponge, and HMAC: this family is the closest thing to asse
 
 **Algorithm blocks used by this function**: `hash_sm3_compress` · `hash_sm3_pad`
 
-### `HMAC-SHA256`
+### HMAC-SHA256
 
 - Evidence class: standards or official cases
 - Parameter scope: HMAC-SHA-256（CAVP [L=32] 全量；Tlen 覆盖用例给定值）（source text in Chinese）

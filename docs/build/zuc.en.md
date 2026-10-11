@@ -1,15 +1,15 @@
-# ZUC stream cipher: step-by-step assembly
+# ZUC stream cipher
 
 ZUC state transformation, keystream, and message authentication: the EEA3 and EIA3 chains.
 
 ## Workspaces on this page
 
-| | |
+| Workspace | File |
 |---|---|
 | `EEA3` | `demos/procedures/EEA3.json` |
 | `EIA3` | `demos/procedures/EIA3.json` |
 
-### `EEA3`
+### EEA3
 
 - Evidence class: standards or official cases
 - Parameter scope: ZUC-128 密钥流（128-bit key/IV）（source text in Chinese）
@@ -31,7 +31,7 @@ ZUC state transformation, keystream, and message authentication: the EEA3 and EI
 
 **Algorithm blocks used by this function**: `zuc_keystream`
 
-### `EIA3`
+### EIA3
 
 - Evidence class: standards or official cases
 - Parameter scope: ZUC-128 EIA3（128-bit key/IV，1 与 577 bit 消息）（source text in Chinese）

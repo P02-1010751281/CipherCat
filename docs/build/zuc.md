@@ -1,15 +1,15 @@
-# ZUC 序列密码：分步拼装
+# ZUC 序列密码
 
 ZUC 状态变换、密钥流与消息认证：EEA3 与 EIA3 两条链。
 
 ## 本页覆盖的工作区
 
-| | |
+| 工作区 | 文件 |
 |---|---|
 | `EEA3` | `demos/procedures/EEA3.json` |
 | `EIA3` | `demos/procedures/EIA3.json` |
 
-### `EEA3`
+### EEA3
 
 - 证据类别：标准/官方用例
 - 参数范围：ZUC-128 密钥流（128-bit key/IV）
@@ -31,7 +31,7 @@ ZUC 状态变换、密钥流与消息认证：EEA3 与 EIA3 两条链。
 
 **该函数用到的算法块**：`zuc_keystream`
 
-### `EIA3`
+### EIA3
 
 - 证据类别：标准/官方用例
 - 参数范围：ZUC-128 EIA3（128-bit key/IV，1 与 577 bit 消息）

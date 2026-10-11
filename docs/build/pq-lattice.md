@@ -1,10 +1,10 @@
-# 后量子密码（格基与共享构件）：分步拼装
+# 后量子密码（格基与共享构件）
 
 ML-KEM 的封装链完全由原语拼出；ML-DSA 的签名接口是单块，底层原语另有示例。
 
 ## 本页覆盖的工作区
 
-| | |
+| 工作区 | 文件 |
 |---|---|
 | `ML-KEM-Atomic` | `demos/ML-KEM-Atomic.json` |
 | `ML-KEM-Encaps` | `demos/procedures/ML-KEM-Encaps.json` |
@@ -12,7 +12,7 @@ ML-KEM 的封装链完全由原语拼出；ML-DSA 的签名接口是单块，底
 | `ML-DSA-Primitives` | `demos/procedures/ML-DSA-Primitives.json` |
 | `ML-DSA-Sign` | `demos/procedures/ML-DSA-Sign.json` |
 
-### `ML-KEM-Atomic`
+### ML-KEM-Atomic
 
 - 证据类别：代数或结构性质
 - 依据：CBD 采样与 NTT 冲激响应性质；pq_mat_vec_mul 为非标准标量教学辅助
@@ -41,7 +41,7 @@ ML-KEM 的封装链完全由原语拼出；ML-DSA 的签名接口是单块，底
         - `VEC` ←
           - 常量 `[0x01,0x02]`
 
-### `ML-KEM-Encaps`
+### ML-KEM-Encaps
 
 - 证据类别：项目固定回归（非官方向量）
 - 参数范围：ML-KEM-512（encapsulation；输出 c‖K）
@@ -381,7 +381,7 @@ ML-KEM 的封装链完全由原语拼出；ML-DSA 的签名接口是单块，底
 
 **该函数用到的算法块**：`keccak_state_init` · `pq_byte_concat` · `pq_byte_decode` · `pq_byte_encode` · `pq_bytes_slice` · `pq_compress` · `pq_decompress` · `pq_intt` · `pq_ntt` · `pq_ntt_mul` · `pq_poly_add` · `pq_prf` · `pq_sample_ntt` · `pq_sample_poly_cbd` · `pq_seed_with_nonce` · `sponge_absorb` · `sponge_pad` · `sponge_squeeze`
 
-### `ML-DSA-NTT`
+### ML-DSA-NTT
 
 - 证据类别：代数或结构性质
 - 依据：FIPS 204 Alg 41/42/45 定义下的往返与环乘同态性质；不是官方 NTT KAT 集
@@ -416,7 +416,7 @@ ML-KEM 的封装链完全由原语拼出；ML-DSA 的签名接口是单块，底
 
 **该函数用到的算法块**：`pq_ntt_mul`
 
-### `ML-DSA-Primitives`
+### ML-DSA-Primitives
 
 - 证据类别：代数或结构性质
 - 依据：P2R 可逆、UseHint(MakeHint) 定理、InBall 计数（FIPS 204 定义）
@@ -485,7 +485,7 @@ ML-KEM 的封装链完全由原语拼出；ML-DSA 的签名接口是单块，底
 
 **该函数用到的算法块**：`pq_sample_in_ball`
 
-### `ML-DSA-Sign`
+### ML-DSA-Sign
 
 - 证据类别：标准/官方用例
 - 参数范围：ML-DSA-44（确定性签名，rnd=0，空上下文）

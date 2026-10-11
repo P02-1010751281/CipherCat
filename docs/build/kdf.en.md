@@ -1,10 +1,10 @@
-# Key derivation and password processing: step-by-step assembly
+# Key derivation and password processing
 
 HKDF, PBKDF2, and Argon2 are currently interface blocks; this page explains each block’s inputs and how it is assembled.
 
 ## Workspaces on this page
 
-| | |
+| Workspace | File |
 |---|---|
 | `HKDF-SHA256` | `demos/procedures/HKDF-SHA256.json` |
 | `PBKDF2` | `demos/procedures/PBKDF2.json` |
@@ -12,7 +12,7 @@ HKDF, PBKDF2, and Argon2 are currently interface blocks; this page explains each
 | `PBKDF2-SM3` | `demos/procedures/PBKDF2-SM3.json` |
 | `ARGON2` | `demos/procedures/ARGON2.json` |
 
-### `HKDF-SHA256`
+### HKDF-SHA256
 
 - Evidence class: standards or official cases
 - Parameter scope: HMAC-SHA-256，L=42 bytes
@@ -36,7 +36,7 @@ HKDF, PBKDF2, and Argon2 are currently interface blocks; this page explains each
 
 **Algorithm blocks used by this function**: `hkdf`
 
-### `PBKDF2`
+### PBKDF2
 
 - Evidence class: cross-checked with an independent implementation
 - Parameter scope: PBKDF2-HMAC-SHA-256，dkLen=32
@@ -60,7 +60,7 @@ HKDF, PBKDF2, and Argon2 are currently interface blocks; this page explains each
 
 **Algorithm blocks used by this function**: `pbkdf2`
 
-### `PBKDF2-SHA256`
+### PBKDF2-SHA256
 
 - Evidence class: cross-checked with an independent implementation
 - Parameter scope: PBKDF2-HMAC-SHA-256，dkLen=32
@@ -84,7 +84,7 @@ HKDF, PBKDF2, and Argon2 are currently interface blocks; this page explains each
 
 **Algorithm blocks used by this function**: `pbkdf2`
 
-### `PBKDF2-SM3`
+### PBKDF2-SM3
 
 - Evidence class: project fixed regression (not an official vector)
 - Basis: SM3-HMAC/PBKDF2 组合为项目实现固定回归；未见公开官方向量登记（source text in Chinese）
@@ -107,7 +107,7 @@ HKDF, PBKDF2, and Argon2 are currently interface blocks; this page explains each
 
 **Algorithm blocks used by this function**: `pbkdf2`
 
-### `ARGON2`
+### ARGON2
 
 - Evidence class: standards or official cases
 - Parameter scope: Argon2d / Argon2i / Argon2id v1.3（RFC §5.1–5.3）

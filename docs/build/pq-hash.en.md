@@ -1,16 +1,16 @@
-# Post-quantum cryptography (hash-based teaching components): step-by-step assembly
+# Post-quantum cryptography (hash-based teaching components)
 
 Teaching compositions of hash chains, Merkle trees, and FORS; these are structural components, not FIPS 205-compatible implementations.
 
 ## Workspaces on this page
 
-| | |
+| Workspace | File |
 |---|---|
 | `Hash-Based-Structures` | `demos/procedures/Hash-Based-Structures.json` |
 | `Tree-Index` | `demos/procedures/Tree-Index.json` |
 | `FORS-Sign` | `demos/procedures/FORS-Sign.json` |
 
-### `Hash-Based-Structures`
+### Hash-Based-Structures
 
 - Evidence class: algebraic or structural properties
 - Basis: hash chain 边界与半群性、4 叶树根手工组合、ADRS 32B 确定性（source text in Chinese）
@@ -75,7 +75,7 @@ Teaching compositions of hash chains, Merkle trees, and FORS; these are structur
 
 **Algorithm blocks used by this function**: `slh_addr`
 
-### `Tree-Index`
+### Tree-Index
 
 - Evidence class: algebraic or structural properties
 - Basis: FORS 选叶分块、leaf+auth 重建根与全树根一致（idx ∈ {0,1,3,5,7}）（source text in Chinese）
@@ -144,7 +144,7 @@ Teaching compositions of hash chains, Merkle trees, and FORS; these are structur
 
 **Algorithm blocks used by this function**: `slh_addr`
 
-### `FORS-Sign`
+### FORS-Sign
 
 - Evidence class: algebraic or structural properties
 - Basis: 项目内部往返、确定性、篡改检测；非 FIPS 205 KAT 或符合性证据（source text in Chinese）

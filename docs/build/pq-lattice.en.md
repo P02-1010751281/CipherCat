@@ -1,10 +1,10 @@
-# Post-quantum cryptography (lattice-based and shared components): step-by-step assembly
+# Post-quantum cryptography (lattice-based and shared components)
 
 The ML-KEM encapsulation chain is assembled entirely from primitives; ML-DSA signing is an interface block with separate primitive examples.
 
 ## Workspaces on this page
 
-| | |
+| Workspace | File |
 |---|---|
 | `ML-KEM-Atomic` | `demos/ML-KEM-Atomic.json` |
 | `ML-KEM-Encaps` | `demos/procedures/ML-KEM-Encaps.json` |
@@ -12,7 +12,7 @@ The ML-KEM encapsulation chain is assembled entirely from primitives; ML-DSA sig
 | `ML-DSA-Primitives` | `demos/procedures/ML-DSA-Primitives.json` |
 | `ML-DSA-Sign` | `demos/procedures/ML-DSA-Sign.json` |
 
-### `ML-KEM-Atomic`
+### ML-KEM-Atomic
 
 - Evidence class: algebraic or structural properties
 - Basis: CBD 采样与 NTT 冲激响应性质；pq_mat_vec_mul 为非标准标量教学辅助（source text in Chinese）
@@ -41,7 +41,7 @@ The ML-KEM encapsulation chain is assembled entirely from primitives; ML-DSA sig
         - `VEC` ←
           - constant `[0x01,0x02]`
 
-### `ML-KEM-Encaps`
+### ML-KEM-Encaps
 
 - Evidence class: project fixed regression (not an official vector)
 - Parameter scope: ML-KEM-512（encapsulation；输出 c‖K）（source text in Chinese）
@@ -381,7 +381,7 @@ The ML-KEM encapsulation chain is assembled entirely from primitives; ML-DSA sig
 
 **Algorithm blocks used by this function**: `keccak_state_init` · `pq_byte_concat` · `pq_byte_decode` · `pq_byte_encode` · `pq_bytes_slice` · `pq_compress` · `pq_decompress` · `pq_intt` · `pq_ntt` · `pq_ntt_mul` · `pq_poly_add` · `pq_prf` · `pq_sample_ntt` · `pq_sample_poly_cbd` · `pq_seed_with_nonce` · `sponge_absorb` · `sponge_pad` · `sponge_squeeze`
 
-### `ML-DSA-NTT`
+### ML-DSA-NTT
 
 - Evidence class: algebraic or structural properties
 - Basis: FIPS 204 Alg 41/42/45 定义下的往返与环乘同态性质；不是官方 NTT KAT 集（source text in Chinese）
@@ -416,7 +416,7 @@ The ML-KEM encapsulation chain is assembled entirely from primitives; ML-DSA sig
 
 **Algorithm blocks used by this function**: `pq_ntt_mul`
 
-### `ML-DSA-Primitives`
+### ML-DSA-Primitives
 
 - Evidence class: algebraic or structural properties
 - Basis: P2R 可逆、UseHint(MakeHint) 定理、InBall 计数（FIPS 204 定义）（source text in Chinese）
@@ -485,7 +485,7 @@ The ML-KEM encapsulation chain is assembled entirely from primitives; ML-DSA sig
 
 **Algorithm blocks used by this function**: `pq_sample_in_ball`
 
-### `ML-DSA-Sign`
+### ML-DSA-Sign
 
 - Evidence class: standards or official cases
 - Parameter scope: ML-DSA-44（确定性签名，rnd=0，空上下文）（source text in Chinese）

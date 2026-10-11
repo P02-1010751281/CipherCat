@@ -1,10 +1,10 @@
-# Elliptic curves and identity-based cryptography: step-by-step assembly
+# Elliptic curves and identity-based cryptography
 
 ECDH, X25519, ECDSA, EdDSA, and SM9: how curve parameters, point operations, and protocol chains are composed.
 
 ## Workspaces on this page
 
-| | |
+| Workspace | File |
 |---|---|
 | `ECDH` | `demos/procedures/ECDH.json` |
 | `X25519` | `demos/procedures/X25519.json` |
@@ -12,7 +12,7 @@ ECDH, X25519, ECDSA, EdDSA, and SM9: how curve parameters, point operations, and
 | `EDDSA` | `demos/procedures/EDDSA.json` |
 | `SM9-Sign` | `demos/procedures/SM9-Sign.json` |
 
-### `ECDH`
+### ECDH
 
 - Evidence class: standards or official cases
 - Parameter scope: NIST P-256 ECDH
@@ -34,7 +34,7 @@ ECDH, X25519, ECDSA, EdDSA, and SM9: how curve parameters, point operations, and
 
 **Algorithm blocks used by this function**: `ecdh_shared_secret`
 
-### `X25519`
+### X25519
 
 - Evidence class: standards or official cases
 - Parameter scope: Curve25519（32B 标量/u 坐标）（source text in Chinese）
@@ -54,7 +54,7 @@ ECDH, X25519, ECDSA, EdDSA, and SM9: how curve parameters, point operations, and
 
 **Algorithm blocks used by this function**: `x25519`
 
-### `ECDSA`
+### ECDSA
 
 - Evidence class: standards or official cases
 - Parameter scope: NIST P-256 + SHA-256 + RFC 6979 确定性 k（source text in Chinese）
@@ -86,7 +86,7 @@ ECDH, X25519, ECDSA, EdDSA, and SM9: how curve parameters, point operations, and
 
 **Algorithm blocks used by this function**: `ecdsa_verify`
 
-### `EDDSA`
+### EDDSA
 
 - Evidence class: standards or official cases
 - Parameter scope: Ed25519（32B 私钥/公钥、64B 签名）（source text in Chinese）
@@ -118,7 +118,7 @@ ECDH, X25519, ECDSA, EdDSA, and SM9: how curve parameters, point operations, and
 
 **Algorithm blocks used by this function**: `eddsa_verify`
 
-### `SM9-Sign`
+### SM9-Sign
 
 - Evidence class: standards or official cases
 - Parameter scope: GB/T 38635.1-2020 系统参数（256-bit）（source text in Chinese）

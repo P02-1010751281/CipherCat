@@ -1,15 +1,15 @@
-# Random-bit generation: step-by-step assembly
+# Random-bit generation
 
 Teaching chains and fixed regressions for deterministic random-bit generation; the randomness assessment itself runs on the platform backend.
 
 ## Workspaces on this page
 
-| | |
+| Workspace | File |
 |---|---|
 | `DRBG` | `demos/procedures/DRBG.json` |
 | `GM-RNG` | `demos/procedures/GM-RNG.json` |
 
-### `DRBG`
+### DRBG
 
 - Evidence class: project fixed regression (not an official vector)
 - Basis: 3 个固定输出（直接生成/实例化后连续生成/重播种）；非完整 CAVP 套件（source text in Chinese）
@@ -32,7 +32,7 @@ Teaching chains and fixed regressions for deterministic random-bit generation; t
 
 **Algorithm blocks used by this function**: `drbg_generate`
 
-### `GM-RNG`
+### GM-RNG
 
 - Evidence class: project fixed regression (not an official vector)
 - Basis: 固定输入/输出项目回归；非官方向量，也不是 RNG/熵源验证（source text in Chinese）

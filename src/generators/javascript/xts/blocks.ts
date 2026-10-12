@@ -73,3 +73,9 @@ javascriptGenerator.forBlock['xts_encrypt'] = function (block: Block): [string, 
   const fn = registerXtsEncrypt();
   return ['Uint8Array.from(' + fn + '(' + key + ', ' + tweak + ', ' + msg + '))', Order.ATOMIC];
 };
+
+javascriptGenerator.forBlock['xts_tweak_mul'] = function (block: Block): [string, number] {
+  const t = javascriptGenerator.valueToCode(block, 'TWEAK', Order.ATOMIC) || '[]';
+  const fn = registerXtsTweakMul();
+  return [fn + '(' + t + ')', Order.ATOMIC];
+};

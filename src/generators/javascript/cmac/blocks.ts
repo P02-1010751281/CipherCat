@@ -176,3 +176,30 @@ javascriptGenerator.forBlock['cmac_mac'] = function (block: Block): [string, num
   ]);
   return ['Uint8Array.from(' + fnSm4 + '(' + key + ', ' + msg + '))', Order.ATOMIC];
 };
+
+/** AES-128 子密钥 K1‖K2（SP 800-38B §6.1） */
+function registerCmacSubkeysAes(): string {
+  const doubling = registerCmacDoubling();
+  registerAesEcb();
+  return javascriptGenerator.provideFunction_('cmacSubkeysAes', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key) {',
+    '  if (key.length !== 16) throw new Error("CMAC-AES key must be 16 bytes");',
+    '  var L = aesEncryptBlock([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], key);',
+    '  var K1 = ' + doubling + '(L);',
+    '  var K2 = ' + doubling + '(K1);',
+    '  return K1.concat(K2);',
+    '}',
+  ]);
+}
+
+javascriptGenerator.forBlock['cmac_double'] = function (block: Block): [string, number] {
+  const x = javascriptGenerator.valueToCode(block, 'X', Order.ATOMIC) || '[]';
+  const fn = registerCmacDoubling();
+  return [fn + '(' + x + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['cmac_subkeys'] = function (block: Block): [string, number] {
+  const key = javascriptGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
+  const fn = registerCmacSubkeysAes();
+  return ['Uint8Array.from(' + fn + '(' + key + '))', Order.ATOMIC];
+};

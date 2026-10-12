@@ -10,7 +10,7 @@
 import * as Blockly from 'blockly/core';
 import { TYPE_BYTES, TYPE_INT_LIST, TYPE_NUMBER } from '@/constants/block-types';
 
-export const PBKDF2_BLOCK_TYPES = ['pbkdf2'] as const;
+export const PBKDF2_BLOCK_TYPES = ['pbkdf2', 'pbkdf2_f'] as const;
 export type Pbkdf2BlockType = (typeof PBKDF2_BLOCK_TYPES)[number];
 
 Blockly.Blocks['pbkdf2'] = {
@@ -35,6 +35,31 @@ Blockly.Blocks['pbkdf2'] = {
     this.setColour(190);
     this.setTooltip(
       'PBKDF2 口令密钥派生 (RFC 8018 / SP 800-132)：U1 = PRF(P, S‖INT(i))，Uc = PRF(P, U_{c-1})，串联截断。HASH 下拉 SHA-256 / SM3（SM3 路径与国密 GM/T 0091 PBKDF 同构）。已核对：SHA-256 变体期望值经 Python hashlib 独立复算一致；RFC 6070 仅提供 HMAC-SHA1 附录值，本实现未使用该变体。',
+    );
+    this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc8018');
+  },
+};
+
+Blockly.Blocks['pbkdf2_f'] = {
+  init: function () {
+    this.appendValueInput('PASSWORD').setCheck(TYPE_BYTES).appendField('PBKDF2-F( password:');
+    this.appendValueInput('SALT').setCheck(TYPE_INT_LIST).appendField(' salt:');
+    this.appendValueInput('ITER').setCheck(TYPE_NUMBER).appendField(' iter:');
+    this.appendValueInput('INDEX').setCheck(TYPE_NUMBER).appendField(' i:');
+    this.appendDummyInput()
+      .appendField(
+        new Blockly.FieldDropdown([
+          ['SHA-256', 'sha256'],
+          ['SM3 (GM/T 0091)', 'sm3'],
+        ]),
+        'HASH',
+      )
+      .appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_BYTES);
+    this.setColour(190);
+    this.setTooltip(
+      'PBKDF2 单块函数 F（RFC 8018 §5.2）：U_1 = PRF(P, S‖INT_32BE(i))，U_j = PRF(P, U_{j−1})，F = U_1⊕…⊕U_c，输出一个 hLen 长度块（SHA-256 为 32 字节）。整条 DK 由多个 F 串联截断，本块不代替 pbkdf2。',
     );
     this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc8018');
   },

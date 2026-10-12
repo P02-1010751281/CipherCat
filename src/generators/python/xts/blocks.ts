@@ -76,3 +76,9 @@ pythonGenerator.forBlock['xts_encrypt'] = function (block: Block): [string, numb
   const fn = registerXtsEncrypt();
   return ['bytes(' + fn + '(' + key + ', ' + tweak + ', ' + msg + '))', Order.ATOMIC];
 };
+
+pythonGenerator.forBlock['xts_tweak_mul'] = function (block: Block): [string, number] {
+  const t = pythonGenerator.valueToCode(block, 'TWEAK', Order.ATOMIC) || '[]';
+  const fn = registerXtsTweakMul();
+  return [fn + '(' + t + ')', Order.ATOMIC];
+};

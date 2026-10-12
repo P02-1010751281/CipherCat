@@ -139,3 +139,30 @@ pythonGenerator.forBlock['cmac_mac'] = function (block: Block): [string, number]
   const sm4 = registerSm4Encrypt();
   return ['bytes(' + cbc + '(' + msg + ', ' + key + ', ' + sm4 + ', ' + doubleFn + '))', Order.ATOMIC];
 };
+
+/** AES-128 子密钥 K1‖K2（SP 800-38B §6.1） */
+function registerCmacSubkeysAes(): string {
+  const doubling = registerCmacDouble();
+  registerAesEcb();
+  return pythonGenerator.provideFunction_('cmac_subkeys_aes', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key):',
+    '    if len(key) != 16:',
+    '        raise ValueError("CMAC-AES key must be 16 bytes")',
+    '    L = aes_encrypt_block([0] * 16, key)',
+    '    K1 = ' + doubling + '(L)',
+    '    K2 = ' + doubling + '(K1)',
+    '    return K1 + K2',
+  ]);
+}
+
+pythonGenerator.forBlock['cmac_double'] = function (block: Block): [string, number] {
+  const x = pythonGenerator.valueToCode(block, 'X', Order.ATOMIC) || '[]';
+  const fn = registerCmacDouble();
+  return [fn + '(' + x + ')', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['cmac_subkeys'] = function (block: Block): [string, number] {
+  const key = pythonGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
+  const fn = registerCmacSubkeysAes();
+  return ['bytes(' + fn + '(' + key + '))', Order.ATOMIC];
+};

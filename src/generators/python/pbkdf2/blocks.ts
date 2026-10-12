@@ -107,6 +107,33 @@ function registerPbkdf2(): string {
   ]);
 }
 
+/** 单块函数 F（RFC 8018 §5.2），返回 hLen 字节 */
+function registerPbkdf2F(): string {
+  return pythonGenerator.provideFunction_('pbkdf2_f', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(pw, salt, iter_count, index, prf):',
+    '    if isinstance(iter_count, bool) or not isinstance(iter_count, (int, float)) or (isinstance(iter_count, float) and not iter_count.is_integer()) or iter_count < 1:',
+    '        raise ValueError("PBKDF2 iteration count must be a positive integer")',
+    '    if isinstance(index, bool) or not isinstance(index, (int, float)) or (isinstance(index, float) and not index.is_integer()) or not 1 <= index <= 4294967295:',
+    '        raise ValueError("PBKDF2 block index must be an integer from 1 to 2^32-1")',
+    '    u = prf(bytes(pw), bytes(salt) + int(index).to_bytes(4, "big"))',
+    '    t = bytearray(u)',
+    '    for _ in range(int(iter_count) - 1):',
+    '        u = prf(bytes(pw), u)',
+    '        for j in range(len(t)):',
+    '            t[j] ^= u[j]',
+    '    return list(t)',
+  ]);
+}
+
+/** HMAC-SHA256 PRF（Python 标准库） */
+function registerPbkdf2HmacSha256(): string {
+  return pythonGenerator.provideFunction_('pbkdf2_hmac_sha256', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, msg):',
+    '    import hashlib, hmac',
+    '    return list(hmac.new(bytes(key), bytes(msg), hashlib.sha256).digest())',
+  ]);
+}
+
 pythonGenerator.forBlock['pbkdf2'] = function (block: Block): [string, number] {
   const pw = pythonGenerator.valueToCode(block, 'PASSWORD', Order.ATOMIC) || '[]';
   const salt = pythonGenerator.valueToCode(block, 'SALT', Order.ATOMIC) || '[]';
@@ -118,10 +145,21 @@ pythonGenerator.forBlock['pbkdf2'] = function (block: Block): [string, number] {
     const hmac = registerSm3Hmac();
     return ['bytes(' + fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + keylen + ', ' + hmac + '))', Order.ATOMIC];
   }
-  const hmac = pythonGenerator.provideFunction_('pbkdf2_hmac_sha256', [
-    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, msg):',
-    '    import hashlib, hmac',
-    '    return list(hmac.new(bytes(key), bytes(msg), hashlib.sha256).digest())',
-  ]);
+  const hmac = registerPbkdf2HmacSha256();
   return ['bytes(' + fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + keylen + ', ' + hmac + '))', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['pbkdf2_f'] = function (block: Block): [string, number] {
+  const pw = pythonGenerator.valueToCode(block, 'PASSWORD', Order.ATOMIC) || '[]';
+  const salt = pythonGenerator.valueToCode(block, 'SALT', Order.ATOMIC) || '[]';
+  const iter = pythonGenerator.valueToCode(block, 'ITER', Order.ATOMIC) || '1';
+  const index = pythonGenerator.valueToCode(block, 'INDEX', Order.ATOMIC) || '1';
+  const hash = block.getFieldValue('HASH') || 'sha256';
+  const fn = registerPbkdf2F();
+  if (hash === 'sm3') {
+    const hmac = registerSm3Hmac();
+    return ['bytes(' + fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + index + ', ' + hmac + '))', Order.ATOMIC];
+  }
+  const hmac = registerPbkdf2HmacSha256();
+  return ['bytes(' + fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + index + ', ' + hmac + '))', Order.ATOMIC];
 };

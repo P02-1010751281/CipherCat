@@ -11,7 +11,7 @@
 import * as Blockly from 'blockly/core';
 import { TYPE_BYTES, TYPE_INT_LIST } from '@/constants/block-types';
 
-export const XTS_BLOCK_TYPES = ['xts_encrypt'] as const;
+export const XTS_BLOCK_TYPES = ['xts_encrypt', 'xts_tweak_mul'] as const;
 export type XtsBlockType = (typeof XTS_BLOCK_TYPES)[number];
 
 Blockly.Blocks['xts_encrypt'] = {
@@ -29,5 +29,19 @@ Blockly.Blocks['xts_encrypt'] = {
       'XTS 磁盘加密模式 (NIST SP 800-38E)：key = K1‖K2（32 字节且两半不同），tweak = 数据单元号（16 字节），数据单元为 16 字节至 16 MiB，支持 ciphertext stealing。',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38E.pdf');
+  },
+};
+
+/** XTS 内部算子（SP 800-38E / IEEE 1619）：tweak ×α。 */
+Blockly.Blocks['xts_tweak_mul'] = {
+  init: function () {
+    this.appendValueInput('TWEAK').setCheck(TYPE_INT_LIST).appendField('XTS tweak ×α  T:');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_INT_LIST);
+    this.setColour(190);
+    this.setTooltip(
+      'XTS tweak 乘 α（SP 800-38E / IEEE 1619）：16 字节小端多项式左移一位，字节 15 的最高位进位时与 0x87 异或进字节 0。用于逐块推进 tweak；与 CMAC 的大端加倍不是同一约定。',
+    );
+    this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38e.pdf');
   },
 };

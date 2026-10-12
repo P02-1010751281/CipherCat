@@ -66,6 +66,23 @@ function registerSm3Hmac(): string {
 }
 
 /** 完整 PBKDF2（PRF 作为参数，返回派生密钥字节数组） */
+/** 单块函数 F（RFC 8018 §5.2），返回 hLen 字节 */
+function registerPbkdf2F(): string {
+  return javascriptGenerator.provideFunction_('pbkdf2F', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(pw, salt, iter, index, prf) {',
+    '  if (!Number.isSafeInteger(iter) || iter < 1) throw new Error("PBKDF2 iteration count must be a positive integer");',
+    '  if (!Number.isSafeInteger(index) || index < 1 || index > 4294967295) throw new Error("PBKDF2 block index must be an integer from 1 to 2^32-1");',
+    '  var u = prf(pw, Array.from(salt).concat([Math.floor(index / 16777216) & 0xFF, (index >>> 16) & 0xFF, (index >>> 8) & 0xFF, index & 0xFF]));',
+    '  var T = u.slice();',
+    '  for (var i = 1; i < iter; i++) {',
+    '    u = prf(pw, u);',
+    '    for (var j = 0; j < T.length; j++) T[j] ^= u[j];',
+    '  }',
+    '  return T;',
+    '}',
+  ]);
+}
+
 function registerPbkdf2(): string {
   return javascriptGenerator.provideFunction_('pbkdf2', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(pw, salt, iter, dklen, prf) {',
@@ -100,4 +117,19 @@ javascriptGenerator.forBlock['pbkdf2'] = function (block: Block): [string, numbe
   }
   registerHmacSha256();
   return ['Uint8Array.from(' + fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + keylen + ', hmacSha256))', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['pbkdf2_f'] = function (block: Block): [string, number] {
+  const pw = javascriptGenerator.valueToCode(block, 'PASSWORD', Order.ATOMIC) || '[]';
+  const salt = javascriptGenerator.valueToCode(block, 'SALT', Order.ATOMIC) || '[]';
+  const iter = javascriptGenerator.valueToCode(block, 'ITER', Order.ATOMIC) || '1';
+  const index = javascriptGenerator.valueToCode(block, 'INDEX', Order.ATOMIC) || '1';
+  const hash = block.getFieldValue('HASH') || 'sha256';
+  const fn = registerPbkdf2F();
+  if (hash === 'sm3') {
+    const hmac = registerSm3Hmac();
+    return ['Uint8Array.from(' + fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + index + ', ' + hmac + '))', Order.ATOMIC];
+  }
+  registerHmacSha256();
+  return ['Uint8Array.from(' + fn + '(' + pw + ', ' + salt + ', ' + iter + ', ' + index + ', hmacSha256))', Order.ATOMIC];
 };

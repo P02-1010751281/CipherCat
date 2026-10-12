@@ -102,6 +102,14 @@ for f in 02-editor-empty 03-import-menu 04-editor-imported 05-generated-python 0
   echo "  frontend/public/docs-assets/tutorials/$f.png"
 done
 # 06-docs-center-current.png is specific to CipherCat's docs UI; do not sync it.
+
+echo "== 同步演示教程实机截图 ================"
+mkdir -p "$MC_ROOT/frontend/public/docs-assets/demo-guides"
+for f in aes-demo-editor hash-demo-editor post-quantum-demo-editor sm2-demo-editor sm4-demo-editor; do
+  cp "$CC_ROOT/public/docs-assets/demo-guides/$f.png" "$MC_ROOT/frontend/public/docs-assets/demo-guides/$f.png"
+  echo "  frontend/public/docs-assets/demo-guides/$f.png"
+done
+
 for f in "$CC_ROOT"/demos/procedures/*.json; do
   mkdir -p "$MC_ROOT/demos/procedures"
   cp "$f" "$MC_ROOT/demos/procedures/"

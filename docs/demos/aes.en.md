@@ -14,6 +14,8 @@
 ### Goal
 Run one AES round in the FIPS 197 §5.1 order. `AES-Atomic-Round.json` places four primitives at the workspace top level; generated code calls them in order and mutates shared state in place. The four primitives are not connected to each other; each reads and writes the same state variable through `variables_get`/`variables_set`. See `demos/procedures/AES-Round.json` for the nested, explicit dataflow version.
 
+![Workspace after importing docs/demos/AES-Atomic-Round.json: the four AES single-round primitive blocks and the generated Python code](/docs-assets/demo-guides/aes-demo-editor.png)
+
 ### Steps
 
 1. **Load demo**: import `demos/AES-Atomic-Round.json`

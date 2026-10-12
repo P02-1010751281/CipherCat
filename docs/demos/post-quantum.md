@@ -14,6 +14,8 @@
 ### 目标
 分别观察几个 ML-KEM 相关原语，以及一个通用标量矩阵向量教学块。该工作区是独立示例集合，不构成 ML-KEM 密钥生成流程；标量矩阵向量块也不是 ML-KEM 的多项式环运算。
 
+![在编辑器中导入 docs/demos/ML-KEM-Atomic.json 后的工作区：后量子原语块与标量矩阵向量示例](/docs-assets/demo-guides/post-quantum-demo-editor.png)
+
 ### 步骤
 
 1. **加载 Demo**：导入 `demos/ML-KEM-Atomic.json`

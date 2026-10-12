@@ -14,6 +14,8 @@
 ### 目标
 对文本计算 SHA-256 哈希值，理解填充和压缩两步。
 
+![在编辑器中导入 docs/demos/SHA256-Atomic-Hash.json 后的工作区：填充与压缩块链以及生成的 Python 代码](/docs-assets/demo-guides/hash-demo-editor.png)
+
 ### 步骤
 
 1. **加载 Demo**：导入 `demos/SHA256-Atomic-Hash.json`

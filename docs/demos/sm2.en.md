@@ -14,6 +14,8 @@
 ### Goal
 Build scalar multiplication on the sm2p256v1 curve with ECC statement blocks; verify the GB/T 32918.5-2017 official vector k·G.
 
+![Workspace after importing docs/demos/procedures/SM2-PointMul.json: the SM2_PointMul function block and the generated Python code](/docs-assets/demo-guides/sm2-demo-editor.png)
+
 ### Steps
 
 1. **Load demo**: import `demos/procedures/SM2-PointMul.json`

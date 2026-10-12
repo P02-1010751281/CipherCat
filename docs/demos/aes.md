@@ -14,6 +14,8 @@
 ### 目标
 按 FIPS 197 §5.1 的顺序执行一次 AES 单轮变换。`AES-Atomic-Round.json` 将四个原语块放在工作区顶层，生成代码依次调用并原地修改共享状态；四个原语互不相连，各自通过 `variables_get`/`variables_set` 读写同一个状态变量。逐层嵌套的显式数据流见 `demos/procedures/AES-Round.json`。
 
+![在编辑器中导入 docs/demos/AES-Atomic-Round.json 后的工作区：四个 AES 单轮原语块与生成的 Python 代码](/docs-assets/demo-guides/aes-demo-editor.png)
+
 ### 步骤
 
 1. **加载 Demo**：导入 `demos/AES-Atomic-Round.json`

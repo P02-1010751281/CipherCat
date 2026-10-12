@@ -14,6 +14,8 @@
 ### Goal
 Inspect one SM4 round. The `sm4_round_func` block already performs both the S-box substitution and linear transform L; this demo does not split L into a second block.
 
+![Workspace after importing docs/demos/SM4-Atomic-Round.json: the SM4 round-function blocks and the generated Python code](/docs-assets/demo-guides/sm4-demo-editor.png)
+
 ### Steps
 
 1. **Load demo**: import `demos/SM4-Atomic-Round.json`

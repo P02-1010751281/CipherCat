@@ -14,6 +14,8 @@
 ### Goal
 Compute a SHA-256 hash of text; understand the padding and compression steps.
 
+![Workspace after importing docs/demos/SHA256-Atomic-Hash.json: the padding and compression chain with the generated Python code](/docs-assets/demo-guides/hash-demo-editor.png)
+
 ### Steps
 
 1. **Load demo**: import `demos/SHA256-Atomic-Hash.json`

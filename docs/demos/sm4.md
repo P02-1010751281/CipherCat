@@ -14,6 +14,8 @@
 ### 目标
 观察 SM4 单轮函数 F。`sm4_round_func` 已在一个块内完成 S 盒代换和线性变换 L；本 Demo 不把 L 拆成第二个块。
 
+![在编辑器中导入 docs/demos/SM4-Atomic-Round.json 后的工作区：SM4 轮函数块与生成的 Python 代码](/docs-assets/demo-guides/sm4-demo-editor.png)
+
 ### 步骤
 
 1. **加载 Demo**：导入 `demos/SM4-Atomic-Round.json`

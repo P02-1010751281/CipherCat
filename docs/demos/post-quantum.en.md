@@ -14,6 +14,8 @@
 ### Goal
 Inspect several ML-KEM-related primitives separately, alongside a generic scalar matrix-vector teaching block. This workspace is not an ML-KEM key-generation flow, and the scalar matrix-vector block is not ML-KEM's polynomial-ring operation.
 
+![Workspace after importing docs/demos/ML-KEM-Atomic.json: post-quantum primitives and the scalar matrix-vector example](/docs-assets/demo-guides/post-quantum-demo-editor.png)
+
 ### Steps
 
 1. **Load demo**: import `demos/ML-KEM-Atomic.json`

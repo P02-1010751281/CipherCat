@@ -14,6 +14,8 @@
 ### 目标
 用 ECC 语句块搭 sm2p256v1 曲线上的标量乘法，验证 GB/T 32918.5-2017 官方向量 k·G。
 
+![在编辑器中导入 docs/demos/procedures/SM2-PointMul.json 后的工作区：SM2_PointMul 函数块与生成的 Python 代码](/docs-assets/demo-guides/sm2-demo-editor.png)
+
 ### 步骤
 
 1. **加载 Demo**：导入 `demos/procedures/SM2-PointMul.json`

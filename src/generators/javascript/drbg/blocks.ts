@@ -73,3 +73,28 @@ javascriptGenerator.forBlock['drbg_generate'] = function (block: Block): [string
   const fn = registerDrbg();
   return ['Uint8Array.from(' + fn + '(' + entropy + ', ' + nonce + ', ' + perso + ', ' + bits + '))', Order.ATOMIC];
 };
+
+/** K‖V ↔ {K, V} 的纯函数包装：跑一次 HMAC_DRBG Update 并返回新的 K‖V */
+function registerDrbgUpdatePure(): string {
+  registerHmacSha256();
+  javascriptGenerator.provideFunction_('drbgUpdateRaw', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(kv, provided) {',
+    '  if (kv.length !== 64) throw new Error("HMAC_DRBG state must be 64 bytes (K||V)");',
+    '  var st = { K: kv.slice(0, 32), V: kv.slice(32, 64) };',
+    '  var data = Array.from(provided || []);',
+    '  st.K = hmacSha256(st.K, st.V.concat([0]).concat(data));',
+    '  st.V = hmacSha256(st.K, st.V);',
+    '  st.K = hmacSha256(st.K, st.V.concat([1]).concat(data));',
+    '  st.V = hmacSha256(st.K, st.V);',
+    '  return st.K.concat(st.V);',
+    '}',
+  ]);
+  return 'drbgUpdateRaw';
+}
+
+javascriptGenerator.forBlock['drbg_update'] = function (block: Block): [string, number] {
+  const state = javascriptGenerator.valueToCode(block, 'STATE', Order.ATOMIC) || '[]';
+  const provided = javascriptGenerator.valueToCode(block, 'PROVIDED', Order.ATOMIC) || '[]';
+  const fn = registerDrbgUpdatePure();
+  return ['Uint8Array.from(' + fn + '(' + state + ', ' + provided + '))', Order.ATOMIC];
+};

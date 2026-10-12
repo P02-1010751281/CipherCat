@@ -73,3 +73,29 @@ pythonGenerator.forBlock['drbg_generate'] = function (block: Block): [string, nu
   const fn = registerDrbg();
   return ['bytes(' + fn + '(' + entropy + ', ' + nonce + ', ' + perso + ', ' + bits + '))', Order.ATOMIC];
 };
+
+/** K‖V ↔ [K, V] 的纯函数包装：跑一次 HMAC_DRBG Update 并返回新的 K‖V */
+function registerDrbgUpdatePure(): string {
+  return pythonGenerator.provideFunction_('drbg_update_raw', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(kv, provided):',
+    '    import hmac, hashlib',
+    '    kv = bytes(kv)',
+    '    if len(kv) != 64:',
+    '        raise ValueError("HMAC_DRBG state must be 64 bytes (K||V)")',
+    '    k, v = list(kv[:32]), list(kv[32:])',
+    '    data = bytes(provided or [])',
+    '    k = list(hmac.new(bytes(k), bytes(v) + b"\\x00" + data, hashlib.sha256).digest())',
+    '    v = list(hmac.new(bytes(k), bytes(v), hashlib.sha256).digest())',
+    '    k = list(hmac.new(bytes(k), bytes(v) + b"\\x01" + data, hashlib.sha256).digest())',
+    '    v = list(hmac.new(bytes(k), bytes(v), hashlib.sha256).digest())',
+    '    return k + v',
+  ]);
+  return 'drbg_update_raw';
+}
+
+pythonGenerator.forBlock['drbg_update'] = function (block: Block): [string, number] {
+  const state = pythonGenerator.valueToCode(block, 'STATE', Order.ATOMIC) || '[]';
+  const provided = pythonGenerator.valueToCode(block, 'PROVIDED', Order.ATOMIC) || '[]';
+  const fn = registerDrbgUpdatePure();
+  return ['bytes(' + fn + '(' + state + ', ' + provided + '))', Order.ATOMIC];
+};

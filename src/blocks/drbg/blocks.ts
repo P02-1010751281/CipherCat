@@ -11,7 +11,7 @@
 import * as Blockly from 'blockly/core';
 import { TYPE_BYTES, TYPE_NUMBER } from '@/constants/block-types';
 
-export const DRBG_BLOCK_TYPES = ['drbg_generate'] as const;
+export const DRBG_BLOCK_TYPES = ['drbg_generate', 'drbg_update'] as const;
 export type DrbgBlockType = (typeof DRBG_BLOCK_TYPES)[number];
 
 Blockly.Blocks['drbg_generate'] = {
@@ -30,5 +30,20 @@ Blockly.Blocks['drbg_generate'] = {
       'HMAC-DRBG 确定性随机位生成 (NIST SP 800-90A Rev1, HMAC-SHA-256)：请求位数须为 0 至 2^19 的整数；Generate 按标准输出左端请求位。字节数组末字节未请求的低位清零是项目编码约定，不是标准规定的字节格式。相同输入产生相同输出。仓库含少量实例化/重播种固定回归，不是完整 CAVP 测试或认证。',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-90Ar1.pdf');
+  },
+};
+
+Blockly.Blocks['drbg_update'] = {
+  init: function () {
+    this.appendValueInput('STATE').setCheck(TYPE_BYTES).appendField('HMAC-DRBG Update( state(K‖V):');
+    this.appendValueInput('PROVIDED').setCheck(TYPE_BYTES).appendField(' provided:');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_BYTES);
+    this.setColour(190);
+    this.setTooltip(
+      'HMAC_DRBG Update（SP 800-90A Rev.1 §10.1.2.2）：K = HMAC(K, V‖0x00‖provided)、V = HMAC(K, V)，provided 非空时再执行 0x01 分支。输入/输出都是 64 字节 K‖V；这是状态更新原语，不产生随机输出。',
+    );
+    this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-90A.Rev.1.pdf');
   },
 };

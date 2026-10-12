@@ -1974,6 +1974,35 @@
     "previousStatement": null,
     "nextStatement": null
   },
+  "drbg_update": {
+    "inputs": [
+      {
+        "name": "STATE",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "PROVIDED",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
   "ecc_add": {
     "inputs": [
       {

@@ -1,7 +1,7 @@
 # Block Overview and Evidence Entry Points
 
 
-**Total**: 209 unique custom block types (29 template registrations; 3 overlap; 220 types after deduplication)
+**Total**: 210 unique custom block types (29 template registrations; 3 overlap; 220 types after deduplication)
 
 This page is the block-document overview. Its length does not represent capability weight. Every category detail page uses the same evidence path: normative source and structured entries describe the standard, the editor toolbox and code generators describe the blocks actually available, demo workspaces describe executable scope, and the coverage matrix records limits and missing evidence.
 

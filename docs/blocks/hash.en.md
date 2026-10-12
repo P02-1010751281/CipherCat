@@ -62,6 +62,7 @@ This is the category detail page under the [block overview](INDEX.en.md). “Has
 
 | Block | Layer | Connection | Input→Output | Notes |
 |----|----|------|----------|------|
+| `drbg_update` | 1 | value(→) | Bytes&Bytes→Bytes | HMAC_DRBG Update (SP 800-90A §10.1.2.2): 64-byte K‖V state update |
 | `drbg_generate` | 1 | value(→) | Bytes&Bytes&Bytes&Number→Bytes | HMAC-DRBG SHA-256 (SP 800-90A): entropy + nonce + perso → deterministic bytes; demos cover a few fixed instantiate/reseed regressions, not the full CAVP vector set |
 
 ## Deterministic RNG Example (GM/T 0103 Framework Context)

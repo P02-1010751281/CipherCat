@@ -62,6 +62,7 @@
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
+| `drbg_update` | 1 | value(→) | Bytes&Bytes→Bytes | HMAC_DRBG Update (SP 800-90A §10.1.2.2)：K‖V 状态更新，输入输出均 64 字节 |
 | `drbg_generate` | 1 | value(→) | Bytes&Bytes&Bytes&Number→Bytes | HMAC-DRBG SHA-256（SP 800-90A）：entropy + nonce + perso → 请求位数的确定字节；Demo 含少量实例化/重播种固定回归，未运行完整 CAVP 向量集 |
 
 ## 确定性随机生成示例（GM/T 0103 框架参考）

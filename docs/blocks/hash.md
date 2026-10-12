@@ -55,6 +55,7 @@
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
+| `pbkdf2_f` | 1 | value(→) | Bytes&IntList&Number&Number→Bytes | PBKDF2 单块函数 F (RFC 8018 §5.2)：U_1 = PRF(P, S‖INT(i))，F = U_1⊕…⊕U_c；SHA-256 输出 32 字节 |
 | `pbkdf2` | 1 | value(→) | Bytes&IntList&Number&Number→Bytes | PBKDF2(password, salt, iter, keyLen, HASH) → 派生密钥；先算 U1 = PRF(P, S‖INT(i))、Uc = PRF(P, U_{c-1})，令 Ti = U1 ⊕ U2 ⊕ … ⊕ Uc 再截断；HASH 下拉 SHA-256（RFC 8018）/ SM3（GM/T 0091 同构）；PBKDF2-HMAC-SHA-256 的期望值由 Python `hashlib` 现场复算（RFC 6070 只提供 HMAC-SHA1 附录值，不适用于本变体） |
 
 ## 随机数生成 DRBG (SP 800-90A)

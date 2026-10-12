@@ -58,6 +58,13 @@ PKCS#7 requires an integer block size from 1 through 255; an already aligned inp
 
 | Block | Layer | Connection | Input→Output | Description |
 |-------|-------|------------|--------------|-------------|
+| `ccm_b0` | 1 | value(→) | IntList&Number&Number→IntList | CCM B0 block (SP 800-38C §A.2): flags ‖ nonce ‖ message length; tagLen dropdown 4–16 |
+| `ccm_counter_block` | 1 | value(→) | IntList&Number→IntList | CCM counter block A_i (§A.3): flags(=L−1) ‖ nonce ‖ i (L-byte big-endian) |
+| `ccm_cbc_mac` | 1 | value(→) | Bytes&IntList&IntList&Bytes→Bytes | CCM CBC-MAC (§A.2): whole-string CBC-MAC over B0‖length-coded AAD‖plaintext (per-segment zero padding), 16-byte output |
+| `ccm_ctr` | 1 | value(→) | Bytes&IntList&Bytes→Bytes | CCM counter mode (§A.3): ciphertext only, no tag |
+| `cmac_double` | 1 | value(→) | IntList→IntList | CMAC subkey doubling (SP 800-38B §6.1): one-bit left shift, XOR 0x87 when the top bit is set |
+| `cmac_subkeys` | 1 | value(→) | Bytes→Bytes | CMAC subkeys K1‖K2 (§6.1, AES-128): 32-byte output |
+| `xts_tweak_mul` | 1 | value(→) | IntList→IntList | XTS tweak ×α (SP 800-38E / IEEE 1619): little-endian one-bit shift, XOR 0x87 into byte 0 on byte-15 carry |
 | `ccm_encrypt` | 1 | value(→) | Bytes&IntList&IntList&Bytes→Bytes | CCM encryption returns ciphertext concatenated with the authentication tag; tag length is selected in bytes (4–16). Current AES-128 regressions cover Appendix C Examples 1–3 only. |
 
 ## Disk Encryption XTS (NIST SP 800-38E)

@@ -7,7 +7,7 @@
 >
 > Block facts verified against code (2026-09-29); demo file inventory in [demos/README.en.md](../../demos/README.en.md); step-by-step tutorials in [guides/TUTORIALS.en.md](../guides/TUTORIALS.en.md) and [guides/DEMO.en.md](../guides/DEMO.en.md). `standards/papers/` is a research-material index and is not counted among the standard and reference directories reported by `npm run standards:check` (`directories=`, currently 40, including `randomness-certification-sources/` and `rfc6979-ecdsa/`).
 >
-> The object-level register (201 active blocks plus 1 compat identity, 29 template identities, 59 demos) is [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md); this matrix is a standards-dimension aggregate mapping and does not replace per-object test evidence.
+> The object-level register (209 active blocks plus 1 compat identity, 29 template identities, 59 demos) is [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md); this matrix is a standards-dimension aggregate mapping and does not replace per-object test evidence.
 
 ---
 
@@ -32,12 +32,12 @@
 | McEliece (Goppa codes) | `mceliece-goppa/` | `gf2_poly_mul/div/mod/gcd` · `bin_mat_mul/inv` · `ham_weight` · `ham_dist` · `goppa_gen_poly` · `syndrome_calc` · `gf2m_mul/add/inv` · `gf2m_poly_add/mul/mod/xgcd/eval` · `goppa_decode` · `berlekamp_massey` · `arr_slice` | `demos/procedures/Code-Based-Math.json` · `GF2m-Poly.json` · `Goppa-Decode.json` · `PQC-Gaps.json` | — | — |
 | ECDSA | `fips186-5-ecdsa/` | `ecdsa_sign` · `ecdsa_verify` · `ecc_load_curve_params` · `ecc_load_point` · `ecc_add` · `ecc_point_double` · `ecc_multiply` | `demos/procedures/ECDSA.json` | — | — |
 | SP 800-38A block modes | `sp800-38a-modes/` | `mode_ecb_encrypt/decrypt` · `mode_cbc_encrypt` · `mode_ctr_encrypt` · `pad_pkcs7` · `pad_zero` | `demos/procedures/Mode-ECB.json` · `Mode-CBC.json` · `Mode-CTR.json` | `proc_mode_ecb` (AES-128; key unset) · `proc_mode_cbc` (AES-128; key/IV unset) · `proc_mode_ctr` (AES-128; key/nonce unset) | — |
-| CMAC | `sp800-38b-cmac/` | `cmac_mac`(CIPHER dropdown: AES-128 / SM4) | — | — | — |
-| CCM | `sp800-38c-ccm/` | `ccm_encrypt` | `demos/procedures/CCM-Encrypt.json` | — | — |
+| CMAC | `sp800-38b-cmac/` | `cmac_double` · `cmac_subkeys` · `cmac_mac`(CIPHER dropdown: AES-128 / SM4) | — | — | — |
+| CCM | `sp800-38c-ccm/` | `ccm_b0` · `ccm_counter_block` · `ccm_cbc_mac` · `ccm_ctr` · `ccm_encrypt` | `demos/procedures/CCM-Encrypt.json` | — | — |
 | GCM | `sp800-38d-gcm/` | `gcm_gf128_mul` · `gcm_ghash` · `gcm_gctr` · `gcm_inc32` · `gcm_j0` · `gcm_encrypt` (+ `mode_ctr_encrypt` basis) | `demos/procedures/GCM-Encrypt.json` (GCM-spec Test Case 2/13 numbering plus 15 NIST ACVP AES-GCM cases with tagLen=128 and 96-bit IV; SP 800-38D itself has no test-vector appendix) | `proc_mode_gcm` (CTR-only scaffold; no GHASH/tag; not GCM evidence) | — |
-| XTS | `sp800-38e-xts/` | `xts_encrypt` | `demos/procedures/XTS-Encrypt.json` | — | — |
+| XTS | `sp800-38e-xts/` | `xts_tweak_mul` · `xts_encrypt` | `demos/procedures/XTS-Encrypt.json` | — | — |
 | DRBG | `sp800-90a-drbg/` | `drbg_generate` | `demos/procedures/DRBG.json` | — | — |
-| PBKDF2 | `sp800-132-pbkdf2/` | `pbkdf2` | `demos/procedures/PBKDF2-SHA256.json` · `procedures/PBKDF2.json` | `proc_pbkdf2` (empty-loop starter; no derivation) | — |
+| PBKDF2 | `sp800-132-pbkdf2/` | `pbkdf2_f` · `pbkdf2` | `demos/procedures/PBKDF2-SHA256.json` · `procedures/PBKDF2.json` | `proc_pbkdf2` (empty-loop starter; no derivation) | — |
 | ASCON | `sp800-232-ascon/` | `ascon_encrypt` · `ascon_decrypt` · `ascon_hash256` · `ascon_xof128` · `ascon_cxof128` | `demos/procedures/ASCON.json` · `ASCON-Extended.json` | — | — |
 | HKDF | `rfc5869-hkdf/` | `hkdf_extract` · `hkdf_expand` · `hkdf` | `demos/procedures/HKDF-SHA256.json` · `procedures/HKDF.json` | `proc_hkdf` (empty-loop placeholders; no Extract/Expand) | — |
 | X25519 | `rfc7748-x25519/` | `x25519` | `demos/procedures/X25519.json` | — | — |

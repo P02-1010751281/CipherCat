@@ -58,6 +58,13 @@ PKCS#7 块长必须是 1–255 的整数；输入已对齐时仍追加完整填�
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
+| `ccm_b0` | 1 | value(→) | IntList&Number&Number→IntList | CCM 首块 B0 (SP 800-38C §A.2)：flags ‖ nonce ‖ 明文长度；tagLen 下拉 4–16 |
+| `ccm_counter_block` | 1 | value(→) | IntList&Number→IntList | CCM 计数器块 A_i (§A.3)：flags(=L−1) ‖ nonce ‖ i（L 字节大端） |
+| `ccm_cbc_mac` | 1 | value(→) | Bytes&IntList&IntList&Bytes→Bytes | CCM CBC-MAC (§A.2)：对 B0‖长度编码 AAD‖明文（分段零填充）整串做 CBC-MAC，输出 16 字节 |
+| `ccm_ctr` | 1 | value(→) | Bytes&IntList&Bytes→Bytes | CCM 计数器模式 (§A.3)：只输出密文，不含标签 |
+| `cmac_double` | 1 | value(→) | IntList→IntList | CMAC 子密钥加倍 (SP 800-38B §6.1)：左移一位，最高位为 1 时异或 0x87 |
+| `cmac_subkeys` | 1 | value(→) | Bytes→Bytes | CMAC 子密钥 K1‖K2 (§6.1, AES-128)：输出 32 字节 |
+| `xts_tweak_mul` | 1 | value(→) | IntList→IntList | XTS tweak ×α (SP 800-38E / IEEE 1619)：小端左移一位，字节 15 进位时异或 0x87 进字节 0 |
 | `ccm_encrypt` | 1 | value(→) | Bytes&IntList&IntList&Bytes→Bytes | CCM-Encrypt(key, nonce, aad, msg, tagLen) → 密文‖标签；CBC-MAC 认证 + CTR 加密；TAGLEN 下拉 4-16 字节；AES-128 官方向量（附录 C Example 1-3） |
 
 ## 磁盘加密 XTS (NIST SP 800-38E)

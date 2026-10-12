@@ -1057,6 +1057,290 @@
     "previousStatement": null,
     "nextStatement": null
   },
+  "ccm_b0": {
+    "inputs": [
+      {
+        "name": "NONCE",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "MSGLEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "AADLEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "TAGLEN",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "4",
+            "4"
+          ],
+          [
+            "6",
+            "6"
+          ],
+          [
+            "8",
+            "8"
+          ],
+          [
+            "10",
+            "10"
+          ],
+          [
+            "12",
+            "12"
+          ],
+          [
+            "14",
+            "14"
+          ],
+          [
+            "16",
+            "16"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ccm_cbc_mac": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "NONCE",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "AAD",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "TAGLEN",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "4",
+            "4"
+          ],
+          [
+            "6",
+            "6"
+          ],
+          [
+            "8",
+            "8"
+          ],
+          [
+            "10",
+            "10"
+          ],
+          [
+            "12",
+            "12"
+          ],
+          [
+            "14",
+            "14"
+          ],
+          [
+            "16",
+            "16"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ccm_counter_block": {
+    "inputs": [
+      {
+        "name": "NONCE",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "I",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "TAGLEN",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "4",
+            "4"
+          ],
+          [
+            "6",
+            "6"
+          ],
+          [
+            "8",
+            "8"
+          ],
+          [
+            "10",
+            "10"
+          ],
+          [
+            "12",
+            "12"
+          ],
+          [
+            "14",
+            "14"
+          ],
+          [
+            "16",
+            "16"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "ccm_ctr": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "NONCE",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "TAGLEN",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "4",
+            "4"
+          ],
+          [
+            "6",
+            "6"
+          ],
+          [
+            "8",
+            "8"
+          ],
+          [
+            "10",
+            "10"
+          ],
+          [
+            "12",
+            "12"
+          ],
+          [
+            "14",
+            "14"
+          ],
+          [
+            "16",
+            "16"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
   "ccm_encrypt": {
     "inputs": [
       {
@@ -1150,6 +1434,23 @@
     "previousStatement": null,
     "nextStatement": null
   },
+  "cmac_double": {
+    "inputs": [
+      {
+        "name": "X",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
   "cmac_mac": {
     "inputs": [
       {
@@ -1188,6 +1489,28 @@
         ]
       }
     ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "cmac_subkeys": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
     "outputCheck": [
       "Bytes"
     ],
@@ -4326,6 +4649,64 @@
     "previousStatement": null,
     "nextStatement": null
   },
+  "pbkdf2_f": {
+    "inputs": [
+      {
+        "name": "PASSWORD",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "SALT",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "ITER",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "INDEX",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "HASH",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "SHA-256",
+            "sha256"
+          ],
+          [
+            "SM3 (GM/T 0091)",
+            "sm3"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
   "poly_scale": {
     "inputs": [
       {
@@ -6994,6 +7375,23 @@
     "fields": [],
     "outputCheck": [
       "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "xts_tweak_mul": {
+    "inputs": [
+      {
+        "name": "TWEAK",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
     ],
     "previousStatement": null,
     "nextStatement": null

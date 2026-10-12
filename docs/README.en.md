@@ -102,7 +102,7 @@ These pages record extraction, splitting, evidence ledgers, and certification pr
 | [STRUCTURED-ENTRY-SCHEMA.en.md](./standards/STRUCTURED-ENTRY-SCHEMA.en.md) | Common entry fields for functions, primitives, formulas, and algorithm stages |
 | [SOURCE-SPLIT-COVERAGE.en.md](./standards/SOURCE-SPLIT-COVERAGE.en.md) | Source-to-entry split coverage and acceptance boundary |
 | [SOURCE-SPLIT-INVENTORY.en.md](./standards/SOURCE-SPLIT-INVENTORY.en.md) | Entry-by-entry source links for 229 structured entries |
-| [CONFORMANCE-INVENTORY.md](./standards/CONFORMANCE-INVENTORY.md) | Verification objects and evidence scope for 201 active blocks (plus 1 compat identity), 29 procedure templates, and 59 demos (Chinese only) |
+| [CONFORMANCE-INVENTORY.md](./standards/CONFORMANCE-INVENTORY.md) | Verification objects and evidence scope for 209 active blocks (plus 1 compat identity), 29 procedure templates, and 59 demos (Chinese only) |
 | [ENDPOINT-MATRIX.md](./standards/ENDPOINT-MATRIX.md) | Block endpoint (public standard algorithm interface) matrix (Chinese only) |
 | [PRODUCT-CERTIFICATION-FEASIBILITY.en.md](./standards/PRODUCT-CERTIFICATION-FEASIBILITY.en.md) | Formal certification routes, candidate product boundary, gaps, and decision sequence |
 

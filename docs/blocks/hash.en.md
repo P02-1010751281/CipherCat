@@ -55,6 +55,7 @@ This is the category detail page under the [block overview](INDEX.en.md). “Has
 
 | Block | Layer | Connection | Input→Output | Notes |
 |----|----|------|----------|------|
+| `pbkdf2_f` | 1 | value(→) | Bytes&IntList&Number&Number→Bytes | PBKDF2 single-block function F (RFC 8018 §5.2): U_1 = PRF(P, S‖INT(i)), F = U_1⊕…⊕U_c; 32-byte output for SHA-256 |
 | `pbkdf2` | 1 | value(→) | Bytes&IntList&Number&Number→Bytes | PBKDF2(password, salt, iter, keyLen, HASH) → derived key; compute U1 = PRF(P, S‖INT(i)) and Uc = PRF(P, U_{c-1}), then Ti = U1 ⊕ U2 ⊕ … ⊕ Uc before truncation; HASH dropdown SHA-256 (RFC 8018) / SM3 (GM/T 0091 equivalent); the PBKDF2-HMAC-SHA-256 expected value is recomputed with Python `hashlib` (RFC 6070 only provides HMAC-SHA1 appendix values, which do not apply here) |
 
 ## Random Number Generation DRBG (SP 800-90A)

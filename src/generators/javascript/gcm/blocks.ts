@@ -56,28 +56,61 @@ function registerGhash(): string {
   ]);
 }
 
+/** inc32（SP 800-38D §6.2）：只递增最右 32 位 */
+function registerGcmInc32(): string {
+  return javascriptGenerator.provideFunction_('gcmInc32', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(x) {',
+    '  var b = Array.from(x);',
+    '  for (var i = b.length - 1; i >= b.length - 4 && i >= 0; i--) {',
+    '    b[i] = (b[i] + 1) & 0xFF;',
+    '    if (b[i] !== 0) break;',
+    '  }',
+    '  return b;',
+    '}',
+  ]);
+}
+
+/** J0（SP 800-38D §7.1 Step 1）：96 位 IV 直接拼接，否则 GHASH 派生 */
+function registerGcmJ0(): string {
+  const ghash = registerGhash();
+  return javascriptGenerator.provideFunction_('gcmJ0', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(h, iv) {',
+    '  if (iv.length === 12) return Array.from(iv).concat([0, 0, 0, 1]);',
+    '  return ' + ghash + '(h, [], Array.from(iv));',
+    '}',
+  ]);
+}
+
+/** GCTR（SP 800-38D Algorithm 3）：AES-128 计数器模式 */
+function registerGcmGctr(): string {
+  const inc32 = registerGcmInc32();
+  registerAesEcb();
+  return javascriptGenerator.provideFunction_('gcmGctr', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, icb, x) {',
+    '  if (key.length !== 16) throw new Error("GCM-AES-128 key must be 16 bytes");',
+    '  var out = [];',
+    '  var cb = Array.from(icb);',
+    '  for (var i = 0; i < x.length; i += 16) {',
+    '    var s = aesEncryptBlock(cb, key);',
+    '    for (var j = 0; j < 16 && i + j < x.length; j++) out.push((x[i + j] ^ s[j]) & 0xFF);',
+    '    cb = ' + inc32 + '(cb);',
+    '  }',
+    '  return out;',
+    '}',
+  ]);
+}
+
 /** 完整 GCM-Encrypt（返回 密文‖标签 字节数组） */
 function registerGcmEncrypt(): string {
   const ghash = registerGhash();
+  const j0 = registerGcmJ0();
+  const gctr = registerGcmGctr();
+  const inc32 = registerGcmInc32();
   return javascriptGenerator.provideFunction_('gcmEncrypt', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(key, iv, aad, msg) {',
-    '  if (key.length !== 16) throw new Error("GCM-AES-128 key must be 16 bytes");',
     '  var H = aesEncryptBlock([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], key);',
-    '  var J0;',
-    '  if (iv.length === 12) J0 = Array.from(iv).concat([0, 0, 0, 1]);',
-    '  else J0 = ' + ghash + '(H, [], Array.from(iv));',
-    '  var inc32 = function (x) {',
-    '    var b = x.slice();',
-    '    for (var i = 15; i > 11; i--) { b[i] = (b[i] + 1) & 0xFF; if (b[i] !== 0) break; }',
-    '    return b;',
-    '  };',
-    '  var ct = [];',
-    '  var cb = inc32(J0);',
-    '  for (var i = 0; i < msg.length; i += 16) {',
-    '    var s = aesEncryptBlock(cb, key);',
-    '    for (var j = 0; j < 16 && i + j < msg.length; j++) ct.push((msg[i + j] ^ s[j]) & 0xFF);',
-    '    cb = inc32(cb);',
-    '  }',
+    '  var J0 = ' + j0 + '(H, iv);',
+    '  var ct = ' + gctr + '(key, ' + inc32 + '(J0), msg);',
     '  var S = ' + ghash + '(H, Array.from(aad), ct);',
     '  var s0 = aesEncryptBlock(J0, key);',
     '  var tag = [];',
@@ -95,4 +128,40 @@ javascriptGenerator.forBlock['gcm_encrypt'] = function (block: Block): [string, 
   registerAesEcb();
   const fn = registerGcmEncrypt();
   return ['Uint8Array.from(' + fn + '(' + key + ', ' + iv + ', ' + aad + ', ' + msg + '))', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['gcm_gf128_mul'] = function (block: Block): [string, number] {
+  const x = javascriptGenerator.valueToCode(block, 'X', Order.ATOMIC) || '[]';
+  const y = javascriptGenerator.valueToCode(block, 'Y', Order.ATOMIC) || '[]';
+  const fn = registerGcmMul();
+  return [fn + '(' + x + ', ' + y + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['gcm_ghash'] = function (block: Block): [string, number] {
+  const h = javascriptGenerator.valueToCode(block, 'H', Order.ATOMIC) || '[]';
+  const a = javascriptGenerator.valueToCode(block, 'A', Order.ATOMIC) || '[]';
+  const c = javascriptGenerator.valueToCode(block, 'C', Order.ATOMIC) || '[]';
+  const fn = registerGhash();
+  return [fn + '(' + h + ', ' + a + ', ' + c + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['gcm_gctr'] = function (block: Block): [string, number] {
+  const key = javascriptGenerator.valueToCode(block, 'KEY', Order.ATOMIC) || '[]';
+  const icb = javascriptGenerator.valueToCode(block, 'ICB', Order.ATOMIC) || '[]';
+  const x = javascriptGenerator.valueToCode(block, 'X', Order.ATOMIC) || '[]';
+  const fn = registerGcmGctr();
+  return ['Uint8Array.from(' + fn + '(' + key + ', ' + icb + ', ' + x + '))', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['gcm_inc32'] = function (block: Block): [string, number] {
+  const x = javascriptGenerator.valueToCode(block, 'X', Order.ATOMIC) || '[]';
+  const fn = registerGcmInc32();
+  return [fn + '(' + x + ')', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['gcm_j0'] = function (block: Block): [string, number] {
+  const h = javascriptGenerator.valueToCode(block, 'H', Order.ATOMIC) || '[]';
+  const iv = javascriptGenerator.valueToCode(block, 'IV', Order.ATOMIC) || '[]';
+  const fn = registerGcmJ0();
+  return [fn + '(' + h + ', ' + iv + ')', Order.ATOMIC];
 };

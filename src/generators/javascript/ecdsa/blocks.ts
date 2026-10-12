@@ -188,3 +188,47 @@ javascriptGenerator.forBlock['ecdsa_verify'] = function (block: Block): [string,
   const fn = registerEcdsaVerify();
   return [fn + '(' + msg + ', ' + pub + ', ' + sig + ')', Order.ATOMIC];
 };
+
+/** RFC 6979 §3.2 确定性 k（P-256 + SHA-256；输入为 32 字节消息哈希） */
+function registerEcdsaKRfc6979(): string {
+  registerHmacSha256();
+  return javascriptGenerator.provideFunction_('ecdsaKRfc6979', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(priv, h1) {',
+    '  var N = 0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551n;',
+    '  if (priv.length !== 32) throw new Error("ECDSA private key must be 32 bytes");',
+    '  if (h1.length !== 32) throw new Error("ECDSA message hash must be 32 bytes (SHA-256)");',
+    '  var x = 0n;',
+    '  for (var i = 0; i < 32; i++) x = (x << 8n) | BigInt(priv[i]);',
+    '  if (x < 1n || x >= N) throw new Error("ECDSA private key scalar must be in [1, n-1]");',
+    '  var z = 0n;',
+    '  for (var i = 0; i < 32; i++) z = (z << 8n) | BigInt(h1[i]);',
+    '  // RFC 6979 §2.3.5 bits2octets(h1) = int2octets(bits2int(h1) mod n)',
+    '  var b2i = [];',
+    '  var zz = z % N;',
+    '  for (var i = 31; i >= 0; i--) { b2i[i] = Number(zz & 0xffn); zz >>= 8n; }',
+    '  var xb = Array.from(priv);',
+    '  var V = [], K = [];',
+    '  for (var i = 0; i < 32; i++) { V.push(1); K.push(0); }',
+    '  K = hmacSha256(K, V.concat([0], xb, b2i));',
+    '  V = hmacSha256(K, V);',
+    '  K = hmacSha256(K, V.concat([1], xb, b2i));',
+    '  V = hmacSha256(K, V);',
+    '  while (true) {',
+    '    var T = [];',
+    '    while (T.length < 32) { V = hmacSha256(K, V); T = T.concat(V); }',
+    '    var k = 0n;',
+    '    for (var i = 0; i < 32; i++) k = (k << 8n) | BigInt(T[i]);',
+    '    if (k >= 1n && k < N) return T.slice(0, 32);',
+    '    K = hmacSha256(K, V.concat([0]));',
+    '    V = hmacSha256(K, V);',
+    '  }',
+    '}',
+  ]);
+}
+
+javascriptGenerator.forBlock['ecdsa_k_rfc6979'] = function (block: Block): [string, number] {
+  const priv = javascriptGenerator.valueToCode(block, 'PRIV', Order.ATOMIC) || '[]';
+  const hash = javascriptGenerator.valueToCode(block, 'HASH', Order.ATOMIC) || '[]';
+  const fn = registerEcdsaKRfc6979();
+  return ['Uint8Array.from(' + fn + '(Array.from(' + priv + '), Array.from(' + hash + ')))', Order.ATOMIC];
+};

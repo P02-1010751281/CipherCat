@@ -10,7 +10,7 @@
 import * as Blockly from 'blockly/core';
 import { TYPE_BYTES, TYPE_BOOLEAN } from '@/constants/block-types';
 
-export const ECDSA_BLOCK_TYPES = ['ecdsa_sign', 'ecdsa_verify'] as const;
+export const ECDSA_BLOCK_TYPES = ['ecdsa_sign', 'ecdsa_verify', 'ecdsa_k_rfc6979'] as const;
 export type EcdsaBlockType = (typeof ECDSA_BLOCK_TYPES)[number];
 
 Blockly.Blocks['ecdsa_sign'] = {
@@ -41,6 +41,21 @@ Blockly.Blocks['ecdsa_verify'] = {
     this.setColour(230);
     this.setTooltip(
       'ECDSA 教学验签 (P-256/SHA-256)：检查签名和公钥边界；非生产、非认证实现。',
+    );
+    this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc6979');
+  },
+};
+
+Blockly.Blocks['ecdsa_k_rfc6979'] = {
+  init: function () {
+    this.appendValueInput('PRIV').setCheck(TYPE_BYTES).appendField('RFC 6979 确定性 k( priv:');
+    this.appendValueInput('HASH').setCheck(TYPE_BYTES).appendField(' msgHash:');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_BYTES);
+    this.setColour(190);
+    this.setTooltip(
+      'RFC 6979 §3.2 确定性 k（P-256 + SHA-256）：以 HMAC-SHA256 作为伪随机生成器，从私钥标量与消息哈希派生 k，输出 32 字节。输入 msgHash 必须是 32 字节 SHA-256 摘要；本块只返回 k，不生成 r/s。',
     );
     this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc6979');
   },

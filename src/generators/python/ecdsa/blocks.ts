@@ -157,3 +157,47 @@ pythonGenerator.forBlock['ecdsa_verify'] = function (block: Block): [string, num
   const fn = registerEcdsaVerify();
   return [fn + '(' + msg + ', ' + pub + ', ' + sig + ')', Order.ATOMIC];
 };
+
+/** RFC 6979 §3.2 确定性 k（P-256 + SHA-256；输入为 32 字节消息哈希） */
+function registerEcdsaKRfc6979(): string {
+  return pythonGenerator.provideFunction_('ecdsa_k_rfc6979', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(priv, h1):',
+    '    import hmac, hashlib',
+    '    N = 0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551',
+    '    priv = bytes(priv)',
+    '    h1 = bytes(h1)',
+    '    if len(priv) != 32:',
+    '        raise ValueError("ECDSA private key must be 32 bytes")',
+    '    if len(h1) != 32:',
+    '        raise ValueError("ECDSA message hash must be 32 bytes (SHA-256)")',
+    '    x = int.from_bytes(priv, "big")',
+    '    if not 1 <= x < N:',
+    '        raise ValueError("ECDSA private key scalar must be in [1, n-1]")',
+    '    z = int.from_bytes(h1, "big")',
+    '    b2i = (z % N).to_bytes(32, "big")',
+    '    v = b"\\x01" * 32',
+    '    k_state = b"\\x00" * 32',
+    '    k_state = hmac.new(k_state, v + b"\\x00" + priv + b2i, hashlib.sha256).digest()',
+    '    v = hmac.new(k_state, v, hashlib.sha256).digest()',
+    '    k_state = hmac.new(k_state, v + b"\\x01" + priv + b2i, hashlib.sha256).digest()',
+    '    v = hmac.new(k_state, v, hashlib.sha256).digest()',
+    '    while True:',
+    '        t = b""',
+    '        while len(t) < 32:',
+    '            v = hmac.new(k_state, v, hashlib.sha256).digest()',
+    '            t += v',
+    '        t = t[:32]',
+    '        k = int.from_bytes(t, "big")',
+    '        if 1 <= k < N:',
+    '            return list(t)',
+    '        k_state = hmac.new(k_state, v + b"\\x00", hashlib.sha256).digest()',
+    '        v = hmac.new(k_state, v, hashlib.sha256).digest()',
+  ]);
+}
+
+pythonGenerator.forBlock['ecdsa_k_rfc6979'] = function (block: Block): [string, number] {
+  const priv = pythonGenerator.valueToCode(block, 'PRIV', Order.ATOMIC) || '[]';
+  const hash = pythonGenerator.valueToCode(block, 'HASH', Order.ATOMIC) || '[]';
+  const fn = registerEcdsaKRfc6979();
+  return ['bytes(' + fn + '(' + priv + ', ' + hash + '))', Order.ATOMIC];
+};

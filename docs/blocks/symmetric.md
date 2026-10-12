@@ -77,4 +77,9 @@ PKCS#7 块长必须是 1–255 的整数；输入已对齐时仍追加完整填�
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
+| `gcm_gf128_mul` | 1 | value(→) | IntList&IntList→IntList | GF(2¹²⁸) 块乘法 (SP 800-38D Algorithm 1)：两个 16 字节块，右移约定 + 0xE1 约化；GHASH 的构件 |
+| `gcm_ghash` | 1 | value(→) | IntList&IntList&IntList→IntList | GHASH_H(A, C) (Algorithm 2)：16 字节分块 + 64 位长度块的多项式哈希，输出 16 字节散列 |
+| `gcm_gctr` | 1 | value(→) | Bytes&IntList&Bytes→Bytes | GCTR_K(ICB, X) (Algorithm 3)：AES-128 计数器模式，加解密同一函数，ICB 由调用方派生 |
+| `gcm_inc32` | 1 | value(→) | IntList→IntList | inc32 (§6.2)：只对最右 32 位模 2³² 加一，高位不动 |
+| `gcm_j0` | 1 | value(→) | IntList&IntList→IntList | J0 派生 (§7.1 Step 1)：96 位 IV 拼 0³¹‖1，其它长度用 GHASH_H({}, IV) |
 | `gcm_encrypt` | 1 | value(→) | Bytes&IntList&IntList&Bytes→Bytes | GCM-Encrypt(key, iv, aad, msg) → 密文‖128 位标签；GHASH（GF(2^128)，R=0xE1‖0^120）+ GCTR；iv 12 字节时 J0 = iv‖0^31‖1 否则 GHASH 派生；已核对向量：GCM 规范 Test Case 2/13（编号源自 GCM 规范）与 NIST ACVP AES-GCM 官方用例（tagLen=128）；SP 800-38D 正文与附录不含用例表 |

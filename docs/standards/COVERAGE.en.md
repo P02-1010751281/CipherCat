@@ -7,7 +7,7 @@
 >
 > Block facts verified against code (2026-09-29); demo file inventory in [demos/README.en.md](../../demos/README.en.md); step-by-step tutorials in [guides/TUTORIALS.en.md](../guides/TUTORIALS.en.md) and [guides/DEMO.en.md](../guides/DEMO.en.md). `standards/papers/` is a research-material index and is not counted among the standard and reference directories reported by `npm run standards:check` (`directories=`, currently 40, including `randomness-certification-sources/` and `rfc6979-ecdsa/`).
 >
-> The object-level register (194 active blocks plus 1 compat identity, 29 template identities, 59 demos) is [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md); this matrix is a standards-dimension aggregate mapping and does not replace per-object test evidence.
+> The object-level register (201 active blocks plus 1 compat identity, 29 template identities, 59 demos) is [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md); this matrix is a standards-dimension aggregate mapping and does not replace per-object test evidence.
 
 ---
 
@@ -34,12 +34,12 @@
 | SP 800-38A block modes | `sp800-38a-modes/` | `mode_ecb_encrypt/decrypt` · `mode_cbc_encrypt` · `mode_ctr_encrypt` · `pad_pkcs7` · `pad_zero` | `demos/procedures/Mode-ECB.json` · `Mode-CBC.json` · `Mode-CTR.json` | `proc_mode_ecb` (AES-128; key unset) · `proc_mode_cbc` (AES-128; key/IV unset) · `proc_mode_ctr` (AES-128; key/nonce unset) | — |
 | CMAC | `sp800-38b-cmac/` | `cmac_mac`(CIPHER dropdown: AES-128 / SM4) | — | — | — |
 | CCM | `sp800-38c-ccm/` | `ccm_encrypt` | `demos/procedures/CCM-Encrypt.json` | — | — |
-| GCM | `sp800-38d-gcm/` | `gcm_encrypt` (+ `mode_ctr_encrypt` basis) | `demos/procedures/GCM-Encrypt.json` (GCM-spec Test Case 2/13 numbering plus 15 NIST ACVP AES-GCM cases with tagLen=128 and 96-bit IV; SP 800-38D itself has no test-vector appendix) | `proc_mode_gcm` (CTR-only scaffold; no GHASH/tag; not GCM evidence) | — |
+| GCM | `sp800-38d-gcm/` | `gcm_gf128_mul` · `gcm_ghash` · `gcm_gctr` · `gcm_inc32` · `gcm_j0` · `gcm_encrypt` (+ `mode_ctr_encrypt` basis) | `demos/procedures/GCM-Encrypt.json` (GCM-spec Test Case 2/13 numbering plus 15 NIST ACVP AES-GCM cases with tagLen=128 and 96-bit IV; SP 800-38D itself has no test-vector appendix) | `proc_mode_gcm` (CTR-only scaffold; no GHASH/tag; not GCM evidence) | — |
 | XTS | `sp800-38e-xts/` | `xts_encrypt` | `demos/procedures/XTS-Encrypt.json` | — | — |
 | DRBG | `sp800-90a-drbg/` | `drbg_generate` | `demos/procedures/DRBG.json` | — | — |
 | PBKDF2 | `sp800-132-pbkdf2/` | `pbkdf2` | `demos/procedures/PBKDF2-SHA256.json` · `procedures/PBKDF2.json` | `proc_pbkdf2` (empty-loop starter; no derivation) | — |
 | ASCON | `sp800-232-ascon/` | `ascon_encrypt` · `ascon_decrypt` · `ascon_hash256` · `ascon_xof128` · `ascon_cxof128` | `demos/procedures/ASCON.json` · `ASCON-Extended.json` | — | — |
-| HKDF | `rfc5869-hkdf/` | `hkdf` | `demos/procedures/HKDF-SHA256.json` · `procedures/HKDF.json` | `proc_hkdf` (empty-loop placeholders; no Extract/Expand) | — |
+| HKDF | `rfc5869-hkdf/` | `hkdf_extract` · `hkdf_expand` · `hkdf` | `demos/procedures/HKDF-SHA256.json` · `procedures/HKDF.json` | `proc_hkdf` (empty-loop placeholders; no Extract/Expand) | — |
 | X25519 | `rfc7748-x25519/` | `x25519` | `demos/procedures/X25519.json` | — | — |
 | EdDSA | `rfc8032-eddsa/` | `eddsa_sign` · `eddsa_verify` | `demos/procedures/EDDSA.json` | — | — |
 | ECDH | `rfc5903-ecdh/` | `ecdh_shared_secret`（+ `ecc_*` curve primitives） | `demos/procedures/ECDH.json` | — | — |

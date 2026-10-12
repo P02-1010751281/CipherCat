@@ -1,6 +1,6 @@
 # Standard Source-to-Entry Inventory
 
-Checked: 2026-10-11
+Checked: 2026-10-12
 
 > Generated from every structured entry metadata block. This is an evidence index, not a claim that every standard clause has been transcribed.
 

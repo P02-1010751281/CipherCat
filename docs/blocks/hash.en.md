@@ -47,6 +47,8 @@ This is the category detail page under the [block overview](INDEX.en.md). “Has
 
 | Block | Layer | Connection | Input→Output | Notes |
 |----|----|------|----------|------|
+| `hkdf_extract` | 1 | value(→) | IntList&Bytes→Bytes | HKDF-Extract (RFC 5869 §2.2): PRK = HMAC-SHA256(salt, IKM); an empty salt falls back to 32 zero bytes |
+| `hkdf_expand` | 1 | value(→) | Bytes&IntList&Number→Bytes | HKDF-Expand (RFC 5869 §2.3): T(i) = HMAC-SHA256(PRK, T(i-1)‖info‖i), concatenated and truncated; L ≤ 8160 |
 | `hkdf` | 1 | value(→) | IntList&Bytes&IntList&Number→Bytes | HKDF(salt, ikm, info, keyLen) → derived key; Extract = HMAC-SHA256(salt, IKM), Expand = HMAC(PRK, T‖info‖i) concat-truncate; empty salt → 32 zero bytes; official vectors (RFC 5869 §A.1) |
 
 ## Password KDF PBKDF2 (RFC 8018 / SP 800-132)

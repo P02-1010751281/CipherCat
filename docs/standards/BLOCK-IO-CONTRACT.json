@@ -2202,6 +2202,148 @@
     "previousStatement": null,
     "nextStatement": null
   },
+  "gcm_gctr": {
+    "inputs": [
+      {
+        "name": "KEY",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "ICB",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "X",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gcm_gf128_mul": {
+    "inputs": [
+      {
+        "name": "X",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "Y",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gcm_ghash": {
+    "inputs": [
+      {
+        "name": "H",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "A",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "C",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gcm_inc32": {
+    "inputs": [
+      {
+        "name": "X",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "gcm_j0": {
+    "inputs": [
+      {
+        "name": "H",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "IV",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
   "gf2_poly_div": {
     "inputs": [
       {
@@ -3164,6 +3306,71 @@
         "type": 1,
         "check": [
           "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hkdf_expand": {
+    "inputs": [
+      {
+        "name": "PRK",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "INFO",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "LEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "hkdf_extract": {
+    "inputs": [
+      {
+        "name": "SALT",
+        "type": 1,
+        "check": [
+          "IntList"
+        ]
+      },
+      {
+        "name": "IKM",
+        "type": 1,
+        "check": [
+          "Bytes"
         ]
       },
       {

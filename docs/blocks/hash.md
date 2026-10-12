@@ -47,6 +47,8 @@
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
+| `hkdf_extract` | 1 | value(→) | IntList&Bytes→Bytes | HKDF-Extract (RFC 5869 §2.2)：PRK = HMAC-SHA256(salt, IKM)，salt 空按 32 零字节兜底 |
+| `hkdf_expand` | 1 | value(→) | Bytes&IntList&Number→Bytes | HKDF-Expand (RFC 5869 §2.3)：T(i) = HMAC-SHA256(PRK, T(i-1)‖info‖i) 串联截断；L ≤ 8160 |
 | `hkdf` | 1 | value(→) | IntList&Bytes&IntList&Number→Bytes | HKDF(salt, ikm, info, keyLen) → 派生密钥；Extract = HMAC-SHA256(salt, IKM)，Expand = HMAC(PRK, T‖info‖i) 串联截断；salt 空按 32 零字节兜底；官方向量（RFC 5869 §A.1） |
 
 ## 口令密钥派生 PBKDF2 (RFC 8018 / SP 800-132)

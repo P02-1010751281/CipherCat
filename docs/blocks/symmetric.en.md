@@ -77,4 +77,9 @@ PKCS#7 requires an integer block size from 1 through 255; an already aligned inp
 
 | Block | Layer | Connection | Input→Output | Description |
 |-------|-------|------------|--------------|-------------|
+| `gcm_gf128_mul` | 1 | value(→) | IntList&IntList→IntList | GF(2¹²⁸) block multiplication (SP 800-38D Algorithm 1): two 16-byte blocks, right-shift convention with 0xE1 reduction; the GHASH building block |
+| `gcm_ghash` | 1 | value(→) | IntList&IntList&IntList→IntList | GHASH_H(A, C) (Algorithm 2): 16-byte block chaining plus a 64-bit length block; outputs a 16-byte hash |
+| `gcm_gctr` | 1 | value(→) | Bytes&IntList&Bytes→Bytes | GCTR_K(ICB, X) (Algorithm 3): AES-128 counter mode, same function for both directions; the caller derives ICB |
+| `gcm_inc32` | 1 | value(→) | IntList→IntList | inc32 (§6.2): increments only the low 32 bits modulo 2³² and leaves the rest untouched |
+| `gcm_j0` | 1 | value(→) | IntList&IntList→IntList | J0 derivation (§7.1 Step 1): a 96-bit IV becomes iv‖0³¹‖1; other lengths use GHASH_H({}, IV) |
 | `gcm_encrypt` | 1 | value(→) | Bytes&IntList&IntList&Bytes→Bytes | GCM encryption returns ciphertext concatenated with a 128-bit tag. GHASH (GF(2^128), R=0xE1‖0^120) plus GCTR; with a 12-byte IV, J0 = iv‖0^31‖1, otherwise J0 is derived with GHASH. Verified vectors are GCM-spec Test Case 2/13 (the numbering comes from the GCM specification, not SP 800-38D) and 15 NIST ACVP AES-GCM cases with tagLen=128; TC2/TC13 were also recomputed with an independent implementation. SP 800-38D itself has no test-vector appendix, TC3 is not covered, and this is not the full test suite. |

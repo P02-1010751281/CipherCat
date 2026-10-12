@@ -30,6 +30,7 @@
 |----|----|------|----------|------|
 | `eddsa_sign` | 1 | value(→) | Bytes&Bytes→Bytes | Ed25519 签名（RFC 8032）：sk 32B + msg → 64B 签名；官方向量 TEST 1/2/3 |
 | `eddsa_verify` | 1 | value(→) | Bytes&Bytes&Bytes→Boolean | Ed25519 验签：pk 32B + msg + sig → true/false |
+| `ecdsa_k_rfc6979` | 1 | value(→) | Bytes&Bytes→Bytes | RFC 6979 §3.2 确定性 k（P-256 + SHA-256）：priv(32B) + msgHash(32B) → k(32B)；只返回 k，不生成 r/s |
 | `ecdsa_sign` | 1 | value(→) | Bytes&Bytes→Bytes | ECDSA P-256 确定性签名（RFC 6979）：sk 32B + msg → r‖s 64B |
 | `ecdsa_verify` | 1 | value(→) | Bytes&Bytes&Bytes→Boolean | ECDSA 验签：msg + pk 65B + r‖s → true/false |
 | `sm2_sign` | 1 | value(→) | String&String&Bytes&String→Bytes | SM2 签名（GB/T 32918.2）：da + id + msg + k → r‖s 64B；k 留空随机 |

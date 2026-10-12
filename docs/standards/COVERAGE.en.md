@@ -7,7 +7,7 @@
 >
 > Block facts verified against code (2026-09-29); demo file inventory in [demos/README.en.md](../../demos/README.en.md); step-by-step tutorials in [guides/TUTORIALS.en.md](../guides/TUTORIALS.en.md) and [guides/DEMO.en.md](../guides/DEMO.en.md). `standards/papers/` is a research-material index and is not counted among the standard and reference directories reported by `npm run standards:check` (`directories=`, currently 40, including `randomness-certification-sources/` and `rfc6979-ecdsa/`).
 >
-> The object-level register (210 active blocks plus 1 compat identity, 29 template identities, 59 demos) is [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md); this matrix is a standards-dimension aggregate mapping and does not replace per-object test evidence.
+> The object-level register (211 active blocks plus 1 compat identity, 29 template identities, 59 demos) is [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md); this matrix is a standards-dimension aggregate mapping and does not replace per-object test evidence.
 
 ---
 
@@ -30,7 +30,7 @@
 | ML-DSA | `fips204-ML-DSA/` | `mldsa_sign` · `mldsa_verify` · `pq_power2round` · `pq_decompose` · `pq_make_hint` · `pq_use_hint` · `pq_sample_in_ball` · `pq_rej_sample` · shared helpers `pq_xof/prf`, `pq_sample_ntt`, `pq_ntt/intt/ntt_mul`, `pq_poly_add/sub` (see Inventory for per-block scope) | `demos/procedures/ML-DSA-Sign.json` · `procedures/ML-DSA-Primitives.json` · `procedures/ML-DSA-NTT.json` | —（reuses pq templates like `proc_ntt_vec`） | ✅ [ML-DSA-Sign build guide](fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.en.md)（+ [ZH](fips204-ML-DSA/guides/ML-DSA-Sign-搭建指南.md)） |
 | SLH-DSA | `fips205-SLH-DSA/` | `hash_chain` · `merkle_leaf` · `merkle_node` · `merkle_root` · `merkle_auth_path` · `slh_addr` · `slh_adrs_full` · `wots_checksum` · `fors_sign` · `fors_verify` · `fors_pk_from_sk` · `fors_root` · `fors_leaf_index` | `demos/procedures/Hash-Based-Structures.json` · `FORS-Sign.json` · `Tree-Index.json` | — | — |
 | McEliece (Goppa codes) | `mceliece-goppa/` | `gf2_poly_mul/div/mod/gcd` · `bin_mat_mul/inv` · `ham_weight` · `ham_dist` · `goppa_gen_poly` · `syndrome_calc` · `gf2m_mul/add/inv` · `gf2m_poly_add/mul/mod/xgcd/eval` · `goppa_decode` · `berlekamp_massey` · `arr_slice` | `demos/procedures/Code-Based-Math.json` · `GF2m-Poly.json` · `Goppa-Decode.json` · `PQC-Gaps.json` | — | — |
-| ECDSA | `fips186-5-ecdsa/` | `ecdsa_sign` · `ecdsa_verify` · `ecc_load_curve_params` · `ecc_load_point` · `ecc_add` · `ecc_point_double` · `ecc_multiply` | `demos/procedures/ECDSA.json` | — | — |
+| ECDSA | `fips186-5-ecdsa/` | `ecdsa_sign` · `ecdsa_verify` · `ecdsa_k_rfc6979`(RFC 6979) · `ecc_load_curve_params` · `ecc_load_point` · `ecc_add` · `ecc_point_double` · `ecc_multiply` | `demos/procedures/ECDSA.json` | — | — |
 | SP 800-38A block modes | `sp800-38a-modes/` | `mode_ecb_encrypt/decrypt` · `mode_cbc_encrypt` · `mode_ctr_encrypt` · `pad_pkcs7` · `pad_zero` | `demos/procedures/Mode-ECB.json` · `Mode-CBC.json` · `Mode-CTR.json` | `proc_mode_ecb` (AES-128; key unset) · `proc_mode_cbc` (AES-128; key/IV unset) · `proc_mode_ctr` (AES-128; key/nonce unset) | — |
 | CMAC | `sp800-38b-cmac/` | `cmac_double` · `cmac_subkeys` · `cmac_mac`(CIPHER dropdown: AES-128 / SM4) | — | — | — |
 | CCM | `sp800-38c-ccm/` | `ccm_b0` · `ccm_counter_block` · `ccm_cbc_mac` · `ccm_ctr` · `ccm_encrypt` | `demos/procedures/CCM-Encrypt.json` | — | — |
@@ -43,7 +43,7 @@
 | X25519 | `rfc7748-x25519/` | `x25519` | `demos/procedures/X25519.json` | — | — |
 | EdDSA | `rfc8032-eddsa/` | `eddsa_sign` · `eddsa_verify` | `demos/procedures/EDDSA.json` | — | — |
 | ECDH | `rfc5903-ecdh/` | `ecdh_shared_secret`（+ `ecc_*` curve primitives） | `demos/procedures/ECDH.json` | — | — |
-| ECDSA deterministic k | `rfc6979-ecdsa/` | — (no separate block: `ecdsa_sign`/`ecdsa_verify` are counted under `fips186-5-ecdsa/`; this directory provides the RFC 6979 §3.2 deterministic `k` basis and the Annex A.2.5 vector source) | `demos/procedures/ECDSA.json` | — | — |
+| ECDSA deterministic k | `rfc6979-ecdsa/` | `ecdsa_k_rfc6979` (RFC 6979 §3.2 deterministic k; `ecdsa_sign`/`ecdsa_verify` are counted under `fips186-5-ecdsa/`) | `demos/procedures/ECDSA.json` | — | — |
 | Randomness certification source index | `randomness-certification-sources/` | — (certification sources and rules index; no block mapping) | — | — | — |
 | RSA signature-key requirements / primality test | `fips186-5-ecdsa/05-RSA-Key-Generation.en.md` · `06-RSA-Primality-Testing.en.md` | `rsa_keygen` (educational) · `rsa_sign` · `rsa_verify` (scheme mapping only; no conformance claim) | `demos/procedures/RSA-Sign.json` | — | — |
 | RSAES/RSASSA PKCS#1 v1.5 | `rfc8017-pkcs1/` | `rsa_encrypt` · `rsa_decrypt` · `rsa_sign` · `rsa_verify` (teaching implementations) | `demos/procedures/RSA-Encrypt.json` · `RSA-Sign.json` | — | — |
@@ -74,7 +74,7 @@ RSA `rsa_keygen` is project-specific teaching code and is not defined by RFC 801
 
 - Total standards directories: **40**
 - Research-material directories: **1** (`standards/papers/`, excluded from the algorithm count)
-- With atomic-block coverage: **34**（no coverage 6: GB/T 36624 AEAD, GM/T 0005 randomness testing, GB/T 32915 binary-sequence randomness testing, China PQC public-information tracking, `randomness-certification-sources/`, `rfc6979-ecdsa/`; 34 + 6 = 40）
+- With atomic-block coverage: **35** (no coverage 5: GB/T 36624 AEAD, GM/T 0005 randomness testing, GB/T 32915 binary-sequence randomness testing, China PQC public-information tracking, `randomness-certification-sources/`; 35 + 5 = 40, matching the `directories=` scope).
 - With demos: **31**
 - With `proc_*` templates: **15**（ML-DSA additionally reuses pq templates）
 - With build guides: **3**（ML-KEM, ML-DSA, ZUC）

@@ -30,6 +30,7 @@ These blocks implement only short-Weierstrass arithmetic over a prime field. `ec
 |----|----|------|----------|------|
 | `eddsa_sign` | 1 | value(→) | Bytes&Bytes→Bytes | Ed25519 sign (RFC 8032): sk 32B + msg → 64B signature; official vectors TEST 1/2/3 |
 | `eddsa_verify` | 1 | value(→) | Bytes&Bytes&Bytes→Boolean | Ed25519 verify: pk 32B + msg + sig → true/false |
+| `ecdsa_k_rfc6979` | 1 | value(→) | Bytes&Bytes→Bytes | RFC 6979 §3.2 deterministic k (P-256 + SHA-256): priv(32B) + msgHash(32B) → k(32B); returns k only, not r/s |
 | `ecdsa_sign` | 1 | value(→) | Bytes&Bytes→Bytes | ECDSA P-256 deterministic sign (RFC 6979): sk 32B + msg → r‖s 64B |
 | `ecdsa_verify` | 1 | value(→) | Bytes&Bytes&Bytes→Boolean | ECDSA verify: msg + pk 65B + r‖s → true/false |
 | `sm2_sign` | 1 | value(→) | String&String&Bytes&String→Bytes | SM2 sign (GB/T 32918.2): da + id + msg + k → r‖s 64B; empty k = random |

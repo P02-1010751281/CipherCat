@@ -2156,6 +2156,35 @@
     "previousStatement": null,
     "nextStatement": null
   },
+  "ecdsa_k_rfc6979": {
+    "inputs": [
+      {
+        "name": "PRIV",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "HASH",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
   "ecdsa_sign": {
     "inputs": [
       {

@@ -7,7 +7,7 @@
 >
 > Block facts verified against code (2026-09-29); demo file inventory in [demos/README.en.md](../../demos/README.en.md); step-by-step tutorials in [guides/TUTORIALS.en.md](../guides/TUTORIALS.en.md) and [guides/DEMO.en.md](../guides/DEMO.en.md). `standards/papers/` is a research-material index and is not counted among the standard and reference directories reported by `npm run standards:check` (`directories=`, currently 40, including `randomness-certification-sources/` and `rfc6979-ecdsa/`).
 >
-> The object-level register (215 active blocks plus 1 compat identity, 29 template identities, 59 demos) is [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md); this matrix is a standards-dimension aggregate mapping and does not replace per-object test evidence.
+> The object-level register (216 active blocks plus 1 compat identity, 29 template identities, 59 demos) is [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md); this matrix is a standards-dimension aggregate mapping and does not replace per-object test evidence.
 
 ---
 
@@ -47,7 +47,7 @@
 | Randomness certification source index | `randomness-certification-sources/` | — (certification sources and rules index; no block mapping) | — | — | — |
 | RSA signature-key requirements / primality test | `fips186-5-ecdsa/05-RSA-Key-Generation.en.md` · `06-RSA-Primality-Testing.en.md` | `rsa_keygen` (educational) · `rsa_sign` · `rsa_verify` (scheme mapping only; no conformance claim) | `demos/procedures/RSA-Sign.json` | — | — |
 | RSAES/RSASSA PKCS#1 v1.5 | `rfc8017-pkcs1/` | `rsa_encrypt` · `rsa_decrypt` · `rsa_sign` · `rsa_verify` (teaching implementations) | `demos/procedures/RSA-Encrypt.json` · `RSA-Sign.json` | — | — |
-| Argon2 | `rfc9106-argon2/` | `argon2_hash` | `demos/procedures/ARGON2.json` | — | — |
+| Argon2 | `rfc9106-argon2/` | `argon2_g` · `argon2_hash` | `demos/procedures/ARGON2.json` | — | — |
 | Base64 | `rfc4648-base64/` | `base64_encode` · `base64_decode` | — | — | — |
 | PKCS#7 | `rfc2315-pkcs7/` | `pad_pkcs7`（padding semantics） | — | — | — |
 | SM3 | `gbt32905-SM3/` | `hash_sm3_pad` · `hash_sm3_compress` · `hash_hmac`(SM3) | `demos/procedures/SM3-Hash.json` · `procedures/PBKDF2-SM3.json` | `proc_sm3_hash` (padding only) · `proc_sm3_hmac` (message input unset) | — |

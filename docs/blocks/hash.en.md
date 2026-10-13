@@ -75,6 +75,7 @@ This is the category detail page under the [block overview](INDEX.en.md). “Has
 
 | Block | Layer | Connection | Input→Output | Notes |
 |----|----|------|----------|------|
+| `argon2_g` | 1 | value(→) | Bytes&Bytes→Bytes | Argon2 compression G (RFC 9106 §3.5): two 1024-byte blocks → 1024 bytes; row/column P permutations XORed with R = X⊕Y |
 | `argon2_hash` | 1 | value(→) | Bytes&Bytes&Bytes&Bytes&Number&Number&Number&Number→Bytes | Argon2d/i/id v1.3: password + salt + secret + ad + mCost + tCost + lanes + tagLen with variant as a dropdown → derived key; integer parameters and mCost ≥8×lanes required. RFC 9106 limits each P/S/K/X input to 2^32−1 bytes; it recommends a 16-byte salt but sets no minimum. Project code accepts byte sequences or UTF-8 text, rejects arbitrary iterators, and limits each input to 1 MiB. Execution parameter limits are mCost ≤65,536 KiB, tCost ≤10, lanes ≤16, tagLen ≤1,024 bytes, and mCost×tCost ≤65,536 KiB-passes. This implementation does not support RFC-recommended production profiles. RFC 9106 §5.1–5.3 vectors run through Demo regression; this is not a complete test suite |
 
 ## XOF / PRF (SHAKE: FIPS 202 §6; ML-KEM PRFη: FIPS 203 §4.1, Eq. (4.3))

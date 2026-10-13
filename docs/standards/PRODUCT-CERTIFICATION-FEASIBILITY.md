@@ -12,7 +12,7 @@ Owner 已选择“新建固定密码模块”作为首个产品候选，并明�
 
 ## 当前产品对象
 
-当前清单登记 **215 个唯一块类型、29 个 Procedure 模板身份和 59 个 Demo 工作区**。逐项身份、关系和现有证据见[标准符合性对象清单](./CONFORMANCE-INVENTORY.md)。这些数量表示审查范围，不表示每项已由独立实验室验证。
+当前清单登记 **216 个唯一块类型、29 个 Procedure 模板身份和 59 个 Demo 工作区**。逐项身份、关系和现有证据见[标准符合性对象清单](./CONFORMANCE-INVENTORY.md)。这些数量表示审查范围，不表示每项已由独立实验室验证。
 
 产品边界判断也与仓库现状一致：[架构说明](../guides/ARCHITECTURE.md)和 [`package.json`](../../package.json) 将项目定位为 Vue/Blockly 应用；npm 包标为 `private`，没有对外模块导出入口。[代码生成入口](../../src/composables/generator.ts)从工作区生成 JavaScript/Python 用户代码，而不是发布一个接口、版本和运行环境固定的密码模块。Tauri 配置打包的是同一套前端 `dist`；Rust 侧目前是应用壳，依赖为 Tauri 插件与序列化库，没有密码模块实现或服务 API。故生成器中的密码算法代码属于教学平台资产，不等于已有独立交付的密码产品。生成代码可能依赖浏览器 Web Crypto、Python 标准库或项目内实现。因此，块 ID 或教学算法名称相同，不足以证明它们构成同一个可认证实现。
 

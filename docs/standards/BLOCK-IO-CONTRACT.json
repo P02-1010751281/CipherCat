@@ -94,6 +94,35 @@
     "previousStatement": null,
     "nextStatement": null
   },
+  "argon2_g": {
+    "inputs": [
+      {
+        "name": "X",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "Y",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
   "argon2_hash": {
     "inputs": [
       {

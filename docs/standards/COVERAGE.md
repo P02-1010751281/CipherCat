@@ -4,7 +4,7 @@
 > **原子块**（`src/blocks/` 注册的块）、**Demo**（`demos/` 预构建工作区）、**模板**（`src/blocks/procedure/blocks.ts` 的 `proc_*` 预填模板）、**搭建指南**（`standards/*/guides/`）。
 > 文档提取质量、原件可检索性和未完成项另见 [DOCUMENT-STATUS.md](./DOCUMENT-STATUS.md)，不要把本矩阵当作标准全文覆盖证明。
 > 函数/原语页的拆分规则和入口见 [FUNCTION-PRIMITIVE-INDEX.md](./FUNCTION-PRIMITIVE-INDEX.md)。
-> 对象总册（215 个活动块 + 1 个已登记兼容身份、29 个模板身份、59 个 Demo）见 [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md)；本矩阵是标准维度的聚合映射，不替代对象级测试证据。
+> 对象总册（216 个活动块 + 1 个已登记兼容身份、29 个模板身份、59 个 Demo）见 [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md)；本矩阵是标准维度的聚合映射，不替代对象级测试证据。
 >
 > 块与模板注册清单按 2026-09-29 核对；Demo 文件清单及测试分类见 [demos/README.md](../../demos/README.md) 和 [`demos/tests.json`](../../demos/tests.json)；搭建步骤教程见 [docs/demos/](../demos/) 与 [docs/guides/DEMO.md](../guides/DEMO.md)。`standards/papers/` 是研究材料索引，不计入下方算法标准目录。
 
@@ -46,7 +46,7 @@
 | 随机性认证来源索引 | `randomness-certification-sources/` | —（认证来源与规则索引，不映射块） | — | — | — |
 | RSA 签名密钥条件 / 素性测试 | `fips186-5-ecdsa/05-RSA-Key-Generation.md` · `06-RSA-Primality-Testing.md` | `rsa_keygen`（教学实现）· `rsa_sign` · `rsa_verify`（方案映射；不表示符合） | `demos/procedures/RSA-Sign.json` | — | — |
 | RSAES/RSASSA PKCS#1 v1.5 | `rfc8017-pkcs1/` | `rsa_mgf1` · `rsa_emsa_pkcs1_v15_encode` · `rsa_encrypt` · `rsa_decrypt` · `rsa_sign` · `rsa_verify`（教学实现） | `demos/procedures/RSA-Encrypt.json` · `RSA-Sign.json` | — | — |
-| Argon2 | `rfc9106-argon2/` | `argon2_hash` | `demos/procedures/ARGON2.json` | — | — |
+| Argon2 | `rfc9106-argon2/` | `argon2_g` · `argon2_hash` | `demos/procedures/ARGON2.json` | — | — |
 | Base64 | `rfc4648-base64/` | `base64_encode` · `base64_decode` | — | — | — |
 | PKCS#7 | `rfc2315-pkcs7/` | `pad_pkcs7`（填充语义） | — | — | — |
 | SM3 | `gbt32905-SM3/` | `hash_sm3_pad` · `hash_sm3_compress` · `hash_hmac`(SM3) | `demos/procedures/SM3-Hash.json` · `procedures/PBKDF2-SM3.json` | `proc_sm3_hash`（仅 padding）· `proc_sm3_hmac`（消息输入留空） | — |

@@ -75,6 +75,7 @@
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
+| `argon2_g` | 1 | value(→) | Bytes&Bytes→Bytes | Argon2 压缩函数 G (RFC 9106 §3.5)：两个 1024 字节块 → 1024 字节；行/列两轮 P 置换后与 R=X⊕Y 异或 |
 | `argon2_hash` | 1 | value(→) | Bytes&Bytes&Bytes&Bytes&Number&Number&Number&Number→Bytes | Argon2d/i/id v1.3：password + salt + secret + ad + mCost + tCost + lanes + tagLen，variant 为下拉 → 派生密钥；要求整数参数、mCost≥8×lanes；RFC 9106 规定 P/S/K/X 各不超过 2^32−1 bytes，推荐 16-byte salt（未规定最小长度）。项目仅接受字节序列或 UTF-8 文本，不接受任意迭代器；每项输入限制为 1 MiB。执行参数上限为 mCost≤65,536 KiB、tCost≤10、lanes≤16、tagLen≤1,024 bytes、mCost×tCost≤65,536 KiB-pass；该实现不支持 RFC 推荐的生产参数配置。RFC 9106 §5.1–5.3 向量由 Demo 回归执行，不代表完整测试集 |
 
 ## XOF / PRF（SHAKE：FIPS 202 §6；ML-KEM PRFη：FIPS 203 §4.1 式 (4.3)）

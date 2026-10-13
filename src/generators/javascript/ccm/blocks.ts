@@ -174,3 +174,20 @@ javascriptGenerator.forBlock['ccm_ctr'] = function (block: Block): [string, numb
   const fn = registerCcmCtr();
   return ['Uint8Array.from(' + fn + '(' + key + ', ' + nonce + ', ' + msg + ', ' + ccmTagLen(block) + '))', Order.ATOMIC];
 };
+
+/** AAD 长度编码（SP 800-38C §A.2.2） */
+function registerCcmAadLenPrefix(): string {
+  return javascriptGenerator.provideFunction_('ccmAadLenPrefix', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(aadLen) {',
+    '  if (!Number.isSafeInteger(aadLen) || aadLen < 0 || aadLen >= 4294967296) throw new Error("CCM AAD length must be an integer from 0 to 2^32-1");',
+    '  if (aadLen < 0xFF00) return [(aadLen >> 8) & 0xFF, aadLen & 0xFF];',
+    '  return [0xFF, 0xFE, Math.floor(aadLen / 16777216) & 0xFF, (aadLen >>> 16) & 0xFF, (aadLen >>> 8) & 0xFF, aadLen & 0xFF];',
+    '}',
+  ]);
+}
+
+javascriptGenerator.forBlock['ccm_aad_len_prefix'] = function (block: Block): [string, number] {
+  const aadLen = javascriptGenerator.valueToCode(block, 'AADLEN', Order.ATOMIC) || '0';
+  const fn = registerCcmAadLenPrefix();
+  return [fn + '(' + aadLen + ')', Order.ATOMIC];
+};

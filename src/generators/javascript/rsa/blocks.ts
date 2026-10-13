@@ -338,3 +338,49 @@ javascriptGenerator.forBlock['rsa_verify'] = function (block: Block): [string, n
   const fn = registerRsaVerify();
   return [fn + '(' + key + ', ' + msg + ', ' + sig + ')', Order.ATOMIC];
 };
+
+/** MGF1（RFC 8017 B.2.1，SHA-256） */
+function registerRsaMgf1(): string {
+  registerSha256Hash();
+  return javascriptGenerator.provideFunction_('rsaMgf1', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed, len) {',
+    '  if (!Number.isSafeInteger(len) || len < 0 || len > 65536) throw new Error("MGF1 length must be a safe integer from 0 to 65536");',
+    '  var out = [], counter = 0;',
+    '  while (out.length < len) {',
+    '    var c = [(counter >>> 24) & 0xFF, (counter >>> 16) & 0xFF, (counter >>> 8) & 0xFF, counter & 0xFF];',
+    '    out = out.concat(sha256Hash(Array.from(seed).concat(c)));',
+    '    counter++;',
+    '  }',
+    '  return out.slice(0, len);',
+    '}',
+  ]);
+}
+
+/** EMSA-PKCS1-v1_5 编码（RFC 8017 §9.2，SHA-256） */
+function registerRsaEmsaPkcs1V15(): string {
+  registerSha256Hash();
+  return javascriptGenerator.provideFunction_('rsaEmsaPkcs1V15', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg, emLen) {',
+    '  if (!Number.isSafeInteger(emLen) || emLen < 11) throw new Error("EMSA-PKCS1-v1_5 emLen must be an integer of at least 11 bytes");',
+    '  var pre = [0x30,0x31,0x30,0x0d,0x06,0x09,0x60,0x86,0x48,0x01,0x65,0x03,0x04,0x02,0x01,0x05,0x00,0x04,0x20];',
+    '  var t = pre.concat(sha256Hash(msg));',
+    '  var ps = emLen - t.length - 3;',
+    '  if (ps < 8) throw new Error("EMSA-PKCS1-v1_5: emLen too small for SHA-256 DigestInfo");',
+    '  return [0, 1].concat(new Array(ps).fill(0xff), [0], t);',
+    '}',
+  ]);
+}
+
+javascriptGenerator.forBlock['rsa_mgf1'] = function (block: Block): [string, number] {
+  const seed = javascriptGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
+  const len = javascriptGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '0';
+  const fn = registerRsaMgf1();
+  return ['Uint8Array.from(' + fn + '(' + seed + ', ' + len + '))', Order.ATOMIC];
+};
+
+javascriptGenerator.forBlock['rsa_emsa_pkcs1_v15_encode'] = function (block: Block): [string, number] {
+  const msg = javascriptGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
+  const emLen = javascriptGenerator.valueToCode(block, 'EMLEN', Order.ATOMIC) || '0';
+  const fn = registerRsaEmsaPkcs1V15();
+  return ['Uint8Array.from(' + fn + '(' + msg + ', ' + emLen + '))', Order.ATOMIC];
+};

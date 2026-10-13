@@ -14,6 +14,7 @@ export const CCM_BLOCK_TYPES = [
   'ccm_counter_block',
   'ccm_cbc_mac',
   'ccm_ctr',
+  'ccm_aad_len_prefix',
 ] as const;
 export type CcmBlockType = (typeof CCM_BLOCK_TYPES)[number];
 
@@ -164,6 +165,20 @@ Blockly.Blocks['ccm_ctr'] = {
     this.setColour(190);
     this.setTooltip(
       'CCM 计数器模式（SP 800-38C §A.3）：用 A_1… 生成密钥流并与明文异或，只输出密文，不含认证标签。认证与标签由 ccm_cbc_mac / ccm_encrypt 负责。',
+    );
+    this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38C.pdf');
+  },
+};
+
+Blockly.Blocks['ccm_aad_len_prefix'] = {
+  init: function () {
+    this.appendValueInput('AADLEN').setCheck(TYPE_NUMBER).appendField('CCM AAD 长度前缀( aadLen:');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_INT_LIST);
+    this.setColour(190);
+    this.setTooltip(
+      'CCM AAD 长度编码（SP 800-38C §A.2.2）：aadLen < 0xFF00 时用 2 字节大端；否则输出 0xFFFE ‖ 4 字节大端（aadLen 必须 < 2³²）。',
     );
     this.setHelpUrl('https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38C.pdf');
   },

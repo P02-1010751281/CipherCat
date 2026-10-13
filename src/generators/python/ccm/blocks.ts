@@ -157,3 +157,22 @@ pythonGenerator.forBlock['ccm_ctr'] = function (block: Block): [string, number] 
   const fn = registerCcmCtr();
   return ['bytes(' + fn + '(' + key + ', ' + nonce + ', ' + msg + ', ' + ccmTagLen(block) + '))', Order.ATOMIC];
 };
+
+/** AAD 长度编码（SP 800-38C §A.2.2） */
+function registerCcmAadLenPrefix(): string {
+  return pythonGenerator.provideFunction_('ccm_aad_len_prefix', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(aad_len):',
+    '    if isinstance(aad_len, bool) or not isinstance(aad_len, (int, float)) or (isinstance(aad_len, float) and not aad_len.is_integer()) or not 0 <= aad_len < 2**32:',
+    '        raise ValueError("CCM AAD length must be an integer from 0 to 2^32-1")',
+    '    aad_len = int(aad_len)',
+    '    if aad_len < 0xFF00:',
+    '        return list(aad_len.to_bytes(2, "big"))',
+    '    return [0xFF, 0xFE] + list(aad_len.to_bytes(4, "big"))',
+  ]);
+}
+
+pythonGenerator.forBlock['ccm_aad_len_prefix'] = function (block: Block): [string, number] {
+  const aadLen = pythonGenerator.valueToCode(block, 'AADLEN', Order.ATOMIC) || '0';
+  const fn = registerCcmAadLenPrefix();
+  return [fn + '(' + aadLen + ')', Order.ATOMIC];
+};

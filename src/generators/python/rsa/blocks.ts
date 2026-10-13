@@ -227,3 +227,50 @@ pythonGenerator.forBlock['rsa_verify'] = function (block: Block): [string, numbe
   const fn = registerRsaVerify();
   return [fn + '(' + key + ', ' + msg + ', ' + sig + ')', Order.ATOMIC];
 };
+
+/** MGF1（RFC 8017 B.2.1，SHA-256） */
+function registerRsaMgf1(): string {
+  return pythonGenerator.provideFunction_('rsa_mgf1', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(seed, length):',
+    '    import hashlib',
+    '    if isinstance(length, bool) or not isinstance(length, (int, float)) or (isinstance(length, float) and not length.is_integer()) or not 0 <= length <= 65536:',
+    '        raise ValueError("MGF1 length must be a safe integer from 0 to 65536")',
+    '    out = b""',
+    '    counter = 0',
+    '    while len(out) < int(length):',
+    '        out += hashlib.sha256(bytes(seed) + counter.to_bytes(4, "big")).digest()',
+    '        counter += 1',
+    '    return list(out[:int(length)])',
+  ]);
+}
+
+/** EMSA-PKCS1-v1_5 编码（RFC 8017 §9.2，SHA-256） */
+function registerRsaEmsaPkcs1V15(): string {
+  return pythonGenerator.provideFunction_('rsa_emsa_pkcs1_v15', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg, em_len):',
+    '    import hashlib',
+    '    if isinstance(em_len, bool) or not isinstance(em_len, (int, float)) or (isinstance(em_len, float) and not em_len.is_integer()) or em_len < 11:',
+    '        raise ValueError("EMSA-PKCS1-v1_5 emLen must be an integer of at least 11 bytes")',
+    '    em_len = int(em_len)',
+    '    pre = bytes([0x30,0x31,0x30,0x0d,0x06,0x09,0x60,0x86,0x48,0x01,0x65,0x03,0x04,0x02,0x01,0x05,0x00,0x04,0x20])',
+    '    t = pre + hashlib.sha256(bytes(msg)).digest()',
+    '    ps = em_len - len(t) - 3',
+    '    if ps < 8:',
+    '        raise ValueError("EMSA-PKCS1-v1_5: emLen too small for SHA-256 DigestInfo")',
+    '    return [0, 1] + [0xff] * ps + [0] + list(t)',
+  ]);
+}
+
+pythonGenerator.forBlock['rsa_mgf1'] = function (block: Block): [string, number] {
+  const seed = pythonGenerator.valueToCode(block, 'SEED', Order.ATOMIC) || '[]';
+  const len = pythonGenerator.valueToCode(block, 'LEN', Order.ATOMIC) || '0';
+  const fn = registerRsaMgf1();
+  return ['bytes(' + fn + '(' + seed + ', ' + len + '))', Order.ATOMIC];
+};
+
+pythonGenerator.forBlock['rsa_emsa_pkcs1_v15_encode'] = function (block: Block): [string, number] {
+  const msg = pythonGenerator.valueToCode(block, 'MSG', Order.ATOMIC) || '[]';
+  const emLen = pythonGenerator.valueToCode(block, 'EMLEN', Order.ATOMIC) || '0';
+  const fn = registerRsaEmsaPkcs1V15();
+  return ['bytes(' + fn + '(' + msg + ', ' + emLen + '))', Order.ATOMIC];
+};

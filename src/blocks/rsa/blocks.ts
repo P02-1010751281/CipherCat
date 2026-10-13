@@ -9,14 +9,15 @@
  *   互操作测试不等于标准符合性测试或正式认证。
  */
 import * as Blockly from 'blockly/core';
-import { TYPE_BYTES, TYPE_BOOLEAN } from '@/constants/block-types';
+import { TYPE_BYTES, TYPE_BOOLEAN, TYPE_NUMBER } from '@/constants/block-types';
 
-export const RSA_BLOCK_TYPES = [
-  'rsa_keygen',
+export const RSA_BLOCK_TYPES = ['rsa_keygen',
   'rsa_encrypt',
   'rsa_decrypt',
   'rsa_sign',
   'rsa_verify',
+  'rsa_mgf1',
+  'rsa_emsa_pkcs1_v15_encode',
 ] as const;
 export type RsaBlockType = (typeof RSA_BLOCK_TYPES)[number];
 
@@ -118,6 +119,37 @@ Blockly.Blocks['rsa_verify'] = {
         'm = S^e mod n，校验 0x00‖0x01‖FF‖0x00‖DigestInfo。' +
         'KEY 取 n‖e‖d‖p‖q 前缀的 n 与 e。签名/长度/结构非法均返回 False。' +
         '互操作测试不代表标准符合性评估。',
+    );
+    this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc8017');
+  },
+};
+
+/** RSA 编码原语（RFC 8017 §9.2 / 附录 B.2.1）。 */
+Blockly.Blocks['rsa_mgf1'] = {
+  init: function () {
+    this.appendValueInput('SEED').setCheck(TYPE_BYTES).appendField('MGF1( seed:');
+    this.appendValueInput('LEN').setCheck(TYPE_NUMBER).appendField(' len:');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_BYTES);
+    this.setColour(190);
+    this.setTooltip(
+      'MGF1（RFC 8017 附录 B.2.1，SHA-256）：输出 seed‖0x00000000、seed‖0x00000001 … 各段摘要的串联，截断到 len 字节。用于 OAEP/PSS 的掩码生成；本身不是加密或签名。',
+    );
+    this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc8017');
+  },
+};
+
+Blockly.Blocks['rsa_emsa_pkcs1_v15_encode'] = {
+  init: function () {
+    this.appendValueInput('MSG').setCheck(TYPE_BYTES).appendField('EMSA-PKCS1-v1_5( msg:');
+    this.appendValueInput('EMLEN').setCheck(TYPE_NUMBER).appendField(' emLen:');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_BYTES);
+    this.setColour(190);
+    this.setTooltip(
+      'EMSA-PKCS1-v1_5 编码（RFC 8017 §9.2，SHA-256）：EM = 0x00‖0x01‖0xFF…‖0x00‖DigestInfo(SHA-256, H(msg))。输出定长编码块；本块不做模幂，也不构成签名。',
     );
     this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc8017');
   },

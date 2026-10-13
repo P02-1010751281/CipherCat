@@ -13,6 +13,7 @@
  * 原生 int + pow(a,-1,m) 模逆。官方向量（附录 A 示例 2）C1C3C2 精确匹配。
  */
 import { pythonGenerator, Order } from 'blockly/python';
+import { registerSm3Hash } from '../hash/sm3';
 import type { Block } from 'blockly/core';
 
 /** SM2 加密全套内嵌函数（sm2_encrypt/sm2_decrypt 均在模块作用域，driver 可直接调用） */
@@ -278,4 +279,35 @@ pythonGenerator.forBlock['sm2_key_exchange'] = function (block: Block): [string,
     'sm2_key_exchange(' + db + ', ' + rb + ', ' + pax + ', ' + pay + ', ' + ra + ', ' + rbp + ', ' + za + ', ' + zb + ', ' + wlen + ')',
     Order.ATOMIC,
   ];
+};
+
+/** GB/T 32918.4 §5.4.3 SM3-KDF（供 sm2_kdf 块使用） */
+function registerSm2KdfBlock(): string {
+  const sm3 = registerSm3Hash();
+  return pythonGenerator.provideFunction_('sm2_kdf_derive', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(z, klen):',
+    '    if isinstance(klen, bool) or not isinstance(klen, (int, float)) or (isinstance(klen, float) and not klen.is_integer()) or not 0 < klen <= 1048576:',
+    '        raise ValueError("SM2-KDF: klen must be a positive integer of at most 1048576 bits")',
+    '    klen = int(klen)',
+    '    z = bytes(z)',
+    '    out = []',
+    '    ct = 1',
+    '    while len(out) * 8 < klen:',
+    '        out += ' + sm3 + '(z + ct.to_bytes(4, "big"))',
+    '        ct += 1',
+    '    nbytes = (klen + 7) // 8',
+    '    out = out[:nbytes]',
+    '    if klen % 8:',
+    '        out[nbytes - 1] &= (0xFF << (8 - (klen % 8))) & 0xFF',
+    '    if not any(out):',
+    '        raise ValueError("SM2-KDF produced an all-zero key: reselect the shared secret")',
+    '    return out',
+  ]);
+}
+
+pythonGenerator.forBlock['sm2_kdf'] = function (block: Block): [string, number] {
+  const z = pythonGenerator.valueToCode(block, 'Z', Order.ATOMIC) || "b''";
+  const klen = pythonGenerator.valueToCode(block, 'KLEN', Order.ATOMIC) || '128';
+  const fn = registerSm2KdfBlock();
+  return ['bytes(' + fn + '(' + z + ', ' + klen + '))', Order.ATOMIC];
 };

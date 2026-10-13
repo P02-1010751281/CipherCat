@@ -65,14 +65,9 @@ pythonGenerator.forBlock['hash_sm3_pad_hex'] = function (
   return [registerSm3Pad() + '(' + hexToBytes + '(' + input + '))', Order.ATOMIC];
 };
 
-pythonGenerator.forBlock['hash_sm3_compress'] = function (
-  block: Block,
-): [string, number] {
-  const v = pythonGenerator.valueToCode(block, 'V', Order.ATOMIC) || '[]';
-  const w = pythonGenerator.valueToCode(block, 'W', Order.ATOMIC) || '[]';
-  // 与 JS 生成器对齐：W 输入为填充后的 512-bit 块，W/W' 消息扩展在函数内部完成
-  // （旧 Python 版要求外部预计算 W/WP，与 JS 语义不一致——单块官方向量可验证）
-  const fn = pythonGenerator.provideFunction_('sm3_compress', [
+/** SM3 压缩函数 CF（GB/T 32905-2016 §5.3.3），供模板与哈希助手复用 */
+export function registerSm3Compress(): string {
+  return pythonGenerator.provideFunction_('sm3_compress', [
     'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(V, B):',
     '    def rotl(x, n):',
     '        return ((x << n) | (x >> (32 - n))) & 0xFFFFFFFF',
@@ -108,5 +103,32 @@ pythonGenerator.forBlock['hash_sm3_compress'] = function (
     '    return [(A^vw[0])&0xFFFFFFFF,(B^vw[1])&0xFFFFFFFF,(C^vw[2])&0xFFFFFFFF,(D^vw[3])&0xFFFFFFFF,',
     '            (E^vw[4])&0xFFFFFFFF,(F^vw[5])&0xFFFFFFFF,(G^vw[6])&0xFFFFFFFF,(H^vw[7])&0xFFFFFFFF]',
   ]);
+}
+
+/** SM3 哈希（GB/T 32905-2016）：输入 UTF-8 文本或字节，输出 32 字节 */
+export function registerSm3Hash(): string {
+  const pad = registerSm3Pad();
+  const compress = registerSm3Compress();
+  return pythonGenerator.provideFunction_('sm3_hash', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg):',
+    '    data = ' + pad + '(msg)',
+    '    v = [0x7380166f,0x4914b2b9,0x172442d7,0xda8a0600,0xa96f30bc,0x163138aa,0xe38dee4d,0xb0fb0e4e]',
+    '    for off in range(0, len(data), 64):',
+    '        v = ' + compress + '(v, data[off:off + 64])',
+    '    out = []',
+    '    for word in v:',
+    '        out += [(word >> 24) & 0xFF, (word >> 16) & 0xFF, (word >> 8) & 0xFF, word & 0xFF]',
+    '    return out',
+  ]);
+}
+
+pythonGenerator.forBlock['hash_sm3_compress'] = function (
+  block: Block,
+): [string, number] {
+  const v = pythonGenerator.valueToCode(block, 'V', Order.ATOMIC) || '[]';
+  const w = pythonGenerator.valueToCode(block, 'W', Order.ATOMIC) || '[]';
+  // 与 JS 生成器对齐：W 输入为填充后的 512-bit 块，W/W' 消息扩展在函数内部完成
+  // （旧 Python 版要求外部预计算 W/WP，与 JS 语义不一致——单块官方向量可验证）
+  const fn = registerSm3Compress();
   return [fn + '(' + v + ', ' + w + ')', Order.ATOMIC];
 };

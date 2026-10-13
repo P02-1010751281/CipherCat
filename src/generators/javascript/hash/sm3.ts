@@ -77,13 +77,9 @@ javascriptGenerator.forBlock['hash_sm3_pad_hex'] = function (
   return [getSm3PadFn() + '(' + hexFn + '(' + input + '))', Order.ATOMIC];
 };
 
-javascriptGenerator.forBlock['hash_sm3_compress'] = function (
-  block: Block,
-): [string, number] {
-  const v = javascriptGenerator.valueToCode(block, 'V', Order.ATOMIC) || '[]';
-  const w = javascriptGenerator.valueToCode(block, 'W', Order.ATOMIC) || '[]';
-
-  const compressFn = javascriptGenerator.provideFunction_('sm3Compress', [
+/** SM3 压缩函数 CF（GB/T 32905-2016 §5.3.3），供模板与哈希助手复用 */
+export function registerSm3Compress(): string {
+  return javascriptGenerator.provideFunction_('sm3Compress', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(V, B) {',
     '  var P0 = function(x) { return x ^ ((x << 9) | (x >>> 23)) ^ ((x << 17) | (x >>> 15)); };',
     '  var P1 = function(x) { return x ^ ((x << 15) | (x >>> 17)) ^ ((x << 23) | (x >>> 9)); };',
@@ -115,6 +111,31 @@ javascriptGenerator.forBlock['hash_sm3_compress'] = function (
     '  return [A^V[0],B2^V[1],C^V[2],D^V[3],E^V[4],F^V[5],G^V[6],H^V[7]];',
     '}',
   ]);
+}
+
+/** SM3 哈希（GB/T 32905-2016）：输入 UTF-8 文本或字节，输出 32 字节 */
+export function registerSm3Hash(): string {
+  const pad = getSm3PadFn();
+  const compress = registerSm3Compress();
+  return javascriptGenerator.provideFunction_('sm3Hash', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(msg) {',
+    '  var B = ' + pad + '(msg);',
+    '  var V = [0x7380166f,0x4914b2b9,0x172442d7,0xda8a0600,0xa96f30bc,0x163138aa,0xe38dee4d,0xb0fb0e4e];',
+    '  for (var i = 0; i < B.length; i += 64) V = ' + compress + '(V, B.slice(i, i + 64));',
+    '  var out = [];',
+    '  for (var i = 0; i < 8; i++) out.push((V[i]>>>24)&0xFF,(V[i]>>>16)&0xFF,(V[i]>>>8)&0xFF,V[i]&0xFF);',
+    '  return out;',
+    '}',
+  ]);
+}
+
+javascriptGenerator.forBlock['hash_sm3_compress'] = function (
+  block: Block,
+): [string, number] {
+  const v = javascriptGenerator.valueToCode(block, 'V', Order.ATOMIC) || '[]';
+  const w = javascriptGenerator.valueToCode(block, 'W', Order.ATOMIC) || '[]';
+
+  const compressFn = registerSm3Compress();
 
   return [compressFn + '(' + v + ', ' + w + ')', Order.ATOMIC];
 };

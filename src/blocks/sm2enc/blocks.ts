@@ -17,6 +17,7 @@ export const SM2ENC_BLOCK_TYPES = [
   'sm2_encrypt',
   'sm2_decrypt',
   'sm2_key_exchange',
+  'sm2_kdf',
 ] as const;
 export type Sm2EncBlockType = (typeof SM2ENC_BLOCK_TYPES)[number];
 Blockly.Blocks['sm2_encrypt'] = {
@@ -90,5 +91,21 @@ Blockly.Blocks['sm2_key_exchange'] = {
         'GB/T 32918.3-2016 附录 A.2 示例 1 的 B 侧共享密钥向量通过；不表示完整密钥交换符合性。',
     );
     this.setHelpUrl('https://std.samr.gov.cn/gb/search/gbDetailed?id=71F772D8055ED3A7E05397BE0A0AB82A');
+  },
+};
+
+/** GB/T 32918.4 §5.4.3 SM3-KDF：单独暴露给逐原语搭建。 */
+Blockly.Blocks['sm2_kdf'] = {
+  init: function () {
+    this.appendValueInput('Z').setCheck(TYPE_BYTES).appendField('SM2-KDF( z:');
+    this.appendValueInput('KLEN').setCheck(TYPE_NUMBER).appendField(' klen(bit):');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_BYTES);
+    this.setColour(190);
+    this.setTooltip(
+      'SM2-KDF（GB/T 32918.4 §5.4.3，SM3）：t = SM3(Z‖0x00000001)‖SM3(Z‖0x00000002)‖… 截断到 klen 位；klen 不是 8 的倍数时末字节低位清零。输出全零时抛错（调用方需重取共享秘密）。',
+    );
+    this.setHelpUrl('https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=64B2B3AB7F8A2B3D8FA2B04D9A4D4A1C');
   },
 };

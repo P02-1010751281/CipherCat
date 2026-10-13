@@ -13,6 +13,7 @@
  * 全部 BigInt。官方向量（附录 A 示例 2）C1C3C2 精确匹配。
  */
 import { javascriptGenerator, Order } from 'blockly/javascript';
+import { registerSm3Hash } from '../hash/sm3';
 import type { Block } from 'blockly/core';
 
 /** SM2 加密全套内嵌函数（sm2Encrypt/sm2Decrypt 均在模块作用域，driver 可直接调用） */
@@ -269,4 +270,34 @@ javascriptGenerator.forBlock['sm2_key_exchange'] = function (block: Block): [str
     'sm2KeyExchange(' + db + ', ' + rb + ', ' + pax + ', ' + pay + ', ' + ra + ', ' + rbp + ', ' + za + ', ' + zb + ', ' + wlen + ')',
     Order.ATOMIC,
   ];
+};
+
+/** GB/T 32918.4 §5.4.3 SM3-KDF（供 sm2_kdf 块使用） */
+function registerSm2KdfBlock(): string {
+  const sm3 = registerSm3Hash();
+  return javascriptGenerator.provideFunction_('sm2KdfDerive', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(z, klen) {',
+    '  if (!Number.isSafeInteger(klen) || klen <= 0 || klen > 1048576) throw new Error("SM2-KDF: klen must be a positive integer of at most 1048576 bits");',
+    '  var Z = Array.from(z);',
+    '  var out = [], ct = 1;',
+    '  while (out.length * 8 < klen) {',
+    '    out = out.concat(' + sm3 + '(Z.concat([(ct>>>24)&0xFF,(ct>>>16)&0xFF,(ct>>>8)&0xFF,ct&0xFF])));',
+    '    ct++;',
+    '  }',
+    '  var nbytes = Math.ceil(klen / 8);',
+    '  out = out.slice(0, nbytes);',
+    '  if (klen % 8) out[nbytes - 1] &= (0xFF << (8 - (klen % 8))) & 0xFF;',
+    '  var allZero = true;',
+    '  for (var i = 0; i < out.length; i++) if (out[i] !== 0) { allZero = false; break; }',
+    '  if (allZero) throw new Error("SM2-KDF produced an all-zero key: reselect the shared secret");',
+    '  return out;',
+    '}',
+  ]);
+}
+
+javascriptGenerator.forBlock['sm2_kdf'] = function (block: Block): [string, number] {
+  const z = javascriptGenerator.valueToCode(block, 'Z', Order.ATOMIC) || '[]';
+  const klen = javascriptGenerator.valueToCode(block, 'KLEN', Order.ATOMIC) || '128';
+  const fn = registerSm2KdfBlock();
+  return ['Uint8Array.from(' + fn + '(' + z + ', ' + klen + '))', Order.ATOMIC];
 };

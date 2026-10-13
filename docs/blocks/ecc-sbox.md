@@ -47,6 +47,7 @@
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
 | `ecdh_shared_secret` | 1 | value(→) | String&String&String→String | P-256 ECDH 共享密钥（RFC 5903 §8.1 两方向，并有独立实现复算）：d + Qx + Qy → 共享点 x 坐标 32B hex；d 自动 mod n |
+| `sm2_kdf` | 1 | value(→) | Bytes&Number→Bytes | SM2-KDF (GB/T 32918.4 §5.4.3, SM3)：t = SM3(Z‖计数器) 串联截断到 klen 位；全零输出抛错 |
 | `sm2_encrypt` | 1 | value(→) | Bytes&String&String&String→String | SM2 加密（GB/T 32918.4）：msg + 公钥 x/y + k → C1‖C3‖C2 hex（C1=04‖x‖y 65B，C3=SM3(x2‖M‖y2) 32B）；官方向量附录 A 示例 2 |
 | `sm2_decrypt` | 1 | value(→) | String&String→Bytes | SM2 解密：C1‖C3‖C2 + d → 明文；C3 校验失败抛错 |
 | `sm2_key_exchange` | 1 | value(→) | String×8&Number→String | GB/T 32918.3-2016 §6.1 响应方 B 的 B1–B7 及 KDF；不含 B8/B9 密钥确认，也不实现发起方流程 |

@@ -4,7 +4,7 @@
 > **原子块**（`src/blocks/` 注册的块）、**Demo**（`demos/` 预构建工作区）、**模板**（`src/blocks/procedure/blocks.ts` 的 `proc_*` 预填模板）、**搭建指南**（`standards/*/guides/`）。
 > 文档提取质量、原件可检索性和未完成项另见 [DOCUMENT-STATUS.md](./DOCUMENT-STATUS.md)，不要把本矩阵当作标准全文覆盖证明。
 > 函数/原语页的拆分规则和入口见 [FUNCTION-PRIMITIVE-INDEX.md](./FUNCTION-PRIMITIVE-INDEX.md)。
-> 对象总册（214 个活动块 + 1 个已登记兼容身份、29 个模板身份、59 个 Demo）见 [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md)；本矩阵是标准维度的聚合映射，不替代对象级测试证据。
+> 对象总册（215 个活动块 + 1 个已登记兼容身份、29 个模板身份、59 个 Demo）见 [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md)；本矩阵是标准维度的聚合映射，不替代对象级测试证据。
 >
 > 块与模板注册清单按 2026-09-29 核对；Demo 文件清单及测试分类见 [demos/README.md](../../demos/README.md) 和 [`demos/tests.json`](../../demos/tests.json)；搭建步骤教程见 [docs/demos/](../demos/) 与 [docs/guides/DEMO.md](../guides/DEMO.md)。`standards/papers/` 是研究材料索引，不计入下方算法标准目录。
 
@@ -51,7 +51,7 @@
 | PKCS#7 | `rfc2315-pkcs7/` | `pad_pkcs7`（填充语义） | — | — | — |
 | SM3 | `gbt32905-SM3/` | `hash_sm3_pad` · `hash_sm3_compress` · `hash_hmac`(SM3) | `demos/procedures/SM3-Hash.json` · `procedures/PBKDF2-SM3.json` | `proc_sm3_hash`（仅 padding）· `proc_sm3_hmac`（消息输入留空） | — |
 | SM4 | `gbt32907-SM4/` | `sm4_sbox` · `sm4_round_func` · `sm4_linear_transform` · `sbox`(PRESET=SM4) | `demos/SM4-Atomic-Round.json` · `Procedure-SM4-Round.json` · `procedures/SM4-Sbox.json` · `procedures/SM4-Round.json` | `proc_sm4_round` · `proc_sm4_key_schedule`（32 次空循环；无轮密钥计算） | — |
-| SM2 | `gbt32918-SM2/` | `ecc_load_curve_params` · `ecc_load_point` · `ecc_add` · `ecc_point_double` · `ecc_multiply` · `sm2_sign` · `sm2_verify` · `sm2_encrypt` · `sm2_decrypt` · `sm2_key_exchange` | `demos/procedures/SM2-PointMul.json` · `SM2-Sign.json` · `SM2-Encrypt.json` · `SM2-KeyExchange.json` | — | — |
+| SM2 | `gbt32918-SM2/` | `ecc_load_curve_params` · `ecc_load_point` · `ecc_add` · `ecc_point_double` · `ecc_multiply` · `sm2_sign` · `sm2_verify` · `sm2_kdf` · `sm2_encrypt` · `sm2_decrypt` · `sm2_key_exchange` | `demos/procedures/SM2-PointMul.json` · `SM2-Sign.json` · `SM2-Encrypt.json` · `SM2-KeyExchange.json` | — | — |
 | ZUC | `gbt33133-ZUC/` | `zuc_s0` · `zuc_s1` · `zuc_l1` · `zuc_l2` · `zuc_f` · `zuc_keystream` · `zuc_eia3` · `sbox`(PRESET=ZUC S0/S1) | `demos/procedures/EEA3.json` · `EIA3.json` | `proc_zuc_keystream`（IV/长度留空的起始骨架） | ✅ [ZUC-KeyStream-搭建指南](gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.md)（+ [en](gbt33133-ZUC/guides/ZUC-KeyStream-搭建指南.en.md)） |
 | SM9 | `gbt38635-SM9/` | `sm9_master_key` · `sm9_user_key` · `sm9_sign` · `sm9_verify` | `demos/procedures/SM9-Sign.json` | — | — |
 | GM/T 0103 随机数发生器框架参考（非符合性） | `gmt0103-rng/` | `gm_rng`（确定性 SM3-HMAC 教学示例，不覆盖熵源/评估/检测） | `demos/procedures/GM-RNG.json` | — | — |

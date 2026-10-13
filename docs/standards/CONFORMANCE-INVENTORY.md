@@ -10,31 +10,31 @@
 
 | 对象 | 数量 | 权威身份来源 | 当前测试入口 |
 |---|---:|---|---|
-| 唯一自定义 Blockly 块（活动清单） | 214 | [`ALL_BLOCK_TYPES`](../../src/blocks/index.ts) 及各块族导出 | `npm run verify:demos`、`npm run verify:templates`、Vitest |
+| 唯一自定义 Blockly 块（活动清单） | 215 | [`ALL_BLOCK_TYPES`](../../src/blocks/index.ts) 及各块族导出 | `npm run verify:demos`、`npm run verify:templates`、Vitest |
 | 已废弃/兼容注册身份 | 1 | [`COMPAT_BLOCK_TYPES`](../../src/blocks/ctrl/index.ts) | `npm run verify:templates`（登记一致性）；详见下方兼容身份章节 |
 | Procedure 模板注册身份 | 29 | [`TEMPLATE_REGISTRY`](../../src/blocks/procedure/blocks.ts) | `scripts/verify-templates.ts` |
 | 与基础块同名的模板身份 | 3 | `crypto_encrypt_func`、`crypto_decrypt_func`、`crypto_hash_func` | 模板注入与生成测试；计数时不重复加入唯一块数 |
 | Demo 工作区 | 59 | [`demos/tests.json`](../../demos/tests.json) 的键与 `demos/**/*.json` 文件 | `scripts/verify-demos.mjs`；每项登记 Python、JavaScript 用例 |
 
-因此当前对象总数为 **214 个活动块 + 1 个已登记的兼容身份 + 29 个模板身份 + 59 个 Demo**。模板身份是单独的产品对象，即使其中 3 项与基础块同名，也要分别核对其模板参数/预填行为。`verify:demos` 检查工作区文件与测试登记一致并执行双语言用例；它本身不判定测试期望值是否来自完整官方测试集。
+因此当前对象总数为 **215 个活动块 + 1 个已登记的兼容身份 + 29 个模板身份 + 59 个 Demo**。模板身份是单独的产品对象，即使其中 3 项与基础块同名，也要分别核对其模板参数/预填行为。`verify:demos` 检查工作区文件与测试登记一致并执行双语言用例；它本身不判定测试期望值是否来自完整官方测试集。
 
-按身份去重的口径：214 个活动块与 29 个模板身份有 3 项重合（`crypto_encrypt_func`、`crypto_decrypt_func`、`crypto_hash_func`），合并去重后共 **240 个** 类型；`npm run verify:templates` 会重算该数字并核对本行说明。
+按身份去重的口径：215 个活动块与 29 个模板身份有 3 项重合（`crypto_encrypt_func`、`crypto_decrypt_func`、`crypto_hash_func`），合并去重后共 **241 个** 类型；`npm run verify:templates` 会重算该数字并核对本行说明。
 
 ## 兼容与已废弃注册身份
 
-下表列出**不进入 214 项活动清单**、但代码中仍然注册的 Blockly 身份。它们仅为加载存量工作区而保留，不出现在工具箱，也不作为可认证或可独立测试的算法构件；每项必须同时具备 Blockly 定义与 JS/Python 生成器，否则应从仓库删除。门禁 `npm run verify:templates` 会枚举全部已注册类型：既不在 214 项活动清单、也不在本表的类型将直接导致失败，防止出现未登记的“影子身份”。
+下表列出**不进入 215 项活动清单**、但代码中仍然注册的 Blockly 身份。它们仅为加载存量工作区而保留，不出现在工具箱，也不作为可认证或可独立测试的算法构件；每项必须同时具备 Blockly 定义与 JS/Python 生成器，否则应从仓库删除。门禁 `npm run verify:templates` 会枚举全部已注册类型：既不在 215 项活动清单、也不在本表的类型将直接导致失败，防止出现未登记的“影子身份”。
 
 | 身份 | 关系/适用范围 |
 |---|---|
 | `ctrl_assign` | 已废弃赋值块；`src/blocks/ctrl/deprecated.ts` 保留定义，JS/Python 生成器保留以支持 `migration.ts` 对复杂左值的重建（见 `src/utils/migration.ts` 的 `ctrl_assign` 分支）；不进入 `ALL_BLOCK_TYPES`，不在工具箱出现，无独立规范依据 |
 
-`214` 的准确含义是“当前 `ALL_BLOCK_TYPES` 活动身份数”；加上兼容身份后，项目实际注册的自定义 Blockly 类型为 215 个。
+`215` 的准确含义是“当前 `ALL_BLOCK_TYPES` 活动身份数”；加上兼容身份后，项目实际注册的自定义 Blockly 类型为 216 个。
 
 ## Blockly 块清单与适用类别
 
-下表逐项列出当前 `ALL_BLOCK_TYPES` 中的 214 个唯一块类型。类别表示应采用的验证边界：规范算法端点按算法测试；标准内部原语按其规范语义、接口契约和父算法关系测试；通用构件测试接口与组合语义；研究数学块不冒称为标准化算法。规范目录和当前聚合映射见[标准覆盖矩阵](./COVERAGE.md)。矩阵列出资产不等于对应块已获得逐块测试证据。
+下表逐项列出当前 `ALL_BLOCK_TYPES` 中的 215 个唯一块类型。类别表示应采用的验证边界：规范算法端点按算法测试；标准内部原语按其规范语义、接口契约和父算法关系测试；通用构件测试接口与组合语义；研究数学块不冒称为标准化算法。规范目录和当前聚合映射见[标准覆盖矩阵](./COVERAGE.md)。矩阵列出资产不等于对应块已获得逐块测试证据。
 
-每个块的实际端口、字段、连接类型由 `src/blocks/` 中相应类型的 `Blockly.Blocks[type].init` 定义；Python 与 JavaScript 语义分别由 `src/generators/python/`、`src/generators/javascript/` 的同类型生成器定义。为让“输入输出契约”本身可机器复核，仓库从**真实 Blockly 块**生成 [`BLOCK-IO-CONTRACT.json`](./BLOCK-IO-CONTRACT.json)（214 个活动块的端口名/输入类型/连接检查/输出检查/字段签名），`npm run verify:all` 每次重算并与该文件逐字节比对——代码里的签名一改而契约未同步就会直接失败；有意变更后用 `npm run block-io:write` 重新生成并复核差异。下表保留精确类型 ID，不复制一份可能漂移的 I/O 规格。
+每个块的实际端口、字段、连接类型由 `src/blocks/` 中相应类型的 `Blockly.Blocks[type].init` 定义；Python 与 JavaScript 语义分别由 `src/generators/python/`、`src/generators/javascript/` 的同类型生成器定义。为让“输入输出契约”本身可机器复核，仓库从**真实 Blockly 块**生成 [`BLOCK-IO-CONTRACT.json`](./BLOCK-IO-CONTRACT.json)（215 个活动块的端口名/输入类型/连接检查/输出检查/字段签名），`npm run verify:all` 每次重算并与该文件逐字节比对——代码里的签名一改而契约未同步就会直接失败；有意变更后用 `npm run block-io:write` 重新生成并复核差异。下表保留精确类型 ID，不复制一份可能漂移的 I/O 规格。
 
 仍待逐项完成的是**规范语义级**比对：确认每个块的签名与其规范条款要求的接口/参数域一致（例如标准规定某参数为固定长度字节串，块是否以该类型/约束表达），而不仅是“有端口、有双语言生成器”。该工作按「已核对的逐块测试证据」的 109 行逐条推进，当前状态见每行的“未由这些测试证明”列；门禁已强制每行的“规范语义范围”**要么给出标准族依据（FIPS/SP 800/GB\/T/GM\/T/RFC/ISO\/IEC/IEEE），要么明确标注为通用/教学/研究/项目构件（无独立规范依据）**，两者皆无即失败（已用负向测试验证）。
 
@@ -77,7 +77,7 @@
 | `EDDSA_BLOCK_TYPES` | RFC 8032 EdDSA 变体 | `eddsa_sign` · `eddsa_verify` |
 | `ECDSA_BLOCK_TYPES` | FIPS 186-5 ECDSA 变体与曲线参数；当前端点固定为 P-256/SHA-256，签名使用 RFC 6979 确定性 `k` | `ecdsa_sign` · `ecdsa_verify` · `ecdsa_k_rfc6979` |
 | `SM2SIG_BLOCK_TYPES` | GB/T 32918 签名/验签流程 | `sm2_sign` · `sm2_verify` |
-| `SM2ENC_BLOCK_TYPES` | GB/T 32918 加密/解密/密钥交换流程 | `sm2_encrypt` · `sm2_decrypt` · `sm2_key_exchange` |
+| `SM2ENC_BLOCK_TYPES` | GB/T 32918.4 加密/解密流程与 §5.4.3 SM3-KDF 分别核验 | `sm2_kdf` · `sm2_encrypt` · `sm2_decrypt` · `sm2_key_exchange` |
 | `ECDH_BLOCK_TYPES` | RFC 5903 的指定曲线测试不能外推到所有曲线/协议 | `ecdh_shared_secret` |
 | `DRBG_BLOCK_TYPES` | SP 800-90A §10.1.2 HMAC-SHA-256 教学子集；更新函数与生成端点分别核验；本仓库没有 SP 800-90B 熵源证据或 SP 800-90C 构造证据 | `drbg_update` · `drbg_generate` |
 | `ARGON2_BLOCK_TYPES` | RFC 9106 Argon2 参数集 | `argon2_hash` |
@@ -307,7 +307,7 @@ ITEM-2 要求“不能离线分发官方数据时，记录正式验证系统路�
 
 ### 尚未出现在 Demo 工作区的块
 
-静态比对 59 个工作区后，有 **90 个**注册块没有出现在任一 Demo 中。该结果只表示“没有 Demo 直接引用”，不能据此断言没有其他测试；后续须逐项查找单元/模板测试，或新增最小接口、边界、性质测试。当前集合如下：
+静态比对 59 个工作区后，有 **91 个**注册块没有出现在任一 Demo 中。该结果只表示“没有 Demo 直接引用”，不能据此断言没有其他测试；后续须逐项查找单元/模板测试，或新增最小接口、边界、性质测试。当前集合如下：
 
 ```text
 ctrl_iterate
@@ -400,11 +400,12 @@ ecdsa_k_rfc6979
 rsa_mgf1
 rsa_emsa_pkcs1_v15_encode
 ccm_aad_len_prefix
+sm2_kdf
 ```
 
 ### 既无 Demo 也无单测字面量命中的块
 
-在上述 90 个无 Demo 直接引用的块中，进一步要求 `tests/unit/**/*.ts` 以字符串字面量引用块类型。两者都没有的共 **0 个**：
+在上述 91 个无 Demo 直接引用的块中，进一步要求 `tests/unit/**/*.ts` 以字符串字面量引用块类型。两者都没有的共 **0 个**：
 
 ```text
 ```
@@ -443,6 +444,7 @@ ccm_aad_len_prefix
 | `gm_rng` | 借鉴 HMAC_DRBG 结构的确定性 SM3-HMAC 教学示例；固定输入可复现，长度范围是项目定义的 `0..65536` 字节；不声明符合 GM/T 0103/0105 或 SP 800-90A | [`gmdrbg-contract.test.ts`](../../tests/unit/gmdrbg-contract.test.ts) 通过真实 Blockly 双语言执行 Demo 样例，对照独立 Node.js/OpenSSL SM3-HMAC 结果，并检查长度边界与 `Uint8Array` / `bytes` 输出 | 固定样例不是 GM/T、GB/T 或 NIST 官方向量；不证明完整 DRBG 符合性、熵源质量、健康检测、故障响应或认证 |
 | `hkdf` | RFC 5869 §2；项目实现 HMAC-SHA-256，`L` 为字节数，范围 `0..255×32 = 8160` | [`kdf-parameter-contract.test.ts`](../../tests/unit/kdf-parameter-contract.test.ts) 通过真实 Blockly 双语言执行 RFC 5869 附录 A.1 向量，核对零长度、255 块上限、整数值浮点输入、负/普通分数/布尔/超界长度双语言拒绝及 JS `Uint8Array` / Python `bytes` 类型；另有 Python-only `fractions.Fraction` 长度拒绝测试 | 仅 HMAC-SHA-256 示例与参数边界；不覆盖完整 RFC 向量、其他 Hash 实例或正式算法验证 |
 | `pbkdf2` | RFC 8018 §5.2；当前 SHA-256 与 SM3-HMAC 变体的 `hLen` 均为 32 字节；项目将 `c` 限于 JS 安全整数，`dkLen` 为正整数且不超过 `(2^32−1)×hLen` | [`kdf-parameter-contract.test.ts`](../../tests/unit/kdf-parameter-contract.test.ts) 通过真实 Blockly 双语言执行 RFC 7914 §11 SHA-256 向量（含 33 字节尾块截断），双语言核对整数值浮点及 `c`/`dkLen` 的非正、普通分数、布尔和上界拒绝；另有 Python-only `fractions.Fraction` 对迭代数和 `dkLen` 的拒绝测试，并核对 JS `Uint8Array` / Python `bytes`。SM3-HMAC 另以固定输入对照 OpenSSL 3 结果 | OpenSSL 对照值不是 GM/T 官方测试向量；未执行 137 GB 上限输出、完整 ACVP/CAVP 会话或口令存储策略。SP 800-132 建议迭代次数至少 1,000 不应误写为算法输入的规范性最小值 |
+| `sm2_kdf` | GB/T 32918.4 §5.4.3 SM3-KDF | [`sm2-kdf-contract.test.ts`](../../tests/unit/sm2-kdf-contract.test.ts) 对 klen=128/256/264/512 与测试内用 Python `hashlib` 的 SM3（OpenSSL 提供）独立重写的 KDF 比对；另核对非整字节截断掩码与 klen 边界拒绝，双语言各执行 | 只覆盖该 KDF 函数与这些 klen；不覆盖 SM2 加解密全流程、共享秘密来源或曲线参数 |
 | `ecdsa_k_rfc6979` | RFC 6979 §3.2 确定性 k（P-256 + SHA-256） | [`ecdsa-k-rfc6979-contract.test.ts`](../../tests/unit/ecdsa-k-rfc6979-contract.test.ts) 双语言执行 A.2.5 的 message="sample" 向量（k = `a6e3c57d…`），消息哈希由 Node `crypto` 独立计算；并拒绝非 32 字节哈希 | 只覆盖 P-256/SHA-256 与该向量；不覆盖其它曲线、其它哈希或 r/s 生成与验证 |
 | `ecdsa_sign` / `ecdsa_verify` | FIPS 186-5 §6.4；项目固定 P-256/SHA-256，以 RFC 6979 方法确定性派生 `k`；私钥标量限定 `[1,n−1]`；验签对编码长度、`r/s` 范围及公钥曲线点作拒绝检查 | [`ecdsa-input-contract.test.ts`](../../tests/unit/ecdsa-input-contract.test.ts) 通过真实 Blockly 双语言执行非法私钥、签名长度/标量及公钥点负例；[`public-key-bytes-output-contract.test.ts`](../../tests/unit/public-key-bytes-output-contract.test.ts) 执行 Demo Procedure 并核对签名输出容器；`procedures/ECDSA.json` Demo 门禁另核对 RFC 6979 A.2.5 向量 | 确定性签名遇到最终零 `r/s` 时按 FIPS §6.4.1 失败；RFC 6979 候选重试针对无效 `k` 或 `r=0`，不应用来概括 `s=0` 处理。有限向量/边界测试，不是完整 FIPS 186-5/CAVP 验证；不提供常数时间、密钥管理、证书/身份绑定或认证结论 |
 | `x25519` | RFC 7748 §5：32 字节标量与 `u` 坐标，按规范 clamp/屏蔽最高位并在素域计算；低阶点结果可为全零 | [`x25519-contract.test.ts`](../../tests/unit/x25519-contract.test.ts) 真实 Blockly 双语言执行 RFC §5.2 V1，核对 `u=0/1` 低阶输入全零、31 字节/非字节值拒绝及 JavaScript `Uint8Array` / Python `bytes` 输出 | 仅覆盖列明向量与边界，不是完整 RFC 测试集或第三方验证；当前实现有依赖私钥位的分支及高层整数运算，不提供常数时间保证；本块不实现协议层全零共享密钥检查或密钥派生 |
@@ -544,7 +546,7 @@ ccm_aad_len_prefix
 
 SM2 验签定向回归最近一次为 1 个文件、13 项通过；SM9 四块定向回归最近一次为 4 个文件、61 项通过。逐块条款到测试来源的全量台账、标准版本/勘误盘点及其它对象仍在 ITEM-1/ITEM-2 中继续核对。
 
-**证据入口覆盖盘点（自动核对）**：214 个活动块**全部**在本表有逐块证据行（本轮补齐后为 **214 个**），其中相当一部分块的直接证据来自其登记的 Demo 而非独立单测；既无逐块证据行、也不被任何登记 Demo 执行的块为 **0 个**。`npm run verify:all` 会用同一口径重算并拒绝出现“零证据块”；该口径只证明“存在可追溯的证据入口”，不证明该证据已达到完整标准测试集，也不改变各行的“未由这些测试证明”边界。
+**证据入口覆盖盘点（自动核对）**：215 个活动块**全部**在本表有逐块证据行（本轮补齐后为 **215 个**），其中相当一部分块的直接证据来自其登记的 Demo 而非独立单测；既无逐块证据行、也不被任何登记 Demo 执行的块为 **0 个**。`npm run verify:all` 会用同一口径重算并拒绝出现“零证据块”；该口径只证明“存在可追溯的证据入口”，不证明该证据已达到完整标准测试集，也不改变各行的“未由这些测试证明”边界。
 | `gcm_gf128_mul` | SP 800-38D Algorithm 1（GF(2¹²⁸) 块乘法） | [`gcm-primitives-contract.test.ts`](../../tests/unit/gcm-primitives-contract.test.ts) 通过真实 Blockly 块在 JS/Python 执行 Test Case 3 派生乘法值 `5e2ec746…`，并核对两语言一致 | 只覆盖单块乘法与该派生向量；不覆盖多块 GHASH 全谱或其他域约定 |
 | `gcm_ghash` | SP 800-38D Algorithm 2（GHASH_H(A, C)） | [`gcm-primitives-contract.test.ts`](../../tests/unit/gcm-primitives-contract.test.ts) 双语言执行单块 GHASH，并与 Test Case 3 标签推导值 `f38cbb1a…` 比对 | 单块输入；不覆盖 AAD/密文长度组合全谱、标签截断或认证流程 |
 | `gcm_gctr` | SP 800-38D Algorithm 3（GCTR_K(ICB, X)） | [`gcm-primitives-contract.test.ts`](../../tests/unit/gcm-primitives-contract.test.ts) 双语言以 ICB = J0+1 复现 Test Case 3 密文块 `0388dace…`，且拒绝非 16 字节密钥 | 一个分组的 AES-128 路径；不覆盖其它密钥长度、调用上限或完整数据集 |

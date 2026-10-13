@@ -47,6 +47,7 @@ These blocks implement only short-Weierstrass arithmetic over a prime field. `ec
 | Block | Layer | Connection | Input→Output | Notes |
 |-------|------|-----------|--------------|-------|
 | `ecdh_shared_secret` | 1 | value(→) | String&String&String→String | P-256 ECDH shared secret (RFC 5903 §8.1, both directions, with an independent recomputation): d + Qx + Qy → shared point x-coordinate 32B hex; d auto-mod-n |
+| `sm2_kdf` | 1 | value(→) | Bytes&Number→Bytes | SM2-KDF (GB/T 32918.4 §5.4.3, SM3): SM3(Z‖counter) concatenated and truncated to klen bits; all-zero output raises |
 | `sm2_encrypt` | 1 | value(→) | Bytes&String&String&String→String | SM2 encryption (GB/T 32918.4): msg + pubkey x/y + k → C1‖C3‖C2 hex (C1=04‖x‖y 65B, C3=SM3(x2‖M‖y2) 32B); official vector Annex A example 2 |
 | `sm2_decrypt` | 1 | value(→) | String&String→Bytes | SM2 decryption: C1‖C3‖C2 + d → plaintext; throws on C3 mismatch |
 | `sm2_key_exchange` | 1 | value(→) | String×8&Number→String | GB/T 32918.3-2016 §6.1 responder B steps B1–B7 plus KDF; excludes B8/B9 key confirmation and the initiator flow |

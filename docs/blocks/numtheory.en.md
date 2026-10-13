@@ -65,6 +65,8 @@ Although its Blockly ID retains the `pq_` prefix, `pq_mat_vec_mul` only multipli
 
 | Block | Layer | Connection | Input→Output | Notes |
 |----|----|------|----------|------|
+| `rsa_mgf1` | 1 | value(→) | Bytes&Number→Bytes | MGF1 (RFC 8017 B.2.1, SHA-256): concatenated seed‖counter digests, truncated |
+| `rsa_emsa_pkcs1_v15_encode` | 1 | value(→) | Bytes&Number→Bytes | EMSA-PKCS1-v1_5 (RFC 8017 §9.2, SHA-256): 00‖01‖FF…‖00‖DigestInfo |
 | `rsa_keygen` | 1 | value(→) | (bit-length dropdown; no value input)→Bytes | Project-specific educational key generation; 512/1024/2048 → fixed-width big-endian `n‖e‖d‖p‖q` (196 bytes for 512 bits); not defined by RFC 8017 and not validated against FIPS 186-5 Appendix requirements |
 | `rsa_encrypt` | 1 | value(→) | Bytes&Bytes→Bytes | Teaching implementation of the RFC 8017 RSAES-PKCS1-v1_5 scheme: `m^e mod n` (random non-zero PS padding) |
 | `rsa_decrypt` | 1 | value(→) | Bytes&Bytes→Bytes | Teaching implementation of the RFC 8017 RSAES-PKCS1-v1_5 scheme: `m^d mod n`, unpad |

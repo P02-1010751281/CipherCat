@@ -1057,6 +1057,28 @@
     "previousStatement": null,
     "nextStatement": null
   },
+  "ccm_aad_len_prefix": {
+    "inputs": [
+      {
+        "name": "AADLEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "IntList"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
   "ccm_b0": {
     "inputs": [
       {
@@ -6068,6 +6090,35 @@
     "previousStatement": null,
     "nextStatement": null
   },
+  "rsa_emsa_pkcs1_v15_encode": {
+    "inputs": [
+      {
+        "name": "MSG",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "EMLEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
   "rsa_encrypt": {
     "inputs": [
       {
@@ -6125,6 +6176,35 @@
         ]
       }
     ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
+  "rsa_mgf1": {
+    "inputs": [
+      {
+        "name": "SEED",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "LEN",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
     "outputCheck": [
       "Bytes"
     ],

@@ -4,7 +4,7 @@
 > **原子块**（`src/blocks/` 注册的块）、**Demo**（`demos/` 预构建工作区）、**模板**（`src/blocks/procedure/blocks.ts` 的 `proc_*` 预填模板）、**搭建指南**（`standards/*/guides/`）。
 > 文档提取质量、原件可检索性和未完成项另见 [DOCUMENT-STATUS.md](./DOCUMENT-STATUS.md)，不要把本矩阵当作标准全文覆盖证明。
 > 函数/原语页的拆分规则和入口见 [FUNCTION-PRIMITIVE-INDEX.md](./FUNCTION-PRIMITIVE-INDEX.md)。
-> 对象总册（211 个活动块 + 1 个已登记兼容身份、29 个模板身份、59 个 Demo）见 [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md)；本矩阵是标准维度的聚合映射，不替代对象级测试证据。
+> 对象总册（214 个活动块 + 1 个已登记兼容身份、29 个模板身份、59 个 Demo）见 [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md)；本矩阵是标准维度的聚合映射，不替代对象级测试证据。
 >
 > 块与模板注册清单按 2026-09-29 核对；Demo 文件清单及测试分类见 [demos/README.md](../../demos/README.md) 和 [`demos/tests.json`](../../demos/tests.json)；搭建步骤教程见 [docs/demos/](../demos/) 与 [docs/guides/DEMO.md](../guides/DEMO.md)。`standards/papers/` 是研究材料索引，不计入下方算法标准目录。
 
@@ -32,7 +32,7 @@
 | ECDSA | `fips186-5-ecdsa/` | `ecdsa_sign` · `ecdsa_verify` · `ecdsa_k_rfc6979`(RFC 6979) · `ecc_load_curve_params` · `ecc_load_point` · `ecc_add` · `ecc_point_double` · `ecc_multiply` | `demos/procedures/ECDSA.json` | — | — |
 | SP 800-38A 分组模式 | `sp800-38a-modes/` | `mode_ecb_encrypt/decrypt` · `mode_cbc_encrypt` · `mode_ctr_encrypt` · `pad_pkcs7` · `pad_zero` | `demos/procedures/Mode-ECB.json` · `Mode-CBC.json` · `Mode-CTR.json` | `proc_mode_ecb`（AES-128；key 留空）· `proc_mode_cbc`（AES-128；key/IV 留空）· `proc_mode_ctr`（AES-128；key/nonce 留空） | — |
 | CMAC | `sp800-38b-cmac/` | `cmac_double` · `cmac_subkeys` · `cmac_mac`(CIPHER 下拉：AES-128 / SM4) | — | — | — |
-| CCM | `sp800-38c-ccm/` | `ccm_b0` · `ccm_counter_block` · `ccm_cbc_mac` · `ccm_ctr` · `ccm_encrypt` | `demos/procedures/CCM-Encrypt.json` | — | — |
+| CCM | `sp800-38c-ccm/` | `ccm_b0` · `ccm_counter_block` · `ccm_cbc_mac` · `ccm_ctr` · `ccm_aad_len_prefix` · `ccm_encrypt` | `demos/procedures/CCM-Encrypt.json` | — | — |
 | GCM | `sp800-38d-gcm/` | `gcm_gf128_mul` · `gcm_ghash` · `gcm_gctr` · `gcm_inc32` · `gcm_j0` · `gcm_encrypt`（+ `mode_ctr_encrypt` 基础） | `demos/procedures/GCM-Encrypt.json`（GCM 规范 Test Case 2/13 编号体系 + NIST ACVP AES-GCM 官方用例 tagLen=128/96-bit IV 15 例；SP 800-38D 正文不含用例表） | `proc_mode_gcm`（仅 CTR 起始骨架，无 GHASH/tag，不构成 GCM 证据） | — |
 | XTS | `sp800-38e-xts/` | `xts_tweak_mul` · `xts_encrypt` | `demos/procedures/XTS-Encrypt.json` | — | — |
 | DRBG | `sp800-90a-drbg/` | `drbg_update` · `drbg_generate` | `demos/procedures/DRBG.json` | — | — |
@@ -45,7 +45,7 @@
 | ECDSA 确定性 k | `rfc6979-ecdsa/` | `ecdsa_k_rfc6979`（RFC 6979 §3.2 确定性 k；`ecdsa_sign`/`ecdsa_verify` 计入 `fips186-5-ecdsa/`） | `demos/procedures/ECDSA.json` | — | — |
 | 随机性认证来源索引 | `randomness-certification-sources/` | —（认证来源与规则索引，不映射块） | — | — | — |
 | RSA 签名密钥条件 / 素性测试 | `fips186-5-ecdsa/05-RSA-Key-Generation.md` · `06-RSA-Primality-Testing.md` | `rsa_keygen`（教学实现）· `rsa_sign` · `rsa_verify`（方案映射；不表示符合） | `demos/procedures/RSA-Sign.json` | — | — |
-| RSAES/RSASSA PKCS#1 v1.5 | `rfc8017-pkcs1/` | `rsa_encrypt` · `rsa_decrypt` · `rsa_sign` · `rsa_verify`（教学实现） | `demos/procedures/RSA-Encrypt.json` · `RSA-Sign.json` | — | — |
+| RSAES/RSASSA PKCS#1 v1.5 | `rfc8017-pkcs1/` | `rsa_mgf1` · `rsa_emsa_pkcs1_v15_encode` · `rsa_encrypt` · `rsa_decrypt` · `rsa_sign` · `rsa_verify`（教学实现） | `demos/procedures/RSA-Encrypt.json` · `RSA-Sign.json` | — | — |
 | Argon2 | `rfc9106-argon2/` | `argon2_hash` | `demos/procedures/ARGON2.json` | — | — |
 | Base64 | `rfc4648-base64/` | `base64_encode` · `base64_decode` | — | — | — |
 | PKCS#7 | `rfc2315-pkcs7/` | `pad_pkcs7`（填充语义） | — | — | — |

@@ -7,7 +7,7 @@
 >
 > Block facts verified against code (2026-09-29); demo file inventory in [demos/README.en.md](../../demos/README.en.md); step-by-step tutorials in [guides/TUTORIALS.en.md](../guides/TUTORIALS.en.md) and [guides/DEMO.en.md](../guides/DEMO.en.md). `standards/papers/` is a research-material index and is not counted among the standard and reference directories reported by `npm run standards:check` (`directories=`, currently 40, including `randomness-certification-sources/` and `rfc6979-ecdsa/`).
 >
-> The object-level register (211 active blocks plus 1 compat identity, 29 template identities, 59 demos) is [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md); this matrix is a standards-dimension aggregate mapping and does not replace per-object test evidence.
+> The object-level register (214 active blocks plus 1 compat identity, 29 template identities, 59 demos) is [CONFORMANCE-INVENTORY.md](./CONFORMANCE-INVENTORY.md); this matrix is a standards-dimension aggregate mapping and does not replace per-object test evidence.
 
 ---
 

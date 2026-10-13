@@ -65,6 +65,8 @@
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
+| `rsa_mgf1` | 1 | value(→) | Bytes&Number→Bytes | MGF1 (RFC 8017 B.2.1, SHA-256)：seed‖counter 摘要串联截断 |
+| `rsa_emsa_pkcs1_v15_encode` | 1 | value(→) | Bytes&Number→Bytes | EMSA-PKCS1-v1_5 (RFC 8017 §9.2, SHA-256)：00‖01‖FF…‖00‖DigestInfo |
 | `rsa_keygen` | 1 | value(→) | （位数下拉；无值输入）→Bytes | 项目自定义教学密钥生成；512/1024/2048 → `n‖e‖d‖p‖q` 定长大端格式（512 位输出 196 字节）；不是 RFC 8017 密钥生成，也未实现/验证 FIPS 186-5 附录要求 |
 | `rsa_encrypt` | 1 | value(→) | Bytes&Bytes→Bytes | 教学实现，参照 RFC 8017 RSAES-PKCS1-v1_5：`m^e mod n`（随机非零 PS 填充） |
 | `rsa_decrypt` | 1 | value(→) | Bytes&Bytes→Bytes | 教学实现，参照 RFC 8017 RSAES-PKCS1-v1_5：`m^d mod n` 去填充 |

@@ -65,6 +65,7 @@ PKCS#7 requires an integer block size from 1 through 255; an already aligned inp
 | `cmac_double` | 1 | value(→) | IntList→IntList | CMAC subkey doubling (SP 800-38B §6.1): one-bit left shift, XOR 0x87 when the top bit is set |
 | `cmac_subkeys` | 1 | value(→) | Bytes→Bytes | CMAC subkeys K1‖K2 (§6.1, AES-128): 32-byte output |
 | `xts_tweak_mul` | 1 | value(→) | IntList→IntList | XTS tweak ×α (SP 800-38E / IEEE 1619): little-endian one-bit shift, XOR 0x87 into byte 0 on byte-15 carry |
+| `ccm_aad_len_prefix` | 1 | value(→) | Number→IntList | CCM AAD length encoding (SP 800-38C §A.2.2): two big-endian bytes below 0xFF00, otherwise 0xFFFE ‖ four bytes |
 | `ccm_encrypt` | 1 | value(→) | Bytes&IntList&IntList&Bytes→Bytes | CCM encryption returns ciphertext concatenated with the authentication tag; tag length is selected in bytes (4–16). Current AES-128 regressions cover Appendix C Examples 1–3 only. |
 
 ## Disk Encryption XTS (NIST SP 800-38E)

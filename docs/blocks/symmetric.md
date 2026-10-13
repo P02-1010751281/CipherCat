@@ -65,6 +65,7 @@ PKCS#7 块长必须是 1–255 的整数；输入已对齐时仍追加完整填�
 | `cmac_double` | 1 | value(→) | IntList→IntList | CMAC 子密钥加倍 (SP 800-38B §6.1)：左移一位，最高位为 1 时异或 0x87 |
 | `cmac_subkeys` | 1 | value(→) | Bytes→Bytes | CMAC 子密钥 K1‖K2 (§6.1, AES-128)：输出 32 字节 |
 | `xts_tweak_mul` | 1 | value(→) | IntList→IntList | XTS tweak ×α (SP 800-38E / IEEE 1619)：小端左移一位，字节 15 进位时异或 0x87 进字节 0 |
+| `ccm_aad_len_prefix` | 1 | value(→) | Number→IntList | CCM AAD 长度编码 (SP 800-38C §A.2.2)：< 0xFF00 用 2 字节大端，否则 0xFFFE ‖ 4 字节大端 |
 | `ccm_encrypt` | 1 | value(→) | Bytes&IntList&IntList&Bytes→Bytes | CCM-Encrypt(key, nonce, aad, msg, tagLen) → 密文‖标签；CBC-MAC 认证 + CTR 加密；TAGLEN 下拉 4-16 字节；AES-128 官方向量（附录 C Example 1-3） |
 
 ## 磁盘加密 XTS (NIST SP 800-38E)

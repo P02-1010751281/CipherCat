@@ -10,7 +10,7 @@
 import * as Blockly from 'blockly/core';
 import { TYPE_BYTES, TYPE_NUMBER } from '@/constants/block-types';
 
-export const ARGON2_BLOCK_TYPES = ['argon2_hash'] as const;
+export const ARGON2_BLOCK_TYPES = ['argon2_hash', 'argon2_g'] as const;
 export type Argon2BlockType = (typeof ARGON2_BLOCK_TYPES)[number];
 
 Blockly.Blocks['argon2_hash'] = {
@@ -40,6 +40,22 @@ Blockly.Blocks['argon2_hash'] = {
     this.setColour(190);
     this.setTooltip(
       'Argon2 v1.3（RFC 9106）教学实现：拒绝非整数及越界参数、mCost < 8×lanes、mCost > 65,536 KiB、tCost > 10、lanes > 16、tagLen > 1,024 字节及 mCost×tCost > 65,536 KiB-pass。这些是项目执行上限，不是 RFC 最大值；RFC 推荐 16 字节盐。该实现不支持 RFC 推荐的生产参数配置。',
+    );
+    this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc9106');
+  },
+};
+
+/** RFC 9106 §3.5 压缩函数 G：两个 1024 字节块 → 1024 字节块。 */
+Blockly.Blocks['argon2_g'] = {
+  init: function () {
+    this.appendValueInput('X').setCheck(TYPE_BYTES).appendField('Argon2 G( X(1024B):');
+    this.appendValueInput('Y').setCheck(TYPE_BYTES).appendField(' Y(1024B):');
+    this.appendDummyInput().appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_BYTES);
+    this.setColour(190);
+    this.setTooltip(
+      'Argon2 压缩函数 G（RFC 9106 §3.5）：R = X ⊕ Y，对 8×8 寄存器矩阵先按行再按列做 P（BLAKE2b 轮 + 2·trunc 乘法），输出 P(R) ⊕ R。输入/输出均为 1024 字节（128 个 64 位小端字）；本块只做单次压缩，不含内存填充与索引函数。',
     );
     this.setHelpUrl('https://www.rfc-editor.org/rfc/rfc9106');
   },

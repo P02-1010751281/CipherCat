@@ -242,3 +242,57 @@ pythonGenerator.forBlock['argon2_hash'] = function (block: Block): [string, numb
     Order.ATOMIC,
   ];
 };
+
+const ARGON2_G_CORE_PY = [
+  '    M64 = 0xFFFFFFFFFFFFFFFF',
+  '    M32 = 0xFFFFFFFF',
+  '    def rotr64(x, n):',
+  '        return ((x >> n) | (x << (64 - n))) & M64',
+  '    def blamka_g(v, a, b, c, d):',
+  '        v[a] = (v[a] + v[b] + 2 * (v[a] & M32) * (v[b] & M32)) & M64; v[d] = rotr64(v[d] ^ v[a], 32)',
+  '        v[c] = (v[c] + v[d] + 2 * (v[c] & M32) * (v[d] & M32)) & M64; v[b] = rotr64(v[b] ^ v[c], 24)',
+  '        v[a] = (v[a] + v[b] + 2 * (v[a] & M32) * (v[b] & M32)) & M64; v[d] = rotr64(v[d] ^ v[a], 16)',
+  '        v[c] = (v[c] + v[d] + 2 * (v[c] & M32) * (v[d] & M32)) & M64; v[b] = rotr64(v[b] ^ v[c], 63)',
+  '    def p_round(w):',
+  '        blamka_g(w,0,4,8,12); blamka_g(w,1,5,9,13); blamka_g(w,2,6,10,14); blamka_g(w,3,7,11,15)',
+  '        blamka_g(w,0,5,10,15); blamka_g(w,1,6,11,12); blamka_g(w,2,7,8,13); blamka_g(w,3,4,9,14)',
+  '    def load_block(data):',
+  '        if len(data) != 1024:',
+  '            raise ValueError("Argon2 G block must be 1024 bytes")',
+  '        return [int.from_bytes(data[i * 8:(i + 1) * 8], "little") for i in range(128)]',
+];
+
+/** RFC 9106 §3.5 压缩函数 G（自包含实现，与 argon2_hash 内的同一算法） */
+function registerArgon2G(): string {
+  return pythonGenerator.provideFunction_('argon2_g', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(x_bytes, y_bytes):',
+    ...ARGON2_G_CORE_PY,
+    '    X = load_block(bytes(x_bytes))',
+    '    Y = load_block(bytes(y_bytes))',
+    '    R = [X[i] ^ Y[i] for i in range(128)]',
+    '    r0 = list(R)',
+    '    for i in range(8):',
+    '        w = R[16 * i:16 * i + 16]',
+    '        p_round(w)',
+    '        R[16 * i:16 * i + 16] = w',
+    '    for i in range(8):',
+    '        w = []',
+    '        for k in range(8):',
+    '            w.append(R[2 * i + 16 * k]); w.append(R[2 * i + 16 * k + 1])',
+    '        p_round(w)',
+    '        for k in range(8):',
+    '            R[2 * i + 16 * k] = w[2 * k]; R[2 * i + 16 * k + 1] = w[2 * k + 1]',
+    '    out = []',
+    '    for i in range(128):',
+    '        z = (r0[i] ^ R[i]) & M64',
+    '        out += list(z.to_bytes(8, "little"))',
+    '    return out',
+  ]);
+}
+
+pythonGenerator.forBlock['argon2_g'] = function (block: Block): [string, number] {
+  const x = pythonGenerator.valueToCode(block, 'X', Order.ATOMIC) || "b''";
+  const y = pythonGenerator.valueToCode(block, 'Y', Order.ATOMIC) || "b''";
+  const fn = registerArgon2G();
+  return ['bytes(' + fn + '(' + x + ', ' + y + '))', Order.ATOMIC];
+};

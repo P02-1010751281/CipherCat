@@ -201,3 +201,55 @@ javascriptGenerator.forBlock['argon2_hash'] = function (block: Block): [string, 
     Order.ATOMIC,
   ];
 };
+
+const ARGON2_G_CORE = [
+  '  var M64 = 0xFFFFFFFFFFFFFFFFn, M32 = 0xFFFFFFFFn;',
+  '  function rotr64(x, n) { return ((x >> BigInt(n)) | (x << BigInt(64 - n))) & M64; }',
+  '  function blamkaG(v, a, b, c, d) {',
+  '    v[a] = (v[a] + v[b] + 2n * (v[a] & M32) * (v[b] & M32)) & M64; v[d] = rotr64(v[d] ^ v[a], 32);',
+  '    v[c] = (v[c] + v[d] + 2n * (v[c] & M32) * (v[d] & M32)) & M64; v[b] = rotr64(v[b] ^ v[c], 24);',
+  '    v[a] = (v[a] + v[b] + 2n * (v[a] & M32) * (v[b] & M32)) & M64; v[d] = rotr64(v[d] ^ v[a], 16);',
+  '    v[c] = (v[c] + v[d] + 2n * (v[c] & M32) * (v[d] & M32)) & M64; v[b] = rotr64(v[b] ^ v[c], 63);',
+  '  }',
+  '  function pRound(w) {',
+  '    blamkaG(w,0,4,8,12); blamkaG(w,1,5,9,13); blamkaG(w,2,6,10,14); blamkaG(w,3,7,11,15);',
+  '    blamkaG(w,0,5,10,15); blamkaG(w,1,6,11,12); blamkaG(w,2,7,8,13); blamkaG(w,3,4,9,14);',
+  '  }',
+  '  function loadBlockBytes(data) {',
+  '    if (data.length !== 1024) throw new RangeError("Argon2 G block must be 1024 bytes");',
+  '    var w = new Array(128);',
+  '    for (var i = 0; i < 128; i++) { var x = 0n; for (var k = 7; k >= 0; k--) x = (x << 8n) | BigInt(data[i * 8 + k]); w[i] = x; }',
+  '    return w;',
+  '  }',
+];
+
+/** RFC 9106 §3.5 压缩函数 G（自包含实现，与 argon2_hash 内的同一算法） */
+function registerArgon2G(): string {
+  return javascriptGenerator.provideFunction_('argon2G', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(xBytes, yBytes) {',
+    ...ARGON2_G_CORE,
+    '  var X = loadBlockBytes(Array.from(xBytes));',
+    '  var Y = loadBlockBytes(Array.from(yBytes));',
+    '  var R = new Array(128);',
+    '  for (var i = 0; i < 128; i++) R[i] = X[i] ^ Y[i];',
+    '  var r0 = R.slice();',
+    '  for (var i = 0; i < 8; i++) { var w = R.slice(16 * i, 16 * i + 16); pRound(w); for (var j = 0; j < 16; j++) R[16 * i + j] = w[j]; }',
+    '  for (var i = 0; i < 8; i++) {',
+    '    var w2 = new Array(16);',
+    '    for (var k = 0; k < 8; k++) { w2[2 * k] = R[2 * i + 16 * k]; w2[2 * k + 1] = R[2 * i + 16 * k + 1]; }',
+    '    pRound(w2);',
+    '    for (var k2 = 0; k2 < 8; k2++) { R[2 * i + 16 * k2] = w2[2 * k2]; R[2 * i + 16 * k2 + 1] = w2[2 * k2 + 1]; }',
+    '  }',
+    '  var out = [];',
+    '  for (var i = 0; i < 128; i++) { var z = (r0[i] ^ R[i]) & M64; for (var k = 0; k < 8; k++) out.push(Number((z >> BigInt(8 * k)) & 0xFFn)); }',
+    '  return out;',
+    '}',
+  ]);
+}
+
+javascriptGenerator.forBlock['argon2_g'] = function (block: Block): [string, number] {
+  const x = javascriptGenerator.valueToCode(block, 'X', Order.ATOMIC) || '[]';
+  const y = javascriptGenerator.valueToCode(block, 'Y', Order.ATOMIC) || '[]';
+  const fn = registerArgon2G();
+  return ['Uint8Array.from(' + fn + '(' + x + ', ' + y + '))', Order.ATOMIC];
+};

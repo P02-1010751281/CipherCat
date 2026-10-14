@@ -11,7 +11,7 @@
 import * as Blockly from 'blockly/core';
 import { TYPE_BYTES, TYPE_NUMBER } from '@/constants/block-types';
 
-export const SLH_XMSS_BLOCK_TYPES = ['slh_xmss_root', 'slh_msg_randomness'] as const;
+export const SLH_XMSS_BLOCK_TYPES = ['slh_xmss_root', 'slh_msg_randomness', 'slh_sign'] as const;
 export type SlhXmssBlockType = (typeof SLH_XMSS_BLOCK_TYPES)[number];
 
 const FIPS205_URL = 'https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.205.pdf';
@@ -47,6 +47,36 @@ Blockly.Blocks['slh_msg_randomness'] = {
     this.setColour(230);
     this.setTooltip(
       'pure SLH-DSA 的消息随机数 R（FIPS 205 §10.1 + §11.1，SHAKE 变体）：先按 M′ = 0x00 ‖ |ctx| ‖ ctx ‖ M 编码（|ctx| ≤ 255），再算 R = SHAKE256(SK.prf ‖ opt_rand ‖ M′, n)。确定性签名取 opt_rand = PK.seed；R 是签名串的前 n 字节，已用 ACVP sigGen 向量核对。',
+    );
+    this.setHelpUrl(FIPS205_URL);
+  },
+};
+
+/** FIPS 205 §10.2 SLH-DSA.Sign（SHAKE 参数集、external、pure、确定性）。 */
+Blockly.Blocks['slh_sign'] = {
+  init: function () {
+    this.appendValueInput('SK').setCheck(TYPE_BYTES).appendField('SLH-DSA-Sign( sk:');
+    this.appendValueInput('MESSAGE').setCheck(TYPE_BYTES).appendField(' msg:');
+    this.appendValueInput('CONTEXT').setCheck(TYPE_BYTES).appendField(' ctx:');
+    this.appendDummyInput()
+      .appendField(' 参数集:')
+      .appendField(
+        new Blockly.FieldDropdown([
+          ['SLH-DSA-SHAKE-128f', 'SLH-DSA-SHAKE-128f'],
+          ['SLH-DSA-SHAKE-128s', 'SLH-DSA-SHAKE-128s'],
+          ['SLH-DSA-SHAKE-192f', 'SLH-DSA-SHAKE-192f'],
+          ['SLH-DSA-SHAKE-192s', 'SLH-DSA-SHAKE-192s'],
+          ['SLH-DSA-SHAKE-256f', 'SLH-DSA-SHAKE-256f'],
+          ['SLH-DSA-SHAKE-256s', 'SLH-DSA-SHAKE-256s'],
+        ]),
+        'PARAM_SET',
+      )
+      .appendField(')');
+    this.setInputsInline(true);
+    this.setOutput(true, TYPE_BYTES);
+    this.setColour(230);
+    this.setTooltip(
+      'SLH-DSA 签名（FIPS 205 §10.2，SHAKE 参数集，external 接口、pure 无预哈希、确定性签名）：sk = SK.seed‖SK.prf‖PK.seed‖PK.root（4n 字节），输出 R‖SIG_FORS‖SIG_HT。已用 ACVP SLH-DSA-sigGen 官方向量逐字节核对 SHAKE-128f/192f/256f；SHA2 参数集与预哈希模式未实现。',
     );
     this.setHelpUrl(FIPS205_URL);
   },

@@ -7,3 +7,4 @@ import './fors';
 import './adrs';
 import './wots';
 import './slh-xmss';
+import './slh-sign';

@@ -117,6 +117,7 @@ Regression coverage for the padding and compression blocks includes SHA-2 and SM
 
 | Block | Layer | Connection | Input→Output | Notes |
 |----|----|------|----------|------|
+| `slh_msg_randomness` | 1 | value(→) | Bytes&Bytes&Bytes&Bytes→Bytes | pure SLH-DSA message randomness R (FIPS 205 §10.1/§11.1): M′ = 0x00‖|ctx|‖ctx‖M, R = SHAKE256(SK.prf‖opt_rand‖M′, n); deterministic signing uses opt_rand = PK.seed |
 | `slh_xmss_root` | 1 | value(→) | Bytes&Bytes&Number&Number&Number→Bytes | FIPS 205 §7.2 XMSS tree root (SHAKE variant): root of height h′ using ADRS types 5/1/2; the SLH-DSA top tree uses layer=d−1, tree=0 and its root is PK.root |
 | `hash_chain` | 1 | value(→) | Bytes&Number→Bytes | Repeated project SHAKE-256 digest; no FIPS 205 `F(PK.seed, ADRS, ·)` or chain-address updates |
 | `merkle_leaf` | 1 | value(→) | Bytes&Bytes→Bytes | Generic teaching leaf `SHAKE256(ADRS‖MSG, 32)`, not XMSS/FORS leaf generation |

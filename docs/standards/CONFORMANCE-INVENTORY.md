@@ -10,31 +10,31 @@
 
 | 对象 | 数量 | 权威身份来源 | 当前测试入口 |
 |---|---:|---|---|
-| 唯一自定义 Blockly 块（活动清单） | 217 | [`ALL_BLOCK_TYPES`](../../src/blocks/index.ts) 及各块族导出 | `npm run verify:demos`、`npm run verify:templates`、Vitest |
+| 唯一自定义 Blockly 块（活动清单） | 218 | [`ALL_BLOCK_TYPES`](../../src/blocks/index.ts) 及各块族导出 | `npm run verify:demos`、`npm run verify:templates`、Vitest |
 | 已废弃/兼容注册身份 | 1 | [`COMPAT_BLOCK_TYPES`](../../src/blocks/ctrl/index.ts) | `npm run verify:templates`（登记一致性）；详见下方兼容身份章节 |
 | Procedure 模板注册身份 | 29 | [`TEMPLATE_REGISTRY`](../../src/blocks/procedure/blocks.ts) | `scripts/verify-templates.ts` |
 | 与基础块同名的模板身份 | 3 | `crypto_encrypt_func`、`crypto_decrypt_func`、`crypto_hash_func` | 模板注入与生成测试；计数时不重复加入唯一块数 |
 | Demo 工作区 | 59 | [`demos/tests.json`](../../demos/tests.json) 的键与 `demos/**/*.json` 文件 | `scripts/verify-demos.mjs`；每项登记 Python、JavaScript 用例 |
 
-因此当前对象总数为 **217 个活动块 + 1 个已登记的兼容身份 + 29 个模板身份 + 59 个 Demo**。模板身份是单独的产品对象，即使其中 3 项与基础块同名，也要分别核对其模板参数/预填行为。`verify:demos` 检查工作区文件与测试登记一致并执行双语言用例；它本身不判定测试期望值是否来自完整官方测试集。
+因此当前对象总数为 **218 个活动块 + 1 个已登记的兼容身份 + 29 个模板身份 + 59 个 Demo**。模板身份是单独的产品对象，即使其中 3 项与基础块同名，也要分别核对其模板参数/预填行为。`verify:demos` 检查工作区文件与测试登记一致并执行双语言用例；它本身不判定测试期望值是否来自完整官方测试集。
 
-按身份去重的口径：217 个活动块与 29 个模板身份有 3 项重合（`crypto_encrypt_func`、`crypto_decrypt_func`、`crypto_hash_func`），合并去重后共 **243 个** 类型；`npm run verify:templates` 会重算该数字并核对本行说明。
+按身份去重的口径：218 个活动块与 29 个模板身份有 3 项重合（`crypto_encrypt_func`、`crypto_decrypt_func`、`crypto_hash_func`），合并去重后共 **244 个** 类型；`npm run verify:templates` 会重算该数字并核对本行说明。
 
 ## 兼容与已废弃注册身份
 
-下表列出**不进入 217 项活动清单**、但代码中仍然注册的 Blockly 身份。它们仅为加载存量工作区而保留，不出现在工具箱，也不作为可认证或可独立测试的算法构件；每项必须同时具备 Blockly 定义与 JS/Python 生成器，否则应从仓库删除。门禁 `npm run verify:templates` 会枚举全部已注册类型：既不在 217 项活动清单、也不在本表的类型将直接导致失败，防止出现未登记的“影子身份”。
+下表列出**不进入 218 项活动清单**、但代码中仍然注册的 Blockly 身份。它们仅为加载存量工作区而保留，不出现在工具箱，也不作为可认证或可独立测试的算法构件；每项必须同时具备 Blockly 定义与 JS/Python 生成器，否则应从仓库删除。门禁 `npm run verify:templates` 会枚举全部已注册类型：既不在 218 项活动清单、也不在本表的类型将直接导致失败，防止出现未登记的“影子身份”。
 
 | 身份 | 关系/适用范围 |
 |---|---|
 | `ctrl_assign` | 已废弃赋值块；`src/blocks/ctrl/deprecated.ts` 保留定义，JS/Python 生成器保留以支持 `migration.ts` 对复杂左值的重建（见 `src/utils/migration.ts` 的 `ctrl_assign` 分支）；不进入 `ALL_BLOCK_TYPES`，不在工具箱出现，无独立规范依据 |
 
-`217` 的准确含义是“当前 `ALL_BLOCK_TYPES` 活动身份数”；加上兼容身份后，项目实际注册的自定义 Blockly 类型为 218 个。
+`218` 的准确含义是“当前 `ALL_BLOCK_TYPES` 活动身份数”；加上兼容身份后，项目实际注册的自定义 Blockly 类型为 219 个。
 
 ## Blockly 块清单与适用类别
 
-下表逐项列出当前 `ALL_BLOCK_TYPES` 中的 217 个唯一块类型。类别表示应采用的验证边界：规范算法端点按算法测试；标准内部原语按其规范语义、接口契约和父算法关系测试；通用构件测试接口与组合语义；研究数学块不冒称为标准化算法。规范目录和当前聚合映射见[标准覆盖矩阵](./COVERAGE.md)。矩阵列出资产不等于对应块已获得逐块测试证据。
+下表逐项列出当前 `ALL_BLOCK_TYPES` 中的 218 个唯一块类型。类别表示应采用的验证边界：规范算法端点按算法测试；标准内部原语按其规范语义、接口契约和父算法关系测试；通用构件测试接口与组合语义；研究数学块不冒称为标准化算法。规范目录和当前聚合映射见[标准覆盖矩阵](./COVERAGE.md)。矩阵列出资产不等于对应块已获得逐块测试证据。
 
-每个块的实际端口、字段、连接类型由 `src/blocks/` 中相应类型的 `Blockly.Blocks[type].init` 定义；Python 与 JavaScript 语义分别由 `src/generators/python/`、`src/generators/javascript/` 的同类型生成器定义。为让“输入输出契约”本身可机器复核，仓库从**真实 Blockly 块**生成 [`BLOCK-IO-CONTRACT.json`](./BLOCK-IO-CONTRACT.json)（217 个活动块的端口名/输入类型/连接检查/输出检查/字段签名），`npm run verify:all` 每次重算并与该文件逐字节比对——代码里的签名一改而契约未同步就会直接失败；有意变更后用 `npm run block-io:write` 重新生成并复核差异。下表保留精确类型 ID，不复制一份可能漂移的 I/O 规格。
+每个块的实际端口、字段、连接类型由 `src/blocks/` 中相应类型的 `Blockly.Blocks[type].init` 定义；Python 与 JavaScript 语义分别由 `src/generators/python/`、`src/generators/javascript/` 的同类型生成器定义。为让“输入输出契约”本身可机器复核，仓库从**真实 Blockly 块**生成 [`BLOCK-IO-CONTRACT.json`](./BLOCK-IO-CONTRACT.json)（218 个活动块的端口名/输入类型/连接检查/输出检查/字段签名），`npm run verify:all` 每次重算并与该文件逐字节比对——代码里的签名一改而契约未同步就会直接失败；有意变更后用 `npm run block-io:write` 重新生成并复核差异。下表保留精确类型 ID，不复制一份可能漂移的 I/O 规格。
 
 仍待逐项完成的是**规范语义级**比对：确认每个块的签名与其规范条款要求的接口/参数域一致（例如标准规定某参数为固定长度字节串，块是否以该类型/约束表达），而不仅是“有端口、有双语言生成器”。该工作按「已核对的逐块测试证据」的 109 行逐条推进，当前状态见每行的“未由这些测试证明”列；门禁已强制每行的“规范语义范围”**要么给出标准族依据（FIPS/SP 800/GB\/T/GM\/T/RFC/ISO\/IEC/IEEE），要么明确标注为通用/教学/研究/项目构件（无独立规范依据）**，两者皆无即失败（已用负向测试验证）。
 
@@ -51,7 +51,7 @@
 | `HASH_BLOCK_TYPES` — SHA-2 | FIPS 180-4 算法阶段/端点 | `hash_sha256_pad` · `hash_sha256_pad_text` · `hash_sha256_pad_hex` · `hash_sha256_compress` · `hash_sha224_hash` |
 | `HASH_BLOCK_TYPES` — SM3 | GB/T 32905 算法阶段；HMAC 另见 HMAC 组 | `hash_sm3_pad` · `hash_sm3_pad_text` · `hash_sm3_pad_hex` · `hash_sm3_compress` |
 | `HASH_BLOCK_TYPES` — SHA-3 / SHAKE | FIPS 202 置换、海绵和哈希/XOF 构造；`pq_prf` 的 ML-KEM `PRFη` 归入 FIPS 203 §4.1（式 4.3） | `keccak_state_init` · `keccak_f` · `sponge_pad` · `hash_sha3_pad_text` · `hash_sha3_pad_hex` · `sponge_absorb` · `sponge_squeeze` · `sha3_hash` · `pq_xof` · `pq_prf` |
-| `HASH_BLOCK_TYPES` — 哈希树 / SLH-DSA | FIPS 205 内部结构与端点；仅对参数集和接口实际支持范围作声明 | `slh_xmss_root`（§7.2 XMSS 树根，SHAKE 变体，按 ACVP keyGen 向量核对） · `hash_chain` · `merkle_leaf` · `merkle_node` · `merkle_root` · `merkle_auth_path` · `fors_leaf_index` · `slh_addr` · `fors_root` · `fors_sign` · `fors_verify` · `fors_pk_from_sk` · `slh_adrs_full` · `wots_checksum` |
+| `HASH_BLOCK_TYPES` — 哈希树 / SLH-DSA | FIPS 205 内部结构与端点；仅对参数集和接口实际支持范围作声明 | `slh_xmss_root`（§7.2 XMSS 树根，SHAKE 变体，按 ACVP keyGen 向量核对） · `slh_msg_randomness`（§10.1/§11.1 消息随机数 R，按 ACVP sigGen 向量核对） · `hash_chain` · `merkle_leaf` · `merkle_node` · `merkle_root` · `merkle_auth_path` · `fors_leaf_index` · `slh_addr` · `fors_root` · `fors_sign` · `fors_verify` · `fors_pk_from_sk` · `slh_adrs_full` · `wots_checksum` |
 | `SHA512_BLOCK_TYPES` | FIPS 180-4 SHA-384/512 阶段和端点；具体变体由块参数决定 | `hash_sha512_pad` · `hash_sha512_compress` · `hash_sha512_hash` |
 | `NT_BLOCK_TYPES` — 格密码原语 | FIPS 203 ML-KEM、FIPS 204 ML-DSA 的标准内部原语；按参数集、模数和调用关系核验 | `pq_ntt` · `pq_intt` · `pq_ntt_mul` · `pq_poly_add` · `pq_poly_sub` |
 | `NT_BLOCK_TYPES` — 通用 NTT 蝶形辅助 | 单步 CT/GS 数学辅助操作；模数选项与标准算法相关，但该块不是完整标准变换或认证声明 | `pq_ntt_butterfly` |
@@ -307,7 +307,7 @@ ITEM-2 要求“不能离线分发官方数据时，记录正式验证系统路�
 
 ### 尚未出现在 Demo 工作区的块
 
-静态比对 59 个工作区后，有 **93 个**注册块没有出现在任一 Demo 中。该结果只表示“没有 Demo 直接引用”，不能据此断言没有其他测试；后续须逐项查找单元/模板测试，或新增最小接口、边界、性质测试。当前集合如下：
+静态比对 59 个工作区后，有 **94 个**注册块没有出现在任一 Demo 中。该结果只表示“没有 Demo 直接引用”，不能据此断言没有其他测试；后续须逐项查找单元/模板测试，或新增最小接口、边界、性质测试。当前集合如下：
 
 ```text
 ctrl_iterate
@@ -403,11 +403,12 @@ ccm_aad_len_prefix
 sm2_kdf
 argon2_g
 slh_xmss_root
+slh_msg_randomness
 ```
 
 ### 既无 Demo 也无单测字面量命中的块
 
-在上述 93 个无 Demo 直接引用的块中，进一步要求 `tests/unit/**/*.ts` 以字符串字面量引用块类型。两者都没有的共 **0 个**：
+在上述 94 个无 Demo 直接引用的块中，进一步要求 `tests/unit/**/*.ts` 以字符串字面量引用块类型。两者都没有的共 **0 个**：
 
 ```text
 ```
@@ -524,6 +525,7 @@ slh_xmss_root
 | `ascon_encrypt` · `ascon_decrypt` · `ascon_hash256` · `ascon_xof128` · `ascon_cxof128` | SP 800-232 Ascon-AEAD128 / Hash256 / XOF128 / CXOF128 端点 | `procedures/ASCON.json` 与 `ASCON-Extended.json` 覆盖固定样例、空消息与错误标签/参数拒绝；`generator-resource-limits.test.ts` 覆盖 `ascon_xof128` 的资源边界 | 登记为 `fixed-regression`：不是完整 1,089 项 AEAD KAT，也不覆盖完整 Hash/XOF 套件与流式 API |
 | `sponge_absorb` | FIPS 202 海绵吸收阶段（与 `sponge_squeeze`、`keccak_f` 组合） | `sponge-absorb-contract.test.ts` 通过真实 Blockly 双语言执行吸收阶段；`procedures/ML-KEM-Encaps.json` 在完整 Encaps 链中使用该块 | 只覆盖吸收阶段的接口与列明样例；不单独构成哈希/XOF 端点或 FIPS 202 全量测试 |
 | `hash_sm3_compress` | GB/T 32905 SM3 压缩函数（与填充块组合成 `SM3_Hash`） | `procedures/SM3-Hash.json` 回归 SM3("abc") = `66c7f0f4…`（GB/T 32905-2016 A.1 官方值，另经独立实现复算）；`procedures/PBKDF2-SM3.json` 复用该压缩路径 | 只覆盖 512-bit 单块压缩与所列向量；不覆盖多块消息与长度编码全谱 |
+| `slh_msg_randomness` | FIPS 205 §10.1 + §11.1（pure SLH-DSA 的消息随机数 R，SHAKE 变体） | [`slh-msg-randomness-acvp.test.ts`](../../tests/unit/slh-msg-randomness-acvp.test.ts) 用 ACVP SLH-DSA-sigGen 子集核对 SHAKE-128f/192f/256f 的 R（签名前 n 字节），双语言各 2 例；含 context 长度与 opt_rand 长度拒绝 | 只覆盖签名第一步与 M′ 上下文编码；不含 FORS、HT、完整签名或验证 |
 | `slh_xmss_root` | FIPS 205 §7.2 Algorithm 9/10（XMSS 树根，SHAKE 变体） | [`slh-xmss-root-acvp.test.ts`](../../tests/unit/slh-xmss-root-acvp.test.ts) 用 NIST ACVP SLH-DSA-keyGen 官方向量（`docs/standards/fips205-SLH-DSA/vectors/`）核对 SHAKE-128f/192f/256f 的 PK.root，双语言各 2 例；含种子长度与树高越界拒绝 | 只覆盖顶层树根与 SHAKE 的 f 参数集；不含 FORS、签名/验签、SHA2 参数集或完整 ACVP 会话 |
 | `hash_chain` · `merkle_leaf` · `merkle_node` · `merkle_root` · `merkle_auth_path` · `fors_leaf_index` · `slh_addr` | FIPS 205 的哈希链与 Merkle 树内部结构（`Chain`、叶/节点/根、认证路径、FORS 选叶、ADRS） | `procedures/Hash-Based-Structures.json` 断言 `Chain(x,0)=x`、链的半群性、4 叶树根手工组合与 ADRS 32 字节确定性；`Tree-Index.json` 断言 FORS 选叶分块与 leaf+auth 重建根等于全树根；`pq-bytes-output-contract.test.ts` 核对这些块的 `Uint8Array`/`bytes` 输出容器 | 结构性质与容器断言；**不是** FIPS 205 KAT，参数集与是否贴合标准分层仍待逐项核对 |
 | `fors_sign` · `fors_verify` · `fors_pk_from_sk` · `fors_root` · `wots_checksum` · `slh_adrs_full` | FIPS 205 的 FORS 签名/验签/公钥派生、根计算，WOTS 校验和与完整 ADRS 域分隔 | `procedures/FORS-Sign.json`、`Wrap-Up-Math.json`、`PQC-Gaps.json` 断言项目内部往返、确定性、篡改检测、FORS 确定性与 `wots_checksum` 单调性；`generator-contracts.test.ts` 覆盖部分块的接口契约 | 明确为非标准兼容教学变体（`sig 640B / pk 32B`）：不是 FIPS 205 的 SLH-DSA 参数集，也不是 KAT 或符合性证据 |
@@ -550,7 +552,7 @@ slh_xmss_root
 
 SM2 验签定向回归最近一次为 1 个文件、13 项通过；SM9 四块定向回归最近一次为 4 个文件、61 项通过。逐块条款到测试来源的全量台账、标准版本/勘误盘点及其它对象仍在 ITEM-1/ITEM-2 中继续核对。
 
-**证据入口覆盖盘点（自动核对）**：217 个活动块**全部**在本表有逐块证据行（本轮补齐后为 **217 个**），其中相当一部分块的直接证据来自其登记的 Demo 而非独立单测；既无逐块证据行、也不被任何登记 Demo 执行的块为 **0 个**。`npm run verify:all` 会用同一口径重算并拒绝出现“零证据块”；该口径只证明“存在可追溯的证据入口”，不证明该证据已达到完整标准测试集，也不改变各行的“未由这些测试证明”边界。
+**证据入口覆盖盘点（自动核对）**：218 个活动块**全部**在本表有逐块证据行（本轮补齐后为 **218 个**），其中相当一部分块的直接证据来自其登记的 Demo 而非独立单测；既无逐块证据行、也不被任何登记 Demo 执行的块为 **0 个**。`npm run verify:all` 会用同一口径重算并拒绝出现“零证据块”；该口径只证明“存在可追溯的证据入口”，不证明该证据已达到完整标准测试集，也不改变各行的“未由这些测试证明”边界。
 | `gcm_gf128_mul` | SP 800-38D Algorithm 1（GF(2¹²⁸) 块乘法） | [`gcm-primitives-contract.test.ts`](../../tests/unit/gcm-primitives-contract.test.ts) 通过真实 Blockly 块在 JS/Python 执行 Test Case 3 派生乘法值 `5e2ec746…`，并核对两语言一致 | 只覆盖单块乘法与该派生向量；不覆盖多块 GHASH 全谱或其他域约定 |
 | `gcm_ghash` | SP 800-38D Algorithm 2（GHASH_H(A, C)） | [`gcm-primitives-contract.test.ts`](../../tests/unit/gcm-primitives-contract.test.ts) 双语言执行单块 GHASH，并与 Test Case 3 标签推导值 `f38cbb1a…` 比对 | 单块输入；不覆盖 AAD/密文长度组合全谱、标签截断或认证流程 |
 | `gcm_gctr` | SP 800-38D Algorithm 3（GCTR_K(ICB, X)） | [`gcm-primitives-contract.test.ts`](../../tests/unit/gcm-primitives-contract.test.ts) 双语言以 ICB = J0+1 复现 Test Case 3 密文块 `0388dace…`，且拒绝非 16 字节密钥 | 一个分组的 AES-128 路径；不覆盖其它密钥长度、调用上限或完整数据集 |

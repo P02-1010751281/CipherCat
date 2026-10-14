@@ -101,7 +101,7 @@
 | [STRUCTURED-ENTRY-SCHEMA.md](./standards/STRUCTURED-ENTRY-SCHEMA.md) | 函数、原语、公式和算法阶段的统一条目字段 |
 | [SOURCE-SPLIT-COVERAGE.md](./standards/SOURCE-SPLIT-COVERAGE.md) | source 原文到结构化条目的覆盖审计与验收标准 |
 | [SOURCE-SPLIT-INVENTORY.md](./standards/SOURCE-SPLIT-INVENTORY.md) | 229 个结构化条目的逐项 source 回链清单 |
-| [CONFORMANCE-INVENTORY.md](./standards/CONFORMANCE-INVENTORY.md) | 217 个活动块（另 1 个兼容身份）、29 个 Procedure 模板和 59 个 Demo 的验证对象与证据范围 |
+| [CONFORMANCE-INVENTORY.md](./standards/CONFORMANCE-INVENTORY.md) | 218 个活动块（另 1 个兼容身份）、29 个 Procedure 模板和 59 个 Demo 的验证对象与证据范围 |
 | [ENDPOINT-MATRIX.md](./standards/ENDPOINT-MATRIX.md) | 块端点（标准公开算法接口）对照表 |
 | [PRODUCT-CERTIFICATION-FEASIBILITY.md](./standards/PRODUCT-CERTIFICATION-FEASIBILITY.md) | 正式认证路径、候选产品边界、当前缺口与决策顺序 |
 

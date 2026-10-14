@@ -14,7 +14,7 @@ import type { Block } from 'blockly/core';
 import { registerKeccakF1600 } from './helpers';
 
 /** 与 hashbased.ts 同 key 同内容的 SHAKE256 XOF（provideFunction_ 幂等去重） */
-function registerSlhShake(): string {
+export function registerSlhShake(): string {
   const keccakFName = registerKeccakF1600();
   return javascriptGenerator.provideFunction_('shakeXOF', [
     'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(inp, outBytes, rate) {',
@@ -114,4 +114,30 @@ javascriptGenerator.forBlock['slh_xmss_root'] = function (block: Block): [string
   const tree = javascriptGenerator.valueToCode(block, 'TREE', Order.ATOMIC) || '0';
   const fn = registerSlhXmssRoot();
   return ['Uint8Array.from(' + fn + '(' + skSeed + ', ' + pkSeed + ', ' + hPrime + ', ' + layer + ', ' + tree + '))', Order.ATOMIC];
+};
+
+/** FIPS 205 §10.1 + §11.1：pure SLH-DSA 的消息随机数 R（SHAKE 变体） */
+export function registerSlhMsgRandomness(): string {
+  const shake = registerSlhShake();
+  return javascriptGenerator.provideFunction_('slhMsgRandomness', [
+    'function ' + javascriptGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(skPrf, optRand, msg, ctx) {',
+    '  var sk = Array.from(skPrf), opt = Array.from(optRand);',
+    '  var n = sk.length;',
+    '  if (n !== 16 && n !== 24 && n !== 32) throw new Error("SLH-DSA sk_prf must be 16, 24 or 32 bytes");',
+    '  if (opt.length !== n) throw new Error("SLH-DSA opt_rand length must match sk_prf");',
+    '  var context = ctx == null ? [] : Array.from(ctx);',
+    '  if (context.length > 255) throw new Error("SLH-DSA context must be at most 255 bytes");',
+    '  var prefix = [0x00, context.length].concat(context, Array.from(msg));',
+    '  return Array.from(' + shake + '(sk.concat(opt, prefix), n, 136));',
+    '}',
+  ]);
+}
+
+javascriptGenerator.forBlock['slh_msg_randomness'] = function (block: Block): [string, number] {
+  const skPrf = javascriptGenerator.valueToCode(block, 'SK_PRF', Order.ATOMIC) || '[]';
+  const optRand = javascriptGenerator.valueToCode(block, 'OPT_RAND', Order.ATOMIC) || '[]';
+  const msg = javascriptGenerator.valueToCode(block, 'MESSAGE', Order.ATOMIC) || '[]';
+  const ctx = javascriptGenerator.valueToCode(block, 'CONTEXT', Order.ATOMIC) || '[]';
+  const fn = registerSlhMsgRandomness();
+  return ['Uint8Array.from(' + fn + '(' + skPrf + ', ' + optRand + ', ' + msg + ', ' + ctx + '))', Order.ATOMIC];
 };

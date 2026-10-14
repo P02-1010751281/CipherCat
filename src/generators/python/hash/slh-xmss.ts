@@ -72,3 +72,33 @@ pythonGenerator.forBlock['slh_xmss_root'] = function (block: Block): [string, nu
   const fn = registerSlhXmssRoot();
   return ['bytes(' + fn + '(' + skSeed + ', ' + pkSeed + ', ' + hPrime + ', ' + layer + ', ' + tree + '))', Order.ATOMIC];
 };
+
+/** FIPS 205 §10.1 + §11.1：pure SLH-DSA 的消息随机数 R（SHAKE 变体） */
+export function registerSlhMsgRandomness(): string {
+  return pythonGenerator.provideFunction_('slh_msg_randomness', [
+    'def ' + pythonGenerator.FUNCTION_NAME_PLACEHOLDER_ + '(sk_prf, opt_rand, msg, ctx):',
+    '    import hashlib',
+    '    sk = bytes(sk_prf)',
+    '    opt = bytes(opt_rand)',
+    '    n = len(sk)',
+    '    if n not in (16, 24, 32):',
+    '        raise ValueError("SLH-DSA sk_prf must be 16, 24 or 32 bytes")',
+    '    if len(opt) != n:',
+    '        raise ValueError("SLH-DSA opt_rand length must match sk_prf")',
+    '    context = b"" if ctx is None else bytes(ctx)',
+    '    if len(context) > 255:',
+    '        raise ValueError("SLH-DSA context must be at most 255 bytes")',
+    '    body = bytes(msg) if not isinstance(msg, str) else msg.encode("utf-8")',
+    '    prefix = b"\\x00" + bytes([len(context)]) + context + body',
+    '    return list(hashlib.shake_256(sk + opt + prefix).digest(n))',
+  ]);
+}
+
+pythonGenerator.forBlock['slh_msg_randomness'] = function (block: Block): [string, number] {
+  const skPrf = pythonGenerator.valueToCode(block, 'SK_PRF', Order.ATOMIC) || "b''";
+  const optRand = pythonGenerator.valueToCode(block, 'OPT_RAND', Order.ATOMIC) || "b''";
+  const msg = pythonGenerator.valueToCode(block, 'MESSAGE', Order.ATOMIC) || "b''";
+  const ctx = pythonGenerator.valueToCode(block, 'CONTEXT', Order.ATOMIC) || "b''";
+  const fn = registerSlhMsgRandomness();
+  return ['bytes(' + fn + '(' + skPrf + ', ' + optRand + ', ' + msg + ', ' + ctx + '))', Order.ATOMIC];
+};

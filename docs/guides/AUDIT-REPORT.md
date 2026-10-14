@@ -4,7 +4,7 @@
 
 ## 当前快照
 
-- **216 个自定义块类型**：递归展开 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`，去重后为 216；没有重复类型。
+- **217 个自定义块类型**：递归展开 `src/blocks/index.ts` 的 `ALL_BLOCK_TYPES`，去重后为 217；没有重复类型。
 - **29 个函数模板**：以 `src/blocks/procedure/blocks.ts` 的 `TEMPLATE_REGISTRY` 为准。
 - **17 个工具箱类目**：包括自定义密码学类目、函数封装空间、Crypto Templates 和 Blockly 原生类目。
 - **59 个 Demo 注册项**：`demos/tests.json` 与 59 个 Demo 工作区一一对应（不含注册表自身）。
@@ -56,5 +56,5 @@
 - Podman 运行态：使用独立 rootless VFS 存储构建并启动单个 `randomness-sandbox` 容器；后端客户端请求/结果往返、runner UID 1002、队列目录 EACCES、嵌套 `mkdir` 拒绝、运行中单次请求认领及 `/tmp` 无任务残留均已实测。仅验证 sandbox 单服务，不代表完整 Compose、GPU、后端/Nginx 401 或生产部署验收。宿主默认存储仍有一个旧的 `mc-randomness-sandbox` 实例，缺少当前配置要求的 `CAP_KILL`/`CAP_SETUID`，本轮未重启或替换它。
 - GPU/CUDA 编译与一致性（2026-10-12）：容器运行态没有 `nvcc`，CUDA 工具链只存在于构建阶段；用 `metacrypt_server/docker/verify-gpu.sh` 在同一台机器（GT 710 / sm_35）实测——容器内 `nvcc` 从当前源码重编 `lcplt` 得到 `liblcplt_cuda.1.sm_35.cubin`，cgo 编出 GPU 版 `rddetector` 并链接 `liblcplt_cuda.so`；`randomness/gpu` 内核测试 5 组块长（m=3/500/1000/5000/6144）与 Berlekamp–Massey 参考一致；1,000,000 bit 固定样本在 `LCPLT_GPU=cpu` 与 `LCPLT_GPU=gpu` 下检测报告逐列一致（线性复杂度 m=500 为 P=Q=0.27959，m=1000 为 P=Q=0.56892），GPU 侧 kernel 约 80 ms。这些是该机、该样本的编译与一致性证据，不覆盖其他 GPU/驱动，也不代表 GB/T 0005 完整符合性或认证。
 - 全量 `npm run lint:check` 本轮退出码为 0，未输出错误或警告诊断；本仓库 `npm run type-check` 也通过。此前发现的 384 项 TypeScript 诊断来自 `metacrypt_server/frontend`，不应归到本仓库。不能把一个仓库的静态检查结果转记到另一个仓库。
-- 审查轮次：2026-09-22 基线报告记录三轮主审与独立批驳，但结论是未通过，仍留有代码、后端测评架构和交付问题。本轮增量复核了 AES/过程生成器/sandbox 切片，以及密码分类导航、双语分类表和块类型统计；两位审查者独立确认 216 个唯一块类型及 242 个块/模板并集，另一位审查者复核本轮文档差异未发现问题。`npm run test:unit`、类型检查、lint、循环依赖检查、`npm run verify:all` 和生产构建通过。旧基线仍不能视为当前工作树通过三轮全仓审查；UI 手工逐步点验、截图与运行环境一致性、其他算法和架构区域也未因这些回归而自动验收。
+- 审查轮次：2026-09-22 基线报告记录三轮主审与独立批驳，但结论是未通过，仍留有代码、后端测评架构和交付问题。本轮增量复核了 AES/过程生成器/sandbox 切片，以及密码分类导航、双语分类表和块类型统计；两位审查者独立确认 217 个唯一块类型及 243 个块/模板并集，另一位审查者复核本轮文档差异未发现问题。`npm run test:unit`、类型检查、lint、循环依赖检查、`npm run verify:all` 和生产构建通过。旧基线仍不能视为当前工作树通过三轮全仓审查；UI 手工逐步点验、截图与运行环境一致性、其他算法和架构区域也未因这些回归而自动验收。
 - 这些检查证明工程回归和选定输入下的行为，不构成 CAVP/ACVTS、CMVP/FIPS 140-3、constant-time、侧信道安全或形式化验证证据。

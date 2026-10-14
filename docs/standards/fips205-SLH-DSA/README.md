@@ -25,6 +25,12 @@
 `h` = 超树总高度，`d` = 超树层数（每层一棵 XMSS 子树），`h′` = 每棵子树高度，
 `lgw` = 4（w = 16，WOTS+ 链长）。
 
+## 官方向量与实现边界
+
+- `vectors/ACVP-SLH-DSA-keyGen-FIPS205.json`：NIST [usnistgov/ACVP-Server](https://github.com/usnistgov/ACVP-Server) `gen-val/json-files/SLH-DSA-keyGen-FIPS205/internalProjection.json` 的原始副本（ACVP 会话 SLH-DSA-keyGen，FIPS205 修订）。keyGen 的 `pk = pkSeed ‖ PK.root`，因此可直接校验 XMSS 顶层树根。
+- `slh_xmss_root` 按 FIPS 205 §7.2 Algorithm 9/10 与 §11.1 的 SHAKE 变体实现（simple thash；PRF 用 ADRS type 5，叶子压缩 type 1，节点 type 2；顶层 layer = d−1、tree = 0），并用上述向量核对 SHAKE-128f/192f/256f 的 PK.root。
+- 本目录的 `hash_chain` / `merkle_*` / `fors_*` 等块是**教学级结构件**（无密钥 SHAKE256 组合），不是 FIPS 205 的带地址 `H` / `F` / `PRF` 封装；不要把两者混用成标准实现声明。FORS 与签名/验签路径仍未实现。
+
 ## 算法清单
 
 | 序号 | 文件 | 名称 | 类别 | 项目状态 |

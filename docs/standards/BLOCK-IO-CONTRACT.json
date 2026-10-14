@@ -6678,6 +6678,56 @@
     "previousStatement": null,
     "nextStatement": null
   },
+  "slh_xmss_root": {
+    "inputs": [
+      {
+        "name": "SK_SEED",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "PK_SEED",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "H_PRIME",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "LAYER",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "TREE",
+        "type": 1,
+        "check": [
+          "Number"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
   "sm2_decrypt": {
     "inputs": [
       {

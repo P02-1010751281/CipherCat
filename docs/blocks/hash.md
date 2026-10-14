@@ -114,6 +114,7 @@ HMAC 块的回归对生成的 JavaScript/Python 代码核验 SHA-256 的 RFC 423
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
+| `slh_xmss_root` | 1 | value(→) | Bytes&Bytes&Number&Number&Number→Bytes | FIPS 205 §7.2 XMSS 树根（SHAKE 变体）：按 ADRS(type 5/1/2) 计算高度 h′ 的树根；SLH-DSA 顶层取 layer=d−1、tree=0，其根即 PK.root |
 | `hash_chain` | 1 | value(→) | Bytes&Number→Bytes | 反复应用项目 SHAKE-256 摘要；无 FIPS 205 `F(PK.seed, ADRS, ·)` 与链地址更新 |
 | `merkle_leaf` | 1 | value(→) | Bytes&Bytes→Bytes | 通用教学叶子 `SHAKE256(ADRS‖MSG, 32)`，非 XMSS/FORS 标准叶生成 |
 | `merkle_node` | 1 | value(→) | Bytes&Bytes&Bytes→Bytes | 通用教学节点 `SHAKE256(ADRS‖L‖R, 32)`，非标准 `H/T_l` 调用 |

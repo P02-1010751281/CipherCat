@@ -6,3 +6,4 @@ import './hashbased';
 import './fors';
 import './adrs';
 import './wots';
+import './slh-xmss';

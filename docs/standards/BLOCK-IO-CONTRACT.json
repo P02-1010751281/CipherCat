@@ -6721,6 +6721,73 @@
     "previousStatement": null,
     "nextStatement": null
   },
+  "slh_sign": {
+    "inputs": [
+      {
+        "name": "SK",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "MESSAGE",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "CONTEXT",
+        "type": 1,
+        "check": [
+          "Bytes"
+        ]
+      },
+      {
+        "name": "",
+        "type": 5,
+        "check": null
+      }
+    ],
+    "fields": [
+      {
+        "name": "PARAM_SET",
+        "fieldClass": "vd",
+        "options": [
+          [
+            "SLH-DSA-SHAKE-128f",
+            "SLH-DSA-SHAKE-128f"
+          ],
+          [
+            "SLH-DSA-SHAKE-128s",
+            "SLH-DSA-SHAKE-128s"
+          ],
+          [
+            "SLH-DSA-SHAKE-192f",
+            "SLH-DSA-SHAKE-192f"
+          ],
+          [
+            "SLH-DSA-SHAKE-192s",
+            "SLH-DSA-SHAKE-192s"
+          ],
+          [
+            "SLH-DSA-SHAKE-256f",
+            "SLH-DSA-SHAKE-256f"
+          ],
+          [
+            "SLH-DSA-SHAKE-256s",
+            "SLH-DSA-SHAKE-256s"
+          ]
+        ]
+      }
+    ],
+    "outputCheck": [
+      "Bytes"
+    ],
+    "previousStatement": null,
+    "nextStatement": null
+  },
   "slh_xmss_root": {
     "inputs": [
       {

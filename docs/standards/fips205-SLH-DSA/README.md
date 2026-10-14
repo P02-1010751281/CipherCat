@@ -31,7 +31,8 @@
 - `vectors/ACVP-SLH-DSA-keyGen-FIPS205.json`：NIST [usnistgov/ACVP-Server](https://github.com/usnistgov/ACVP-Server) `gen-val/json-files/SLH-DSA-keyGen-FIPS205/internalProjection.json` 的原始副本（ACVP 会话 SLH-DSA-keyGen，FIPS205 修订）。keyGen 的 `pk = pkSeed ‖ PK.root`，因此可直接校验 XMSS 顶层树根。
 - `slh_xmss_root` 按 FIPS 205 §7.2 Algorithm 9/10 与 §11.1 的 SHAKE 变体实现（simple thash；PRF 用 ADRS type 5，叶子压缩 type 1，节点 type 2；顶层 layer = d−1、tree = 0），并用上述向量核对 SHAKE-128f/192f/256f 的 PK.root。
 - `slh_msg_randomness` 实现 pure SLH-DSA 的第一步：M′ = 0x00‖|ctx|‖ctx‖M，R = SHAKE256(SK.prf‖opt_rand‖M′, n)，并按 ACVP sigGen 子集核对 R（签名串前 n 字节）。确定性签名的 opt_rand = PK.seed。
-- 本目录的 `hash_chain` / `merkle_*` / `fors_*` 等块是**教学级结构件**（无密钥 SHAKE256 组合），不是 FIPS 205 的带地址 `H` / `F` / `PRF` 封装；不要把两者混用成标准实现声明。FORS 与签名/验签路径仍未实现。
+- `slh_sign` 实现 §10.2 的 SLH-DSA.Sign 端点（SHAKE 参数集、external、pure、确定性）：输出 R‖SIG_FORS‖SIG_HT，已按同一 ACVP sigGen 子集逐字节核对 SHAKE-128f/192f/256f 的完整签名串。其 ADRS 约定与 `slh_xmss_root` 一致（simple thash、PRF type 5、叶子压缩 type 1、节点 type 2；FORS 另用 type 6/3/4），FORS 索引按标准的 MSB-first 位序读取。
+- 本目录的 `hash_chain` / `merkle_*` / `fors_*` / `wots_checksum` 等块是**教学级结构件**（无密钥 SHAKE256 组合），不是 FIPS 205 的带地址 `H` / `F` / `PRF` 封装；不要把两者混用成标准实现声明，也不要与 `slh_sign` 的标准路径互相拼装。尚未实现：SHA2 参数集、预哈希模式（`preHash`）与验证路径 `slh_verify`。
 
 ## 算法清单
 
@@ -40,7 +41,7 @@
 | — | `01-ADRS.md` | 地址格式 ADRS（32B） | 结构 | 部分教学编码；不支持完整 96-bit tree 值 |
 | — | `02-WOTS.md` | WOTS+ 一次性签名 | 签名 | 简化哈希链/校验和构件；无标准 WOTS+ 实现 |
 | — | `03-FORS.md` | FORS 少时签名（§8） | 签名 | 非标准教学变体；参数及哈希/PRF 语义不兼容 |
-| — | `04-SLH-DSA.md` | 完整 SLH-DSA（§9-10） | 签名 | 未实现；无端到端标准 KAT |
+| — | `04-SLH-DSA.md` | 完整 SLH-DSA（§9-10） | 签名 | 签名路径已实现（`slh_sign`，SHAKE 参数集，ACVP sigGen 逐字节核对）；无 SHA2/预哈希/验签 |
 
 ### 标准算法逐项拆分
 

@@ -114,6 +114,7 @@ HMAC 块的回归对生成的 JavaScript/Python 代码核验 SHA-256 的 RFC 423
 
 | 块 | 层 | 连接 | 输入→输出 | 说明 |
 |----|----|------|----------|------|
+| `slh_sign` | 1 | value(→) | Bytes&Bytes&Bytes→Bytes | SLH-DSA 签名端点（FIPS 205 §10.2，SHAKE 参数集、external、pure、确定性）：sk = SK.seed‖SK.prf‖PK.seed‖PK.root（4n 字节），输出 R‖SIG_FORS‖SIG_HT；已按 ACVP sigGen 向量核对 SHAKE-128f/192f/256f |
 | `slh_msg_randomness` | 1 | value(→) | Bytes&Bytes&Bytes&Bytes→Bytes | pure SLH-DSA 消息随机数 R (FIPS 205 §10.1/§11.1)：M′ = 0x00‖|ctx|‖ctx‖M，R = SHAKE256(SK.prf‖opt_rand‖M′, n)；确定性签名取 opt_rand = PK.seed |
 | `slh_xmss_root` | 1 | value(→) | Bytes&Bytes&Number&Number&Number→Bytes | FIPS 205 §7.2 XMSS 树根（SHAKE 变体）：按 ADRS(type 5/1/2) 计算高度 h′ 的树根；SLH-DSA 顶层取 layer=d−1、tree=0，其根即 PK.root |
 | `hash_chain` | 1 | value(→) | Bytes&Number→Bytes | 反复应用项目 SHAKE-256 摘要；无 FIPS 205 `F(PK.seed, ADRS, ·)` 与链地址更新 |

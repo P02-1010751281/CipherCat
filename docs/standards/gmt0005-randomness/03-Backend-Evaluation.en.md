@@ -50,6 +50,10 @@ Multi-sub-test items are projected to one P-value in the platform report: non-ov
 
 Current scope: the NIST suite is enabled only for the 1,000,000-bit tier (the excursion tests themselves require n ≥ 10^6), and a full 1,000-sample batch has not been exercised yet, so reports still return “inconclusive” when the sample count is short. These checks are not a NIST recognition, CAVP validation, or any certification claim.
 
+### Running both suites in one task (`both`)
+
+With `testSuite=both` the backend runs both suites over the same samples, parses each report against its own complete item list, and merges the presentation: the three items that share both a name and an algorithm (single-bit frequency, total runs, discrete Fourier) appear once, so the 1,000,000-bit tier shows 40 report items (27 + 16 − 3). `summary.suiteSummaries` keeps each suite's own verdict, and the combined verdict takes the stricter side (fail if any suite fails, pass only if both pass, otherwise inconclusive). This is a platform presentation choice; each standard's decision unit remains its own list. Combinations that include NIST are likewise limited to the 1,000,000-bit tier and take roughly twice as long as a single suite.
+
 The ten-bin `Q-value` uniformity test is computed only with the complete 1,000-sample batch. Malformed detector reports and non-finite or out-of-range P/Q values are rejected rather than absorbed as ordinary failed samples.
 
 The backend caps total assessment input at 100,000,000 bits per task. Therefore the 1,000,000-bit tier allows at most 100 samples and the 100,000,000-bit tier one sample; these tiers provide diagnostics only and cannot produce a GM/T 0005 batch conclusion. The sandbox's 64 MiB sample-payload limit is independent and does not determine those tier counts. Task status “completed” means the pipeline finished, not that the randomness passed. This describes current product behavior; it is not a certification claim.

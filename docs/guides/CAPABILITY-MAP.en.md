@@ -119,6 +119,8 @@ Backend statistical randomness tests are sample diagnostics, offered as two para
 - Block availability, code generation, demo success, and complete standards references are different states.
 - A demo covers only its registered inputs, parameters, vectors, or properties. Check the [standards coverage matrix](../standards/COVERAGE.en.md) for gaps.
 - A platform randomness report is not a CAVP algorithm-validation result, evidence of CMVP/FIPS 140-3 cryptographic-module validation, or proof of entropy-source quality.
+- AI output is always a candidate: model-drafted blocks, templates, documents, or attack parameters must pass deterministic gates (official vectors, `verify:all`, cross-language comparison) before entering the repository; AI output is not an evidence source and never appears in reports or certification material. See the [ShannonProver and AI integration research](../research/CRYPTO-RESEARCH-2026-10-16.md).
+- External formal-proof tools (such as ShannonProver on EasyCrypt) prove protocol-level theorems only under a given model; they neither cover implementation correctness of generated code nor constitute certification. This project's current evidence for generated code is official vectors plus cross-implementation comparison — testing, not proof.
 - Post-quantum cryptography on this page does not include quantum-communication technologies such as QKD.
 
 ## 7. Continue by purpose
